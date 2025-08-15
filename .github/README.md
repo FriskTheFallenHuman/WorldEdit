@@ -1,4 +1,4 @@
-<img align="right" src="https://github.com/codereader/DarkRadiant/blob/master/install/bitmaps/repository_logo.png?raw=true" alt="WorldEdit Logo">
+<img align="center" src="https://github.com/FriskTheFallenHuman/WorldEdit/blob/main/install/bitmaps/repository_logo.png?raw=true" alt="WorldEdit Logo">
 
 # WorldEdit
 
@@ -11,8 +11,6 @@ Get the latest WorldEdit binaries from the [releases page](https://github.com/Fr
 # Getting started
 
 WorldEdit requires game resources to work with, these resources are not installed by this editor. You'll need to point WorldEdit to one of these games (Doom 3, Quake 4, etc.) before you can start to work on your map.
-
-For The Dark Mod mappers, there are a couple of [Video Tutorials](https://wiki.thedarkmod.com/index.php?title=DarkRadiant_Video_Tutorials) on the project's wiki, which should get you started.
 
 # Compiling on Windows
 
