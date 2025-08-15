@@ -30,45 +30,45 @@ private:
 	// The space partition to render
 	scene::ISpacePartitionSystemPtr _spacePartition;
 
-    std::vector<AABB> _spacePartitionNodes;
-    std::vector<Vector4> _nodeColours;
-    RenderableColouredBoundingBoxes _renderableBoxes;
+	std::vector<AABB> _spacePartitionNodes;
+	std::vector<Vector4> _nodeColours;
+	RenderableColouredBoundingBoxes _renderableBoxes;
 
 public:
-    RenderableSpacePartition() :
-        _renderableBoxes(_spacePartitionNodes, _nodeColours)
-    {}
+	RenderableSpacePartition() :
+		_renderableBoxes(_spacePartitionNodes, _nodeColours)
+	{}
 
 	void setSpacePartition(const scene::ISpacePartitionSystemPtr& spacePartition)
 	{
 		_spacePartition = spacePartition;
 	}
 
-    void onPreRender(const VolumeTest& volume) override
-    {
-        if (!_spacePartition)
-        {
-            _renderableBoxes.clear();
-            return;
-        }
+	void onPreRender(const VolumeTest& volume) override
+	{
+		if (!_spacePartition)
+		{
+			_renderableBoxes.clear();
+			return;
+		}
 
-        // Accumulate the bounding boxes to render
-        _spacePartitionNodes.clear();
-        _nodeColours.clear();
+		// Accumulate the bounding boxes to render
+		_spacePartitionNodes.clear();
+		_nodeColours.clear();
 
-        accumulateBoundingBoxes(_spacePartition->getRoot());
+		accumulateBoundingBoxes(_spacePartition->getRoot());
 
-        // Update the renderable every frame
-        _renderableBoxes.queueUpdate();
-        _renderableBoxes.update(_shader);
-    }
+		// Update the renderable every frame
+		_renderableBoxes.queueUpdate();
+		_renderableBoxes.update(_shader);
+	}
 
-    void renderHighlights(IRenderableCollector& collector, const VolumeTest& volume) override
-    {}
+	void renderHighlights(IRenderableCollector& collector, const VolumeTest& volume) override
+	{}
 
 	void setRenderSystem(const RenderSystemPtr& renderSystem) override
 	{
-        _renderableBoxes.clear();
+		_renderableBoxes.clear();
 
 		if (renderSystem)
 		{
@@ -92,14 +92,14 @@ private:
 
 		float shade = members.size() > 2 ? 1 : (members.size() > 0 ? 0.6f : 0);
 
-        _nodeColours.emplace_back(shade, shade, shade, 1);
+		_nodeColours.emplace_back(shade, shade, shade, 1);
 
 		AABB rb(node->getBounds());
 
 		// Extend the renderbounds *slightly* so that the lines don't overlap
 		rb.extents *= 1.02f;
 
-        _spacePartitionNodes.push_back(rb);
+		_spacePartitionNodes.push_back(rb);
 
 		for (auto child : node->getChildNodes())
 		{

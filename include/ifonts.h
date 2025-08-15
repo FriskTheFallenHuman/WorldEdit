@@ -52,27 +52,27 @@ enum Resolution
 
 inline std::ostream& operator<< (std::ostream& os, Resolution res)
 {
-    switch (res)
-    {
-        case Resolution12:
-            os << "12";
-            break;
+	switch (res)
+	{
+		case Resolution12:
+			os << "12";
+			break;
 
-        case Resolution24:
-            os << "24";
-            break;
+		case Resolution24:
+			os << "24";
+			break;
 
-        case Resolution48:
-            os << "48";
-            break;
+		case Resolution48:
+			os << "48";
+			break;
 
-        default:
-            assert(false);
-            os << "Unrecognised";
-            break;
-    }
+		default:
+			assert(false);
+			os << "Unrecognised";
+			break;
+	}
 
-    return os;
+	return os;
 }
 
 // Each font resolution has its own set of glyphs

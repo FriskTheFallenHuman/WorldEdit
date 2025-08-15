@@ -20,32 +20,32 @@ class TextInputStream
 : public std::streambuf
 {
 protected:
-    // Buffer to use for reading
-    static const std::size_t BUFFER_SIZE = 8192;
-    char _buffer[BUFFER_SIZE];
+	// Buffer to use for reading
+	static const std::size_t BUFFER_SIZE = 8192;
+	char _buffer[BUFFER_SIZE];
 
 protected:
 
-    /* Implementations of stream-specific virtual functions on std::streambuf */
+	/* Implementations of stream-specific virtual functions on std::streambuf */
 
-    // Replenish the controlled buffer with characters from the underlying
-    // input sequence.
-    virtual int underflow()
-    {
-        // Read next block of BUFFER_SIZE characters into the buffer from
-        // the underlying TextInputStream.
-        std::size_t charsRead = this->read(_buffer, BUFFER_SIZE);
+	// Replenish the controlled buffer with characters from the underlying
+	// input sequence.
+	virtual int underflow()
+	{
+		// Read next block of BUFFER_SIZE characters into the buffer from
+		// the underlying TextInputStream.
+		std::size_t charsRead = this->read(_buffer, BUFFER_SIZE);
 
-        // Set up the internal pointers correctly
-        assert(charsRead <= BUFFER_SIZE);
-        std::streambuf::setg(_buffer, _buffer, _buffer + charsRead);
+		// Set up the internal pointers correctly
+		assert(charsRead <= BUFFER_SIZE);
+		std::streambuf::setg(_buffer, _buffer, _buffer + charsRead);
 
-        // Return the next character, or EOF if there were no more characters
-        if (charsRead > 0)
-        	return static_cast<int>(_buffer[0]);
-        else
-        	return EOF;
-    }
+		// Return the next character, or EOF if there were no more characters
+		if (charsRead > 0)
+			return static_cast<int>(_buffer[0]);
+		else
+			return EOF;
+	}
 
 public:
 
@@ -62,44 +62,44 @@ public:
 class OutputStreamHolder
 {
 	std::ostringstream _tempOutputStream;
-    std::mutex _nullLock;
+	std::mutex _nullLock;
 	std::ostream* _outputStream;
-    std::mutex* _streamLock;
+	std::mutex* _streamLock;
 
 public:
 	OutputStreamHolder() :
-        _outputStream(&_tempOutputStream),
-        _streamLock(&_nullLock)
+		_outputStream(&_tempOutputStream),
+		_streamLock(&_nullLock)
 	{}
 
 	void setStream(std::ostream& outputStream)
-    {
+	{
 		_outputStream = &outputStream;
 
-        // Copy temporary data to new buffer
-        (*_outputStream) << _tempOutputStream.str();
-        _tempOutputStream.clear();
+		// Copy temporary data to new buffer
+		(*_outputStream) << _tempOutputStream.str();
+		_tempOutputStream.clear();
 	}
 
 	std::ostream& getStream() {
 		return *_outputStream;
 	}
 
-    void setLock(std::mutex& streamLock)
-    {
-        _streamLock = &streamLock;
-    }
+	void setLock(std::mutex& streamLock)
+	{
+		_streamLock = &streamLock;
+	}
 
-    std::mutex& getStreamLock()
-    {
-        return *_streamLock;
-    }
+	std::mutex& getStreamLock()
+	{
+		return *_streamLock;
+	}
 
-    void reset()
-    {
-        _outputStream = &_tempOutputStream;
-        _streamLock = &_nullLock;
-    }
+	void reset()
+	{
+		_outputStream = &_tempOutputStream;
+		_streamLock = &_nullLock;
+	}
 };
 
 // With multiple threads writing against a single thread-unsafe std::ostream
@@ -109,38 +109,38 @@ public:
 // destructor client code should not cast the stream reference to its base
 // std::stringstream otherwise the destructor might not be called.
 class TemporaryThreadsafeStream :
-    public std::ostringstream
+	public std::ostringstream
 {
 private:
-    std::ostream& _actualStream;
-    std::mutex& _streamLock;
+	std::ostream& _actualStream;
+	std::mutex& _streamLock;
 
 public:
-    TemporaryThreadsafeStream(std::ostream& actualStream, std::mutex& streamLock) :
-        _actualStream(actualStream),
-        _streamLock(streamLock)
-    {
-        _actualStream.copyfmt(*this);
-        setstate(actualStream.rdstate());
-    }
+	TemporaryThreadsafeStream(std::ostream& actualStream, std::mutex& streamLock) :
+		_actualStream(actualStream),
+		_streamLock(streamLock)
+	{
+		_actualStream.copyfmt(*this);
+		setstate(actualStream.rdstate());
+	}
 
-    // Copy constructor must be defined explicitly because newer GCC won't
-    // define it implicitly for reference members resulting in a "use of
-    // deleted function" error when returning by value.
-    TemporaryThreadsafeStream(const TemporaryThreadsafeStream& other)
-    : _actualStream(other._actualStream),
-      _streamLock(other._streamLock)
-    { }
+	// Copy constructor must be defined explicitly because newer GCC won't
+	// define it implicitly for reference members resulting in a "use of
+	// deleted function" error when returning by value.
+	TemporaryThreadsafeStream(const TemporaryThreadsafeStream& other)
+	: _actualStream(other._actualStream),
+	  _streamLock(other._streamLock)
+	{ }
 
-    // On destruction, we flush our buffer to the main stream
-    // in a thread-safe manner
-    ~TemporaryThreadsafeStream()
-    {
-        std::lock_guard<std::mutex> lock(_streamLock);
+	// On destruction, we flush our buffer to the main stream
+	// in a thread-safe manner
+	~TemporaryThreadsafeStream()
+	{
+		std::lock_guard<std::mutex> lock(_streamLock);
 
-        // Flush buffer on destruction
-        _actualStream << str();
-    }
+		// Flush buffer on destruction
+		_actualStream << str();
+	}
 };
 
 
@@ -175,26 +175,26 @@ inline OutputStreamHolder& GlobalDebugStream()
 // to avoid error and debug streams from concurrently writing to the same log device.
 inline TemporaryThreadsafeStream rMessage()
 {
-    return TemporaryThreadsafeStream(
-        GlobalOutputStream().getStream(), 
-        GlobalOutputStream().getStreamLock()
-    );
+	return TemporaryThreadsafeStream(
+		GlobalOutputStream().getStream(), 
+		GlobalOutputStream().getStreamLock()
+	);
 }
 
 inline TemporaryThreadsafeStream rError()
 {
-    return TemporaryThreadsafeStream(
-        GlobalErrorStream().getStream(),
-        GlobalErrorStream().getStreamLock()
-    );
+	return TemporaryThreadsafeStream(
+		GlobalErrorStream().getStream(),
+		GlobalErrorStream().getStreamLock()
+	);
 }
 
 inline TemporaryThreadsafeStream rWarning()
 {
-    return TemporaryThreadsafeStream(
-        GlobalWarningStream().getStream(),
-        GlobalWarningStream().getStreamLock()
-    );
+	return TemporaryThreadsafeStream(
+		GlobalWarningStream().getStream(),
+		GlobalWarningStream().getStreamLock()
+	);
 }
 
 /**
@@ -206,10 +206,10 @@ inline TemporaryThreadsafeStream rWarning()
  */
 inline TemporaryThreadsafeStream rDebug()
 {
-    return TemporaryThreadsafeStream(
-        GlobalDebugStream().getStream(),
-        GlobalDebugStream().getStreamLock()
-    );
+	return TemporaryThreadsafeStream(
+		GlobalDebugStream().getStream(),
+		GlobalDebugStream().getStreamLock()
+	);
 }
 
 /**
@@ -224,10 +224,10 @@ inline TemporaryThreadsafeStream rDebug()
  */
 inline TemporaryThreadsafeStream rConsole()
 {
-    return TemporaryThreadsafeStream(
-        std::cout,
-        GlobalOutputStream().getStreamLock()
-    );
+	return TemporaryThreadsafeStream(
+		std::cout,
+		GlobalOutputStream().getStreamLock()
+	);
 }
 
 /**
@@ -240,8 +240,8 @@ inline TemporaryThreadsafeStream rConsole()
 */
 inline TemporaryThreadsafeStream rConsoleError()
 {
-    return TemporaryThreadsafeStream(
-        std::cerr,
-        GlobalErrorStream().getStreamLock()
-    );
+	return TemporaryThreadsafeStream(
+		std::cerr,
+		GlobalErrorStream().getStreamLock()
+	);
 }

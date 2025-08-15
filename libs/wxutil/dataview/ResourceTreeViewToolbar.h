@@ -2,6 +2,7 @@
 
 #include <wx/panel.h>
 #include <wx/radiobut.h>
+#include <wx/statbmp.h>
 #include <wx/bmpbuttn.h>
 #include <wx/timer.h>
 
@@ -24,6 +25,7 @@ private:
     wxRadioButton* _showAll;
     wxRadioButton* _showFavourites;
 
+    wxStaticBitmap* _findButton;
     wxBitmapButton* _findPrevButton;
     wxBitmapButton* _findNextButton;
 

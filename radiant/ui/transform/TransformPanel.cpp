@@ -30,7 +30,7 @@ namespace
 	constexpr const char* const LABEL_SCALEY = N_("Y-Axis Scale:");
 	constexpr const char* const LABEL_SCALEZ = N_("Z-Axis Scale:");
 
-    constexpr const char* const LABEL_STEP = N_("Step:");
+	constexpr const char* const LABEL_STEP = N_("Step:");
 
 	const std::string RKEY_ROOT = "user/ui/transformPanel/";
 	const std::string RKEY_ROTX_STEP = RKEY_ROOT + "rotXStep";
@@ -43,8 +43,8 @@ namespace
 }
 
 TransformPanel::TransformPanel(wxWindow* parent) :
-    DockablePanel(parent),
-    _selectionInfo(GlobalSelectionSystem().getSelectionInfo())
+	DockablePanel(parent),
+	_selectionInfo(GlobalSelectionSystem().getSelectionInfo())
 {
 	// Create all the widgets and pack them into the window
 	populateWindow();
@@ -52,35 +52,35 @@ TransformPanel::TransformPanel(wxWindow* parent) :
 
 TransformPanel::~TransformPanel()
 {
-    if (panelIsActive())
-    {
-        disconnectListeners();
-    }
+	if (panelIsActive())
+	{
+		disconnectListeners();
+	}
 }
 
 void TransformPanel::onPanelActivated()
 {
-    connectListeners();
+	connectListeners();
 
-    // Update the widget sensitivity
-    update();
+	// Update the widget sensitivity
+	update();
 }
 
 void TransformPanel::onPanelDeactivated()
 {
-    disconnectListeners();
+	disconnectListeners();
 }
 
 void TransformPanel::connectListeners()
 {
-    // Register self to the SelSystem to get notified upon selection changes.
-    _selectionChanged = GlobalSelectionSystem().signal_selectionChanged().connect(
-        [this](const ISelectable&) { update(); });
+	// Register self to the SelSystem to get notified upon selection changes.
+	_selectionChanged = GlobalSelectionSystem().signal_selectionChanged().connect(
+		[this](const ISelectable&) { update(); });
 }
 
 void TransformPanel::disconnectListeners()
 {
-    _selectionChanged.disconnect();
+	_selectionChanged.disconnect();
 }
 
 void TransformPanel::populateWindow()
@@ -117,32 +117,32 @@ void TransformPanel::populateWindow()
 	_scalePanel->GetSizer()->Add(scaleLabel, 0, wxTOP | wxBOTTOM, 6);
 	_scalePanel->GetSizer()->Add(scaleTable, 1, wxEXPAND | wxLEFT, 6);
 
-    _entries["rotateX"] = createEntryRow(_(LABEL_ROTX), rotateTable, true, 0);
-    _entries["rotateY"] = createEntryRow(_(LABEL_ROTY), rotateTable, true, 1);
-    _entries["rotateZ"] = createEntryRow(_(LABEL_ROTZ), rotateTable, true, 2);
+	_entries["rotateX"] = createEntryRow(_(LABEL_ROTX), rotateTable, true, 0);
+	_entries["rotateY"] = createEntryRow(_(LABEL_ROTY), rotateTable, true, 1);
+	_entries["rotateZ"] = createEntryRow(_(LABEL_ROTZ), rotateTable, true, 2);
 
 	_entries["scaleX"] = createEntryRow(_(LABEL_SCALEX), scaleTable, false, 0);
-    _entries["scaleY"] = createEntryRow(_(LABEL_SCALEY), scaleTable, false, 1);
-    _entries["scaleZ"] = createEntryRow(_(LABEL_SCALEZ), scaleTable, false, 2);
+	_entries["scaleY"] = createEntryRow(_(LABEL_SCALEY), scaleTable, false, 1);
+	_entries["scaleZ"] = createEntryRow(_(LABEL_SCALEZ), scaleTable, false, 2);
 
-    // Connect the step values to the according registry values
-    registry::bindWidget(_entries["rotateX"].stepEntry, RKEY_ROTX_STEP);
-    registry::bindWidget(_entries["rotateY"].stepEntry, RKEY_ROTY_STEP);
-    registry::bindWidget(_entries["rotateZ"].stepEntry, RKEY_ROTZ_STEP);
+	// Connect the step values to the according registry values
+	registry::bindWidget(_entries["rotateX"].stepEntry, RKEY_ROTX_STEP);
+	registry::bindWidget(_entries["rotateY"].stepEntry, RKEY_ROTY_STEP);
+	registry::bindWidget(_entries["rotateZ"].stepEntry, RKEY_ROTZ_STEP);
 
-    registry::bindWidget(_entries["scaleX"].stepEntry, RKEY_SCALEX_STEP);
-    registry::bindWidget(_entries["scaleY"].stepEntry, RKEY_SCALEY_STEP);
-    registry::bindWidget(_entries["scaleZ"].stepEntry, RKEY_SCALEZ_STEP);
+	registry::bindWidget(_entries["scaleX"].stepEntry, RKEY_SCALEX_STEP);
+	registry::bindWidget(_entries["scaleY"].stepEntry, RKEY_SCALEY_STEP);
+	registry::bindWidget(_entries["scaleZ"].stepEntry, RKEY_SCALEZ_STEP);
 
-    // Connect all the arrow buttons
-    for (EntryRowMap::iterator i = _entries.begin(); i != _entries.end(); ++i)
+	// Connect all the arrow buttons
+	for (EntryRowMap::iterator i = _entries.begin(); i != _entries.end(); ++i)
 	{
-    	EntryRow& row = i->second;
+		EntryRow& row = i->second;
 
 		// Pass a EntryRow pointer to the callback, that's all it will need to update
 		row.smaller->Bind(wxEVT_BUTTON, std::bind(&TransformPanel::onClickSmaller, this, std::placeholders::_1, &row));
 		row.larger->Bind(wxEVT_BUTTON, std::bind(&TransformPanel::onClickLarger, this, std::placeholders::_1, &row));
-    }
+	}
 }
 
 TransformPanel::EntryRow TransformPanel::createEntryRow(

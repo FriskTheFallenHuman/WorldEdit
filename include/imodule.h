@@ -24,7 +24,7 @@
  * by their RegisterableModule::getCompatibilityLevel() method.
  *
  * This number should be changed each time the set of module/plugin files (.so/.dll/.dylib) 
- * is modified, especially when files are going to be removed from a DarkRadiant release.
+ * is modified, especially when files are going to be removed from a WorldEdit release.
  * The number will be checked by the ModuleRegistry against the internally stored one
  * to detect outdated binaries and reject their registration.
  *
@@ -41,8 +41,8 @@ typedef std::function<void (const std::string&, const std::string&)> ErrorHandli
 // Each module binary has its own copy of this, it's initialised in performDefaultInitialisation()
 inline ErrorHandlingFunction& GlobalErrorHandler()
 {
-    static ErrorHandlingFunction _func;
-    return _func;
+	static ErrorHandlingFunction _func;
+	return _func;
 }
 
 /**
@@ -55,55 +55,55 @@ class IApplicationContext
 {
 public:
 
-    /**
-     * \brief
-     * Argument list type.
-     */
-    typedef std::vector<std::string> ArgumentList;
+	/**
+	 * \brief
+	 * Argument list type.
+	 */
+	typedef std::vector<std::string> ArgumentList;
 
-    /**
+	/**
 	 * Destructor
 	 */
 	virtual ~IApplicationContext() {}
 
-    /// Return the path to the installed application
-    virtual std::string getApplicationPath() const = 0;
+	/// Return the path to the installed application
+	virtual std::string getApplicationPath() const = 0;
 
-    /**
-     * Return the application library paths, each of these is searched
+	/**
+	 * Return the application library paths, each of these is searched
 	 * for any libraries containing modules and/or plugins.
-     *
-     * On Windows this is most likely the same as the application path. On
-     * Linux it might be a hard-coded path like /usr/lib/darkradiant, or a
-     * relocatable relative path like ../lib
-     */
-    virtual std::vector<std::string> getLibraryPaths() const = 0;
+	 *
+	 * On Windows this is most likely the same as the application path. On
+	 * Linux it might be a hard-coded path like /usr/lib/worldedit, or a
+	 * relocatable relative path like ../lib
+	 */
+	virtual std::vector<std::string> getLibraryPaths() const = 0;
 
-    /**
-     * Return the toplevel path contaning runtime data files, such as the GL
-     * programs or UI descriptor files. On Windows this is the same as the
-     * application path, on Linux it is determined at compile-time but probably
-     * something like /usr/share/darkradiant.
-     */
-    virtual std::string getRuntimeDataPath() const = 0;
+	/**
+	 * Return the toplevel path contaning runtime data files, such as the GL
+	 * programs or UI descriptor files. On Windows this is the same as the
+	 * application path, on Linux it is determined at compile-time but probably
+	 * something like /usr/share/worldedit.
+	 */
+	virtual std::string getRuntimeDataPath() const = 0;
 
-    /// Return the directory containing user settings (user.xml and friends)
-    virtual std::string getSettingsPath() const = 0;
+	/// Return the directory containing user settings (user.xml and friends)
+	virtual std::string getSettingsPath() const = 0;
 
-    /// Return the directory for temporary output files, such as logs
-    virtual std::string getCacheDataPath() const = 0;
+	/// Return the directory for temporary output files, such as logs
+	virtual std::string getCacheDataPath() const = 0;
 
-    /// Return the directory containing UI bitmaps
-    virtual std::string getBitmapsPath() const = 0;
+	/// Return the directory containing UI bitmaps
+	virtual std::string getBitmapsPath() const = 0;
 
-    /// Return the path to HTML documentation files
-    virtual std::string getHTMLPath() const = 0;
+	/// Return the path to HTML documentation files
+	virtual std::string getHTMLPath() const = 0;
 
-    /**
-     * \brief
-     * Return the list of command line arguments.
-     */
-    virtual const ArgumentList& getCmdLineArgs() const = 0;
+	/**
+	 * \brief
+	 * Return the list of command line arguments.
+	 */
+	virtual const ArgumentList& getCmdLineArgs() const = 0;
 
 	/**
 	 * Retrieve a function pointer which can handle assertions and runtime errors
@@ -133,35 +133,35 @@ typedef std::set<std::string> StringSet;
 class RegisterableModule: public sigc::trackable
 {
 private:
-    const std::size_t _compatibilityLevel;
+	const std::size_t _compatibilityLevel;
 
 public:
-    RegisterableModule() :
-        _compatibilityLevel(MODULE_COMPATIBILITY_LEVEL)
-    {}
+	RegisterableModule() :
+		_compatibilityLevel(MODULE_COMPATIBILITY_LEVEL)
+	{}
 
 	// Modules are not copyable
 	RegisterableModule(const RegisterableModule& other) = delete;
 	RegisterableModule& operator=(const RegisterableModule& other) = delete;
 
-    /**
-     * Destructor
-     */
-    virtual ~RegisterableModule() {}
+	/**
+	 * Destructor
+	 */
+	virtual ~RegisterableModule() {}
 
-    /**
-     * Return the name of this module. This must be globally unique across all
-     * modules; the modulesystem will throw a logic_error if two modules attempt
-     * to register themselves with the same name.
-     */
-    virtual const std::string& getName() const = 0;
+	/**
+	 * Return the name of this module. This must be globally unique across all
+	 * modules; the modulesystem will throw a logic_error if two modules attempt
+	 * to register themselves with the same name.
+	 */
+	virtual const std::string& getName() const = 0;
 
-    /**
-     * Return the set of dependencies for this module. The return value is a
-     * set of strings, each containing the unique name (as returned by
-     * getName()) of a module which must be initialised before this one.
-     */
-    virtual const StringSet& getDependencies() const = 0;
+	/**
+	 * Return the set of dependencies for this module. The return value is a
+	 * set of strings, each containing the unique name (as returned by
+	 * getName()) of a module which must be initialised before this one.
+	 */
+	virtual const StringSet& getDependencies() const = 0;
 
 	/**
 	 * Instruct this module to initialise itself. A RegisterableModule must NOT
@@ -180,26 +180,26 @@ public:
 	 */
 	virtual void initialiseModule(const IApplicationContext& ctx) = 0;
 
-    /**
-     * Optional shutdown routine. Allows the module to de-register itself,
-     * shutdown windows, save stuff into the Registry and so on.
-     *
-     * All the modules are getting called one by one, all other modules
-     * are available until the last shutdownModule() call was invoked.
-     */
-    virtual void shutdownModule() {
-        // Empty default implementation
-    }
+	/**
+	 * Optional shutdown routine. Allows the module to de-register itself,
+	 * shutdown windows, save stuff into the Registry and so on.
+	 *
+	 * All the modules are getting called one by one, all other modules
+	 * are available until the last shutdownModule() call was invoked.
+	 */
+	virtual void shutdownModule() {
+		// Empty default implementation
+	}
 
-    // Internally queried by the ModuleRegistry. To protect against leftover
-    // binaries containing outdated moudles from being loaded and registered
-    // the compatibility level is compared with the one in the ModuleRegistry.
-    // Old modules with mismatching numbers will be rejected.
-    // Function is intentionally non-virtual and inlined.
-    std::size_t getCompatibilityLevel() const
-    {
-        return _compatibilityLevel;
-    }
+	// Internally queried by the ModuleRegistry. To protect against leftover
+	// binaries containing outdated moudles from being loaded and registered
+	// the compatibility level is compared with the one in the ModuleRegistry.
+	// Old modules with mismatching numbers will be rejected.
+	// Function is intentionally non-virtual and inlined.
+	std::size_t getCompatibilityLevel() const
+	{
+		return _compatibilityLevel;
+	}
 };
 
 /**
@@ -220,50 +220,50 @@ typedef std::shared_ptr<RegisterableModule> RegisterableModulePtr;
 class IModuleRegistry 
 {
 public:
-    virtual ~IModuleRegistry() {}
+	virtual ~IModuleRegistry() {}
 
-    /**
-     * Register a RegisterableModule. The name and dependencies are retrieved
-     * through the appropriate RegisterableModule interface methods.
-     *
-     * This method does not cause the RegisterableModule to be initialised.
-     */
-    virtual void registerModule(const RegisterableModulePtr& module) = 0;
+	/**
+	 * Register a RegisterableModule. The name and dependencies are retrieved
+	 * through the appropriate RegisterableModule interface methods.
+	 *
+	 * This method does not cause the RegisterableModule to be initialised.
+	 */
+	virtual void registerModule(const RegisterableModulePtr& module) = 0;
 
-    /**
-     * Initialise all of the modules previously registered with
-     * registerModule() in the order required by their dependencies. This method
-     * is invoked once, at application startup, with any subsequent attempts
-     * to invoke this method throwing a logic_error.
-     */
-    virtual void loadAndInitialiseModules() = 0;
+	/**
+	 * Initialise all of the modules previously registered with
+	 * registerModule() in the order required by their dependencies. This method
+	 * is invoked once, at application startup, with any subsequent attempts
+	 * to invoke this method throwing a logic_error.
+	 */
+	virtual void loadAndInitialiseModules() = 0;
 
-    /**
-     * All the RegisterableModule::shutdownModule() routines are getting
-     * called one by one. No modules are actually destroyed during the
-     * iteration is ongoing, so each module is guaranteed to exist.
-     *
-     * After the last shutdownModule() call has been invoked, the modules
-     * can be safely unloaded/destroyed.
-     */
-    virtual void shutdownModules() = 0;
+	/**
+	 * All the RegisterableModule::shutdownModule() routines are getting
+	 * called one by one. No modules are actually destroyed during the
+	 * iteration is ongoing, so each module is guaranteed to exist.
+	 *
+	 * After the last shutdownModule() call has been invoked, the modules
+	 * can be safely unloaded/destroyed.
+	 */
+	virtual void shutdownModules() = 0;
 
-    /**
-     * Retrieve the module associated with the provided unique name. If the
-     * named module is not found, an empty RegisterableModulePtr is returned
-     * (this allows modules to be optional).
-     *
-     * Note that the return value of this function is RegisterableModulePtr,
-     * which in itself is useless to application code. It is up to the accessor
-     * functions defined in each module interface (e.g. GlobalEntityCreator())
-     * to downcast the pointer to the appropriate type.
-     */
-    virtual RegisterableModulePtr getModule(const std::string& name) const = 0;
+	/**
+	 * Retrieve the module associated with the provided unique name. If the
+	 * named module is not found, an empty RegisterableModulePtr is returned
+	 * (this allows modules to be optional).
+	 *
+	 * Note that the return value of this function is RegisterableModulePtr,
+	 * which in itself is useless to application code. It is up to the accessor
+	 * functions defined in each module interface (e.g. GlobalEntityCreator())
+	 * to downcast the pointer to the appropriate type.
+	 */
+	virtual RegisterableModulePtr getModule(const std::string& name) const = 0;
 
-    /**
-     * Returns TRUE if the named module exists in the records.
-     */
-    virtual bool moduleExists(const std::string& name) const = 0;
+	/**
+	 * Returns TRUE if the named module exists in the records.
+	 */
+	virtual bool moduleExists(const std::string& name) const = 0;
 
 	/**
 	 * This retrieves a reference to the information structure ApplicationContext,
@@ -282,10 +282,10 @@ public:
 	 */
 	virtual applog::ILogWriter& getApplicationLogWriter() = 0;
 
-    /**
-     * Invoked when all modules have been initialised.
-     */
-    virtual sigc::signal<void>& signal_allModulesInitialised() = 0;
+	/**
+	 * Invoked when all modules have been initialised.
+	 */
+	virtual sigc::signal<void>& signal_allModulesInitialised() = 0;
 
 	/**
 	 * Progress function called during module loading and intialisation.
@@ -303,11 +303,11 @@ public:
 	 */
 	virtual sigc::signal<void>& signal_modulesUninitialising() = 0;
 
-    /**
-    * Invoked when all modules have been shut down (i.e. after shutdownModule()).
+	/**
+	* Invoked when all modules have been shut down (i.e. after shutdownModule()).
 	* This is a fire-once signal which removes all subscribers after firing.
-    */
-    virtual sigc::signal<void>& signal_allModulesUninitialised() = 0;
+	*/
+	virtual sigc::signal<void>& signal_allModulesUninitialised() = 0;
 
 	/**
 	* Invoked right before the module binaries will be unloaded, which will
@@ -324,19 +324,19 @@ public:
 
 namespace module
 {
-    /**
-     * \namespace module
-     * Types and functions implementing the module registry system.
-     *
-     * \ingroup module
-     */
+	/**
+	 * \namespace module
+	 * Types and functions implementing the module registry system.
+	 *
+	 * \ingroup module
+	 */
 
-    /** 
-     * greebo: A module-wide accessible container holding a registry reference.
-     * The reference it holds has to be initialised in the RegisterModule() 
-     * routine of each .so/.dll binary.
-     * Use GlobalModuleRegistry() to access the instance.
-     */
+	/** 
+	 * greebo: A module-wide accessible container holding a registry reference.
+	 * The reference it holds has to be initialised in the RegisterModule() 
+	 * routine of each .so/.dll binary.
+	 * Use GlobalModuleRegistry() to access the instance.
+	 */
 	class RegistryReference {
 		IModuleRegistry* _registry;
 	public:
@@ -367,13 +367,13 @@ namespace module
 		}
 	};
 
-    /**
-     * Global accessor method for the ModuleRegistry.
-     */
-    inline IModuleRegistry& GlobalModuleRegistry() 
-    {
-        return RegistryReference::Instance().getRegistry();
-    }
+	/**
+	 * Global accessor method for the ModuleRegistry.
+	 */
+	inline IModuleRegistry& GlobalModuleRegistry() 
+	{
+		return RegistryReference::Instance().getRegistry();
+	}
 
 	// Returns true if we have a registry instance known to this binary
 	inline bool IsGlobalModuleRegistryAvailable()
@@ -404,7 +404,7 @@ namespace module
 		{
 			// Check if we have an instance or if it is outdated
 			if (_instancePtr == nullptr)
-            {
+			{
 				acquireReference();
 			}
 
@@ -414,14 +414,14 @@ namespace module
 	private:
 		void acquireReference()
 		{
-            auto& registry = GlobalModuleRegistry();
+			auto& registry = GlobalModuleRegistry();
 
-            _instancePtr = dynamic_cast<ModuleType*>(registry.getModule(_moduleName).get());
+			_instancePtr = dynamic_cast<ModuleType*>(registry.getModule(_moduleName).get());
 
-            registry.signal_allModulesUninitialised().connect([this]
-            {
-                _instancePtr = nullptr;
-            });
+			registry.signal_allModulesUninitialised().connect([this]
+			{
+				_instancePtr = nullptr;
+			});
 		}
 	};
 
@@ -478,26 +478,26 @@ namespace module
 		// Initialise the streams using the central application log writer instance
 		initialiseStreams(registry.getApplicationLogWriter());
 
-        // Remember the reference to the ModuleRegistry
-        RegistryReference::Instance().setRegistry(registry);
+		// Remember the reference to the ModuleRegistry
+		RegistryReference::Instance().setRegistry(registry);
 
-        // Set up the assertion handler
-        GlobalErrorHandler() = registry.getApplicationContext().getErrorHandlingFunction();
-    }
+		// Set up the assertion handler
+		GlobalErrorHandler() = registry.getApplicationContext().getErrorHandlingFunction();
+	}
 }
 
 // Platform-specific definition which needs to be defined both
 // in the plugins and the main binary.
 #if defined(WIN32)
-    #if defined(_MSC_VER)
-        // In VC++ we use this to export symbols instead of using .def files
-        // Note: don't use __stdcall since this is adding stack bytes to the function name
-        #define DARKRADIANT_DLLEXPORT __declspec(dllexport)
-    #else
-        #define DARKRADIANT_DLLEXPORT 
-    #endif
+	#if defined(_MSC_VER)
+		// In VC++ we use this to export symbols instead of using .def files
+		// Note: don't use __stdcall since this is adding stack bytes to the function name
+		#define WORLDEDIT_DLLEXPORT __declspec(dllexport)
+	#else
+		#define WORLDEDIT_DLLEXPORT 
+	#endif
 #elif defined(__APPLE__)
-    #define DARKRADIANT_DLLEXPORT __attribute__((visibility("default")))
+	#define WORLDEDIT_DLLEXPORT __attribute__((visibility("default")))
 #else
-    #define DARKRADIANT_DLLEXPORT __attribute__((visibility("default")))
+	#define WORLDEDIT_DLLEXPORT __attribute__((visibility("default")))
 #endif

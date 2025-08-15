@@ -14,14 +14,14 @@ namespace ui
  * PropertyEditor that displays and edits a boolean (toggle) value
  */
 class BooleanPropertyEditor:
-    public PropertyEditor
+	public PropertyEditor
 {
 private:
 	// The checkbox
 	wxCheckBox* _checkBox;
 
 	// Key to edit
-    ITargetKey::Ptr _key;
+	ITargetKey::Ptr _key;
 
 private:
 
@@ -35,10 +35,10 @@ public:
 	void updateFromEntity();
 
 	// Create a new BooleanPropertyEditor
-    static Ptr CreateNew(wxWindow* parent, IEntitySelection& entities, const ITargetKey::Ptr& key)
-    {
-        return std::make_shared<BooleanPropertyEditor>(parent, entities, key);
-    }
+	static Ptr CreateNew(wxWindow* parent, IEntitySelection& entities, const ITargetKey::Ptr& key)
+	{
+		return std::make_shared<BooleanPropertyEditor>(parent, entities, key);
+	}
 };
 
 } // namespace

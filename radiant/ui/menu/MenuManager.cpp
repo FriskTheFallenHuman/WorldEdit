@@ -194,16 +194,16 @@ void MenuManager::handleElementAdded(const MenuElementPtr& element)
 	// Option 1 is to add the event handler to the wxFrame housing the wxMenuBar
 	//          but we don't always know what wxFrame that is (it's added later)
 	// Option 2 is to mark the whole menu as "needs refresh" => let's go with this
-    while (parentMenu)
-    {
-    	if (std::dynamic_pointer_cast<MenuBar>(parentMenu))
-    	{
-    		std::static_pointer_cast<MenuBar>(parentMenu)->setNeedsRefresh(true);
-    		break;
-    	}
+	while (parentMenu)
+	{
+		if (std::dynamic_pointer_cast<MenuBar>(parentMenu))
+		{
+			std::static_pointer_cast<MenuBar>(parentMenu)->setNeedsRefresh(true);
+			break;
+		}
 
-    	parentMenu = parentMenu->getParent();
-    }
+		parentMenu = parentMenu->getParent();
+	}
 #endif
 
 	// When inserting a new menu in a menubar, make sure it is constructed
@@ -249,32 +249,32 @@ MenuElementPtr MenuManager::findTopLevelMenu(const MenuElementPtr& element)
 
 const std::string& MenuManager::getName() const
 {
-    static std::string _name(MODULE_MENUMANAGER);
-    return _name;
+	static std::string _name(MODULE_MENUMANAGER);
+	return _name;
 }
 
 const StringSet& MenuManager::getDependencies() const
 {
-    static StringSet _dependencies
-    {
-        MODULE_MAINFRAME
-    };
+	static StringSet _dependencies
+	{
+		MODULE_MAINFRAME
+	};
 
-    return _dependencies;
+	return _dependencies;
 }
 
 void MenuManager::initialiseModule(const IApplicationContext& ctx)
 {
-    loadFromRegistry();
+	loadFromRegistry();
 
-    GlobalMainFrame().signal_MainFrameShuttingDown().connect(
-        sigc::mem_fun(this, &MenuManager::clear)
-    );
+	GlobalMainFrame().signal_MainFrameShuttingDown().connect(
+		sigc::mem_fun(this, &MenuManager::clear)
+	);
 }
 
 void MenuManager::shutdownModule()
 {
-    clear();
+	clear();
 }
 
 module::StaticModuleRegistration<MenuManager> menuManagerModule;

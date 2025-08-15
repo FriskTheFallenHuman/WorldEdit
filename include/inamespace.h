@@ -57,12 +57,12 @@ public:
 	virtual bool erase(const std::string& name) = 0;
 
 	/**
-     * \brief
-     * Add a new name to the namespace, ensuring that it is unique by adding or
-     * changing a numeric prefix if necessary.
+	 * \brief
+	 * Add a new name to the namespace, ensuring that it is unique by adding or
+	 * changing a numeric prefix if necessary.
 	 *
 	 * \return
-     * The actual name that was inserted, unique in this namespace.
+	 * The actual name that was inserted, unique in this namespace.
 	 */
 	virtual std::string addUniqueName(const std::string& originalName) = 0;
 
@@ -81,28 +81,28 @@ public:
 
 	/**
 	 * \brief
-     * Prepares the given scene graph for import into this namespace by ensuring
-     * that none of its names conflict with those in this namespace.
-     *
+	 * Prepares the given scene graph for import into this namespace by ensuring
+	 * that none of its names conflict with those in this namespace.
+	 *
 	 * The nodes below <root> should have been added to a different namespace
 	 * prior to this call, so that links are preserved during name changes.
 	 *
 	 * After this call, the imported nodes are renamed to fit into this
 	 * namespace and can be safely connected to this Namespace. This method does
-     * \em not actually import the given scene graph's names into this
-     * namespace.
+	 * \em not actually import the given scene graph's names into this
+	 * namespace.
 	 */
 	virtual void ensureNoConflicts(const scene::INodePtr& foreignRoot) = 0;
 
-    /**
-     * Specialised variant of the above ensureNoConflicts(foreignRoot):
-     * Prepares only the given list of nodes (that are member of the foreign root) such that
-     * their names don't conflict with any name in this namespace.
-     * 
-     * Every Namespaced node will get a new unique name assigned, but only if it's
-     * actually colliding with a local name, otherwise it will remain unchanged.
-     */
-    virtual void ensureNoConflicts(const scene::INodePtr& foreignRoot, const std::set<scene::INodePtr>& foreignNodes) = 0;
+	/**
+	 * Specialised variant of the above ensureNoConflicts(foreignRoot):
+	 * Prepares only the given list of nodes (that are member of the foreign root) such that
+	 * their names don't conflict with any name in this namespace.
+	 * 
+	 * Every Namespaced node will get a new unique name assigned, but only if it's
+	 * actually colliding with a local name, otherwise it will remain unchanged.
+	 */
+	virtual void ensureNoConflicts(const scene::INodePtr& foreignRoot, const std::set<scene::INodePtr>& foreignNodes) = 0;
 };
 typedef std::shared_ptr<INamespace> INamespacePtr;
 
@@ -122,7 +122,7 @@ typedef std::shared_ptr<INamespace> INamespacePtr;
 class Namespaced
 {
 public:
-    /**
+	/**
 	 * Destructor
 	 */
 	virtual ~Namespaced() {}

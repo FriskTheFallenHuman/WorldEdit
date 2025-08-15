@@ -40,11 +40,11 @@ private:
 public:
 	TextureMatrix();
 
-    TextureMatrix(const TextureMatrix& other) = default;
-    TextureMatrix& operator=(const TextureMatrix& other) = default;
+	TextureMatrix(const TextureMatrix& other) = default;
+	TextureMatrix& operator=(const TextureMatrix& other) = default;
 
-    // Copy-construct from the relevant components from the given transform 
-    // (which is everything except the last row: xz() and yz() are 0, zz() is 1)
+	// Copy-construct from the relevant components from the given transform 
+	// (which is everything except the last row: xz() and yz() are 0, zz() is 1)
 	TextureMatrix(const Matrix3& transform);
 
 	// Construct a TextureMatrix out of "fake" shift scale rot definitions
@@ -60,19 +60,19 @@ public:
 
 	// compute a fake shift scale rot representation from the texture matrix
 	// these shift scale rot values are to be understood in the local axis base
-    ShiftScaleRotation getShiftScaleRotation(std::size_t width, std::size_t height) const;
+	ShiftScaleRotation getShiftScaleRotation(std::size_t width, std::size_t height) const;
 
 	// All texture-projection translation (shift) values are congruent modulo the dimensions of the texture.
 	// This function normalises shift values to the smallest positive congruent values.
 	void normalise(float width, float height);
 
-    // Returns the Matrix3 form of this instance
-    Matrix3 getMatrix3() const;
+	// Returns the Matrix3 form of this instance
+	Matrix3 getMatrix3() const;
 
-    // Checks if any of the matrix components are NaN or INF (in which case the matrix is not sane)
-    bool isSane() const;
+	// Checks if any of the matrix components are NaN or INF (in which case the matrix is not sane)
+	bool isSane() const;
 
-    friend std::ostream& operator<<(std::ostream& st, const TextureMatrix& texdef);
+	friend std::ostream& operator<<(std::ostream& st, const TextureMatrix& texdef);
 };
 
 inline std::ostream& operator<<(std::ostream& st, const TextureMatrix& texdef)

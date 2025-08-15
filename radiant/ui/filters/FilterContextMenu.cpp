@@ -8,7 +8,7 @@ namespace ui
 
 namespace
 {
-	const std::string FILTER_ICON("iconFilter16.png");
+	const std::string FILTER_ICON("icon_filter.png");
 }
 
 FilterContextMenu::FilterContextMenu(OnSelectionFunc& onSelection) :

@@ -58,15 +58,15 @@ private:
 
 	wxTextCtrl* _description = nullptr;
 
-    wxRadioButton* _useModPath = nullptr;
-    wxRadioButton* _useCustomPath = nullptr;
-    wxRadioButton* _useRecentPath = nullptr;
-    wxComboBox* _recentPathSelector = nullptr;
-    wxutil::PathEntry* _customPath = nullptr;
+	wxRadioButton* _useModPath = nullptr;
+	wxRadioButton* _useCustomPath = nullptr;
+	wxRadioButton* _useRecentPath = nullptr;
+	wxComboBox* _recentPathSelector = nullptr;
+	wxutil::PathEntry* _customPath = nullptr;
 	wxCheckBox* _insertAsGroupBox = nullptr;
 	wxCheckBox* _recalculatePrefabOriginBox = nullptr;
 
-    std::list<std::string> _recentPaths;
+	std::list<std::string> _recentPaths;
 
 	bool _handlingSelectionChange = false;
 
@@ -82,16 +82,16 @@ private:
 
 	// Helper functions to configure GUI components
 	void setupTreeView(wxWindow* parent);
-    void setupPathSelector(wxSizer* parentSizer);
+	void setupPathSelector(wxSizer* parentSizer);
 
 	// Populate the tree view with prefabs
 	void populatePrefabs();
 
-    // Get the path that should be used for prefab population
-    // This reflects the settings made by the user on the top of the selector window
-    std::string getPrefabFolder();
+	// Get the path that should be used for prefab population
+	// This reflects the settings made by the user on the top of the selector window
+	std::string getPrefabFolder();
 
-    void clearPreview();
+	void clearPreview();
 
 	// Return the selected prefab path
 	std::string getSelectedPath();
@@ -99,15 +99,15 @@ private:
 	bool getRecalculatePrefabOrigin();
 
 	void updateUsageInfo();
-    void addCustomPathToRecentList();
+	void addCustomPathToRecentList();
 
 	void onSelectionChanged(wxutil::FileSystemView::SelectionChangedEvent& ev);
-    void onPrefabPathSelectionChanged();
+	void onPrefabPathSelectionChanged();
 	void onRescanPrefabs(wxCommandEvent& ev);
-    void onFileViewTreePopulated();
+	void onFileViewTreePopulated();
 
 	void onMainFrameShuttingDown();
-    void _onItemActivated( wxDataViewEvent& ev );
+	void _onItemActivated( wxDataViewEvent& ev );
 
 public:
 	int ShowModal() override;

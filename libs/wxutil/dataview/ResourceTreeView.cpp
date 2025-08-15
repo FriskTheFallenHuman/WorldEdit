@@ -14,7 +14,10 @@ namespace
 {
     const char* const ADD_TO_FAVOURITES = N_("Add to Favourites");
     const char* const REMOVE_FROM_FAVOURITES = N_("Remove from Favourites");
+    const char* const COPY_RESOURCE_PATH = N_("Copy Resource Path");
     const char* const ICON_LOADING = "icon_classname.png";
+    const char* const ICON_ADD_BOOKMARK = "bookmark_added.png";
+    const char* const ICON_REMOVE_BOOKMARK = "bookmark_removed.png";
 }
 
 // Event implementation
@@ -183,14 +186,14 @@ void ResourceTreeView::PopulateContextMenu(wxutil::PopupMenu& popupMenu)
     }
 
     popupMenu.addItem(
-        new StockIconTextMenuItem(_(ADD_TO_FAVOURITES), wxART_ADD_BOOKMARK),
+        new IconTextMenuItem(_(ADD_TO_FAVOURITES), ICON_ADD_BOOKMARK),
         std::bind(&ResourceTreeView::_onSetFavourite, this, true),
         std::bind(&ResourceTreeView::_testAddToFavourites, this),
         [this]() { return !_favouriteTypeName.empty(); }
     );
 
     popupMenu.addItem(
-        new StockIconTextMenuItem(_(REMOVE_FROM_FAVOURITES), wxART_DEL_BOOKMARK),
+        new IconTextMenuItem(_(REMOVE_FROM_FAVOURITES), ICON_REMOVE_BOOKMARK),
         std::bind(&ResourceTreeView::_onSetFavourite, this, false),
         std::bind(&ResourceTreeView::_testRemoveFromFavourites, this),
         [this]() { return !_favouriteTypeName.empty(); }
@@ -199,7 +202,7 @@ void ResourceTreeView::PopulateContextMenu(wxutil::PopupMenu& popupMenu)
     popupMenu.addSeparator();
 
     popupMenu.addItem(
-        new wxutil::StockIconTextMenuItem(_("Copy Resource Path"), wxART_COPY),
+        new wxutil::IconTextMenuItem(_(COPY_RESOURCE_PATH), ICON_COPY),
         std::bind(&ResourceTreeView::_onCopyResourcePath, this),
         std::bind(&ResourceTreeView::_copyResourcePathEnabled, this),
         std::bind(&ResourceTreeView::_copyResourcePathVisible, this)

@@ -38,7 +38,7 @@ enum ReservedRegisters
 class IShaderExpression
 {
 public:
-    using Ptr = std::shared_ptr<IShaderExpression>;
+	using Ptr = std::shared_ptr<IShaderExpression>;
 
 	/** 
 	 * Retrieve the floating point value of this expression. DEPRECATED
@@ -70,22 +70,22 @@ public:
 	 */
 	virtual std::size_t linkToRegister(Registers& registers) = 0;
 
-    // Link this expression to the given Registers vector, using the specified index 
-    // instead of allocating a new register
-    virtual void linkToSpecificRegister(Registers& registers, std::size_t index) = 0;
+	// Link this expression to the given Registers vector, using the specified index 
+	// instead of allocating a new register
+	virtual void linkToSpecificRegister(Registers& registers, std::size_t index) = 0;
 
-    // True if this expression is linked to a register
-    virtual bool isLinked() const = 0;
+	// True if this expression is linked to a register
+	virtual bool isLinked() const = 0;
 
-    // Returns any previously used register position (for possible re-use)
-    virtual std::size_t unlinkFromRegisters() = 0;
+	// Returns any previously used register position (for possible re-use)
+	virtual std::size_t unlinkFromRegisters() = 0;
 
-    // Returns the string this expression has been parsed from
-    virtual std::string getExpressionString() = 0;
+	// Returns the string this expression has been parsed from
+	virtual std::string getExpressionString() = 0;
 
-    // Clone this expression and all possible sub-expressions
-    // The cloned expression will not be linked to any register
-    virtual IShaderExpression::Ptr clone() const = 0;
+	// Clone this expression and all possible sub-expressions
+	// The cloned expression will not be linked to any register
+	virtual IShaderExpression::Ptr clone() const = 0;
 };
 
 // Interface of a material expression used to specify a map image
@@ -94,44 +94,44 @@ public:
 class IMapExpression
 {
 public:
-    using Ptr = std::shared_ptr<IMapExpression>;
+	using Ptr = std::shared_ptr<IMapExpression>;
 
-    virtual ~IMapExpression() {}
+	virtual ~IMapExpression() {}
 
-    /**
-     * \brief
-     * Return whether this map expression creates a cube map.
-     *
-     * \return
-     * true if this map expression creates a cube map, false if it is a single
-     * image.
-     */
-    virtual bool isCubeMap() const = 0;
+	/**
+	 * \brief
+	 * Return whether this map expression creates a cube map.
+	 *
+	 * \return
+	 * true if this map expression creates a cube map, false if it is a single
+	 * image.
+	 */
+	virtual bool isCubeMap() const = 0;
 
-    /**
-     * Returns the string as parsed from the material source
-     */
-    virtual std::string getExpressionString() = 0;
+	/**
+	 * Returns the string as parsed from the material source
+	 */
+	virtual std::string getExpressionString() = 0;
 };
 
 class IVideoMapExpression :
-    public IMapExpression
+	public IMapExpression
 {
 public:
-    virtual ~IVideoMapExpression() {}
+	virtual ~IVideoMapExpression() {}
 
-    // Whether the cinematic is looping
-    virtual bool isLooping() const = 0;
+	// Whether the cinematic is looping
+	virtual bool isLooping() const = 0;
 };
 
 class ISoundMapExpression :
-    public IMapExpression
+	public IMapExpression
 {
 public:
-    virtual ~ISoundMapExpression() {}
+	virtual ~ISoundMapExpression() {}
 
-    // Whether the sound map should use the waveform display mode
-    virtual bool isWaveform() const = 0;
+	// Whether the sound map should use the waveform display mode
+	virtual bool isWaveform() const = 0;
 };
 
 } // namespace

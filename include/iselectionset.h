@@ -46,16 +46,16 @@ public:
 
 	virtual ~ISelectionSetManager() {}
 
-    /**
-     * Signal emitted when the list of selection sets has been changed, by
-     * deletion or addition.
-     */
-    virtual sigc::signal<void> signal_selectionSetsChanged() const = 0;
+	/**
+	 * Signal emitted when the list of selection sets has been changed, by
+	 * deletion or addition.
+	 */
+	virtual sigc::signal<void> signal_selectionSetsChanged() const = 0;
 
 	class Visitor
 	{
 	public:
-        virtual ~Visitor() {}
+		virtual ~Visitor() {}
 		virtual void visit(const ISelectionSetPtr& set) = 0;
 	};
 

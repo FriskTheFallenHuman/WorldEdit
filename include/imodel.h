@@ -65,23 +65,23 @@ public:
 	virtual int getPolyCount() const = 0;
 
 	/**
-     * \brief
-     * Return a vector of strings listing the active materials used in this
+	 * \brief
+	 * Return a vector of strings listing the active materials used in this
 	 * model, after any skin remaps.
-     *
-     * The list is owned by the model instance.
+	 *
+	 * The list is owned by the model instance.
 	 */
 	virtual const StringList& getActiveMaterials() const = 0;
 
 	/**
-     * \brief
-     * Return the surface with the given index
-     *
-     * Retrieves the interface of a specific surface, to get access to the
-     * surface's polygons and vertices.
+	 * \brief
+	 * Return the surface with the given index
+	 *
+	 * Retrieves the interface of a specific surface, to get access to the
+	 * surface's polygons and vertices.
 	 *
 	 * \param surfaceNum
-     * The surface index, must be in [0..getSurfaceCount())
+	 * The surface index, must be in [0..getSurfaceCount())
 	 */
 	virtual const IModelSurface& getSurface(unsigned surfaceNum) const = 0;
 };
@@ -98,7 +98,7 @@ typedef std::weak_ptr<IModel> IModelWeakPtr;
 class ModelNode
 {
 public:
-    virtual ~ModelNode()
+	virtual ~ModelNode()
 	{}
 
 	// Returns the contained IModel
@@ -151,14 +151,14 @@ public:
 	virtual void addPolygons(const std::string& materialName, 
 		const std::vector<ModelPolygon>& polys, const Matrix4& localToWorld) = 0;
 
-    // Export to the given file in the given path (which must be absolute).
-    // If writing to multiple files (like .obj+.mtl), the implementation
-    // may deduct the alternative file paths from this one. 
-    // Note: the user will already have confirmed to overwrite any existing
-    // file with that path, but hasn't explicitly confirmed overwriting 
-    // secondary or tertiary output files.
-    // Throws std::runtime_error in case of failures.
-    virtual void exportToPath(const std::string& outputPath, const std::string& filename) = 0;
+	// Export to the given file in the given path (which must be absolute).
+	// If writing to multiple files (like .obj+.mtl), the implementation
+	// may deduct the alternative file paths from this one. 
+	// Note: the user will already have confirmed to overwrite any existing
+	// file with that path, but hasn't explicitly confirmed overwriting 
+	// secondary or tertiary output files.
+	// Throws std::runtime_error in case of failures.
+	virtual void exportToPath(const std::string& outputPath, const std::string& filename) = 0;
 };
 
 /**

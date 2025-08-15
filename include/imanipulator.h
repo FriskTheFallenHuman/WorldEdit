@@ -30,7 +30,7 @@ struct WorkZone;
 class IManipulator
 {
 public:
-    using Ptr = std::shared_ptr<IManipulator>;
+	using Ptr = std::shared_ptr<IManipulator>;
 
 	// Manipulator type enum, user-defined manipulators should return "Custom"
 	enum Type
@@ -43,11 +43,11 @@ public:
 		Custom
 	};
 
-    enum class Context
-    {
-        Scene,          // manipulate regular map elements
-        TextureTool,    // manipualte UV coordinates
-    };
+	enum class Context
+	{
+		Scene,          // manipulate regular map elements
+		TextureTool,    // manipualte UV coordinates
+	};
 
 	/**
 	* Part of a Manipulator which can be operated upon by the user.
@@ -112,24 +112,24 @@ public:
 * to a RenderableCollector to show in the XY and Camera views.
 */
 class ISceneManipulator :
-    public IManipulator
+	public IManipulator
 {
 public:
-    using Ptr = std::shared_ptr<ISceneManipulator>;
+	using Ptr = std::shared_ptr<ISceneManipulator>;
 
-    virtual ~ISceneManipulator() {}
+	virtual ~ISceneManipulator() {}
 
-    // Prepares this manipulator for rendering
-    virtual void onPreRender(const RenderSystemPtr& renderSystem, const VolumeTest& volume) = 0;
+	// Prepares this manipulator for rendering
+	virtual void onPreRender(const RenderSystemPtr& renderSystem, const VolumeTest& volume) = 0;
 
-    // Renders the manipulator's visual representation to the scene
-    virtual void render(IRenderableCollector& collector, const VolumeTest& volume) = 0;
+	// Renders the manipulator's visual representation to the scene
+	virtual void render(IRenderableCollector& collector, const VolumeTest& volume) = 0;
 
-    // Removes / hides the renderables of this manipulator
-    virtual void clearRenderables() = 0;
+	// Removes / hides the renderables of this manipulator
+	virtual void clearRenderables() = 0;
 
-    // Manipulators should indicate whether component editing is supported or not
-    virtual bool supportsComponentManipulation() const = 0;
+	// Manipulators should indicate whether component editing is supported or not
+	virtual bool supportsComponentManipulation() const = 0;
 };
 
 /**
@@ -137,15 +137,15 @@ public:
 * without taking the path of a RenderableCollector.
 */
 class ITextureToolManipulator :
-    public IManipulator
+	public IManipulator
 {
 public:
-    using Ptr = std::shared_ptr<ITextureToolManipulator>;
+	using Ptr = std::shared_ptr<ITextureToolManipulator>;
 
-    virtual ~ITextureToolManipulator() {}
+	virtual ~ITextureToolManipulator() {}
 
-    // Renders the manipulator's visual representation to the scene (absolute UV coordinates)
-    virtual void renderComponents(const render::IRenderView& view, const Matrix4& pivot2World) = 0;
+	// Renders the manipulator's visual representation to the scene (absolute UV coordinates)
+	virtual void renderComponents(const render::IRenderView& view, const Matrix4& pivot2World) = 0;
 };
 
 }

@@ -52,18 +52,14 @@
 				type="texture"
 				match="textures/common/collision"
 				action="hide" />
-			<filterCriterion
-				type="texture"
-				match="tdm_collision_.*"
-				action="hide" />
 		</filter>
 		<filter name="Lights">
 			<filterCriterion type="entityclass" match="light" action="hide" />
 			<filterCriterion type="entityclass" match="light_.*" action="hide" />
 		</filter>
-    <filter name="Func_static Entities">
-      <filterCriterion type="entityclass" match="func_static" action="hide" />
-    </filter>
+		<filter name="Func_static Entities">
+			<filterCriterion type="entityclass" match="func_static" action="hide" />
+		</filter>
 		<filter name="All entities">
 			<filterCriterion type="entityclass" match=".*" action="hide" />
 			<filterCriterion type="entityclass" match="worldspawn" action="show" />
@@ -94,10 +90,6 @@
 				type="texture"
 				match="textures/common/nodraw(.*)"
 				action="hide" />
-			<filterCriterion
-				type="texture"
-				match="textures/common/tdm_nodraw(.*)"
-				action="hide" />
 		</filter>
 		<filter name="Shadow Textures">
 			<filterCriterion
@@ -110,9 +102,6 @@
 		</filter>
 		<filter name="Brushes">
 			<filterCriterion type="object" match="brush" action="hide" />
-		</filter>
-		<filter name="Weather Textures">
-			<filterCriterion type="texture" match="textures/darkmod/weather/.*"	action="hide" />
 		</filter>
 		<filter name="Paths">
 			<filterCriterion type="entityclass" match="path_.*" action="hide" />
@@ -150,6 +139,12 @@
 		<guiSmallFontLimit value="0.15" />
 		<guiMediumFontLimit value="0.30" />
 	</defaults>
+  <modelFormat>
+    <ase>
+      <!-- Use just the value in *BITMAP -->
+      <useMaterialNameIfNoBitmapFound value="0" />
+    </ase>
+  </modelFormat>
 	<entityChooser>
 		<displayFolderKey value="editor_displayFolder" />
 	</entityChooser>
@@ -202,6 +197,8 @@
 		<property match="bind" category="Links" type="entity" />
 		<property match="bindToJoint" category="Links" type="text" />
 		<property match="s_shader" category="Sound" type="sound" />
+		<property match="fx" category="Basic" type="fx" />
+		<property match="fx_.+" category="Basic" type="fx" />
 		<property match="snd_.*" category="Sound" type="sound" hidden="1" />
 		<property match="s_mindistance" category="Sound" type="text" />
 		<property match="s_maxdistance" category="Sound" type="text" />
@@ -211,6 +208,7 @@
 		<property match="s_omni" category="Sound" type="bool" />
 		<property match="s_volume" category="Sound" type="text" />
 		<property match="s_global" category="Sound" type="bool" />
+		<property match="def_.+" category="Basic" type="classname" hidden="1" />
 	</entityInspector>
 
 	<!-- Game-specific values for light entities -->
@@ -240,6 +238,11 @@
 		<mapPositionPosKey value="editor_drMapPos" />
 		<mapPositionAngleKey value="editor_drMapAngle" />
 		<playerStartPoint value="info_player_start" />
-		<infoFileExtension value=".darkradiant" />
+		<infoFileExtension value=".project" />
 	</mapFormat>
+    
+    <materialPreview>
+        <defaultRoomMaterial value="textures/base_wall/lfwall13f3" />
+        <defaultLightDef value="lights/defaultPointLight" />
+    </materialPreview>
 </game>

@@ -21,41 +21,41 @@ namespace ui
 using NotebookType = wxListbook;
 
 PrefDialog::PrefDialog(wxWindow* parent)
-: DialogBase(_("DarkRadiant Preferences"), parent)
+: DialogBase(_("WorldEdit Preferences"), parent)
 {
-    wxBoxSizer* mainVbox = new wxBoxSizer(wxVERTICAL);
+	wxBoxSizer* mainVbox = new wxBoxSizer(wxVERTICAL);
 
-    // Notebook widget (shows tree of pages and the space for each page to be shown)
-    _notebook = new NotebookType(this, wxID_ANY);
-    mainVbox->Add(_notebook, 1, wxEXPAND | wxTOP | wxLEFT | wxRIGHT, 12);
+	// Notebook widget (shows tree of pages and the space for each page to be shown)
+	_notebook = new NotebookType(this, wxID_ANY);
+	mainVbox->Add(_notebook, 1, wxEXPAND | wxTOP | wxLEFT | wxRIGHT, 12);
 
-    // Button box
-    mainVbox->AddSpacer(6);
-    mainVbox->Add(
-        CreateStdDialogButtonSizer(wxOK | wxCANCEL), 0, wxALIGN_RIGHT | wxBOTTOM, 12
-    );
+	// Button box
+	mainVbox->AddSpacer(6);
+	mainVbox->Add(
+		CreateStdDialogButtonSizer(wxOK | wxCANCEL), 0, wxALIGN_RIGHT | wxBOTTOM, 12
+	);
 
-    // Create the page widgets
-    createPages();
-    SetSizerAndFit(mainVbox);
+	// Create the page widgets
+	createPages();
+	SetSizerAndFit(mainVbox);
 }
 
 void PrefDialog::createPages()
 {
-    // Now create all pages
-    GlobalPreferenceSystem().foreachPage([&](IPreferencePage& page)
-    {
-        // Create a page responsible for this settings::PreferencePage
-        PrefPage* pageWidget = new PrefPage(_notebook, page);
+	// Now create all pages
+	GlobalPreferenceSystem().foreachPage([&](IPreferencePage& page)
+	{
+		// Create a page responsible for this settings::PreferencePage
+		PrefPage* pageWidget = new PrefPage(_notebook, page);
 
-        // Remember this page in our mapping
-        const std::string& pagePath = page.getPath();
-        _pages[pagePath] = pageWidget;
+		// Remember this page in our mapping
+		const std::string& pagePath = page.getPath();
+		_pages[pagePath] = pageWidget;
 
-        // Top-level page
-        // Append the panel as new page to the notebook
-        _notebook->AddPage(pageWidget, page.getName());
-    });
+		// Top-level page
+		// Append the panel as new page to the notebook
+		_notebook->AddPage(pageWidget, page.getName());
+	});
 }
 
 void PrefDialog::showModal(const std::string& requestedPage)
@@ -94,7 +94,7 @@ void PrefDialog::showModal(const std::string& requestedPage)
 		}
 
 		// greebo: Check if the mainframe module is already "existing". It might be
-		// uninitialised if this dialog is shown during DarkRadiant startup
+		// uninitialised if this dialog is shown during WorldEdit startup
 		if (module::GlobalModuleRegistry().moduleExists(MODULE_MAINFRAME))
 		{
 			GlobalMainFrame().updateAllWindows();
@@ -104,26 +104,26 @@ void PrefDialog::showModal(const std::string& requestedPage)
 
 void PrefDialog::showPage(const std::string& path)
 {
-    if (!_notebook)
-    {
-        rError() << "Can't show requested page, as the wxNotebook is null" << std::endl;
-        return;
-    }
+	if (!_notebook)
+	{
+		rError() << "Can't show requested page, as the wxNotebook is null" << std::endl;
+		return;
+	}
 
-    if (PageMap::const_iterator found = _pages.find(path); found != _pages.end())
-    {
-        // Find the page number
-        int pagenum = _notebook->FindPage(found->second);
+	if (PageMap::const_iterator found = _pages.find(path); found != _pages.end())
+	{
+		// Find the page number
+		int pagenum = _notebook->FindPage(found->second);
 
-        // make it active
-        _notebook->SetSelection(pagenum);
-    }
+		// make it active
+		_notebook->SetSelection(pagenum);
+	}
 }
 
 void PrefDialog::ShowDialog(const std::string& path)
 {
 	// greebo: Check if the mainframe module is already "existing". It might be
-	// uninitialised if this dialog is shown during DarkRadiant startup
+	// uninitialised if this dialog is shown during WorldEdit startup
 	wxWindow* parent = module::GlobalModuleRegistry().moduleExists(MODULE_MAINFRAME) ?
 		GlobalMainFrame().getWxTopLevelWindow() : nullptr;
 

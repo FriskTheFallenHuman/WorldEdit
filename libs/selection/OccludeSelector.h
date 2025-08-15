@@ -32,13 +32,13 @@ public:
 		}
 	}
 
-    bool empty() const override
-    {
-        return true;
-    }
+	bool empty() const override
+	{
+		return true;
+	}
 
-    void foreachSelectable(const std::function<void(ISelectable*)>& functor) override
-    {}
+	void foreachSelectable(const std::function<void(ISelectable*)>& functor) override
+	{}
 };
 
 } // namespace

@@ -14,11 +14,11 @@ class ConvertModelDialog :
 	private wxutil::XmlResourceBasedWidget
 {
 private:
-    wxutil::KeyValueTable* _infoTable;
+	wxutil::KeyValueTable* _infoTable;
 
 public:
 	// Constructor
-    ConvertModelDialog(wxWindow* parent = nullptr);
+	ConvertModelDialog(wxWindow* parent = nullptr);
 
 	static void ShowDialog(const cmd::ArgumentList& args);
 

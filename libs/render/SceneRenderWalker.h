@@ -18,7 +18,7 @@ class SceneRenderWalker :
 
 public:
 
-    /// Initialise with a RenderableCollector to populate and a view volume
+	/// Initialise with a RenderableCollector to populate and a view volume
 	SceneRenderWalker(IRenderableCollector& collector, const VolumeTest& volume) :
 		_collector(collector),
 		_volume(volume)
@@ -27,7 +27,7 @@ public:
 	// scene::Graph::Walker implementation
 	bool visit(const scene::INodePtr& node) override
 	{
-        node->onPreRender(_volume);
+		node->onPreRender(_volume);
 		return true;
 	}
 };

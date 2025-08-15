@@ -1,43 +1,43 @@
 <?xml version="1.0"?>
 <input>
   <mouseToolMappings name="default">
-    <!-- ID 0 = orthoview -->
-    <mouseToolMapping name="OrthoView" id="0">
-      <tool name="ManipulateMouseTool" button="LMB" modifiers="" />
-      <tool name="BasicSelectionTool" button="LMB" modifiers="SHIFT" />
-      <tool name="CycleSelectionMouseTool" button="LMB" modifiers="ALT+SHIFT" />
-      <tool name="BrushCreatorTool" button="LMB" modifiers="" />
-      <tool name="CameraAngleTool" button="MMB" modifiers="" />
-      <tool name="CameraMoveTool" button="MMB" modifiers="CONTROL" />
-      <tool name="ClipperTool" button="LMB" modifiers="" />
-      <tool name="MoveViewTool" button="RMB" modifiers="" />
-      <tool name="ZoomTool" button="RMB" modifiers="SHIFT" />
-      <tool name="MeasurementTool" button="MMB" modifiers="CONTROL+ALT" />
-    </mouseToolMapping>
-    <!-- ID 1 = camera -->
-    <mouseToolMapping name="CameraView" id="1">
-      <tool name="FreeMoveTool" button="RMB" modifiers="" />
-      <tool name="JumpToObjectTool" button="RMB" modifiers="ALT" />
-      <tool name="PanViewTool" button="RMB" modifiers="CONTROL" />
-      <tool name="PickShaderTool" button="MMB" modifiers="" />
-      <tool name="PasteShaderProjectedTool" button="MMB" modifiers="CONTROL" />
-      <tool name="PasteShaderNaturalTool" button="MMB" modifiers="SHIFT" />
-      <tool name="PasteShaderCoordsTool" button="MMB" modifiers="ALT" />
-      <tool name="PasteShaderToBrushTool" button="MMB" modifiers="ALT+CONTROL" />
-      <tool name="PasteShaderNameTool" button="MMB" modifiers="ALT+SHIFT" />
-      <tool name="ManipulateMouseTool" button="LMB" modifiers="" />
-      <tool name="BasicSelectionTool" button="LMB" modifiers="SHIFT" />
-      <tool name="DragSelectionMouseToolFaceOnly" button="LMB" modifiers="SHIFT+CONTROL" />
-      <tool name="CycleSelectionMouseTool" button="LMB" modifiers="ALT+SHIFT" />
-      <tool name="CycleSelectionMouseToolFaceOnly" button="LMB" modifiers="SHIFT+CONTROL+ALT" />
-    </mouseToolMapping>
-      <!-- ID 2 = textool -->
-    <mouseToolMapping name="TextureTool" id="2">
-        <tool name="TextureToolSelectionTool" button="LMB" modifiers="SHIFT" />
-        <tool name="TextureToolCycleSelectionTool" button="LMB" modifiers="ALT+SHIFT" />
-        <tool name="TextureToolManipulateMouseTool" button="LMB" modifiers="" />
-        <tool name="MoveViewTool" button="RMB" modifiers=""/>
-    </mouseToolMapping>
+	<!-- ID 0 = orthoview -->
+	<mouseToolMapping name="OrthoView" id="0">
+	  <tool name="ManipulateMouseTool" button="LMB" modifiers="" />
+	  <tool name="BasicSelectionTool" button="LMB" modifiers="SHIFT" />
+	  <tool name="CycleSelectionMouseTool" button="LMB" modifiers="ALT+SHIFT" />
+	  <tool name="BrushCreatorTool" button="LMB" modifiers="" />
+	  <tool name="CameraAngleTool" button="MMB" modifiers="" />
+	  <tool name="CameraMoveTool" button="MMB" modifiers="CONTROL" />
+	  <tool name="ClipperTool" button="LMB" modifiers="" />
+	  <tool name="MoveViewTool" button="RMB" modifiers="" />
+	  <tool name="ZoomTool" button="RMB" modifiers="SHIFT" />
+	  <tool name="MeasurementTool" button="MMB" modifiers="CONTROL+ALT" />
+	</mouseToolMapping>
+	<!-- ID 1 = camera -->
+	<mouseToolMapping name="CameraView" id="1">
+	  <tool name="FreeMoveTool" button="RMB" modifiers="" />
+	  <tool name="JumpToObjectTool" button="RMB" modifiers="ALT" />
+	  <tool name="PanViewTool" button="RMB" modifiers="CONTROL" />
+	  <tool name="PickShaderTool" button="MMB" modifiers="" />
+	  <tool name="PasteShaderProjectedTool" button="MMB" modifiers="CONTROL" />
+	  <tool name="PasteShaderNaturalTool" button="MMB" modifiers="SHIFT" />
+	  <tool name="PasteShaderCoordsTool" button="MMB" modifiers="ALT" />
+	  <tool name="PasteShaderToBrushTool" button="MMB" modifiers="ALT+CONTROL" />
+	  <tool name="PasteShaderNameTool" button="MMB" modifiers="ALT+SHIFT" />
+	  <tool name="ManipulateMouseTool" button="LMB" modifiers="" />
+	  <tool name="BasicSelectionTool" button="LMB" modifiers="SHIFT" />
+	  <tool name="DragSelectionMouseToolFaceOnly" button="LMB" modifiers="SHIFT+CONTROL" />
+	  <tool name="CycleSelectionMouseTool" button="LMB" modifiers="ALT+SHIFT" />
+	  <tool name="CycleSelectionMouseToolFaceOnly" button="LMB" modifiers="SHIFT+CONTROL+ALT" />
+	</mouseToolMapping>
+	  <!-- ID 2 = textool -->
+	<mouseToolMapping name="TextureTool" id="2">
+		<tool name="TextureToolSelectionTool" button="LMB" modifiers="SHIFT" />
+		<tool name="TextureToolCycleSelectionTool" button="LMB" modifiers="ALT+SHIFT" />
+		<tool name="TextureToolManipulateMouseTool" button="LMB" modifiers="" />
+		<tool name="MoveViewTool" button="RMB" modifiers=""/>
+	</mouseToolMapping>
   </mouseToolMappings>
 	<cameraview>
 		<strafemode toggle="CONTROL" forward="SHIFT" speed="0.65" forwardFactor="-1" />
@@ -203,9 +203,9 @@
 		<shortcut command="LoadPosition9" key="9" modifiers="ALT"/>
 		<shortcut command="ToggleOrthoBackgroundPanel" key="O" modifiers="ALT"/>
 		<shortcut command="ToggleRotationPivot" key="R" modifiers="CONTROL" />
-    <shortcut command="ToggleAasVisualisationPanel" key="A" modifiers="CONTROL+SHIFT" />
-    <shortcut command="GroupSelected" key="G" modifiers="CONTROL+SHIFT" />
-    <shortcut command="UngroupSelected" key="U" modifiers="CONTROL+SHIFT" />
+	<shortcut command="ToggleAasVisualisationPanel" key="A" modifiers="CONTROL+SHIFT" />
+	<shortcut command="GroupSelected" key="G" modifiers="CONTROL+SHIFT" />
+	<shortcut command="UngroupSelected" key="U" modifiers="CONTROL+SHIFT" />
 	</shortcuts>
 	<commandRemappings>
 		<!-- Commands that have been moved/renamed since 2.8.0 -->
@@ -215,24 +215,24 @@
 		<commandRemapping oldname="CameraRight" newname="CameraMoveRight" />
 		<commandRemapping oldname="CameraUp" newname="CameraMoveUp" />
 		<commandRemapping oldname="CameraDown" newname="CameraMoveDown" />
-        <commandRemapping oldname="SimplePatchMesh" newname="CreateSimplePatchDialog" />
-        <commandRemapping oldname="CapCurrentCurve" newname="PatchCapDialog" />
-        <commandRemapping oldname="ThickenPatch" newname="ThickenPatchDialog" />
-        <!-- Control Toggles have been unified in 3.5.0, some commands have been renamed -->
-        <commandRemapping oldname="ToggleLayerControlDialog" newname="ToggleLayerControlPanel" />
-        <commandRemapping oldname="SurfaceInspector" newname="ToggleSurfaceInspector" />
-        <commandRemapping oldname="PatchInspector" newname="TogglePatchInspector" />
-        <commandRemapping oldname="TransformDialog" newname="ToggleTransformPanel" />
-        <commandRemapping oldname="MergeControlPanel" newname="ToggleMapMergePanel" />
-        <commandRemapping oldname="EntityList" newname="ToggleEntityList" />
-        <commandRemapping oldname="ToggleAasControlDialog" newname="ToggleAasVisualisationPanel" />
-        <commandRemapping oldname="FindReplaceTextures" newname="ToggleFindAndReplaceMaterial" />
-        <commandRemapping oldname="OverlayDialog" newname="ToggleOrthoBackgroundPanel" />
-        <commandRemapping oldname="TextureTool" newname="ToggleTextureTool" />
-        <commandRemapping oldname="GameConnectionDialogToggle" newname="ToggleGameConnectionPanel" />
-        <commandRemapping oldname="ViewTextures" newname="ToggleTextureBrowser" />
-        <!-- DR 3.6.0: Re-bind the old FocusCameraOnSelection shortcut to ToggleSelectionFocus  -->
-        <!-- FocusCameraOnSelection is now called FocusCameraViewOnSelection -->
-        <commandRemapping oldname="FocusCameraOnSelection" newname="ToggleSelectionFocus" />
+		<commandRemapping oldname="SimplePatchMesh" newname="CreateSimplePatchDialog" />
+		<commandRemapping oldname="CapCurrentCurve" newname="PatchCapDialog" />
+		<commandRemapping oldname="ThickenPatch" newname="ThickenPatchDialog" />
+		<!-- Control Toggles have been unified in 3.5.0, some commands have been renamed -->
+		<commandRemapping oldname="ToggleLayerControlDialog" newname="ToggleLayerControlPanel" />
+		<commandRemapping oldname="SurfaceInspector" newname="ToggleSurfaceInspector" />
+		<commandRemapping oldname="PatchInspector" newname="TogglePatchInspector" />
+		<commandRemapping oldname="TransformDialog" newname="ToggleTransformPanel" />
+		<commandRemapping oldname="MergeControlPanel" newname="ToggleMapMergePanel" />
+		<commandRemapping oldname="EntityList" newname="ToggleEntityList" />
+		<commandRemapping oldname="ToggleAasControlDialog" newname="ToggleAasVisualisationPanel" />
+		<commandRemapping oldname="FindReplaceTextures" newname="ToggleFindAndReplaceMaterial" />
+		<commandRemapping oldname="OverlayDialog" newname="ToggleOrthoBackgroundPanel" />
+		<commandRemapping oldname="TextureTool" newname="ToggleTextureTool" />
+		<commandRemapping oldname="GameConnectionDialogToggle" newname="ToggleGameConnectionPanel" />
+		<commandRemapping oldname="ViewTextures" newname="ToggleTextureBrowser" />
+		<!-- DR 3.6.0: Re-bind the old FocusCameraOnSelection shortcut to ToggleSelectionFocus  -->
+		<!-- FocusCameraOnSelection is now called FocusCameraViewOnSelection -->
+		<commandRemapping oldname="FocusCameraOnSelection" newname="ToggleSelectionFocus" />
 	</commandRemappings>
 </input>

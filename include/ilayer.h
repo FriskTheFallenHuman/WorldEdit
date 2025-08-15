@@ -25,25 +25,25 @@ public:
 	virtual ~Layered() {}
 
 	/**
-     * Add this object to the layer with the given ID.
-     */
-    virtual void addToLayer(int layerId) = 0;
+	 * Add this object to the layer with the given ID.
+	 */
+	virtual void addToLayer(int layerId) = 0;
 
 	/**
-     * Moves this object to the layer. After this operation,the item is member
+	 * Moves this object to the layer. After this operation,the item is member
 	 * of this layer only, all other layer memberships are erased.
-     */
-    virtual void moveToLayer(int layerId) = 0;
+	 */
+	virtual void moveToLayer(int layerId) = 0;
 
-    /**
-     * Remove this object from the layer with the given ID.
-     */
-    virtual void removeFromLayer(int layerId) = 0;
+	/**
+	 * Remove this object from the layer with the given ID.
+	 */
+	virtual void removeFromLayer(int layerId) = 0;
 
-    /**
-     * Return the set of layers to which this object is assigned.
-     */
-    virtual const LayerList& getLayers() const = 0;
+	/**
+	 * Return the set of layers to which this object is assigned.
+	 */
+	virtual const LayerList& getLayers() const = 0;
 
 	/**
 	 * greebo: This assigns the given node to the given set of layers. Any previous
@@ -88,12 +88,12 @@ public:
 	 */
 	virtual void reset() = 0;
 
-    typedef std::function<void(int layerId, const std::string& layerName)> LayerVisitFunc;
+	typedef std::function<void(int layerId, const std::string& layerName)> LayerVisitFunc;
 
-    /**
-     * Functor is called using id and name as arguments
-     */
-    virtual void foreachLayer(const LayerVisitFunc& visitor) = 0;
+	/**
+	 * Functor is called using id and name as arguments
+	 */
+	virtual void foreachLayer(const LayerVisitFunc& visitor) = 0;
 
 	/**
 	 * greebo: Returns the ID of the named layer, or -1 if name doesn't exist
@@ -180,32 +180,32 @@ public:
 	 */
 	virtual void setSelected(int layerID, bool selected) = 0;
 
-    /**
-     * Returns the parent layer ID of the layer identified by the given ID.
-     * Will return -1 if the given layer doesn't have a parent or doesn't exist.
-     */
-    virtual int getParentLayer(int layerId) = 0;
+	/**
+	 * Returns the parent layer ID of the layer identified by the given ID.
+	 * Will return -1 if the given layer doesn't have a parent or doesn't exist.
+	 */
+	virtual int getParentLayer(int layerId) = 0;
 
-    /**
-     * Sets the parent of the given child layer, replacing any previous parent.
-     *
-     * Any layer can be made a child of another layer, as long as the formed
-     * tree is staying sane (no recursions).
-     * Setting a parent layer ID of -1 will remove the parent and make this
-     * a top-level layer.
-     *
-     * An attempt to form an invalid operation (like modifying the default layer
-     * or forming a recursion) will throw a std::runtime_error.
-     */
-    virtual void setParentLayer(int childLayerId, int parentLayerId) = 0;
+	/**
+	 * Sets the parent of the given child layer, replacing any previous parent.
+	 *
+	 * Any layer can be made a child of another layer, as long as the formed
+	 * tree is staying sane (no recursions).
+	 * Setting a parent layer ID of -1 will remove the parent and make this
+	 * a top-level layer.
+	 *
+	 * An attempt to form an invalid operation (like modifying the default layer
+	 * or forming a recursion) will throw a std::runtime_error.
+	 */
+	virtual void setParentLayer(int childLayerId, int parentLayerId) = 0;
 
-    /**
-     * Returns true if the given parentLayerId is part of the ancestry of the
-     * given candidateLayerId (the node itself is not part of the ancestry).
-     *
-     * Returns false if any of the given IDs is -1.
-     */
-    virtual bool layerIsChildOf(int candidateLayerId, int parentLayerId) = 0;
+	/**
+	 * Returns true if the given parentLayerId is part of the ancestry of the
+	 * given candidateLayerId (the node itself is not part of the ancestry).
+	 *
+	 * Returns false if any of the given IDs is -1.
+	 */
+	virtual bool layerIsChildOf(int candidateLayerId, int parentLayerId) = 0;
 
 	/**
 	 * A signal for client code to get notified about layer creation,
@@ -218,10 +218,10 @@ public:
 	 */
 	virtual sigc::signal<void> signal_layerVisibilityChanged() = 0;
 
-    /**
-     * Fired whenever a parent of a layer has been changed.
-     */
-    virtual sigc::signal<void> signal_layerHierarchyChanged() = 0;
+	/**
+	 * Fired whenever a parent of a layer has been changed.
+	 */
+	virtual sigc::signal<void> signal_layerHierarchyChanged() = 0;
 
 	/**
 	 * Public signal to get notified about layer membership changes,
@@ -237,12 +237,12 @@ class ILayerModule :
 	public RegisterableModule
 {
 public:
-    ~ILayerModule() override {}
+	~ILayerModule() override {}
 
-    /**
-     * Creates a new layer manager instance associated to the given scene (root) node
-     */
-    virtual ILayerManager::Ptr createLayerManager(INode& rootNode) = 0;
+	/**
+	 * Creates a new layer manager instance associated to the given scene (root) node
+	 */
+	virtual ILayerManager::Ptr createLayerManager(INode& rootNode) = 0;
 };
 
 } // namespace scene

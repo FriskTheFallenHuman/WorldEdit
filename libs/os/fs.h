@@ -16,7 +16,7 @@
 // If C++17 <filesystem> is available, use that one
 // e.g. Visual Studio 2019 provides the regular C++17 header
 #if defined(HAVE_STD_FILESYSTEM) || _MSC_VER >= 1920 || \
-    defined(__cpp_lib_filesystem) || defined(__has_include) && __has_include(<filesystem>)
+	defined(__cpp_lib_filesystem) || defined(__has_include) && __has_include(<filesystem>)
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -51,20 +51,20 @@ namespace boost { namespace filesystem { typedef std::size_t file_time_type; } }
 
 namespace os
 {
-    /// Overload of standardPathWithSlash that accepts a fs::path
-    inline std::string standardPathWithSlash(const fs::path& p)
-    {
-        std::string genString = p.generic_string();
+	/// Overload of standardPathWithSlash that accepts a fs::path
+	inline std::string standardPathWithSlash(const fs::path& p)
+	{
+		std::string genString = p.generic_string();
 
-        // Just add slash if needed, we don't need to convert intermediate
-        // slashes since string_from_path will already have done that.
+		// Just add slash if needed, we don't need to convert intermediate
+		// slashes since string_from_path will already have done that.
 		if (!string::ends_with(genString, "/"))
-        {
+		{
 			genString += "/";
 		}
 
-        return genString;
-    }
+		return genString;
+	}
 
 	// Wrapper method to return the depth of a recursive iterator,
 	// supporting std::experimental::filesystem as well as boost::filesystem

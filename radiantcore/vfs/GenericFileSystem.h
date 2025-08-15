@@ -18,10 +18,10 @@ namespace
 // "" => 0
 // "dds/" => 1
 // "dds/textures/" => 2
-// "dds/textures/darkmod/" => 3
-// "dds/textures/darkmod/wood/" => 4
-// "dds/textures/darkmod/wood/boards/" => 5
-// "dds/textures/darkmod/wood/boards/dark_rough.dds" => 6
+// "dds/textures/doom3/" => 3
+// "dds/textures/doom3/wood/" => 4
+// "dds/textures/doom3/wood/boards/" => 5
+// "dds/textures/doom3/wood/boards/dark_rough.dds" => 6
 inline unsigned int getPathDepth(const char* path)
 {
 	unsigned int depth = 0;

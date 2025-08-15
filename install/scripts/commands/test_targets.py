@@ -15,7 +15,7 @@ def execute():
     g_targets = {} # entityname : [targets]
     g_missing = {} # entityname : [missingtargets]
 
-    import darkradiant as dr
+    import worldedit as dr
 
     class TargetFinder(dr.SceneNodeVisitor):
         def pre(self, node):

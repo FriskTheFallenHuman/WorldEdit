@@ -12,6 +12,13 @@
 namespace map
 {
 
+// RegisterableModule implementation
+const std::string& Quake3MapFormat::getName() const
+{
+	static std::string _name("Quake3MapLoader");
+	return _name;
+}
+
 const StringSet& Quake3MapFormatBase::getDependencies() const
 {
 	static StringSet _dependencies;
@@ -38,14 +45,32 @@ void Quake3MapFormatBase::shutdownModule()
 	GlobalMapFormatManager().unregisterMapFormat(getSharedToThis());
 }
 
+const std::string& Quake3MapFormat::getMapFormatName() const
+{
+	static std::string _name = "Quake 3";
+	return _name;
+}
+
+const std::string& Quake3MapFormat::getGameType() const
+{
+	static std::string _gameType = "quake3";
+	return _gameType;
+}
+
 IMapReaderPtr Quake3MapFormatBase::getMapReader(IMapImportFilter& filter) const
 {
 	return std::make_shared<Quake3MapReader>(filter);
 }
 
+IMapWriterPtr Quake3MapFormat::getMapWriter() const
+{
+	return std::make_shared<Quake3MapWriter>();
+}
+
+
 bool Quake3MapFormatBase::allowInfoFileCreation() const
 {
-	// allow .darkradiant files to be saved
+	// allow .project/.mapx files to be saved
 	return true;
 }
 
@@ -68,55 +93,34 @@ bool Quake3MapFormatBase::canLoad(std::istream& stream) const
 	return false;
 }
 
-const std::string& Quake3MapFormat::getMapFormatName() const
-{
-    static std::string _name = "Quake 3";
-    return _name;
-}
-
-const std::string& Quake3MapFormat::getGameType() const
-{
-    static std::string _gameType = "quake3";
-    return _gameType;
-}
-
-const std::string& Quake3MapFormat::getName() const
-{
-    static std::string _name("Quake3MapLoader");
-    return _name;
-}
-
-IMapWriterPtr Quake3MapFormat::getMapWriter() const
-{
-    return std::make_shared<Quake3MapWriter>();
-}
+module::StaticModuleRegistration<Quake3MapFormat> q3MapModule;
 
 // Quake 3 with alternate brush format
 
 const std::string& Quake3AlternateMapFormat::getMapFormatName() const
 {
-    static std::string _name = "Quake 3 Alternate";
-    return _name;
+	static std::string _name = "Quake 3 Alternate";
+	return _name;
 }
 
 const std::string& Quake3AlternateMapFormat::getGameType() const
 {
-    static std::string _gameType = "quake3alternate";
-    return _gameType;
+	static std::string _gameType = "quake3alternate";
+	return _gameType;
 }
 
 const std::string& Quake3AlternateMapFormat::getName() const
 {
-    static std::string _name("Quake3AlternateMapLoader");
-    return _name;
+	static std::string _name("Quake3AlternateMapLoader");
+	return _name;
 }
 
 IMapWriterPtr Quake3AlternateMapFormat::getMapWriter() const
 {
-    return std::make_shared<Quake3AlternateMapWriter>();
+	return std::make_shared<Quake3AlternateMapWriter>();
 }
 
-module::StaticModuleRegistration<Quake3MapFormat> q3MapModule;
+
 module::StaticModuleRegistration<Quake3AlternateMapFormat> q3AlternateMapModule;
 
 } // namespace map

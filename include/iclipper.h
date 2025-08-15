@@ -13,9 +13,9 @@ enum EBrushSplit {
 };
 
 enum PlaneClassification {
-    ePlaneFront = 0,
-    ePlaneBack = 1,
-    ePlaneOn = 2,
+	ePlaneFront = 0,
+	ePlaneBack = 1,
+	ePlaneOn = 2,
 };
 
 class ClipPoint;
@@ -70,8 +70,8 @@ public:
 	// Updates the clip plane information
 	virtual void update() = 0;
 
-    // Returns the currently active clip plane (might be invalid)
-    virtual const Plane3& getClipPlane() = 0;
+	// Returns the currently active clip plane (might be invalid)
+	virtual const Plane3& getClipPlane() = 0;
 };
 
 // The accessor for the clipper module

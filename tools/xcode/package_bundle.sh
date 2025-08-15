@@ -1,14 +1,14 @@
-# This script copies the .dylib files DarkRadiant is depending on to the bundle's MacOS folder.
+# This script copies the .dylib files WorldEdit is depending on to the bundle's MacOS folder.
 # Secondly, it's fixing up the dylib references in all the binaries recursively, replacing
 # the hardcoded /opt/local/* paths with @executable_path, making use of otool and install_name_tool
 
 echo Building Package in $TARGET_BUILD_DIR
 cd $TARGET_BUILD_DIR
-cd DarkRadiant.app/Contents/MacOS
+cd WorldEdit.app/Contents/MacOS
 
 # Copy wxwidgets dependencies
 WXLIBPOSTFIX=*wx*3.0.0.dylib
-APP=DarkRadiantMain
+APP=WorldEditMain
 
 WXLIBDIR=/opt/local/Library/Frameworks/wxWidgets.framework/Versions/wxWidgets/3.0/lib/
 BINDIR=./

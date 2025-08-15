@@ -31,7 +31,7 @@ class RGBAImage :
 public:
 	RGBAPixel* pixels;
 
-    /// Construct image and initialise internal storage
+	/// Construct image and initialise internal storage
 	RGBAImage(std::size_t width, std::size_t height):
 		_width(width),
 		_height(height),
@@ -43,22 +43,22 @@ public:
 		delete[] pixels;
 	}
 
-    /* Image implementation */
+	/* Image implementation */
 	uint8_t* getPixels() const override
 	{
 		return reinterpret_cast<byte*>(pixels);
 	}
 	std::size_t getWidth(std::size_t = 0) const override { return _width; }
 	std::size_t getHeight(std::size_t = 0) const override { return _height; }
-    std::size_t getLevels() const override { return 1; }
-    GLenum getGLFormat() const override { return GL_RGBA; }
+	std::size_t getLevels() const override { return 1; }
+	GLenum getGLFormat() const override { return GL_RGBA; }
 
-    /* BindableTexture implementation */
-    TexturePtr bindTexture(const std::string& name, Role role) const override
-    {
+	/* BindableTexture implementation */
+	TexturePtr bindTexture(const std::string& name, Role role) const override
+	{
 		GLuint textureNum;
 
-        debug::assertNoGlErrors();
+		debug::assertNoGlErrors();
 
 		// Allocate a new texture number and store it into the Texture structure
 		glGenTextures(1, &textureNum);
@@ -68,25 +68,25 @@ public:
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
 		// Upload the image to OpenGL, choosing an internal format based on role
-        GLint format = GL_RGBA8;
-        if (role == Role::NORMAL_MAP) {
-            format = GL_RG8;
-        }
+		GLint format = GL_RGBA8;
+		if (role == Role::NORMAL_MAP) {
+			format = GL_RG8;
+		}
 
-        // Download image and set up mipmaps and filtering
-        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
-        gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, static_cast<GLint>(getWidth()),
-                          static_cast<GLint>(getHeight()), GL_RGBA, GL_UNSIGNED_BYTE, getPixels());
+		// Download image and set up mipmaps and filtering
+		glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+		gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, static_cast<GLint>(getWidth()),
+						  static_cast<GLint>(getHeight()), GL_RGBA, GL_UNSIGNED_BYTE, getPixels());
 
-        // Un-bind the texture
+		// Un-bind the texture
 		glBindTexture(GL_TEXTURE_2D, 0);
 
-        // Construct texture object
-        BasicTexture2DPtr tex2DObject(new BasicTexture2D(textureNum, name));
-        tex2DObject->setWidth(getWidth());
-        tex2DObject->setHeight(getHeight());
+		// Construct texture object
+		BasicTexture2DPtr tex2DObject(new BasicTexture2D(textureNum, name));
+		tex2DObject->setWidth(getWidth());
+		tex2DObject->setHeight(getHeight());
 
-        debug::assertNoGlErrors();
+		debug::assertNoGlErrors();
 
 		return tex2DObject;
 	}

@@ -9,18 +9,18 @@
 
 inline std::string getNameForNodeType(scene::INode::Type type)
 {
-    switch (type)
-    {
+	switch (type)
+	{
 	case scene::INode::Type::MapRoot: return "map";
-    case scene::INode::Type::Entity: return "entity";
-    case scene::INode::Type::Brush: return "brush";
-    case scene::INode::Type::Patch: return "patch";
-    case scene::INode::Type::Model: return "model";
-    case scene::INode::Type::Particle: return "particle";
-    case scene::INode::Type::EntityConnection: return "entityconnection";
-    case scene::INode::Type::MergeAction: return "mergeaction";
-    default: return "unknown";
-    };
+	case scene::INode::Type::Entity: return "entity";
+	case scene::INode::Type::Brush: return "brush";
+	case scene::INode::Type::Patch: return "patch";
+	case scene::INode::Type::Model: return "model";
+	case scene::INode::Type::Particle: return "particle";
+	case scene::INode::Type::EntityConnection: return "entityconnection";
+	case scene::INode::Type::MergeAction: return "mergeaction";
+	default: return "unknown";
+	};
 }
 
 // greebo: Return information about the given node
@@ -33,7 +33,7 @@ inline std::string getNodeInfo(const scene::INodePtr& node)
 	}
 
 	returnValue += getNameForNodeType(node->getNodeType());
-    returnValue += " (" + node->name() + ")";
+	returnValue += " (" + node->name() + ")";
 
 	return returnValue;
 }

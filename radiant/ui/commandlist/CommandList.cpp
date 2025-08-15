@@ -39,8 +39,8 @@ void CommandList::reloadList()
 
 	// Cycle through all the events and create the according list items
 	GlobalEventManager().foreachEvent(populator);
-    
-    _treeView->TriggerColumnSizeEvent();
+	
+	_treeView->TriggerColumnSizeEvent();
 
 	_treeView->GetColumn(_columns.command.getColumnIndex())->SetSortOrder(true);
 	_treeView->GetModel()->Resort();

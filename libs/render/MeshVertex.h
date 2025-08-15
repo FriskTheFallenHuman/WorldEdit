@@ -32,69 +32,69 @@ public:
 
 	/// Initialising constructor, leaves colour at 1,1,1,1 and tangent vectors at 0,0,0
 	MeshVertex(const Vertex3& v, const Normal3& n, const TexCoord2f& t) : 
-        MeshVertex(v, n, t, { 1.0, 1.0, 1.0, 1.0 })
-    {}
+		MeshVertex(v, n, t, { 1.0, 1.0, 1.0, 1.0 })
+	{}
 
 	/// Initialising constructor, leaves tangent vectors at 0,0,0
-    MeshVertex(const Vertex3& v, const Normal3& n, const TexCoord2f& t, const Vector4& c) : 
-        MeshVertex(v, n, t, c, { 0, 0, 0 }, { 0, 0, 0 })
-    {}
+	MeshVertex(const Vertex3& v, const Normal3& n, const TexCoord2f& t, const Vector4& c) : 
+		MeshVertex(v, n, t, c, { 0, 0, 0 }, { 0, 0, 0 })
+	{}
 
-    // Initialises all attributes of this vertex
-    MeshVertex(const Vertex3& vertex_, const Normal3& normal_, 
-               const TexCoord2f& texcoord_, const Vector4& colour_, 
-               const Normal3& tangent_, const Normal3& bitangent_) :
-        texcoord(texcoord_),
-        normal(normal_),
-        vertex(vertex_),
-        tangent(tangent_),
-        bitangent(bitangent_),
-        colour(colour_)
-    {}
+	// Initialises all attributes of this vertex
+	MeshVertex(const Vertex3& vertex_, const Normal3& normal_, 
+			   const TexCoord2f& texcoord_, const Vector4& colour_, 
+			   const Normal3& tangent_, const Normal3& bitangent_) :
+		texcoord(texcoord_),
+		normal(normal_),
+		vertex(vertex_),
+		tangent(tangent_),
+		bitangent(bitangent_),
+		colour(colour_)
+	{}
 
-    /// Cast to simple Vertex3, throwing away other components
-    operator Vertex3() const
-    {
-        return vertex;
-    }
+	/// Cast to simple Vertex3, throwing away other components
+	operator Vertex3() const
+	{
+		return vertex;
+	}
 };
 
 /// Less-than comparison for MeshVertex
 inline bool operator<(const MeshVertex& first,
-                      const MeshVertex& other)
+					  const MeshVertex& other)
 {
-    if (first.texcoord != other.texcoord)
-    {
-        return first.texcoord < other.texcoord;
-    }
+	if (first.texcoord != other.texcoord)
+	{
+		return first.texcoord < other.texcoord;
+	}
 
-    if (first.normal != other.normal)
-    {
-        return first.normal < other.normal;
-    }
+	if (first.normal != other.normal)
+	{
+		return first.normal < other.normal;
+	}
 
-    if (first.vertex != other.vertex)
-    {
-        return first.vertex < other.vertex;
-    }
+	if (first.vertex != other.vertex)
+	{
+		return first.vertex < other.vertex;
+	}
 
-    return false;
+	return false;
 }
 
 /// Equality comparison for MeshVertex
 inline bool operator==(const MeshVertex& first,
-                       const MeshVertex& other)
+					   const MeshVertex& other)
 {
-    return first.texcoord == other.texcoord
-        && first.normal == other.normal
-        && first.vertex == other.vertex;
+	return first.texcoord == other.texcoord
+		&& first.normal == other.normal
+		&& first.vertex == other.vertex;
 }
 
 /// Inequality comparison for MeshVertex
 inline bool operator!=(const MeshVertex& first,
-                       const MeshVertex& other)
+					   const MeshVertex& other)
 {
-    return !(first == other);
+	return !(first == other);
 }
 
 namespace render
@@ -104,42 +104,42 @@ namespace render
 template<> class VertexTraits<MeshVertex>
 {
 public:
-    static const void* VERTEX_OFFSET()
-    {
-        return reinterpret_cast<const void*>(
-            offsetof(MeshVertex, vertex)
-        );
-    }
+	static const void* VERTEX_OFFSET()
+	{
+		return reinterpret_cast<const void*>(
+			offsetof(MeshVertex, vertex)
+		);
+	}
 
-    static bool hasNormal() { return true; }
-    static const void* NORMAL_OFFSET()
-    {
-        return reinterpret_cast<const void*>(
-            offsetof(MeshVertex, normal)
-        );
-    }
+	static bool hasNormal() { return true; }
+	static const void* NORMAL_OFFSET()
+	{
+		return reinterpret_cast<const void*>(
+			offsetof(MeshVertex, normal)
+		);
+	}
 
-    static bool hasTexCoord() { return true; }
-    static const void* TEXCOORD_OFFSET()
-    {
-        return reinterpret_cast<const void*>(
-            offsetof(MeshVertex, texcoord)
-        );
-    }
+	static bool hasTexCoord() { return true; }
+	static const void* TEXCOORD_OFFSET()
+	{
+		return reinterpret_cast<const void*>(
+			offsetof(MeshVertex, texcoord)
+		);
+	}
 
-    static bool hasTangents() { return true; }
-    static const void* TANGENT_OFFSET()
-    {
-        return reinterpret_cast<const void*>(
-            offsetof(MeshVertex, tangent)
-        );
-    }
-    static const void* BITANGENT_OFFSET()
-    {
-        return reinterpret_cast<const void*>(
-            offsetof(MeshVertex, bitangent)
-        );
-    }
+	static bool hasTangents() { return true; }
+	static const void* TANGENT_OFFSET()
+	{
+		return reinterpret_cast<const void*>(
+			offsetof(MeshVertex, tangent)
+		);
+	}
+	static const void* BITANGENT_OFFSET()
+	{
+		return reinterpret_cast<const void*>(
+			offsetof(MeshVertex, bitangent)
+		);
+	}
 };
 
 }

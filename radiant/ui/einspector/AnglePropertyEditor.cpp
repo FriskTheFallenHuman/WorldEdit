@@ -25,8 +25,8 @@ AnglePropertyEditor::AnglePropertyEditor(wxWindow* parent, IEntitySelection& ent
 	wxGridSizer* grid = new wxGridSizer(3, 3, 3);
 	mainVBox->GetSizer()->Add(grid, 0, wxALIGN_CENTER_VERTICAL);
 
-    // Create the buttons
-    constructButtons(mainVBox, grid);
+	// Create the buttons
+	constructButtons(mainVBox, grid);
 
 	// Register the main widget in the base class
 	setMainWidget(mainVBox);
@@ -67,7 +67,7 @@ void AnglePropertyEditor::_onButtonClick(wxCommandEvent& ev)
 	{
 		if (i->first->GetId() == ev.GetId())
 		{
-            setKeyValueOnSelection(_key->getFullKey(), string::to_string(i->second));
+			setKeyValueOnSelection(_key->getFullKey(), string::to_string(i->second));
 			break;
 		}
 	}

@@ -14,24 +14,24 @@ namespace ui
 
 namespace
 {
-	const char* const SPLASH_FILENAME = "darksplash.png";
+	const char* const SPLASH_FILENAME = "splash.png";
 }
 
 class wxImagePanel : 
 	public wxPanel
 {
 private:
-    wxBitmap _image;
+	wxBitmap _image;
 	wxString _text;
  
 public:
-    wxImagePanel(wxFrame* parent, const wxString& file, wxBitmapType format);
+	wxImagePanel(wxFrame* parent, const wxString& file, wxBitmapType format);
  
-    void paintEvent(wxPaintEvent & evt);
+	void paintEvent(wxPaintEvent & evt);
 
 	void setText(const wxString& text);
  
-    void render(wxDC& dc);
+	void render(wxDC& dc);
 };
 
 void wxImagePanel::setText(const wxString& text)
@@ -42,24 +42,24 @@ void wxImagePanel::setText(const wxString& text)
 wxImagePanel::wxImagePanel(wxFrame* parent, const wxString& file, wxBitmapType format) :
 	wxPanel(parent)
 {
-    // load the file... ideally add a check to see if loading was successful
-    _image.LoadFile(file, format);
+	// load the file... ideally add a check to see if loading was successful
+	_image.LoadFile(file, format);
 	SetMinClientSize(wxSize(_image.GetWidth(), _image.GetHeight()));
 	SetBackgroundStyle(wxBG_STYLE_PAINT);
 
-    Bind(wxEVT_PAINT, [this](wxPaintEvent& ev) { paintEvent(ev); });
+	Bind(wxEVT_PAINT, [this](wxPaintEvent& ev) { paintEvent(ev); });
 }
 
 void wxImagePanel::paintEvent(wxPaintEvent & evt)
 {
-    // depending on your system you may need to look at double-buffered dcs
-    wxAutoBufferedPaintDC dc(this);
-    render(dc);
+	// depending on your system you may need to look at double-buffered dcs
+	wxAutoBufferedPaintDC dc(this);
+	render(dc);
 }
  
 void wxImagePanel::render(wxDC&  dc)
 {
-    dc.DrawBitmap(_image, 0, 0, false);
+	dc.DrawBitmap(_image, 0, 0, false);
 
 	dc.SetTextForeground(wxColour(240, 240, 240));
 	dc.DrawText(_text, wxPoint(15, _image.GetHeight() - wxNORMAL_FONT->GetPixelSize().GetHeight() - 15));
@@ -69,13 +69,13 @@ Splash::Splash() :
 	wxFrame(nullptr, wxID_ANY, wxT("DarkRadiant"), wxDefaultPosition, wxDefaultSize, wxCENTRE),
 	_progressBar(nullptr)
 {
-    const auto& ctx = module::GlobalModuleRegistry().getApplicationContext();
+	const auto& ctx = module::GlobalModuleRegistry().getApplicationContext();
 	std::string fullFileName(ctx.getBitmapsPath() + SPLASH_FILENAME);
 
 	wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 
 	_imagePanel = new wxImagePanel(this, fullFileName, wxBITMAP_TYPE_ANY);
-    sizer->Add(_imagePanel, 1, wxEXPAND);
+	sizer->Add(_imagePanel, 1, wxEXPAND);
 
 	_progressBar = new wxGauge(this, wxID_ANY, 100);
 	sizer->Add(_progressBar, 0, wxEXPAND);
@@ -86,9 +86,9 @@ Splash::Splash() :
 	Centre();
 	Show();
 
-    // Subscribe to the post-module init event to destroy ourselves
-    module::GlobalModuleRegistry().signal_allModulesInitialised().connect(
-        sigc::hide_return(sigc::mem_fun(this, &Splash::Destroy)));
+	// Subscribe to the post-module init event to destroy ourselves
+	module::GlobalModuleRegistry().signal_allModulesInitialised().connect(
+		sigc::hide_return(sigc::mem_fun(this, &Splash::Destroy)));
 }
 
 void Splash::queueDraw()
@@ -102,8 +102,8 @@ void Splash::queueDraw()
 
 void Splash::setText(const std::string& text)
 {
-    _imagePanel->setText(text);
-    queueDraw();
+	_imagePanel->setText(text);
+	queueDraw();
 }
 
 void Splash::setProgress(float fraction)

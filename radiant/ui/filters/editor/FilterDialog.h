@@ -85,7 +85,7 @@ private:
 	void onDeleteFilter(wxCommandEvent& ev);
 	void onCopyFilter(wxCommandEvent& ev);
 
-    void showEditDialogForNewFilter(const FilterPtr& filter);
+	void showEditDialogForNewFilter(const FilterPtr& filter);
 
 	void onFilterSelectionChanged(wxDataViewEvent& ev);
 };

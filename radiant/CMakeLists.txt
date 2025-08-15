@@ -1,4 +1,4 @@
-add_executable(darkradiant
+add_executable(worldedit
                camera/CameraSettings.cpp
                camera/CamWnd.cpp
                camera/CameraWndManager.cpp
@@ -147,7 +147,6 @@ add_executable(darkradiant
                ui/prefdialog/GameSetupDialog.cpp
                ui/prefdialog/GameSetupPage.cpp
                ui/prefdialog/GameSetupPageIdTech.cpp
-               ui/prefdialog/GameSetupPageTdm.cpp
                ui/prefdialog/PrefDialog.cpp
                ui/prefdialog/PreferenceItem.cpp
                ui/prefdialog/PrefPage.cpp
@@ -175,14 +174,14 @@ add_executable(darkradiant
                xyview/tools/ClipperTool.cpp
                xyview/tools/MeasurementTool.cpp
                xyview/OrthoView.cpp)
-target_compile_options(darkradiant PRIVATE ${FREETYPE_CFLAGS} ${GLIB_CFLAGS})
-target_include_directories(darkradiant PRIVATE .)
-target_link_libraries(darkradiant PRIVATE
+target_compile_options(worldedit PRIVATE ${FREETYPE_CFLAGS} ${GLIB_CFLAGS})
+target_include_directories(worldedit PRIVATE .)
+target_link_libraries(worldedit PRIVATE
                       math xmlutil scene wxutil module
                       ${GLIB_LIBRARIES})
 
-# Enable precompiled header for radiant
+# Enable precompiled header for worldedit
 if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.16.0")
-target_precompile_headers(darkradiant PRIVATE
+target_precompile_headers(worldedit PRIVATE
                           "$<$<COMPILE_LANGUAGE:CXX>:precompiled.h>")
 endif()

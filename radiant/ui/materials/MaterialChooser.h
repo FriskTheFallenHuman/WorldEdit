@@ -21,7 +21,7 @@ class MaterialChooser :
 	// The text entry the chosen texture is written into (can be NULL)
 	wxTextCtrl* _targetEntry;
 
-    sigc::signal<void> _shaderChangedSignal;
+	sigc::signal<void> _shaderChangedSignal;
 
 public:
 	/** greebo: Construct the dialog window and its contents.
@@ -34,10 +34,10 @@ public:
 	 */
 	MaterialChooser(wxWindow* parent, MaterialSelector::TextureFilter filter, wxTextCtrl* targetEntry = nullptr);
 
-    int ShowModal() override;
+	int ShowModal() override;
 
-    /// Signal emitted when selected shader is changed
-    sigc::signal<void>& signal_shaderChanged();
+	/// Signal emitted when selected shader is changed
+	sigc::signal<void>& signal_shaderChanged();
 
 private:
 	// greebo: Gets called upon shader selection change.

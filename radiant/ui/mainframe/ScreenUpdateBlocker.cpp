@@ -61,8 +61,8 @@ ScreenUpdateBlocker::~ScreenUpdateBlocker()
 	// Re-enable screen updates
 	GlobalMainFrame().enableScreenUpdates();
 
-    // Re-draw the scene to clear any artefacts in the buffer
-    GlobalMainFrame().updateAllWindows();
+	// Re-draw the scene to clear any artefacts in the buffer
+	GlobalMainFrame().updateAllWindows();
 
 	// Run one idle event loop, to allow wxWidgets to clean up the
 	// modal progress dialog window
@@ -128,7 +128,7 @@ void ScreenUpdateBlocker::onMainWindowFocus(wxFocusEvent& ev)
 		showModalProgressDialog();
 	}
 
-    ev.Skip();
+	ev.Skip();
 }
 
 void ScreenUpdateBlocker::onCloseEvent(wxCloseEvent& ev)

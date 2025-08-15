@@ -4,7 +4,7 @@
  */
 #pragma once
 
-// Commonly used DarkRadiant interfaces
+// Commonly used WorldEdit interfaces
 #include "Bounded.h"
 #include "editable.h"
 #include "i18n.h"

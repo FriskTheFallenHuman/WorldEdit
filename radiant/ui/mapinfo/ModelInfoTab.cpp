@@ -13,29 +13,29 @@ namespace ui
 namespace
 {
 	const char* const TAB_NAME = N_("Models");
-	const std::string TAB_ICON("model16green.png");
-    const char* const SELECT_ITEMS = N_("Select entities using this model");
-    const char* const DESELECT_ITEMS = N_("Deselect entities using this model");
+	const std::string TAB_ICON("icon_model.png");
+	const char* const SELECT_ITEMS = N_("Select entities using this model");
+	const char* const DESELECT_ITEMS = N_("Deselect entities using this model");
 }
 
 ModelInfoTab::ModelInfoTab(wxWindow* parent) :
 	wxPanel(parent, wxID_ANY),
-    _popupMenu(new wxutil::PopupMenu)
+	_popupMenu(new wxutil::PopupMenu)
 {
 	// Create all the widgets
 	populateTab();
 
-    _popupMenu->addItem(
-        new wxMenuItem(_popupMenu.get(), wxID_ANY, _(SELECT_ITEMS)),
-        std::bind(&ModelInfoTab::_onSelectItems, this, true),
-        std::bind(&ModelInfoTab::_testSelectItems, this)
-    );
+	_popupMenu->addItem(
+		new wxMenuItem(_popupMenu.get(), wxID_ANY, _(SELECT_ITEMS)),
+		std::bind(&ModelInfoTab::_onSelectItems, this, true),
+		std::bind(&ModelInfoTab::_testSelectItems, this)
+	);
 
-    _popupMenu->addItem(
-        new wxMenuItem(_popupMenu.get(), wxID_ANY, _(DESELECT_ITEMS)),
-        std::bind(&ModelInfoTab::_onSelectItems, this, false),
-        std::bind(&ModelInfoTab::_testSelectItems, this)
-    );
+	_popupMenu->addItem(
+		new wxMenuItem(_popupMenu.get(), wxID_ANY, _(DESELECT_ITEMS)),
+		std::bind(&ModelInfoTab::_onSelectItems, this, false),
+		std::bind(&ModelInfoTab::_testSelectItems, this)
+	);
 }
 
 std::string ModelInfoTab::getLabel()
@@ -70,10 +70,10 @@ void ModelInfoTab::populateTab()
 	_treeView->AppendTextColumn(_("Skins"), _columns.skincount.getColumnIndex(), 
 		wxDATAVIEW_CELL_INERT, wxCOL_WIDTH_AUTOSIZE, wxALIGN_NOT, wxDATAVIEW_COL_SORTABLE);
 
-    _treeView->Bind(wxEVT_DATAVIEW_ITEM_CONTEXT_MENU, &ModelInfoTab::_onContextMenu, this);
+	_treeView->Bind(wxEVT_DATAVIEW_ITEM_CONTEXT_MENU, &ModelInfoTab::_onContextMenu, this);
 
 	// Populate the liststore with the entity count information
-    for (auto i = _modelBreakdown.begin(); i != _modelBreakdown.end(); ++i)
+	for (auto i = _modelBreakdown.begin(); i != _modelBreakdown.end(); ++i)
 	{
 		wxutil::TreeModel::Row row = _listStore->AddItem();
 
@@ -114,32 +114,32 @@ void ModelInfoTab::populateTab()
 
 void ModelInfoTab::_onContextMenu(wxDataViewEvent& ev)
 {
-    _popupMenu->show(_treeView);
+	_popupMenu->show(_treeView);
 }
 
 void ModelInfoTab::_onSelectItems(bool select)
 {
-    auto item = _treeView->GetSelection();
+	auto item = _treeView->GetSelection();
 
-    if (!item.IsOk()) return;
+	if (!item.IsOk()) return;
 
-    wxutil::TreeModel::Row row(item, *_listStore);
-    std::string model = row[_columns.model];
+	wxutil::TreeModel::Row row(item, *_listStore);
+	std::string model = row[_columns.model];
 
-    if (select)
-    {
-        GlobalCommandSystem().executeCommand("SelectItemsByModel", model);
-    }
-    else
-    {
-        GlobalCommandSystem().executeCommand("DeselectItemsByModel", model);
-    }
+	if (select)
+	{
+		GlobalCommandSystem().executeCommand("SelectItemsByModel", model);
+	}
+	else
+	{
+		GlobalCommandSystem().executeCommand("DeselectItemsByModel", model);
+	}
 }
 
 bool ModelInfoTab::_testSelectItems()
 {
-    // Return positive if there is a selection
-    return _treeView->GetSelection().IsOk();
+	// Return positive if there is a selection
+	return _treeView->GetSelection().IsOk();
 }
 
 } // namespace ui

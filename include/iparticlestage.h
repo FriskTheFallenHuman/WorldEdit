@@ -58,7 +58,7 @@ public:
 class IStageDef
 {
 public:
-    using Ptr = std::shared_ptr<IStageDef>;
+	using Ptr = std::shared_ptr<IStageDef>;
 
 	// Particle orientation
 	enum OrientationType
@@ -101,7 +101,7 @@ public:
 	/// Get the shader name.
 	virtual const std::string& getMaterialName() const = 0;
 
-    /// Set the shader name.
+	/// Set the shader name.
 	virtual void setMaterialName(const std::string& material) = 0;
 
 	/// Get the particle count.
@@ -411,7 +411,7 @@ public:
 
 	// Comparison operator - particle stages are considered equal 
 	// if all properties are equal
-    virtual bool isEqualTo(const Ptr& other) = 0;
+	virtual bool isEqualTo(const Ptr& other) = 0;
 
 	/**
 	 * Copy operator, copies all properties from the other stage into this one.

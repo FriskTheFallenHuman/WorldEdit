@@ -21,7 +21,7 @@ namespace ui
  */
 class AddPropertyDialog :
 	public wxutil::DialogBase,
-    private wxutil::XmlResourceBasedWidget
+	private wxutil::XmlResourceBasedWidget
 {
 public:
 	typedef std::vector<std::string> PropertyList;
@@ -55,8 +55,8 @@ private:
 
 private:
 
-    // Set up tree model and columns
-    void setupTreeView();
+	// Set up tree model and columns
+	void setupTreeView();
 
 	// Populate tree view with properties
 	void populateTreeView();

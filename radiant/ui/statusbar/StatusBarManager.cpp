@@ -19,12 +19,12 @@ namespace statusbar
 
 StatusBarManager::StatusBarManager() :
 	_tempParent(new wxFrame(nullptr, wxID_ANY, "")),
-    _statusBar(new wxPanel(_tempParent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS | wxNO_BORDER))
+	_statusBar(new wxPanel(_tempParent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS | wxNO_BORDER))
 {
-    _tempParent->SetName("StatusBarTemporaryParent");
+	_tempParent->SetName("StatusBarTemporaryParent");
 	_statusBar->SetName("Statusbar");
 #ifdef __WXMSW__
-    _statusBar->SetBackgroundColour(wxColour("#ABABAB"));
+	_statusBar->SetBackgroundColour(wxColour("#ABABAB"));
 #endif
 	_tempParent->Hide();
 
@@ -34,37 +34,37 @@ StatusBarManager::StatusBarManager() :
 
 const std::string& StatusBarManager::getName() const
 {
-    static std::string _name(MODULE_STATUSBARMANAGER);
-    return _name;
+	static std::string _name(MODULE_STATUSBARMANAGER);
+	return _name;
 }
 
 const StringSet& StatusBarManager::getDependencies() const
 {
-    static StringSet _dependencies
-    {
-        MODULE_MAINFRAME
-    };
+	static StringSet _dependencies
+	{
+		MODULE_MAINFRAME
+	};
 
-    return _dependencies;
+	return _dependencies;
 }
 
 void StatusBarManager::initialiseModule(const IApplicationContext& ctx)
 {
-    GlobalMainFrame().signal_MainFrameShuttingDown().connect(
-        sigc::mem_fun(this, &StatusBarManager::onMainFrameShuttingDown));
+	GlobalMainFrame().signal_MainFrameShuttingDown().connect(
+		sigc::mem_fun(this, &StatusBarManager::onMainFrameShuttingDown));
 
-    // Do a full re-paint when the mainframe is resized
-    GlobalMainFrame().signal_MainFrameReady().connect([this]()
-    {
-        GlobalMainFrame().getWxTopLevelWindow()->Bind(wxEVT_SIZE, [this](wxSizeEvent& ev)
-        {
-            ev.Skip();
-            if (_statusBar)
-            {
-                _statusBar->Refresh(true);
-            }
-        });
-    });
+	// Do a full re-paint when the mainframe is resized
+	GlobalMainFrame().signal_MainFrameReady().connect([this]()
+	{
+		GlobalMainFrame().getWxTopLevelWindow()->Bind(wxEVT_SIZE, [this](wxSizeEvent& ev)
+		{
+			ev.Skip();
+			if (_statusBar)
+			{
+				_statusBar->Refresh(true);
+			}
+		});
+	});
 }
 
 wxWindow* StatusBarManager::getStatusBar()
@@ -105,10 +105,10 @@ void StatusBarManager::addTextElement(const std::string& name, const std::string
 	textPanel->SetSizer(new wxBoxSizer(wxHORIZONTAL));
 	textPanel->SetName("Statusbarconainer " + name);
 
-    if (pos == StandardPosition::Commands)
-    {
-        textPanel->SetMinSize(wxSize(250, -1));
-    }
+	if (pos == StandardPosition::Commands)
+	{
+		textPanel->SetMinSize(wxSize(250, -1));
+	}
 
 	if (!description.empty())
 	{
@@ -133,7 +133,7 @@ void StatusBarManager::addTextElement(const std::string& name, const std::string
 
 	// Store this element
 	_elements.emplace(name, element);
-    _positions.emplace(freePos, element);
+	_positions.emplace(freePos, element);
 
 	rebuildStatusBar();
 }
@@ -146,19 +146,19 @@ void StatusBarManager::setText(const std::string& name, const std::string& text,
 	// return NULL if not found
 	if (found != _elements.end() && found->second->label != NULL)
 	{
-        if (found->second->text != text)
-        {
-            // Set the text
-            found->second->text = text;
+		if (found->second->text != text)
+		{
+			// Set the text
+			found->second->text = text;
 
-            // Do the rest of the work in the idle callback
-            requestIdleCallback();
+			// Do the rest of the work in the idle callback
+			requestIdleCallback();
 
-            if (immediateUpdate)
-            {
-                flushIdleCallback();
-            }
-        }
+			if (immediateUpdate)
+			{
+				flushIdleCallback();
+			}
+		}
 	}
 	else
 	{
@@ -169,28 +169,28 @@ void StatusBarManager::setText(const std::string& name, const std::string& text,
 
 void StatusBarManager::onIdle()
 {
-    // Do the size calculations of the widgets
-    std::for_each(_elements.begin(), _elements.end(), [&](ElementMap::value_type& pair)
-    {
-        // Set the text on the widget
-        StatusBarElement& element = *pair.second;
+	// Do the size calculations of the widgets
+	std::for_each(_elements.begin(), _elements.end(), [&](ElementMap::value_type& pair)
+	{
+		// Set the text on the widget
+		StatusBarElement& element = *pair.second;
 
-        if (element.label != NULL)
-        {
-            element.label->SetLabelMarkup(element.text);
+		if (element.label != NULL)
+		{
+			element.label->SetLabelMarkup(element.text);
 
-            if (!element.text.empty())
-            {
-                element.label->SetMinClientSize(element.label->GetVirtualSize());
-            }
-            else
-            {
-                element.label->SetMinClientSize(wxSize(20, -1)); // reset to 20 pixels if empty text is passed
-            }
-        }
-    });
+			if (!element.text.empty())
+			{
+				element.label->SetMinClientSize(element.label->GetVirtualSize());
+			}
+			else
+			{
+				element.label->SetMinClientSize(wxSize(20, -1)); // reset to 20 pixels if empty text is passed
+			}
+		}
+	});
 
-    // Post a size event
+	// Post a size event
 	_statusBar->PostSizeEvent();
 }
 
@@ -240,12 +240,12 @@ void StatusBarManager::rebuildStatusBar()
 		int flags = wxEXPAND | wxLEFT | wxRIGHT;
 
 		// The first and the last status bar widget get a smaller left/right border
-        auto spacing = col == 0 || col == _positions.size() - 1 ? 6 : 24;
+		auto spacing = col == 0 || col == _positions.size() - 1 ? 6 : 24;
 
-        // A few default elements don't need to use 1 as proportion
-        auto proportion = i->first == StandardPosition::MapStatistics || i->first == StandardPosition::GridSize ||
-            i->first == StandardPosition::MapEditStopwatch || i->first == StandardPosition::OrthoViewPosition ||
-            i->first == StandardPosition::Commands ? 0 : 1;
+		// A few default elements don't need to use 1 as proportion
+		auto proportion = i->first == StandardPosition::MapStatistics || i->first == StandardPosition::GridSize ||
+			i->first == StandardPosition::MapEditStopwatch || i->first == StandardPosition::OrthoViewPosition ||
+			i->first == StandardPosition::Commands ? 0 : 1;
 
 		_statusBar->GetSizer()->Add(i->second->toplevel, proportion, flags, spacing);
 
@@ -257,11 +257,11 @@ void StatusBarManager::rebuildStatusBar()
 
 void StatusBarManager::onMainFrameShuttingDown()
 {
-    flushIdleCallback();
+	flushIdleCallback();
 
-    _statusBar = nullptr;
-    _tempParent->Destroy();
-    _tempParent = nullptr;
+	_statusBar = nullptr;
+	_tempParent->Destroy();
+	_tempParent = nullptr;
 }
 
 module::StaticModuleRegistration<StatusBarManager> statusBarManagerModule;

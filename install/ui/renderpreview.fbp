@@ -363,7 +363,7 @@
                                 <property name="window_name"></property>
                                 <property name="window_style"></property>
                                 <object class="tool" expanded="1">
-                                    <property name="bitmap">Load From Art Provider; darkradiant:textureMode16.png; wxART_TOOLBAR</property>
+                                    <property name="bitmap">Load From Art Provider; darkradiant:render_texture.png; wxART_TOOLBAR</property>
                                     <property name="context_menu">0</property>
                                     <property name="id">wxID_ANY</property>
                                     <property name="kind">wxITEM_RADIO</property>

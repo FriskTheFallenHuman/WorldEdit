@@ -137,15 +137,15 @@ void MapFileProgressHandler::handleFileOperation(map::FileOperation& msg)
 	// Release the lock, and give the UI a chance to process
 	lock.reset();
 
-    // Give the main thread a chance to process
-    if (wxThread::IsMain())
-    {
-        wxTheApp->ProcessPendingEvents();
-    }
-    else
-    {
-        std::this_thread::sleep_for(std::chrono::microseconds(10));
-    }
+	// Give the main thread a chance to process
+	if (wxThread::IsMain())
+	{
+		wxTheApp->ProcessPendingEvents();
+	}
+	else
+	{
+		std::this_thread::sleep_for(std::chrono::microseconds(10));
+	}
 }
 
 }

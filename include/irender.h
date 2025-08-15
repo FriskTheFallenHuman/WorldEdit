@@ -134,8 +134,8 @@ struct RenderableGeometry;
 class IRenderEntity
 {
 public:
-    // Returns the name of this entity (mainly for debugging purposes)
-    virtual std::string getEntityName() const = 0;
+	// Returns the name of this entity (mainly for debugging purposes)
+	virtual std::string getEntityName() const = 0;
 
 	/**
 	 * Get the value of this entity's shader parm with the given index.
@@ -152,46 +152,46 @@ public:
 	 */
 	virtual const ShaderPtr& getWireShader() const = 0;
 
-    /**
-     * Returns the shader that is used to render coloured primitives like lines and points,
-     * using the colour of the entity as defined by its entityDef, light colour, etc.
-     * This shader will be applicable to both camera and ortho views, it can be used for
-     * visualisations such as target lines and light boxes.
-     */
-    virtual const ShaderPtr& getColourShader() const = 0;
+	/**
+	 * Returns the shader that is used to render coloured primitives like lines and points,
+	 * using the colour of the entity as defined by its entityDef, light colour, etc.
+	 * This shader will be applicable to both camera and ortho views, it can be used for
+	 * visualisations such as target lines and light boxes.
+	 */
+	virtual const ShaderPtr& getColourShader() const = 0;
 
-    /**
-     * Returns the colour of this entity, that is used to display its
-     * wireframe representation.
-     */
-    virtual Vector4 getEntityColour() const = 0;
+	/**
+	 * Returns the colour of this entity, that is used to display its
+	 * wireframe representation.
+	 */
+	virtual Vector4 getEntityColour() const = 0;
 
-    /**
-     * Associates the given object with this entity and the given shader.
-     * It will be processed during the following lighting mode rendering passes.
-     */
-    virtual void addRenderable(const render::IRenderableObject::Ptr& object, Shader* shader) = 0;
+	/**
+	 * Associates the given object with this entity and the given shader.
+	 * It will be processed during the following lighting mode rendering passes.
+	 */
+	virtual void addRenderable(const render::IRenderableObject::Ptr& object, Shader* shader) = 0;
 
-    /**
-     * Removes the object from this entity.
-     */
-    virtual void removeRenderable(const render::IRenderableObject::Ptr& object) = 0;
+	/**
+	 * Removes the object from this entity.
+	 */
+	virtual void removeRenderable(const render::IRenderableObject::Ptr& object) = 0;
 
-    using ObjectVisitFunction = std::function<void(const render::IRenderableObject::Ptr&, Shader*)>;
+	using ObjectVisitFunction = std::function<void(const render::IRenderableObject::Ptr&, Shader*)>;
 
-    /**
-     * Enumerate all entity object, unconditionally.
-     */
-    virtual void foreachRenderable(const ObjectVisitFunction& functor) = 0;
+	/**
+	 * Enumerate all entity object, unconditionally.
+	 */
+	virtual void foreachRenderable(const ObjectVisitFunction& functor) = 0;
 
-    /**
-     * Enumerate all entity object (partially) intersecting with the given bounds.
-     * The bounds are specified in world coordinates.
-     */
-    virtual void foreachRenderableTouchingBounds(const AABB& bounds, const ObjectVisitFunction& functor) = 0;
+	/**
+	 * Enumerate all entity object (partially) intersecting with the given bounds.
+	 * The bounds are specified in world coordinates.
+	 */
+	virtual void foreachRenderableTouchingBounds(const AABB& bounds, const ObjectVisitFunction& functor) = 0;
 
-    // Returns true if this entity produces shadows when lit (i.e.returns false when the entity has "noshadows" set to 1)
-    virtual bool isShadowCasting() const = 0;
+	// Returns true if this entity produces shadows when lit (i.e.returns false when the entity has "noshadows" set to 1)
+	virtual bool isShadowCasting() const = 0;
 };
 typedef std::shared_ptr<IRenderEntity> IRenderEntityPtr;
 typedef std::weak_ptr<IRenderEntity> IRenderEntityWeakPtr;
@@ -202,77 +202,77 @@ typedef std::weak_ptr<IRenderEntity> IRenderEntityWeakPtr;
 class RendererLight
 {
 public:
-    virtual ~RendererLight() {}
+	virtual ~RendererLight() {}
 
-    // Returns true when this light is visible in the scene, false otherwise
-    virtual bool isVisible() = 0;
+	// Returns true when this light is visible in the scene, false otherwise
+	virtual bool isVisible() = 0;
 
-    /**
-     * \brief Return the render entity associated with this light
-     *
-     * The IRenderEntity is used to evaluate possible shader expressions in the
-     * shader returned by getShader(). The light object itself may be its own
-     * render entity (so getLightEntity() can just return *this).
-     */
-    virtual const IRenderEntity& getLightEntity() const = 0;
+	/**
+	 * \brief Return the render entity associated with this light
+	 *
+	 * The IRenderEntity is used to evaluate possible shader expressions in the
+	 * shader returned by getShader(). The light object itself may be its own
+	 * render entity (so getLightEntity() can just return *this).
+	 */
+	virtual const IRenderEntity& getLightEntity() const = 0;
 
-    /// Return the shader for this light
-    virtual const ShaderPtr& getShader() const = 0;
+	/// Return the shader for this light
+	virtual const ShaderPtr& getShader() const = 0;
 
-    /**
-     * \brief Return the world-space to light-texture-space transformation matrix.
-     *
-     * The light texture space is a box, with coordinates [0..1] on each
-     * dimension, representing the texture (UV) coordinates of the light falloff
-     * textures that will be applied to rendered fragments within the light
-     * volume.
-     *
-     * The matrix returned by this method transforms coordinates in world space
-     * into coordinates in light-texture space.
-     */
-    virtual Matrix4 getLightTextureTransformation() const = 0;
+	/**
+	 * \brief Return the world-space to light-texture-space transformation matrix.
+	 *
+	 * The light texture space is a box, with coordinates [0..1] on each
+	 * dimension, representing the texture (UV) coordinates of the light falloff
+	 * textures that will be applied to rendered fragments within the light
+	 * volume.
+	 *
+	 * The matrix returned by this method transforms coordinates in world space
+	 * into coordinates in light-texture space.
+	 */
+	virtual Matrix4 getLightTextureTransformation() const = 0;
 
-    /**
-     * \brief Return the AABB of the illuminated volume.
-     *
-     * This AABB represents the boundaries of the volume which are illuminated
-     * by this light. Anything outside of this volume does not need to be
-     * considered for shading by this light.
-     *
-     * Note that for omni lights, dragging the light center point outside of
-     * the light volume does not expand the lightAABB() value, because the
-     * light center only affects the direction of the light rays, not the size
-     * of the illuminated volume.
-     */
-    virtual AABB lightAABB() const = 0;
+	/**
+	 * \brief Return the AABB of the illuminated volume.
+	 *
+	 * This AABB represents the boundaries of the volume which are illuminated
+	 * by this light. Anything outside of this volume does not need to be
+	 * considered for shading by this light.
+	 *
+	 * Note that for omni lights, dragging the light center point outside of
+	 * the light volume does not expand the lightAABB() value, because the
+	 * light center only affects the direction of the light rays, not the size
+	 * of the illuminated volume.
+	 */
+	virtual AABB lightAABB() const = 0;
 
-    /**
-     * \brief Return the light origin in world space.
-     *
-     * The light origin is the point from which the light rays are considered to
-     * be projected, i.e. the direction from which bump maps will be illuminated
-     * and shadows (if they existed) would be cast.
-     *
-     * For an omindirectional light, this origin is determined from the
-     * "light_center" keyvalue in combination with the bounding box itself,
-     * whereas for a projected light it is always equal to the tip of the
-     * pyramid (the same as worldOrigin()).
-     */
+	/**
+	 * \brief Return the light origin in world space.
+	 *
+	 * The light origin is the point from which the light rays are considered to
+	 * be projected, i.e. the direction from which bump maps will be illuminated
+	 * and shadows (if they existed) would be cast.
+	 *
+	 * For an omindirectional light, this origin is determined from the
+	 * "light_center" keyvalue in combination with the bounding box itself,
+	 * whereas for a projected light it is always equal to the tip of the
+	 * pyramid (the same as worldOrigin()).
+	 */
 	virtual Vector3 getLightOrigin() const = 0;
 
-    // Whether this light is allowed to cast shadows
-    virtual bool isShadowCasting() const = 0;
+	// Whether this light is allowed to cast shadows
+	virtual bool isShadowCasting() const = 0;
 
-    // Whether this light is using a blend light material
-    virtual bool isBlendLight() const = 0;
+	// Whether this light is using a blend light material
+	virtual bool isBlendLight() const = 0;
 };
 typedef std::shared_ptr<RendererLight> RendererLightPtr;
 
 /// Debug stream insertion for RendererLight
 inline std::ostream& operator<< (std::ostream& os, const RendererLight& l)
 {
-    return os << "RendererLight(origin=" << math::pp(l.getLightOrigin())
-              << ", lightAABB=" << l.lightAABB() << ")";
+	return os << "RendererLight(origin=" << math::pp(l.getLightOrigin())
+			  << ", lightAABB=" << l.lightAABB() << ")";
 }
 
 class Renderable;
@@ -292,13 +292,13 @@ typedef std::function<void(const RendererLight&)> RendererLightCallback;
 class OpenGLRenderable
 {
 public:
-    virtual ~OpenGLRenderable() {}
+	virtual ~OpenGLRenderable() {}
 
-    /**
-     * \brief
-     * Submit OpenGL render calls.
-     */
-    virtual void render() const = 0;
+	/**
+	 * \brief
+	 * Submit OpenGL render calls.
+	 */
+	virtual void render() const = 0;
 };
 
 class Matrix4;
@@ -319,9 +319,9 @@ typedef std::shared_ptr<Material> MaterialPtr;
  * Shaders and rendering the geometry attached to each one.
  */
 class Shader :
-    public render::IWindingRenderer,
-    public render::IGeometryRenderer,
-    public render::ISurfaceRenderer
+	public render::IWindingRenderer,
+	public render::IGeometryRenderer,
+	public render::ISurfaceRenderer
 {
 public:
 	// Observer interface to get notified on (un-)realisation
@@ -332,13 +332,13 @@ public:
 		virtual void onShaderUnrealised() = 0;
 	};
 
-    virtual ~Shader() {}
+	virtual ~Shader() {}
 
-    /// Return the name used to construct this shader
-    virtual std::string getName() const = 0;
+	/// Return the name used to construct this shader
+	virtual std::string getName() const = 0;
 
 	/**
-     * \brief
+	 * \brief
 	 * Attach a renderable object to this Shader, which will be rendered using
 	 * this Shader when the render backend is activated.
 	 *
@@ -351,20 +351,20 @@ public:
 	virtual void addRenderable(const OpenGLRenderable& renderable,
 							   const Matrix4& modelview) = 0;
 
-    /**
-     * \brief
-     * Control the visibility of this shader.
-     *
-     * A shader that is not visible will perform no rendering and ignore any
-     * renderables submitted to it with addRenderable().
-     */
-    virtual void setVisible(bool visible) = 0;
+	/**
+	 * \brief
+	 * Control the visibility of this shader.
+	 *
+	 * A shader that is not visible will perform no rendering and ignore any
+	 * renderables submitted to it with addRenderable().
+	 */
+	virtual void setVisible(bool visible) = 0;
 
-    /// Query if this shader is visible
-    virtual bool isVisible() const = 0;
+	/// Query if this shader is visible
+	virtual bool isVisible() const = 0;
 
-    virtual void incrementUsed() = 0;
-    virtual void decrementUsed() = 0;
+	virtual void incrementUsed() = 0;
+	virtual void decrementUsed() = 0;
 
 	// Attach/detach an observer to this shader object.
 	// In case the shader is already realised when attachObserver() is called,
@@ -377,15 +377,15 @@ public:
 	virtual bool isRealised() = 0;
 
 	/**
-     * \brief Retrieve the Material that was used to construct this shader (if
-     * any).
+	 * \brief Retrieve the Material that was used to construct this shader (if
+	 * any).
 	 *
 	 * \return
 	 * An Material subclass with information about the shader definition
 	 */
 	virtual const MaterialPtr& getMaterial() const = 0;
 
-    virtual unsigned int getFlags() const = 0;
+	virtual unsigned int getFlags() const = 0;
 };
 
 /**
@@ -397,14 +397,14 @@ typedef std::shared_ptr<Shader> ShaderPtr;
 class IRenderableText
 {
 public:
-    // The position in world space where the text needs to be rendered
-    virtual const Vector3& getWorldPosition() = 0;
+	// The position in world space where the text needs to be rendered
+	virtual const Vector3& getWorldPosition() = 0;
 
-    // The text to be rendered. Returning an empty text will skip this renderable.
-    virtual const std::string& getText() = 0;
+	// The text to be rendered. Returning an empty text will skip this renderable.
+	virtual const std::string& getText() = 0;
 
-    // The colour of the text
-    virtual const Vector4& getColour() = 0;
+	// The colour of the text
+	virtual const Vector4& getColour() = 0;
 };
 
 // An ITextRenderer is able to draw one or more IRenderableText
@@ -412,18 +412,18 @@ public:
 class ITextRenderer
 {
 public:
-    using Ptr = std::shared_ptr<ITextRenderer>;
+	using Ptr = std::shared_ptr<ITextRenderer>;
 
-    using Slot = std::uint64_t;
-    static constexpr Slot InvalidSlot = std::numeric_limits<Slot>::max();
+	using Slot = std::uint64_t;
+	static constexpr Slot InvalidSlot = std::numeric_limits<Slot>::max();
 
-    // Registers the given text instance for rendering
-    virtual Slot addText(IRenderableText& text) = 0;
+	// Registers the given text instance for rendering
+	virtual Slot addText(IRenderableText& text) = 0;
 
-    // Removes the text instance in the given Slot
-    // The slot handle is invalidated by this operation and should be
-    // discarded by the client, by setting it to InvalidSlot
-    virtual void removeText(Slot slot) = 0;
+	// Removes the text instance in the given Slot
+	// The slot handle is invalidated by this operation and should be
+	// discarded by the client, by setting it to InvalidSlot
+	virtual void removeText(Slot slot) = 0;
 };
 
 const char* const MODULE_RENDERSYSTEM("ShaderCache");
@@ -432,74 +432,74 @@ const char* const MODULE_RENDERSYSTEM("ShaderCache");
 // Shader objects during rendering
 enum class RenderViewType
 {
-    Camera      = 1 << 0,
-    OrthoView   = 1 << 1,
+	Camera      = 1 << 0,
+	OrthoView   = 1 << 1,
 };
 
 enum class BuiltInShaderType
 {
-    // A medium-sized point
-    Point,
+	// A medium-sized point
+	Point,
 
-    // A bigger version of "Point"
-    BigPoint,
+	// A bigger version of "Point"
+	BigPoint,
 
-    // Lines connecting the patch control points
-    PatchLattice,
+	// Lines connecting the patch control points
+	PatchLattice,
 
-    /// Wireframe lines for manipulators
-    ManipulatorWireframe,
+	/// Wireframe lines for manipulators
+	ManipulatorWireframe,
 
-    // Fill shader drawing above regular things
-    FlatshadeOverlay,
+	// Fill shader drawing above regular things
+	FlatshadeOverlay,
 
-    // Line shader used for drawing AAS area bounds
-    AasAreaBounds,
+	// Line shader used for drawing AAS area bounds
+	AasAreaBounds,
 
-    // Shader used for the boxes marking missing models
-    MissingModel,
+	// Shader used for the boxes marking missing models
+	MissingModel,
 
-    // The polygon showing the clip plane intersecting brushes
-    BrushClipPlane,
+	// The polygon showing the clip plane intersecting brushes
+	BrushClipPlane,
 
-    // Line shader connecting the leak point trace
-    PointTraceLines,
+	// Line shader connecting the leak point trace
+	PointTraceLines,
 
-    // This is the shader drawing a coloured overlay
-    // over faces/polys. Its colour is configurable,
-    // and it has depth test activated (camera).
-    ColouredPolygonOverlay,
+	// This is the shader drawing a coloured overlay
+	// over faces/polys. Its colour is configurable,
+	// and it has depth test activated (camera).
+	ColouredPolygonOverlay,
 
-    // This is the shader drawing a solid line to outline
-    // a selected item. The first pass has its depth test
-    // activated using GL_LESS, whereas the second pass
-    // draws the hidden lines in stippled appearance
-    // with its depth test using GL_GREATER (camera).
-    HighlightedPolygonOutline,
+	// This is the shader drawing a solid line to outline
+	// a selected item. The first pass has its depth test
+	// activated using GL_LESS, whereas the second pass
+	// draws the hidden lines in stippled appearance
+	// with its depth test using GL_GREATER (camera).
+	HighlightedPolygonOutline,
 
-    // Coloured line stipple overlay of selected items (ortho)
-    WireframeSelectionOverlay,
+	// Coloured line stipple overlay of selected items (ortho)
+	WireframeSelectionOverlay,
 
-    // Coloured line stipple overlay of selected grouped items (ortho)
-    WireframeSelectionOverlayOfGroups,
+	// Coloured line stipple overlay of selected grouped items (ortho)
+	WireframeSelectionOverlayOfGroups,
 
-    // Line shader used for drawing the three axes at entity origins
-    Pivot,
+	// Line shader used for drawing the three axes at entity origins
+	Pivot,
 
-    // Coloured merge action highlights (camera)
-    CameraMergeActionOverlayAdd,
-    CameraMergeActionOverlayRemove,
-    CameraMergeActionOverlayChange,
-    CameraMergeActionOverlayConflict,
+	// Coloured merge action highlights (camera)
+	CameraMergeActionOverlayAdd,
+	CameraMergeActionOverlayRemove,
+	CameraMergeActionOverlayChange,
+	CameraMergeActionOverlayConflict,
 
-    // Coloured merge action highlights (ortho)
-    OrthoMergeActionOverlayAdd,
-    OrthoMergeActionOverlayRemove,
-    OrthoMergeActionOverlayChange,
-    OrthoMergeActionOverlayConflict,
+	// Coloured merge action highlights (ortho)
+	OrthoMergeActionOverlayAdd,
+	OrthoMergeActionOverlayRemove,
+	OrthoMergeActionOverlayChange,
+	OrthoMergeActionOverlayConflict,
 
-    // Highly transparent wire shader for inactive nodes
-    WireframeInactive,
+	// Highly transparent wire shader for inactive nodes
+	WireframeInactive,
 };
 
 // Available types of colour shaders. These areused
@@ -507,33 +507,33 @@ enum class BuiltInShaderType
 // connection lines, light volumes in both camera and ortho.
 enum class ColourShaderType
 {
-    // Line shader for camera views only
-    CameraOutline,
+	// Line shader for camera views only
+	CameraOutline,
 
-    // Fill shader, non-transparent
-    CameraSolid,
+	// Fill shader, non-transparent
+	CameraSolid,
 
-    // Fill shader with transparency
-    CameraTranslucent,
+	// Fill shader with transparency
+	CameraTranslucent,
 
-    // Solid lines used for ortho view rendering
-    OrthoviewSolid,
+	// Solid lines used for ortho view rendering
+	OrthoviewSolid,
 
-    // Items drawn in both camera and ortho views
-    CameraAndOrthoview,
+	// Items drawn in both camera and ortho views
+	CameraAndOrthoview,
 
-    // Outline shader visible in camera and ortho views
-    CameraAndOrthoViewOutline,
+	// Outline shader visible in camera and ortho views
+	CameraAndOrthoViewOutline,
 };
 
 class IRenderResult
 {
 public:
-    using Ptr = std::shared_ptr<IRenderResult>;
+	using Ptr = std::shared_ptr<IRenderResult>;
 
-    virtual ~IRenderResult() {}
+	virtual ~IRenderResult() {}
 
-    virtual std::string toString() = 0;
+	virtual std::string toString() = 0;
 };
 
 constexpr const char* const RKEY_ENABLE_SHADOW_MAPPING = "user/ui/renderSystem/enableShadowMapping";
@@ -548,10 +548,10 @@ class RenderSystem
 public:
 
 	/**
-     * \brief
-     * Capture the given shader, increasing its reference count and
+	 * \brief
+	 * Capture the given shader, increasing its reference count and
 	 * returning a pointer to the Shader object.
-     *
+	 *
 	 * @param name
 	 * The name of the shader to capture.
 	 *
@@ -561,90 +561,90 @@ public:
 
 	virtual ShaderPtr capture(const std::string& name) = 0;
 
-    /**
-     * Retrieves an ITextRenderer instance with the given font style and size.
-     * This renderer will accept IRenderableText instances which define
-     * the actual text, colour and position.
-     */
-    virtual ITextRenderer::Ptr captureTextRenderer(IGLFont::Style style, std::size_t size) = 0;
+	/**
+	 * Retrieves an ITextRenderer instance with the given font style and size.
+	 * This renderer will accept IRenderableText instances which define
+	 * the actual text, colour and position.
+	 */
+	virtual ITextRenderer::Ptr captureTextRenderer(IGLFont::Style style, std::size_t size) = 0;
 
-    /**
-     * Acquire one of DarkRadiant's built-in shaders, used for drawing
-     * things like connectors, lines, points and overlays.
-     */
-    virtual ShaderPtr capture(BuiltInShaderType type) = 0;
+	/**
+	 * Acquire one of WorldEdit's built-in shaders, used for drawing
+	 * things like connectors, lines, points and overlays.
+	 */
+	virtual ShaderPtr capture(BuiltInShaderType type) = 0;
 
-    /**
-     * Capture a colour shader, there are various types available
-     * for rendering in ortho views, camera or both.
-     */
-    virtual ShaderPtr capture(ColourShaderType type, const Colour4& colour) = 0;
+	/**
+	 * Capture a colour shader, there are various types available
+	 * for rendering in ortho views, camera or both.
+	 */
+	virtual ShaderPtr capture(ColourShaderType type, const Colour4& colour) = 0;
 
-    /**
-     * Register the given entity to be considered during rendering.
-     * If this entity is a light it will be automatically recognised
-     * and inserted into the set of lights.
-     */
-    virtual void addEntity(const IRenderEntityPtr& renderEntity) = 0;
+	/**
+	 * Register the given entity to be considered during rendering.
+	 * If this entity is a light it will be automatically recognised
+	 * and inserted into the set of lights.
+	 */
+	virtual void addEntity(const IRenderEntityPtr& renderEntity) = 0;
 
-    /**
-     * Detaches this entity from this rendersystem, it won't be
-     * affected by any rendering after this call.
-     */
-    virtual void removeEntity(const IRenderEntityPtr& renderEntity) = 0;
+	/**
+	 * Detaches this entity from this rendersystem, it won't be
+	 * affected by any rendering after this call.
+	 */
+	virtual void removeEntity(const IRenderEntityPtr& renderEntity) = 0;
 
-    /**
-     * Enumerates all known render entities in this system, invoking
-     * the functor for each of them.
-     */
-    virtual void foreachEntity(const std::function<void(const IRenderEntityPtr&)>& functor) = 0;
+	/**
+	 * Enumerates all known render entities in this system, invoking
+	 * the functor for each of them.
+	 */
+	virtual void foreachEntity(const std::function<void(const IRenderEntityPtr&)>& functor) = 0;
 
-    /**
-     * Enumerates all known render lights in this system, invoking
-     * the functor for each of them
-     */
-    virtual void foreachLight(const std::function<void(const RendererLightPtr&)>& functor) = 0;
+	/**
+	 * Enumerates all known render lights in this system, invoking
+	 * the functor for each of them
+	 */
+	virtual void foreachLight(const std::function<void(const RendererLightPtr&)>& functor) = 0;
 
-    /**
-     * \brief
-     * Main render method.
-     *
-     * This method traverses all of the OpenGLRenderable objects that have been
-     * submitted to Shader instances, and invokes their render() method to draw
-     * their geometry.
-     *
-     * \param globalFlagsMask
-     * The mask of render flags which are permitted during this render pass. Any
-     * render flag which is 0 in this mask will not be enabled during rendering,
-     * even if the particular shader requests it.
-     *
-     * * \param view
-     * The view used to setup the projection, modelview and lighting calculations.
-     */
-    virtual IRenderResult::Ptr renderFullBrightScene(RenderViewType renderViewType,
-                        RenderStateFlags globalFlagsMask,
-                        const render::IRenderView& view) = 0;
+	/**
+	 * \brief
+	 * Main render method.
+	 *
+	 * This method traverses all of the OpenGLRenderable objects that have been
+	 * submitted to Shader instances, and invokes their render() method to draw
+	 * their geometry.
+	 *
+	 * \param globalFlagsMask
+	 * The mask of render flags which are permitted during this render pass. Any
+	 * render flag which is 0 in this mask will not be enabled during rendering,
+	 * even if the particular shader requests it.
+	 *
+	 * * \param view
+	 * The view used to setup the projection, modelview and lighting calculations.
+	 */
+	virtual IRenderResult::Ptr renderFullBrightScene(RenderViewType renderViewType,
+						RenderStateFlags globalFlagsMask,
+						const render::IRenderView& view) = 0;
 
-    virtual void startFrame() = 0;
-    virtual void endFrame() = 0;
+	virtual void startFrame() = 0;
+	virtual void endFrame() = 0;
 
-    /**
-     * Render the scene based on the light-entity interactions.
-     * All the active lights and entities must have added themselves
-     * to this rendersystem at this point, using addEntity().
-     *
-     * \param globalFlagsMask
-     * The mask of render flags which are permitted during this render pass. Any
-     * render flag which is 0 in this mask will not be enabled during rendering,
-     * even if the particular shader requests it.
-     *
-     * \returns A result object which can be used to display a statistics summary.
-     */
-    virtual IRenderResult::Ptr renderLitScene(RenderStateFlags globalFlagsMask,
-        const render::IRenderView& view) = 0;
+	/**
+	 * Render the scene based on the light-entity interactions.
+	 * All the active lights and entities must have added themselves
+	 * to this rendersystem at this point, using addEntity().
+	 *
+	 * \param globalFlagsMask
+	 * The mask of render flags which are permitted during this render pass. Any
+	 * render flag which is 0 in this mask will not be enabled during rendering,
+	 * even if the particular shader requests it.
+	 *
+	 * \returns A result object which can be used to display a statistics summary.
+	 */
+	virtual IRenderResult::Ptr renderLitScene(RenderStateFlags globalFlagsMask,
+		const render::IRenderView& view) = 0;
 
-    virtual void realise() = 0;
-    virtual void unrealise() = 0;
+	virtual void realise() = 0;
+	virtual void unrealise() = 0;
 
 	/**
 	 * Get the current render time in milliseconds.
@@ -656,36 +656,36 @@ public:
 	 */
 	virtual void setTime(std::size_t milliSeconds) = 0;
 
-    /* SHADER PROGRAMS */
+	/* SHADER PROGRAMS */
 
-    /// Available GL programs used for backend rendering.
-    enum ShaderProgram
-    {
-        /// No shader program (normal GL fixed-function pipeline)
-        SHADER_PROGRAM_NONE,
+	/// Available GL programs used for backend rendering.
+	enum ShaderProgram
+	{
+		/// No shader program (normal GL fixed-function pipeline)
+		SHADER_PROGRAM_NONE,
 
-        /// Lighting interaction shader
-        SHADER_PROGRAM_INTERACTION
-    };
+		/// Lighting interaction shader
+		SHADER_PROGRAM_INTERACTION
+	};
 
-    /// Get the current shader program in use.
-    virtual ShaderProgram getCurrentShaderProgram() const = 0;
+	/// Get the current shader program in use.
+	virtual ShaderProgram getCurrentShaderProgram() const = 0;
 
-    /// Set the shader program to use.
-    virtual void setShaderProgram(ShaderProgram prog) = 0;
+	/// Set the shader program to use.
+	virtual void setShaderProgram(ShaderProgram prog) = 0;
 
-    virtual void attachRenderable(Renderable& renderable) = 0;
-    virtual void detachRenderable(Renderable& renderable) = 0;
-    virtual void forEachRenderable(const RenderableCallback& callback) const = 0;
+	virtual void attachRenderable(Renderable& renderable) = 0;
+	virtual void detachRenderable(Renderable& renderable) = 0;
+	virtual void forEachRenderable(const RenderableCallback& callback) const = 0;
 
-  	// Initialises the OpenGL extensions
-    virtual void extensionsInitialised() = 0;
+	// Initialises the OpenGL extensions
+	virtual void extensionsInitialised() = 0;
 
-    // Returns true if openGL supports ARB or GLSL lighting
-    virtual bool shaderProgramsAvailable() const = 0;
+	// Returns true if openGL supports ARB or GLSL lighting
+	virtual bool shaderProgramsAvailable() const = 0;
 
-    // Activates or deactivates the merge render mode
-    virtual void setMergeModeEnabled(bool enabled) = 0;
+	// Activates or deactivates the merge render mode
+	virtual void setMergeModeEnabled(bool enabled) = 0;
 
 	// Subscription to get notified as soon as the openGL extensions have been initialised
 	virtual sigc::signal<void> signal_extensionsInitialised() = 0;
@@ -699,6 +699,6 @@ typedef std::weak_ptr<RenderSystem> RenderSystemWeakPtr;
  */
 inline RenderSystem& GlobalRenderSystem()
 {
-    static module::InstanceReference<RenderSystem> _reference(MODULE_RENDERSYSTEM);
-    return _reference;
+	static module::InstanceReference<RenderSystem> _reference(MODULE_RENDERSYSTEM);
+	return _reference;
 }

@@ -81,12 +81,12 @@ const std::string& Lwo2Exporter::getExtension() const
 
 void Lwo2Exporter::exportToPath(const std::string& outputPath, const std::string& filename)
 {
-    // Open the stream to the output file
-    stream::ExportStream output(outputPath, filename, stream::ExportStream::Mode::Binary);
+	// Open the stream to the output file
+	stream::ExportStream output(outputPath, filename, stream::ExportStream::Mode::Binary);
 
-    exportToStream(output.getStream());
+	exportToStream(output.getStream());
 
-    output.close();
+	output.close();
 }
 
 void Lwo2Exporter::exportToStream(std::ostream& stream)
@@ -200,7 +200,7 @@ void Lwo2Exporter::exportToStream(std::ostream& stream)
 
 		// LWO2 sez: "When writing POLS, the vertex list for each polygon should begin 
 		// at a convex vertex and proceed clockwise as seen from the visible side of the polygon"
-		// DarkRadiant uses CCW windings, so reverse the index ordering
+		// WorldEdit uses CCW windings, so reverse the index ordering
 
 		for (std::size_t i = 0; i + 2 < surface.indices.size(); i += 3)
 		{

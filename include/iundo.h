@@ -17,7 +17,7 @@
 class IUndoMemento
 {
 public:
-    virtual ~IUndoMemento() {}
+	virtual ~IUndoMemento() {}
 };
 typedef std::shared_ptr<IUndoMemento> IUndoMementoPtr;
 
@@ -33,15 +33,15 @@ typedef std::shared_ptr<IUndoMemento> IUndoMementoPtr;
 class IUndoable
 {
 public:
-    virtual ~IUndoable() {}
+	virtual ~IUndoable() {}
 	virtual IUndoMementoPtr exportState() const = 0;
 	virtual void importState(const IUndoMementoPtr& state) = 0;
 
-    // Optional method that is invoked after the whole snapshot has been restored,
-    // applicable to both undo or redo operations.
-    // May be used by Undoable objects to perform a post-undo cleanup.
-    virtual void onOperationRestored()
-    {}
+	// Optional method that is invoked after the whole snapshot has been restored,
+	// applicable to both undo or redo operations.
+	// May be used by Undoable objects to perform a post-undo cleanup.
+	virtual void onOperationRestored()
+	{}
 };
 
 /**
@@ -54,23 +54,23 @@ public:
 class IUndoStateSaver
 {
 public:
-    virtual ~IUndoStateSaver() {}
+	virtual ~IUndoStateSaver() {}
 
-    // Request a state save of the associated IUndoable
+	// Request a state save of the associated IUndoable
 	virtual void saveState() = 0;
 
-    // Returns the undo system this saver is associated to
-    virtual IUndoSystem& getUndoSystem() = 0;
+	// Returns the undo system this saver is associated to
+	virtual IUndoSystem& getUndoSystem() = 0;
 };
 
 class IUndoSystem
 {
 public:
-    using Ptr = std::shared_ptr<IUndoSystem>;
+	using Ptr = std::shared_ptr<IUndoSystem>;
 
 	// Undoable objects need to call this to get hold of a StateSaver instance
 	// which will take care of exporting and saving the state.
-    virtual IUndoStateSaver* getStateSaver(IUndoable& undoable) = 0;
+	virtual IUndoStateSaver* getStateSaver(IUndoable& undoable) = 0;
 	virtual void releaseStateSaver(IUndoable& undoable) = 0;
 
 	virtual void start() = 0;
@@ -86,43 +86,43 @@ public:
 	// it immediately from the stack, therefore it never existed.
 	virtual void cancel() = 0;
 
-    enum class EventType
-    {
-        OperationRecorded,
-        OperationUndone,
-        OperationRedone,
-        AllOperationsCleared,
-    };
+	enum class EventType
+	{
+		OperationRecorded,
+		OperationUndone,
+		OperationRedone,
+		AllOperationsCleared,
+	};
 
-    /**
-     * Emitted on edit/undo/redo and clear events, passes the operation type and name
-     * as arguments. Except for AllOperationsCleared, which will have an empty name argument.
-     */
-    virtual sigc::signal<void(EventType, const std::string&)>& signal_undoEvent() = 0;
+	/**
+	 * Emitted on edit/undo/redo and clear events, passes the operation type and name
+	 * as arguments. Except for AllOperationsCleared, which will have an empty name argument.
+	 */
+	virtual sigc::signal<void(EventType, const std::string&)>& signal_undoEvent() = 0;
 };
 
 class IUndoSystemFactory :
-    public RegisterableModule
+	public RegisterableModule
 {
 public:
-    virtual ~IUndoSystemFactory() {}
+	virtual ~IUndoSystemFactory() {}
 
-    // Create a new UndoSystem instance for use in a map root node
-    virtual IUndoSystem::Ptr createUndoSystem() = 0;
+	// Create a new UndoSystem instance for use in a map root node
+	virtual IUndoSystem::Ptr createUndoSystem() = 0;
 };
 
 constexpr const char* const MODULE_UNDOSYSTEM_FACTORY("UndoSystemFactory");
 
 inline IUndoSystemFactory& GlobalUndoSystemFactory()
 {
-    static module::InstanceReference<IUndoSystemFactory> _reference(MODULE_UNDOSYSTEM_FACTORY);
-    return _reference;
+	static module::InstanceReference<IUndoSystemFactory> _reference(MODULE_UNDOSYSTEM_FACTORY);
+	return _reference;
 }
 
 // The accessor function to the main map's undo system
 inline IUndoSystem& GlobalUndoSystem()
 {
-    return GlobalMapModule().getUndoSystem();
+	return GlobalMapModule().getUndoSystem();
 }
 
 class UndoableCommand

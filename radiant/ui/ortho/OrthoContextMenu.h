@@ -37,7 +37,7 @@ class OrthoContextMenu :
 	typedef std::map<int, MenuItems> MenuSections;
 	MenuSections _sections;
 
-    wxutil::MenuItemPtr _createEntityItem;
+	wxutil::MenuItemPtr _createEntityItem;
 
 	struct ExtendedSelectionInfo
 	{
@@ -87,8 +87,8 @@ public:
 
 private:
 
-    static std::string getRegistryKeyWithDefault(const std::string&,
-                                                 const std::string&);
+	static std::string getRegistryKeyWithDefault(const std::string&,
+												 const std::string&);
 
 	void analyseSelection();
 
@@ -112,7 +112,7 @@ private:
 	void callbackAddPrefab();
 	void callbackAddSpeaker();
 
-    void createEntity(const std::string& classname);
+	void createEntity(const std::string& classname);
 
 	void registerDefaultItems();
 

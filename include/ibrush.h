@@ -78,7 +78,7 @@ struct WindingVertex
 	bool operator==(const WindingVertex& other) const
 	{
 		return (vertex == other.vertex && texcoord == other.texcoord &&
-			    tangent == other.tangent && bitangent == other.bitangent &&
+				tangent == other.tangent && bitangent == other.bitangent &&
 				normal == other.normal && adjacent == other.adjacent);
 	}
 };
@@ -100,12 +100,12 @@ struct ShiftScaleRotation
 	double	rotate;
 	double	scale[2];
 
-    ShiftScaleRotation()
-    {
-        shift[0] = shift[1] = 0;
-        rotate = 0;
-        scale[0] = scale[1] = 1;
-    }
+	ShiftScaleRotation()
+	{
+		shift[0] = shift[1] = 0;
+		rotate = 0;
+		scale[0] = scale[1] = 1;
+	}
 };
 
 class IBrush;
@@ -117,8 +117,8 @@ public:
 	// Destructor
 	virtual ~IFace() {}
 
-    // Returns a reference to the brush containing this face
-    virtual IBrush& getBrush() = 0;
+	// Returns a reference to the brush containing this face
+	virtual IBrush& getBrush() = 0;
 
 	// Submits the current state to the UndoSystem, to make further actions undo-able
 	virtual void undoSave() = 0;
@@ -144,12 +144,12 @@ public:
 	// Rotates the texture by the given angle
 	virtual void rotateTexdef(float angle) = 0;
 
-    // Returns the amount of texture pixels per game unit shown on this face
-    // This is based on the image returned by the material, usually the editor image
-    virtual Vector2 getTexelScale() const = 0;
+	// Returns the amount of texture pixels per game unit shown on this face
+	// This is based on the image returned by the material, usually the editor image
+	virtual Vector2 getTexelScale() const = 0;
 
-    // Returns the texture aspect ratio width/height
-    virtual float getTextureAspectRatio() const = 0;
+	// Returns the texture aspect ratio width/height
+	virtual float getTextureAspectRatio() const = 0;
 
 	// Fits the texture on this face
 	virtual void fitTexture(float s_repeat, float t_repeat) = 0;
@@ -171,11 +171,11 @@ public:
 	// If possible, aligns the assigned texture at the given anchor edge
 	virtual void alignTexture(AlignEdge alignType) = 0;
 
-    // Reverts any transform that has been applied since the last time freezeTransform() was called
-    virtual void revertTransform() = 0;
+	// Reverts any transform that has been applied since the last time freezeTransform() was called
+	virtual void revertTransform() = 0;
 
-    // Promotes the current transformed state to the new base state
-    virtual void freezeTransform() = 0;
+	// Promotes the current transformed state to the new base state
+	virtual void freezeTransform() = 0;
 
 	// Get access to the actual Winding object
 	virtual IWinding& getWinding() = 0;
@@ -185,18 +185,18 @@ public:
 
 	/**
 	 * The matrix used to project world coordinates to U/V space, after the winding vertices
-     * have been transformed to this face's axis base system.
-     * The components of this matrix correspond to the matrix values written to the idTech4 
-     * brushDef3 face definition (with <zx, zy> holding the translation part):
-     * e.g. ( plane ) ( ( xx yx zx ) ( yx yy zy ) ) "textures/path/to/material" 0 0 0
+	 * have been transformed to this face's axis base system.
+	 * The components of this matrix correspond to the matrix values written to the idTech4 
+	 * brushDef3 face definition (with <zx, zy> holding the translation part):
+	 * e.g. ( plane ) ( ( xx yx zx ) ( yx yy zy ) ) "textures/path/to/material" 0 0 0
 	 */
 	virtual Matrix3 getProjectionMatrix() const = 0;
 
 	virtual void setProjectionMatrix(const Matrix3& projection) = 0;
 
-    // Constructs the texture projection matrix from the given (world) vertex and texture coords.
-    // Three vertices and their UV coordinates are enough to construct the texdef.
-    virtual void setTexDefFromPoints(const Vector3 points[3], const Vector2 uvs[3]) = 0;
+	// Constructs the texture projection matrix from the given (world) vertex and texture coords.
+	// Three vertices and their UV coordinates are enough to construct the texdef.
+	virtual void setTexDefFromPoints(const Vector3 points[3], const Vector2 uvs[3]) = 0;
 
 	/**
 	 * Calculates and returns the texture definition as shift/scale/rotate.
@@ -206,11 +206,11 @@ public:
 	virtual ShiftScaleRotation getShiftScaleRotation() const = 0;
 	virtual void setShiftScaleRotation(const ShiftScaleRotation& scr) = 0;
 
-    // Transforms this face plane with the given transformation matrix
-    virtual void transform(const Matrix4& transformation) = 0;
+	// Transforms this face plane with the given transformation matrix
+	virtual void transform(const Matrix4& transformation) = 0;
 
-    // Emitted from this IFace's destructor, as last sign of life
-    virtual sigc::signal<void>& signal_faceDestroyed() = 0;
+	// Emitted from this IFace's destructor, as last sign of life
+	virtual sigc::signal<void>& signal_faceDestroyed() = 0;
 };
 
 // Plane classification info used by splitting and CSG algorithms
@@ -238,7 +238,7 @@ struct BrushSplitType
 class IBrush
 {
 public:
-    virtual ~IBrush() {}
+	virtual ~IBrush() {}
 
 	// Returns the number of faces for this brush
 	virtual std::size_t getNumFaces() const = 0;
@@ -255,8 +255,8 @@ public:
 	// Add a new face to this brush, using the given plane, projection matrix and material name
 	virtual IFace& addFace(const Plane3& plane, const Matrix3& textureProjection, const std::string& material) = 0;
 
-    // Removes all faces from this brush
-    virtual void clear() = 0;
+	// Removes all faces from this brush
+	virtual void clear() = 0;
 
 	// Returns true when this brush has no faces
 	virtual bool empty() const = 0;
@@ -264,10 +264,10 @@ public:
 	// Returns true if any face of the brush contributes to the final B-Rep.
 	virtual bool hasContributingFaces() const = 0;
 
-    // Remove any faces from this brush that are not contributing anything to the resulting polyehdron
-    // These are planes that have the same normal as an existing face and are superceded by them
-    // This method is meant to be used during map loading to remove redundancy parsed from legacy maps
-    virtual void removeRedundantFaces() = 0;
+	// Remove any faces from this brush that are not contributing anything to the resulting polyehdron
+	// These are planes that have the same normal as an existing face and are superceded by them
+	// This method is meant to be used during map loading to remove redundancy parsed from legacy maps
+	virtual void removeRedundantFaces() = 0;
 
 	// Removes faces that do not contribute to the brush.
 	// This is useful for cleaning up after CSG operations on the brush.
@@ -324,7 +324,7 @@ class Brush;
 class IBrushNode
 {
 public:
-    virtual ~IBrushNode() {}
+	virtual ~IBrushNode() {}
 	/** greebo: Retrieves the contained Brush from the BrushNode
 	 */
 	virtual Brush& getBrush() = 0;
@@ -336,7 +336,7 @@ typedef std::shared_ptr<IBrushNode> IBrushNodePtr;
 
 inline bool Node_isBrush(const scene::INodePtr& node)
 {
-    return node->getNodeType() == scene::INode::Type::Brush;
+	return node->getNodeType() == scene::INode::Type::Brush;
 	//return std::dynamic_pointer_cast<IBrushNode>(node) != NULL;
 }
 

@@ -88,7 +88,7 @@
 								<label>texturedModeButton</label>
 								<tooltip>Switch to Textured Mode</tooltip>
 								<longhelp></longhelp>
-								<bitmap stock_id="darkradiant:textureMode16.png" stock_client="wxART_TOOLBAR">undefined.png</bitmap>
+								<bitmap stock_id="darkradiant:render_texture.png" stock_client="wxART_TOOLBAR">undefined.png</bitmap>
 								<radio>1</radio>
 							</object>
 							<object class="tool" name="lightingModeButton">

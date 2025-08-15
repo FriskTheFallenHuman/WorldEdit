@@ -22,8 +22,8 @@ namespace ui
 class ColourSchemeEditor :
 	public wxutil::DialogBase
 {
-    // The list of available colour schemes
-    wxDataViewListCtrl* _schemeList = nullptr;
+	// The list of available colour schemes
+	wxDataViewListCtrl* _schemeList = nullptr;
 
 	// The vbox containing the colour buttons and its frame
 	wxPanel* _colourFrame;
@@ -47,8 +47,8 @@ private:
 	// private helper functions
 	void populateTree();
 	void constructWindow();
-    wxBoxSizer* constructListButtons();
-    void addOptionsPanel(wxBoxSizer& vbox);
+	wxBoxSizer* constructListButtons();
+	void addOptionsPanel(wxBoxSizer& vbox);
 	wxSizer* constructColourSelector(colours::IColourItem& colour, const std::string& name);
 	void updateColourSelectors();
 

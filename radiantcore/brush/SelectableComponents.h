@@ -26,11 +26,11 @@ class SelectableEdge
 {
   Vector3 getEdge() const
   {
-    const Winding& winding = getFace().getWinding();
-    return math::midPoint(
-        winding[m_faceVertex.getVertex()].vertex,
-        winding[winding.next(m_faceVertex.getVertex())].vertex
-    );
+	const Winding& winding = getFace().getWinding();
+	return math::midPoint(
+		winding[m_faceVertex.getVertex()].vertex,
+		winding[winding.next(m_faceVertex.getVertex())].vertex
+	);
   }
 
 public:
@@ -38,23 +38,23 @@ public:
   FaceVertexId m_faceVertex;
 
   SelectableEdge(Faces& faces, FaceVertexId faceVertex)
-    : m_faces(faces), m_faceVertex(faceVertex)
+	: m_faces(faces), m_faceVertex(faceVertex)
   {
   }
   SelectableEdge& operator=(const SelectableEdge& other)
   {
-    m_faceVertex = other.m_faceVertex;
-    return *this;
+	m_faceVertex = other.m_faceVertex;
+	return *this;
   }
 
   Face& getFace() const
   {
-    return *m_faces[m_faceVertex.getFace()];
+	return *m_faces[m_faceVertex.getFace()];
   }
 
   void testSelect(SelectionTest& test, SelectionIntersection& best)
   {
-    test.TestPoint(getEdge(), best);
+	test.TestPoint(getEdge(), best);
   }
 };
 
@@ -62,7 +62,7 @@ class SelectableVertex
 {
   Vector3 getVertex() const
   {
-    return getFace().getWinding()[m_faceVertex.getVertex()].vertex;
+	return getFace().getWinding()[m_faceVertex.getVertex()].vertex;
   }
 
 public:
@@ -70,23 +70,23 @@ public:
   FaceVertexId m_faceVertex;
 
   SelectableVertex(Faces& faces, FaceVertexId faceVertex)
-    : m_faces(faces), m_faceVertex(faceVertex)
+	: m_faces(faces), m_faceVertex(faceVertex)
   {
   }
   SelectableVertex& operator=(const SelectableVertex& other)
   {
-    m_faceVertex = other.m_faceVertex;
-    return *this;
+	m_faceVertex = other.m_faceVertex;
+	return *this;
   }
 
   Face& getFace() const
   {
-    return *m_faces[m_faceVertex.getFace()];
+	return *m_faces[m_faceVertex.getFace()];
   }
 
   void testSelect(SelectionTest& test, SelectionIntersection& best)
   {
-    test.TestPoint(getVertex(), best);
+	test.TestPoint(getVertex(), best);
   }
 };
 

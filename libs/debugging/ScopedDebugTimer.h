@@ -10,11 +10,11 @@
 	#undef max
 
    #if !defined(_WINSOCK2API_) && !defined(_WINSOCKAPI_)
-         struct timeval
-         {
-            long tv_sec;
-            long tv_usec;
-         };
+		 struct timeval
+		 {
+			long tv_sec;
+			long tv_usec;
+		 };
    #endif
 #else
    #include <sys/time.h>
@@ -23,15 +23,15 @@
 #if defined(_MSC_VER) || defined(_WINDOWS_)
    inline int gettimeofday(struct timeval* tv, void*)
    {
-      union {
-         long long ns100;
-         FILETIME ft;
-      } now;
+	  union {
+		 long long ns100;
+		 FILETIME ft;
+	  } now;
 
-      GetSystemTimeAsFileTime (&now.ft);
-      tv->tv_usec = (long) ((now.ns100 / 10LL) % 1000000LL);
-      tv->tv_sec = (long) ((now.ns100 - 116444736000000000LL) / 10000000LL);
-     return (0);
+	  GetSystemTimeAsFileTime (&now.ft);
+	  tv->tv_usec = (long) ((now.ns100 / 10LL) % 1000000LL);
+	  tv->tv_sec = (long) ((now.ns100 - 116444736000000000LL) / 10000000LL);
+	 return (0);
    }
 #endif
 
@@ -99,7 +99,7 @@ public:
 	 * Destructor. Prints out the time of the operation.
 	 */
 	~ScopedDebugTimer()
-    {
+	{
 		// Get the current time
 		timeval end;
 		gettimeofday(&end, nullptr);
@@ -107,15 +107,15 @@ public:
 		// Calculate duration
 		double duration = end - _s;
 
-        auto stream = rMessage();
+		auto stream = rMessage();
 
-        stream << _op << " in " << duration << " seconds";
+		stream << _op << " in " << duration << " seconds";
 
 		if (_fps)
-        {
-            stream << " (" << (1.0 / duration) << " FPS)";
+		{
+			stream << " (" << (1.0 / duration) << " FPS)";
 		}
 
-        stream << std::endl;
+		stream << std::endl;
 	}
 };

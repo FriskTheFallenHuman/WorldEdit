@@ -23,9 +23,9 @@ private:
 	// The main container (where layouts can start packing stuff into)
 	wxBoxSizer* _mainContainer;
 
-    wxutil::ScrollEventPropagationFilterPtr _scrollEventFilter;
+	wxutil::ScrollEventPropagationFilterPtr _scrollEventFilter;
 
-    std::map<IMainFrame::Toolbar, wxWindowPtr<wxToolBar>> _toolbars;
+	std::map<IMainFrame::Toolbar, wxWindowPtr<wxToolBar>> _toolbars;
 
 public:
 	TopLevelFrame();

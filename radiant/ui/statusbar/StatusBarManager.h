@@ -69,7 +69,7 @@ public:
 	 * @name: the name of the element (can be used for later lookup).
 	 * @widget: the widget to pack.
 	 * @pos: the position to insert. Use StandardPosition::Front or StandardPosition::Back
-     * to put the element at the front or back of the status bar container.
+	 * to put the element at the front or back of the status bar container.
 	 */
 	void addElement(const std::string& name, wxWindow* widget, int pos) override;
 
@@ -89,7 +89,7 @@ public:
 	 *        if no icon is desired.
 	 * @pos: the position to insert. Use POS_FRONT or POS_BACK to put the element
 	 *       at the front or back of the status bar container.
- 	 */
+	 */
 	void addTextElement(const std::string& name, const std::string& icon, int pos, 
 						const std::string& description) override;
 
@@ -97,12 +97,12 @@ public:
 	 * Updates the content of the named text element. The name must refer to
 	 * an element previously added by addTextElement().
 	 */
-    void setText(const std::string& name, const std::string& text, bool immediateUpdate) override;
+	void setText(const std::string& name, const std::string& text, bool immediateUpdate) override;
 
-    // RegisterableModule
-    const std::string& getName() const override;
-    const StringSet& getDependencies() const override;
-    void initialiseModule(const IApplicationContext& ctx) override;
+	// RegisterableModule
+	const std::string& getName() const override;
+	const StringSet& getDependencies() const override;
+	void initialiseModule(const IApplicationContext& ctx) override;
 
 protected:
 	// Gets called when the app is idle - this fills in the status text

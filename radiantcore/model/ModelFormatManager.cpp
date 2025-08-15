@@ -27,7 +27,7 @@ const std::string& ModelFormatManager::getName() const
 
 const StringSet& ModelFormatManager::getDependencies() const
 {
-    static StringSet _dependencies { MODULE_COMMANDSYSTEM };
+	static StringSet _dependencies { MODULE_COMMANDSYSTEM };
 	return _dependencies;
 }
 
@@ -39,16 +39,16 @@ void ModelFormatManager::initialiseModule(const IApplicationContext& ctx)
 		sigc::mem_fun(this, &ModelFormatManager::postModuleInitialisation)
 	);
 
-    // Register the built-in model importers
-    registerImporter(std::make_shared<FbxModelLoader>());
+	// Register the built-in model importers
+	registerImporter(std::make_shared<FbxModelLoader>());
 
 	// Register the built-in model exporters
 	registerExporter(std::make_shared<AseExporter>());
 	registerExporter(std::make_shared<Lwo2Exporter>());
 	registerExporter(std::make_shared<WavefrontExporter>());
 
-    GlobalCommandSystem().addCommand("ConvertModel", std::bind(&ModelFormatManager::convertModelCmd, this, std::placeholders::_1),
-        { cmd::ARGTYPE_STRING, cmd::ARGTYPE_STRING, cmd::ARGTYPE_STRING });
+	GlobalCommandSystem().addCommand("ConvertModel", std::bind(&ModelFormatManager::convertModelCmd, this, std::placeholders::_1),
+		{ cmd::ARGTYPE_STRING, cmd::ARGTYPE_STRING, cmd::ARGTYPE_STRING });
 }
 
 void ModelFormatManager::postModuleInitialisation()
@@ -178,59 +178,59 @@ void ModelFormatManager::foreachExporter(const std::function<void(const IModelEx
 
 void ModelFormatManager::convertModelCmd(const cmd::ArgumentList& args)
 {
-    if (args.size() != 3)
-    {
-        rWarning() << "Usage: ConvertModel <InputPath> <OutputPath> <ExportFormat>" << std::endl;
-        return;
-    }
+	if (args.size() != 3)
+	{
+		rWarning() << "Usage: ConvertModel <InputPath> <OutputPath> <ExportFormat>" << std::endl;
+		return;
+	}
 
-    auto inputPath = args[0].getString();
-    auto outputPathRaw = args[1].getString();
-    auto outputFormat = args[2].getString();
+	auto inputPath = args[0].getString();
+	auto outputPathRaw = args[1].getString();
+	auto outputFormat = args[2].getString();
 
-    // Get the exporter
-    auto exporter = getExporter(outputFormat);
+	// Get the exporter
+	auto exporter = getExporter(outputFormat);
 
-    if (!exporter)
-    {
-        throw cmd::ExecutionFailure(fmt::format(_("Could not find any exporter for this format: {0}"), outputFormat));
-    }
+	if (!exporter)
+	{
+		throw cmd::ExecutionFailure(fmt::format(_("Could not find any exporter for this format: {0}"), outputFormat));
+	}
 
-    // Load the input model
-    IModelPtr model;
+	// Load the input model
+	IModelPtr model;
 
-    foreachImporter([&](const model::IModelImporterPtr& importer)
-    {
-        if (!model)
-        {
-            model = importer->loadModelFromPath(inputPath);
-        }
-    });
+	foreachImporter([&](const model::IModelImporterPtr& importer)
+	{
+		if (!model)
+		{
+			model = importer->loadModelFromPath(inputPath);
+		}
+	});
 
-    if (!model)
-    {
-        throw cmd::ExecutionFailure(fmt::format(_("Could not load model file {0}"), inputPath));
-    }
+	if (!model)
+	{
+		throw cmd::ExecutionFailure(fmt::format(_("Could not load model file {0}"), inputPath));
+	}
 
-    // Stream all model surfaces to the exporter
-    for (int i = 0; i < model->getSurfaceCount(); ++i)
-    {
-        auto& surface = model->getSurface(static_cast<unsigned int>(i));
-        exporter->addSurface(surface, Matrix4::getIdentity());
-    }
+	// Stream all model surfaces to the exporter
+	for (int i = 0; i < model->getSurfaceCount(); ++i)
+	{
+		auto& surface = model->getSurface(static_cast<unsigned int>(i));
+		exporter->addSurface(surface, Matrix4::getIdentity());
+	}
 
-    fs::path outputPath = outputPathRaw;
+	fs::path outputPath = outputPathRaw;
 
-    rMessage() << "Exporting model to " << outputPath.string() << std::endl;
+	rMessage() << "Exporting model to " << outputPath.string() << std::endl;
 
-    try
-    {
-        exporter->exportToPath(outputPath.parent_path().string(), outputPath.filename().string());
-    }
-    catch (const std::runtime_error& ex)
-    {
-        throw cmd::ExecutionFailure(fmt::format(_("Failed to export model to {0}: {1}"), outputPath.string(), ex.what()));
-    }
+	try
+	{
+		exporter->exportToPath(outputPath.parent_path().string(), outputPath.filename().string());
+	}
+	catch (const std::runtime_error& ex)
+	{
+		throw cmd::ExecutionFailure(fmt::format(_("Failed to export model to {0}: {1}"), outputPath.string(), ex.what()));
+	}
 }
 
 module::StaticModuleRegistration<ModelFormatManager> _staticModelFormatManagerModule;

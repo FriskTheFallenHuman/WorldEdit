@@ -28,19 +28,19 @@ const std::string& AseExporter::getExtension() const
 
 void AseExporter::exportToPath(const std::string& outputPath, const std::string& filename)
 {
-    // Open the stream to the output file
-    stream::ExportStream output(outputPath, filename, stream::ExportStream::Mode::Text);
+	// Open the stream to the output file
+	stream::ExportStream output(outputPath, filename, stream::ExportStream::Mode::Text);
 
-    exportToStream(output.getStream());
+	exportToStream(output.getStream());
 
-    output.close();
+	output.close();
 }
 
 void AseExporter::exportToStream(std::ostream& stream)
 {
 	// Header / scene block
 	stream << "*3DSMAX_ASCIIEXPORT	200" << std::endl;
-	stream << "*COMMENT \"DarkRadiant ASCII Scene Export(*.ase)\"" << std::endl;
+	stream << "*COMMENT \"WorldEdit ASCII Scene Export(*.ase)\"" << std::endl;
 	stream << "*SCENE {" << std::endl;
 	stream << "\t*SCENE_FILENAME \"" << GlobalMapModule().getMapName() << "\"" << std::endl;
 	stream << "\t*SCENE_FIRSTFRAME 0" << std::endl;

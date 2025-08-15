@@ -3,9 +3,19 @@
 #include "wxutil/Bitmap.h"
 #include <wx/menuitem.h>
 
+namespace
+{
+	const char* const ICON_COPY = "copy.png";
+	const char* const ICON_PASTE = "paste.png";
+	const char* const ICON_CUT = "cut.png";
+	const char* const ICON_ADD = "plus.png";
+	const char* const ICON_REMOVE = "minus.png";
+	const char* const ICON_UNDO = "undo.png";
+	const char* const ICON_TICK_MARK = "check.png";
+}
+
 namespace wxutil
 {
-
 class IconTextMenuItem :
 	public wxMenuItem
 {

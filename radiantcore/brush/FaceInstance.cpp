@@ -99,7 +99,7 @@ bool FaceInstance::selectedComponents() const
 bool FaceInstance::selectedComponents(selection::ComponentSelectionMode mode) const
 {
 	switch (mode)
-    {
+	{
 		case selection::ComponentSelectionMode::Vertex:
 			return selectedVertices();
 		case selection::ComponentSelectionMode::Edge:
@@ -114,7 +114,7 @@ bool FaceInstance::selectedComponents(selection::ComponentSelectionMode mode) co
 void FaceInstance::setSelected(selection::ComponentSelectionMode mode, bool select)
 {
 	switch (mode)
-    {
+	{
 		case selection::ComponentSelectionMode::Face:
 			m_selectable.setSelected(select);
 			break;
@@ -138,8 +138,8 @@ void FaceInstance::setSelected(selection::ComponentSelectionMode mode, bool sele
 void FaceInstance::invertSelected()
 {
 	switch (GlobalSelectionSystem().ComponentMode()) 
-    {
-        case selection::ComponentSelectionMode::Face:
+	{
+		case selection::ComponentSelectionMode::Face:
 			m_selectable.setSelected(!m_selectable.isSelected());
 			break;
 		case selection::ComponentSelectionMode::Vertex:

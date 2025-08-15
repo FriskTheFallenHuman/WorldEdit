@@ -1,0 +1,56 @@
+worldedit(1)
+==============
+:doctype: manpage
+
+NAME
+----
+worldedit - the level editor for Doom 3
+
+SYNOPSIS
+--------
+worldedit [ options ] filename
+
+DESCRIPTION
+-----------
+WorldEdit is a level editor for Doom 3/Quake 3/Quake 4 and Prey06. It loads and saves Doom
+3-format *.map files, making use of assets within a game installation tree.
+
+It can also save and load Quake 4 *.map format, although it may be a bit buggy.
+
+OPTIONS
+-------
+
+*--disable-sound*::
+    Disable the sound manager module. This may be useful if there are problems
+    with sound devices on the system.
+
+'filename'::
+    Path to a map file to load. This may be either an absolute filesystem path,
+    or a mod-local path.
+
+In order to allow maximum customisability by after-market mods, the id software
+game engines use a three-directory system: the 'base' directory, which is where
+the core game assets are installed, and then two mod-specific directories known
+as 'fs_game' and 'fs_game_base'. The intention is that 'fs_game_base' is used
+for the common mod assets, and 'fs_game' is available for individual map
+authors to further customise assets used in their own releases.
+
+These values are normally configured in preferences, but they can be overridden
+on the command line if required:
+
+*fs_game='game'*::
+    Override the configured fs_game value.
+
+*fs_game_base='game_base'*::
+    Override the configured fs_game_base value.
+
+BUGS
+----
+The lighting render mode is very limited compared to the Doom 3 rendering
+system. In particular, there are no stencil shadows, foglights or any other
+complex lighting effects.
+
+AUTHOR
+------
+WorldEdit is developed by the WorldEdit team, at https://github.com/FriskTheFallenHuman/WorldEdit
+

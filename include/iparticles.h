@@ -38,10 +38,10 @@ typedef std::shared_ptr<IParticleNode> IParticleNodePtr;
  * about which is provided via the IStageDef interface.
  */
 class IParticleDef :
-    public decl::IDeclaration
+	public decl::IDeclaration
 {
 public:
-    using Ptr = std::shared_ptr<IParticleDef>;
+	using Ptr = std::shared_ptr<IParticleDef>;
 
 	virtual ~IParticleDef() {}
 
@@ -56,7 +56,7 @@ public:
 	/// Returns the number of stages for this particle system.
 	virtual std::size_t getNumStages() = 0;
 
-    /// Get a stage definition from the particle definition
+	/// Get a stage definition from the particle definition
 	virtual const std::shared_ptr<IStageDef>& getStage(std::size_t stageNum) = 0;
 
 	/**
@@ -76,8 +76,8 @@ public:
 	 */
 	virtual void swapParticleStages(std::size_t index, std::size_t index2) = 0;
 
-    /// Signal emitted when some aspect of the particle def has changed
-    virtual sigc::signal<void>& signal_changed() = 0;
+	/// Signal emitted when some aspect of the particle def has changed
+	virtual sigc::signal<void>& signal_changed() = 0;
 
 	// Comparison operator - particle defs are considered equal if all properties (except the name!),
 	// number of stages and stage contents are the equal
@@ -105,8 +105,8 @@ public:
 	 * the current render time.
 	 *
 	 * @viewRotation: the matrix to orient themselves to the viewer.
-     * @localToWorld: the combined transform of local to world coordinates
-     * @entity: the parent entity
+	 * @localToWorld: the combined transform of local to world coordinates
+	 * @entity: the parent entity
 	 */
 	virtual void update(const Matrix4& viewRotation, const Matrix4& localToWorld, IRenderEntity* entity) = 0;
 		
@@ -154,13 +154,13 @@ class IParticlesManager :
 {
 public:
 
-    /// Signal emitted when particle definitions are reloaded
-    virtual sigc::signal<void>& signal_particlesReloaded() = 0;
+	/// Signal emitted when particle definitions are reloaded
+	virtual sigc::signal<void>& signal_particlesReloaded() = 0;
 
 	/// Enumerate each particle def.
 	virtual void forEachParticleDef(const ParticleDefVisitor&) = 0;
 
-    /// Return the definition object for the given named particle system
+	/// Return the definition object for the given named particle system
 	virtual IParticleDef::Ptr getDefByName(const std::string& name) = 0;
 
 	// Finds or creates the particle def with the given name, always returns non-NULL
@@ -177,7 +177,7 @@ public:
 	 */
 	virtual IRenderableParticlePtr getRenderableParticle(const std::string& name) = 0;
 
-    /// Create and return a particle node for the named particle system
+	/// Create and return a particle node for the named particle system
 	virtual IParticleNodePtr createParticleNode(const std::string& name) = 0;
 
 	/**

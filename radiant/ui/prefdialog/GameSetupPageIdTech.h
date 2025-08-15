@@ -10,7 +10,7 @@ namespace ui
 
 /**
 * A Setup Page for generic idTech-based games like
-* Doom3, Quake3, Quake4, etc.
+* Doom3, Quake3, Quake4, Prey etc.
 */
 class GameSetupPageIdTech :
 	public GameSetupPage

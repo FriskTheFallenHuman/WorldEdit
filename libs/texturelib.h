@@ -13,34 +13,34 @@
 // Promotes the given 3x3 texture projection matrix to the 4x4 type
 inline Matrix4 getMatrix4FromTextureMatrix(const Matrix3& matrix3)
 {
-    auto matrix4 = Matrix4::getIdentity();
+	auto matrix4 = Matrix4::getIdentity();
 
-    matrix4.xx() = matrix3.xx();
-    matrix4.xy() = matrix3.xy();
-    matrix4.yy() = matrix3.yy();
-    matrix4.yx() = matrix3.yx();
+	matrix4.xx() = matrix3.xx();
+	matrix4.xy() = matrix3.xy();
+	matrix4.yy() = matrix3.yy();
+	matrix4.yx() = matrix3.yx();
 
-    // Z => T
-    matrix4.tx() = matrix3.zx();
-    matrix4.ty() = matrix3.zy();
+	// Z => T
+	matrix4.tx() = matrix3.zx();
+	matrix4.ty() = matrix3.zy();
 
-    return matrix4;
+	return matrix4;
 }
 
 inline Matrix3 getTextureMatrixFromMatrix4(const Matrix4& matrix4)
 {
-    auto matrix3 = Matrix3::getIdentity();
+	auto matrix3 = Matrix3::getIdentity();
 
-    matrix3.xx() = matrix4.xx();
-    matrix3.xy() = matrix4.xy();
-    matrix3.yy() = matrix4.yy();
-    matrix3.yx() = matrix4.yx();
+	matrix3.xx() = matrix4.xx();
+	matrix3.xy() = matrix4.xy();
+	matrix3.yy() = matrix4.yy();
+	matrix3.yx() = matrix4.yx();
 
-    // T => Z
-    matrix3.zx() = matrix4.tx();
-    matrix3.zy() = matrix4.ty();
+	// T => Z
+	matrix3.zx() = matrix4.tx();
+	matrix3.zy() = matrix4.ty();
 
-    return matrix3;
+	return matrix3;
 }
 
 enum ProjectionAxis {
@@ -183,23 +183,23 @@ inline void ComputeAxisBase(const Vector3& normal, Vector3& texS, Vector3& texT)
  */
 inline Matrix4 getBasisTransformForNormal(const Vector3& normal)
 {
-    Vector3 texS, texT;
-    ComputeAxisBase(normal, texS, texT);
+	Vector3 texS, texT;
+	ComputeAxisBase(normal, texS, texT);
 
-    Matrix4 basis = Matrix4::getIdentity();
-    basis.setXCol(texS);
-    basis.setYCol(texT);
-    basis.setZCol(normal);
+	Matrix4 basis = Matrix4::getIdentity();
+	basis.setXCol(texS);
+	basis.setYCol(texT);
+	basis.setZCol(normal);
 
-    // At this point the basis matrix contains three column vectors that are
-    // perpendicular to each other.
+	// At this point the basis matrix contains three column vectors that are
+	// perpendicular to each other.
 
-    // The x-line of <basis> contains the <texS> basis vector (within the face plane)
-    // The y-line of <basis> contains the <texT> basis vector (within the face plane)
-    // The z-line of <basis> contains the <normal> basis vector (perpendicular to the face plane)
+	// The x-line of <basis> contains the <texS> basis vector (within the face plane)
+	// The y-line of <basis> contains the <texT> basis vector (within the face plane)
+	// The z-line of <basis> contains the <normal> basis vector (perpendicular to the face plane)
 
-    // invert this matrix and return
-    return basis.getTransposed(); 
+	// invert this matrix and return
+	return basis.getTransposed(); 
 }
 
 /* greebo: this is used to calculate the directions the patch is "flattened" in.

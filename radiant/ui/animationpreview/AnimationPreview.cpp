@@ -80,25 +80,25 @@ void AnimationPreview::setModelNode(const scene::INodePtr& node)
 
 	if (_model != nullptr)
 	{
-        // Reset the model rotation
-        resetModelRotation();
+		// Reset the model rotation
+		resetModelRotation();
 
 		// Use AABB to adjust camera distance
 		const AABB& bounds = _model->localAABB();
 
 		if (bounds.isValid())
 		{
-            // Reset the default view, facing down to the model from diagonally above the bounding box
-            double distance = bounds.getRadius() * 3.0f;
-            setViewOrigin(Vector3(1, 1, 1) * distance);
+			// Reset the default view, facing down to the model from diagonally above the bounding box
+			double distance = bounds.getRadius() * 3.0f;
+			setViewOrigin(Vector3(1, 1, 1) * distance);
 		}
 		else
 		{
 			// Bounds not valid, fall back to default
-            setViewOrigin(Vector3(1, 1, 1) * 40.0f);
+			setViewOrigin(Vector3(1, 1, 1) * 40.0f);
 		}
 
-        setViewAngles(Vector3(23, 135, 0));
+		setViewAngles(Vector3(23, 135, 0));
 
 		// Start playback when switching particles
 		startPlayback();
@@ -128,23 +128,23 @@ bool AnimationPreview::onPreRender()
 
 std::string AnimationPreview::getInfoText()
 {
-    auto text = RenderPreview::getInfoText();
+	auto text = RenderPreview::getInfoText();
 
-    if (_model)
-    {
-        // Set the animation to play
-        auto model = Node_getModel(_model);
-        auto anim = dynamic_cast<md5::IMD5Model&>(model->getIModel()).getAnim();
+	if (_model)
+	{
+		// Set the animation to play
+		auto model = Node_getModel(_model);
+		auto anim = dynamic_cast<md5::IMD5Model&>(model->getIModel()).getAnim();
 
-        if (anim)
-        {
-            auto numFrames = anim->getNumFrames();
-            auto currentFrame = (_renderSystem->getTime() / MSEC_PER_FRAME) % numFrames;
-            return fmt::format(_("{0} | Frame {1} of {2}."), text, currentFrame, numFrames);
-        }
-    }
+		if (anim)
+		{
+			auto numFrames = anim->getNumFrames();
+			auto currentFrame = (_renderSystem->getTime() / MSEC_PER_FRAME) % numFrames;
+			return fmt::format(_("{0} | Frame {1} of {2}."), text, currentFrame, numFrames);
+		}
+	}
 
-    return text;
+	return text;
 }
 
 RenderStateFlags AnimationPreview::getRenderFlagsFill()
@@ -172,13 +172,13 @@ void AnimationPreview::setupSceneGraph()
 {
 	RenderPreview::setupSceneGraph();
 
-    _root = std::make_shared<scene::BasicRootNode>();
+	_root = std::make_shared<scene::BasicRootNode>();
 
 	_entity = GlobalEntityModule().createEntity(
 		GlobalEntityClassManager().findClass(FUNC_STATIC_CLASS)
-    );
+	);
 
-    _root->addChildNode(_entity);
+	_root->addChildNode(_entity);
 
 	// This entity is acting as our root node in the scene
 	getScene()->setRoot(_root);
@@ -186,22 +186,22 @@ void AnimationPreview::setupSceneGraph()
 
 void AnimationPreview::onModelRotationChanged()
 {
-    if (_entity)
-    {
-        // Update the model rotation on the entity
-        std::ostringstream value;
-        value << _modelRotation.xx() << ' '
-            << _modelRotation.xy() << ' '
-            << _modelRotation.xz() << ' '
-            << _modelRotation.yx() << ' '
-            << _modelRotation.yy() << ' '
-            << _modelRotation.yz() << ' '
-            << _modelRotation.zx() << ' '
-            << _modelRotation.zy() << ' '
-            << _modelRotation.zz();
+	if (_entity)
+	{
+		// Update the model rotation on the entity
+		std::ostringstream value;
+		value << _modelRotation.xx() << ' '
+			<< _modelRotation.xy() << ' '
+			<< _modelRotation.xz() << ' '
+			<< _modelRotation.yx() << ' '
+			<< _modelRotation.yy() << ' '
+			<< _modelRotation.yz() << ' '
+			<< _modelRotation.zx() << ' '
+			<< _modelRotation.zy() << ' '
+			<< _modelRotation.zz();
 
-        Node_getEntity(_entity)->setKeyValue("rotation", value.str());
-    }
+		Node_getEntity(_entity)->setKeyValue("rotation", value.str());
+	}
 }
 
 } // namespace

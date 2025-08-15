@@ -23,7 +23,7 @@ const std::string& PatchDef2Parser::getKeyword() const
 {
 patchDef2
 {
-"textures/darkmod/stone/brick/rough_big_blocks03"
+"textures/hell/sandylanrockblend"
 ( 5 3 0 0 0 )
 (
 ( ( 64 -88 108 0 0 ) ( 64 -88 184 0 -1.484375 ) ( 64 -88 184 0 -1.484375 ) )

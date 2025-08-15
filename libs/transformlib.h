@@ -35,15 +35,15 @@ namespace scene
 template<typename Func>
 void forEachTransformable(const INode& node, Func functor)
 {
-    node.foreachNode(
-        [&](const scene::INodePtr& child) -> bool
-        {
-            ITransformablePtr transformable = scene::node_cast<ITransformable>(child);
-            if (transformable)
-                functor(*transformable);
+	node.foreachNode(
+		[&](const scene::INodePtr& child) -> bool
+		{
+			ITransformablePtr transformable = scene::node_cast<ITransformable>(child);
+			if (transformable)
+				functor(*transformable);
 
-            return true;
-        }
-    );
+			return true;
+		}
+	);
 }
 }

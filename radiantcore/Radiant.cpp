@@ -29,15 +29,15 @@ Radiant::Radiant(IApplicationContext& context) :
 	// Set the stream references for rMessage(), redirect std::cout, etc.
 	applog::LogStream::InitialiseStreams(getLogWriter());
 
-    // Initialise the GlobalErorrHandler() function object, which is used by ASSERT_MESSAGE
-    // This is usually a function owned by the UI module to show a popup
-    GlobalErrorHandler() = _context.getErrorHandlingFunction();
+	// Initialise the GlobalErorrHandler() function object, which is used by ASSERT_MESSAGE
+	// This is usually a function owned by the UI module to show a popup
+	GlobalErrorHandler() = _context.getErrorHandlingFunction();
 
 	// Attach the logfile to the logwriter
 	createLogFile();
 
 #ifdef POSIX
-    applog::SegFaultHandler::Install();
+	applog::SegFaultHandler::Install();
 #endif
 
 	_moduleRegistry.reset(new module::ModuleRegistry(_context));
@@ -98,7 +98,7 @@ void Radiant::startup()
 
 void Radiant::createLogFile()
 {
-	_logFile.reset(new applog::LogFile(_context.getCacheDataPath() + "darkradiant.log"));
+	_logFile.reset(new applog::LogFile(_context.getCacheDataPath() + RADIANT_LOGNAME));
 
 	if (_logFile->isOpen())
 	{
@@ -145,7 +145,7 @@ std::shared_ptr<Radiant>& Radiant::InstancePtr()
 
 }
 
-extern "C" DARKRADIANT_DLLEXPORT radiant::IRadiant* SYMBOL_CREATE_RADIANT(IApplicationContext& context)
+extern "C" WORLDEDIT_DLLEXPORT radiant::IRadiant* SYMBOL_CREATE_RADIANT(IApplicationContext& context)
 {
 	auto& instancePtr = radiant::Radiant::InstancePtr();
 
@@ -161,7 +161,7 @@ extern "C" DARKRADIANT_DLLEXPORT radiant::IRadiant* SYMBOL_CREATE_RADIANT(IAppli
 	return instancePtr.get();
 }
 
-extern "C" DARKRADIANT_DLLEXPORT void SYMBOL_DESTROY_RADIANT(radiant::IRadiant* radiant)
+extern "C" WORLDEDIT_DLLEXPORT void SYMBOL_DESTROY_RADIANT(radiant::IRadiant* radiant)
 {
 	assert(radiant::Radiant::InstancePtr().get() == radiant);
 

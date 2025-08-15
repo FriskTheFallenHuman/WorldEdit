@@ -1,5 +1,5 @@
 
-/* Core module file, e.g. "libradiantcore" */
+/* Core module file, e.g. "libcore" */
 #cmakedefine CORE_MODULE_LIBRARY "@CORE_MODULE_LIBRARY@"
 
 /* Project version */
@@ -11,15 +11,15 @@
 /* Locale directory */
 #define LOCALEDIR "@CMAKE_INSTALL_FULL_LOCALEDIR@"
 
-/* Package library directory (e.g. /usr/lib/darkradiant) */
+/* Package library directory (e.g. /usr/lib/worldedit) */
 #cmakedefine PKGLIBDIR "@PKGLIBDIR@"
 
-/* Relative library directory from binary (e.g. ../lib/darkradiant). Only
+/* Relative library directory from binary (e.g. ../lib/worldedit). Only
  * defined if ENABLE_RELOCATION is defined. */
 #cmakedefine RELATIVE_LIBDIR "@RELATIVE_LIBDIR@"
 
-/* Package data directory (e.g. /usr/share/darkradiant) */
+/* Package data directory (e.g. /usr/share/worldedit) */
 #cmakedefine PKGDATADIR "@PKGDATADIR@"
 
-/* HTML directory (e.g. /usr/share/doc/darkradiant) */
+/* HTML directory (e.g. /usr/share/doc/worldedit) */
 #cmakedefine HTMLDIR "@HTMLDIR@"

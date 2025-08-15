@@ -15,10 +15,10 @@ namespace ui
 
 namespace
 {
-    inline std::string getGridStatusText()
-    {
-        return fmt::format("{0:g}", GlobalGrid().getGridSize());
-    }
+	inline std::string getGridStatusText()
+	{
+		return fmt::format("{0:g}", GlobalGrid().getGridSize());
+	}
 }
 
 const std::string& GridUserInterface::getName() const

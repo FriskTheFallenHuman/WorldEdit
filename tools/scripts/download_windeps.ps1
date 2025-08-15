@@ -11,7 +11,7 @@ try
         $headers.Add("Authorization", "Bearer " + $env:GITHUB_API_TOKEN)
     }
 
-    $uri = "https://api.github.com/repos/codereader/DarkRadiant_windeps/releases"
+    $uri = "https://api.github.com/repos/FriskTheFallenHuman/WorldEdit_WinDeps/releases"
     $releases = Invoke-RestMethod -Headers $headers -Uri $uri
 
     $latest = $releases | sort created_at -Descending | select -First 1

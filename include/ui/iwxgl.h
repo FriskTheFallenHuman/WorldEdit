@@ -15,11 +15,11 @@ class IWxGLWidgetManager :
 	public RegisterableModule
 {
 public:
-    /// Registers a GL widget, storing the shared context if necessary
-    virtual void registerGLWidget(wxutil::GLWidget* widget) = 0;
+	/// Registers a GL widget, storing the shared context if necessary
+	virtual void registerGLWidget(wxutil::GLWidget* widget) = 0;
 
-    /// Notifies the GL module that a GLWidget has been destroyed
-    virtual void unregisterGLWidget(wxutil::GLWidget* widget) = 0;
+	/// Notifies the GL module that a GLWidget has been destroyed
+	virtual void unregisterGLWidget(wxutil::GLWidget* widget) = 0;
 };
 
 }
@@ -28,6 +28,6 @@ const char* const MODULE_WXGLWIDGET_MANAGER("wxGLWidgetManager");
 
 inline ui::IWxGLWidgetManager& GlobalWxGlWidgetManager()
 {
-    static module::InstanceReference<ui::IWxGLWidgetManager> _reference(MODULE_WXGLWIDGET_MANAGER);
-    return _reference;
+	static module::InstanceReference<ui::IWxGLWidgetManager> _reference(MODULE_WXGLWIDGET_MANAGER);
+	return _reference;
 }

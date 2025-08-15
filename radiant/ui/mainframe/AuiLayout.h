@@ -18,77 +18,77 @@ class AuiFloatingFrame;
 /// Layout based on wxWidgets AUI (dock widget interface)
 class AuiLayout
 {
-    // Main AUI manager
-    AuiManager _auiMgr;
-    PropertyNotebook* _propertyNotebook;
+	// Main AUI manager
+	AuiManager _auiMgr;
+	PropertyNotebook* _propertyNotebook;
 
-    struct PaneInfo
-    {
-        std::string paneName;
-        std::string controlName;
-        wxWindow* control;
-    };
+	struct PaneInfo
+	{
+		std::string paneName;
+		std::string controlName;
+		wxWindow* control;
+	};
 
-    // List of panes managed by the AUI manager
-    std::list<PaneInfo> _panes;
+	// List of panes managed by the AUI manager
+	std::list<PaneInfo> _panes;
 
-    std::map<std::string, IMainFrame::ControlSettings> _defaultControlSettings;
+	std::map<std::string, IMainFrame::ControlSettings> _defaultControlSettings;
 
-    // Stored floating window locations
-    std::map<std::string, std::string> _floatingPaneLocations;
+	// Stored floating window locations
+	std::map<std::string, std::string> _floatingPaneLocations;
 
-    // Stored last known locations of docked panes
-    std::map<std::string, std::string> _dockedPaneLocations;
+	// Stored last known locations of docked panes
+	std::map<std::string, std::string> _dockedPaneLocations;
 
 public:
-    AuiLayout();
+	AuiLayout();
 
 	void activate();
 	void deactivate();
 	void saveStateToRegistry();
 	void restoreStateFromRegistry();
-    void createFloatingControl(const std::string& controlName);
+	void createFloatingControl(const std::string& controlName);
 
-    void registerControl(const std::string& controlName, const IMainFrame::ControlSettings& defaultSettings);
+	void registerControl(const std::string& controlName, const IMainFrame::ControlSettings& defaultSettings);
 
-    // Creates the named control at its registered default location
-    void createControl(const std::string& controlName);
-    void focusControl(const std::string& controlName);
-    void toggleControl(const std::string& controlName);
-    void toggleMainControl(const std::string& controlName);
+	// Creates the named control at its registered default location
+	void createControl(const std::string& controlName);
+	void focusControl(const std::string& controlName);
+	void toggleControl(const std::string& controlName);
+	void toggleMainControl(const std::string& controlName);
 
-    void ensureControlIsActive(wxWindow* control);
-    void ensureControlIsInactive(wxWindow* control);
+	void ensureControlIsActive(wxWindow* control);
+	void ensureControlIsInactive(wxWindow* control);
 
-    // Internally used by the AuiManager implementation
-    void convertFloatingPaneToPropertyTab(AuiFloatingFrame* floatingWindow);
+	// Internally used by the AuiManager implementation
+	void convertFloatingPaneToPropertyTab(AuiFloatingFrame* floatingWindow);
 
 private:
-    // Add a pane to the wxAuiManager and store it in the list
-    void addPane(const std::string& controlName, wxWindow* window, const wxAuiPaneInfo& info);
-    void addPane(const std::string& controlName, const std::string& paneName, wxWindow* window, const wxAuiPaneInfo& info);
+	// Add a pane to the wxAuiManager and store it in the list
+	void addPane(const std::string& controlName, wxWindow* window, const wxAuiPaneInfo& info);
+	void addPane(const std::string& controlName, const std::string& paneName, wxWindow* window, const wxAuiPaneInfo& info);
 
-    void createPane(const std::string& controlName, const std::string& paneName,
-        const std::function<void(wxAuiPaneInfo&)>& setupPane);
+	void createPane(const std::string& controlName, const std::string& paneName,
+		const std::function<void(wxAuiPaneInfo&)>& setupPane);
 
-    void toggleControlInPropertyPanel(const std::string& controlName);
+	void toggleControlInPropertyPanel(const std::string& controlName);
 
-    void onPaneClose(wxAuiManagerEvent& ev);
-    void handlePaneClosed(wxAuiPaneInfo& paneInfo);
-    void removeNonOrthoCenterPanes();
+	void onPaneClose(wxAuiManagerEvent& ev);
+	void handlePaneClosed(wxAuiPaneInfo& paneInfo);
+	void removeNonOrthoCenterPanes();
 
-    void savePaneLocation(wxAuiPaneInfo& paneInfo);
-    void restorePaneLocation(wxAuiPaneInfo& paneInfo);
+	void savePaneLocation(wxAuiPaneInfo& paneInfo);
+	void restorePaneLocation(wxAuiPaneInfo& paneInfo);
 
-    bool paneNameExists(const std::string& name) const;
+	bool paneNameExists(const std::string& name) const;
 
-    // Returns true if the control is loaded in the notebook or in a pane
-    bool controlExists(const std::string& controlName) const;
+	// Returns true if the control is loaded in the notebook or in a pane
+	bool controlExists(const std::string& controlName) const;
 
-    std::string generateUniquePaneName(const std::string& controlName);
+	std::string generateUniquePaneName(const std::string& controlName);
 
-    void convertPaneToPropertyTab(const std::string& paneName);
-    void ensureVisibleCenterPane();
+	void convertPaneToPropertyTab(const std::string& paneName);
+	void ensureVisibleCenterPane();
 };
 
 } // namespace

@@ -19,11 +19,11 @@ class MeasurementTool :
 	public MouseTool
 {
 private:
-    std::vector<Vertex3> _vertices;
-    render::RenderablePoints _points;
+	std::vector<Vertex3> _vertices;
+	render::RenderablePoints _points;
 	render::RenderableLine _line;
-    ITextRenderer::Ptr _textRenderer;
-    std::vector<std::shared_ptr<render::StaticRenderableText>> _texts;
+	ITextRenderer::Ptr _textRenderer;
+	std::vector<std::shared_ptr<render::StaticRenderableText>> _texts;
 
 	ShaderPtr _pointShader;
 	ShaderPtr _wireShader;

@@ -21,11 +21,11 @@ namespace ui
 
 class PatchInspector : 
 	public wxutil::DockablePanel,
-    public selection::SelectionSystem::Observer,
+	public selection::SelectionSystem::Observer,
 	public IPatch::Observer,
 	private wxutil::XmlResourceBasedWidget,
 	public sigc::trackable,
-    public wxutil::SingleIdleCallback
+	public wxutil::SingleIdleCallback
 {
 private:
 	wxChoice* _rowCombo;
@@ -115,14 +115,14 @@ public:
 	void onPatchDestruction() override;
 
 protected:
-    void onIdle() override;
+	void onIdle() override;
 
-    void onPanelActivated() override;
-    void onPanelDeactivated() override;
+	void onPanelActivated() override;
+	void onPanelDeactivated() override;
 
 private:
-    void connectEventHandlers();
-    void disconnectEventHandlers();
+	void connectEventHandlers();
+	void disconnectEventHandlers();
 
 	void setPatch(const IPatchNodePtr& patch);
 

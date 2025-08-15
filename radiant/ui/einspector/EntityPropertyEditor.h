@@ -13,24 +13,24 @@ namespace ui
  * should reference a different entity.
  */
 class EntityPropertyEditor:
-    public PropertyEditor
+	public PropertyEditor
 {
 protected:
 	// Keyvalue to set
-    ITargetKey::Ptr _key;
+	ITargetKey::Ptr _key;
 
 public:
-    // Construct a EntityPropertyEditor with an entity and key to edit
-    EntityPropertyEditor(wxWindow* parent, IEntitySelection& entities, const ITargetKey::Ptr& key);
+	// Construct a EntityPropertyEditor with an entity and key to edit
+	EntityPropertyEditor(wxWindow* parent, IEntitySelection& entities, const ITargetKey::Ptr& key);
 
-    // Create a new EntityPropertyEditor
-    static Ptr CreateNew(wxWindow* parent, IEntitySelection& entities, const ITargetKey::Ptr& key)
-    {
-        return std::make_shared<EntityPropertyEditor>(parent, entities, key);
-    }
+	// Create a new EntityPropertyEditor
+	static Ptr CreateNew(wxWindow* parent, IEntitySelection& entities, const ITargetKey::Ptr& key)
+	{
+		return std::make_shared<EntityPropertyEditor>(parent, entities, key);
+	}
 
 private:
-    void onBrowseButtonClick() override;
+	void onBrowseButtonClick() override;
 };
 
 }

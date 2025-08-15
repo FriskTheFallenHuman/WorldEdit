@@ -6,7 +6,7 @@
 class CurveNode
 {
 public:
-    /** destructor
+	/** destructor
 	 */
 	virtual ~CurveNode() {}
 

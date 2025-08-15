@@ -30,37 +30,37 @@ class BrushNode final :
 	public PlaneSelectable,
 	public Transformable,
 	public ITraceable,
-    public scene::IComparableNode
+	public scene::IComparableNode
 {
 	// The actual contained brush (NO reference)
 	Brush _brush;
 
 	FaceInstances _faceInstances;
 
-    std::vector<EdgeInstance> _edgeInstances;
-    std::vector<brush::VertexInstance> _vertexInstances;
+	std::vector<EdgeInstance> _edgeInstances;
+	std::vector<brush::VertexInstance> _vertexInstances;
 
-    // All selectable points (corner vertices / edge or face centroids)
+	// All selectable points (corner vertices / edge or face centroids)
 	std::vector<Vector3> _selectedPoints;
 
 	mutable AABB _aabb_component;
 	BrushClipPlane _clipPlane;
 
 	ShaderPtr _pointShader;
-    ShaderPtr _inactiveWireShader;
+	ShaderPtr _inactiveWireShader;
 
 	// TRUE if any of the FaceInstance's component selection got changed or transformed
 	bool _renderableComponentsNeedUpdate;
-    std::size_t _numSelectedComponents;
+	std::size_t _numSelectedComponents;
 
-    // For pivoted rotations, we need a copy of this lying around
-    Vector3 _untransformedOrigin;
-    // If true, the _untransformedOrigin member needs an update
-    bool _untransformedOriginChanged;
+	// For pivoted rotations, we need a copy of this lying around
+	Vector3 _untransformedOrigin;
+	// If true, the _untransformedOrigin member needs an update
+	bool _untransformedOriginChanged;
 
-    brush::RenderableBrushVertices _renderableVertices;
+	brush::RenderableBrushVertices _renderableVertices;
 
-    bool _facesNeedRenderableUpdate;
+	bool _facesNeedRenderableUpdate;
 
 public:
 	BrushNode();
@@ -75,14 +75,14 @@ public:
 	IBrush& getIBrush() override;
 
 	std::string name() const  override
-    {
+	{
 		return "Brush";
 	}
 
 	Type getNodeType() const override;
 
-    // IComparable implementation
-    std::string getFingerprint() override;
+	// IComparable implementation
+	std::string getFingerprint() override;
 
 	// Bounded implementation
 	const AABB& localAABB() const override;
@@ -97,8 +97,8 @@ public:
 	void testSelectComponents(Selector& selector, SelectionTest& test, selection::ComponentSelectionMode mode) override;
 
 	// override scene::Inode::onRemoveFromScene to deselect the child components
-    void onInsertIntoScene(scene::IMapRootNode& root) override;
-    void onRemoveFromScene(scene::IMapRootNode& root) override;
+	void onInsertIntoScene(scene::IMapRootNode& root) override;
+	void onRemoveFromScene(scene::IMapRootNode& root) override;
 
 	// ComponentEditable implementation
 	const AABB& getSelectedComponentsBounds() const override;
@@ -135,11 +135,11 @@ public:
 	void DEBUG_verify() override;
 
 	// Renderable implementation
-    void onPreRender(const VolumeTest& volume) override;
+	void onPreRender(const VolumeTest& volume) override;
 	void renderHighlights(IRenderableCollector& collector, const VolumeTest& volume) override;
 	void setRenderSystem(const RenderSystemPtr& renderSystem) override;
 	std::size_t getHighlightFlags() override;
-    void onFaceNeedsRenderableUpdate();
+	void onFaceNeedsRenderableUpdate();
 
 	void evaluateTransform();
 
@@ -153,19 +153,19 @@ public:
 
 	void forEachFaceInstance(const std::function<void(FaceInstance&)>& functor);
 
-    // Returns the center of the untransformed world AABB
-    const Vector3& getUntransformedOrigin() override;
+	// Returns the center of the untransformed world AABB
+	const Vector3& getUntransformedOrigin() override;
 
-    // Returns true if this node is visible due to its selection status
-    // even though it might otherwise be filtered or hidden
-    // Should only be used by the internal Brush object
-    bool facesAreForcedVisible();
+	// Returns true if this node is visible due to its selection status
+	// even though it might otherwise be filtered or hidden
+	// Should only be used by the internal Brush object
+	bool facesAreForcedVisible();
 
-    void onPostUndo() override;
-    void onPostRedo() override;
+	void onPostUndo() override;
+	void onPostRedo() override;
 
 protected:
-    void onVisibilityChanged(bool isVisibleNow) override;
+	void onVisibilityChanged(bool isVisibleNow) override;
 
 	// Gets called by the Transformable implementation whenever
 	// scale, rotation or translation is changed.
@@ -173,11 +173,11 @@ protected:
 
 	// Called by the Transformable implementation before freezing
 	// or when reverting transformations.
-    void _applyTransformation() override;
+	void _applyTransformation() override;
 
-    void onSelectionStatusChange(bool changeGroupStatus) override;
+	void onSelectionStatusChange(bool changeGroupStatus) override;
 
-    void onRenderStateChanged() override;
+	void onRenderStateChanged() override;
 
 private:
 	void transformComponents(const Matrix4& matrix);

@@ -33,7 +33,7 @@ public:
 	TextureDirectoryLoader(const std::string& directory)
 	: _searchDir(directory + "/"),
 	  _dialog(_("Loading textures")),
-     _evLimiter(100)
+	 _evLimiter(100)
 	{}
 
 	// Functor operator
@@ -52,8 +52,8 @@ public:
 			// Load the shader
 			MaterialPtr ref = GlobalMaterialManager().getMaterial(shaderName);
 
-            // Signal the texture browser that is has to update it next time it renders
-            GlobalTextureBrowser().updateAllWindows();
+			// Signal the texture browser that is has to update it next time it renders
+			GlobalTextureBrowser().updateAllWindows();
 		}
 	}
 

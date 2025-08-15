@@ -30,16 +30,16 @@ public:
 		return _signature;
 	}
 
-    /// Test if this command is able to be executed
-    virtual bool canExecute() const
-    {
-        if (_checkFunction)
-            return _checkFunction();
-        else
-            return true;
-    }
+	/// Test if this command is able to be executed
+	virtual bool canExecute() const
+	{
+		if (_checkFunction)
+			return _checkFunction();
+		else
+			return true;
+	}
 
-    virtual void execute(const ArgumentList& args) {
+	virtual void execute(const ArgumentList& args) {
 		// Check arguments
 		if (_signature.size() < args.size()) {
 			// Too many arguments, that's for sure

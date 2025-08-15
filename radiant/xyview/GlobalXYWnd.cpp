@@ -32,7 +32,7 @@ namespace
 	const std::string RKEY_XYVIEW_ROOT = "user/ui/xyview";
 
 	const std::string RKEY_CHASE_MOUSE = RKEY_XYVIEW_ROOT + "/chaseMouse";
-    const std::string RKEY_CHASE_MOUSE_CAP = RKEY_XYVIEW_ROOT + "/chaseMouseCap";
+	const std::string RKEY_CHASE_MOUSE_CAP = RKEY_XYVIEW_ROOT + "/chaseMouseCap";
 	const std::string RKEY_CAMERA_XY_UPDATE = RKEY_XYVIEW_ROOT + "/camXYUpdate";
 	const std::string RKEY_SHOW_CROSSHAIRS = RKEY_XYVIEW_ROOT + "/showCrossHairs";
 	const std::string RKEY_SHOW_GRID = RKEY_XYVIEW_ROOT + "/showGrid";
@@ -51,62 +51,62 @@ namespace
 	const std::string RKEY_MAX_ZOOM_FACTOR = "user/ui/xyview/maxZoomFactor";
 	const std::string RKEY_CURSOR_CENTERED_ZOOM = "user/ui/xyview/cursorCenteredZoom";
 
-    const int DEFAULT_CHASE_MOUSE_CAP = 32; // pixels per chase moue timer interval
+	const int DEFAULT_CHASE_MOUSE_CAP = 32; // pixels per chase moue timer interval
 }
 
 std::string XYWndManager::getControlName()
 {
-    return UserControl::OrthoView;
+	return UserControl::OrthoView;
 }
 
 std::string XYWndManager::getDisplayName()
 {
-    return _("2D View");
+	return _("2D View");
 }
 
 wxWindow* XYWndManager::createWidget(wxWindow* parent)
 {
-    return new OrthoView(parent, *this);
+	return new OrthoView(parent, *this);
 }
 
 XYWndManager::XYWndManager() :
-    _maxZoomFactor(1024),
-    _activeXYWndId(-1)
+	_maxZoomFactor(1024),
+	_activeXYWndId(-1)
 {}
 
 void XYWndManager::registerXYWnd(OrthoView* view)
 {
-    if (!_xyWnds.emplace(view->getId(), view).second)
-    {
-        throw std::invalid_argument("XY Wnd ID has already been registered");
-    }
+	if (!_xyWnds.emplace(view->getId(), view).second)
+	{
+		throw std::invalid_argument("XY Wnd ID has already been registered");
+	}
 
-    // Activate this view if this is the first one
-    if (_activeXYWndId == -1)
-    {
-        setActiveXY(view->getId());
-    }
+	// Activate this view if this is the first one
+	if (_activeXYWndId == -1)
+	{
+		setActiveXY(view->getId());
+	}
 }
 
 void XYWndManager::unregisterXYWnd(OrthoView* view)
 {
-    auto id = view->getId();
-    _xyWnds.erase(id);
+	auto id = view->getId();
+	_xyWnds.erase(id);
 
-    if (_activeXYWndId == id)
-    {
-        setActiveXY(_xyWnds.empty() ? -1 : _xyWnds.begin()->first);
-    }
+	if (_activeXYWndId == id)
+	{
+		setActiveXY(_xyWnds.empty() ? -1 : _xyWnds.begin()->first);
+	}
 }
 
 void XYWndManager::registerCommands()
 {
-    GlobalMainFrame().signal_MainFrameConstructed().connect([&]()
-    {
-        GlobalMainFrame().addControl(UserControl::OrthoView, { IMainFrame::Location::FloatingWindow, false });
-    });
+	GlobalMainFrame().signal_MainFrameConstructed().connect([&]()
+	{
+		GlobalMainFrame().addControl(UserControl::OrthoView, { IMainFrame::Location::FloatingWindow, false });
+	});
 
-    GlobalCommandSystem().addStatement("NewOrthoView", fmt::format("{0} {1}", CREATE_CONTROL_COMMAND, UserControl::OrthoView), false);
+	GlobalCommandSystem().addStatement("NewOrthoView", fmt::format("{0} {1}", CREATE_CONTROL_COMMAND, UserControl::OrthoView), false);
 	GlobalCommandSystem().addCommand("NextView", std::bind(&XYWndManager::toggleActiveView, this, std::placeholders::_1));
 	GlobalCommandSystem().addCommand("ZoomIn", std::bind(&XYWndManager::zoomIn, this, std::placeholders::_1));
 	GlobalCommandSystem().addCommand("ZoomOut", std::bind(&XYWndManager::zoomOut, this, std::placeholders::_1));
@@ -117,7 +117,7 @@ void XYWndManager::registerCommands()
 	GlobalCommandSystem().addCommand("CenterXYView", std::bind(&XYWndManager::focusActiveView, this, std::placeholders::_1));
 	GlobalCommandSystem().addCommand("Zoom100", std::bind(&XYWndManager::zoom100, this, std::placeholders::_1));
 	GlobalCommandSystem().addCommand("RunBenchmark", std::bind(&XYWndManager::runBenchmark, this, std::placeholders::_1),
-        { cmd::ARGTYPE_INT | cmd::ARGTYPE_OPTIONAL });
+		{ cmd::ARGTYPE_INT | cmd::ARGTYPE_OPTIONAL });
 
 	GlobalEventManager().addRegistryToggle("ToggleCrosshairs", RKEY_SHOW_CROSSHAIRS);
 	GlobalEventManager().addRegistryToggle("ToggleGrid", RKEY_SHOW_GRID);
@@ -136,24 +136,24 @@ void XYWndManager::constructPreferences()
 	IPreferencePage& page = GlobalPreferenceSystem().getPage(_("Orthoview"));
 
 	page.appendCheckBox(_("View chases Mouse Cursor during Drags"), RKEY_CHASE_MOUSE);
-    page.appendSlider(_("Maximum Chase Mouse Speed"), RKEY_CHASE_MOUSE_CAP, 0, 512, 1, 16);
+	page.appendSlider(_("Maximum Chase Mouse Speed"), RKEY_CHASE_MOUSE_CAP, 0, 512, 1, 16);
 	page.appendCheckBox(_("Update Views on Camera Movement"), RKEY_CAMERA_XY_UPDATE);
 	page.appendCheckBox(_("Show Crosshairs"), RKEY_SHOW_CROSSHAIRS);
 	page.appendCheckBox(_("Show Grid"), RKEY_SHOW_GRID);
 	page.appendCheckBox(_("Show Blocks"), RKEY_SHOW_BLOCKS);
 	page.appendCheckBox(_("Translate Manipulator always constrained to Axis"), RKEY_TRANSLATE_CONSTRAINED);
 	page.appendCheckBox(_("Higher Selection Priority for Entities"), RKEY_HIGHER_ENTITY_PRIORITY);
-    page.appendSpinner(_("Maximum Zoom Factor"), RKEY_MAX_ZOOM_FACTOR, 1, 65536, 0);
+	page.appendSpinner(_("Maximum Zoom Factor"), RKEY_MAX_ZOOM_FACTOR, 1, 65536, 0);
 	page.appendCheckBox(_("Zoom centers on Mouse Cursor"), RKEY_CURSOR_CENTERED_ZOOM);
-    page.appendCombo(_("Font Style"), RKEY_FONT_STYLE, { "Sans", "Mono" }, true);
-    page.appendSpinner(_("Font Size"), RKEY_FONT_SIZE, 4, 48, 0);
+	page.appendCombo(_("Font Style"), RKEY_FONT_STYLE, { "Sans", "Mono" }, true);
+	page.appendSpinner(_("Font Size"), RKEY_FONT_SIZE, 4, 48, 0);
 }
 
 // Load/Reload the values from the registry
 void XYWndManager::refreshFromRegistry()
 {
 	_chaseMouse = registry::getValue<bool>(RKEY_CHASE_MOUSE);
-    _chaseMouseCap = registry::getValue<int>(RKEY_CHASE_MOUSE_CAP, DEFAULT_CHASE_MOUSE_CAP);
+	_chaseMouseCap = registry::getValue<int>(RKEY_CHASE_MOUSE_CAP, DEFAULT_CHASE_MOUSE_CAP);
 	_camXYUpdate = registry::getValue<bool>(RKEY_CAMERA_XY_UPDATE);
 	_showCrossHairs = registry::getValue<bool>(RKEY_SHOW_CROSSHAIRS);
 	_showGrid = registry::getValue<bool>(RKEY_SHOW_GRID);
@@ -164,17 +164,17 @@ void XYWndManager::refreshFromRegistry()
 	_showAxes = registry::getValue<bool>(RKEY_SHOW_AXES);
 	_showWorkzone = registry::getValue<bool>(RKEY_SHOW_WORKZONE);
 	_defaultBlockSize = registry::getValue<int>(RKEY_DEFAULT_BLOCKSIZE);
-    _fontSize = registry::getValue<int>(RKEY_FONT_SIZE);
-    _fontStyle = registry::getValue<std::string>(RKEY_FONT_STYLE) == "Sans" ? IGLFont::Style::Sans : IGLFont::Style::Mono;
-    _maxZoomFactor = registry::getValue<float>(RKEY_MAX_ZOOM_FACTOR);
-    _zoomCenteredOnMouseCursor = registry::getValue<bool>(RKEY_CURSOR_CENTERED_ZOOM);
+	_fontSize = registry::getValue<int>(RKEY_FONT_SIZE);
+	_fontStyle = registry::getValue<std::string>(RKEY_FONT_STYLE) == "Sans" ? IGLFont::Style::Sans : IGLFont::Style::Mono;
+	_maxZoomFactor = registry::getValue<float>(RKEY_MAX_ZOOM_FACTOR);
+	_zoomCenteredOnMouseCursor = registry::getValue<bool>(RKEY_CURSOR_CENTERED_ZOOM);
 
 	updateAllViews();
 
-    for (const auto& xyWnd : _xyWnds)
-    {
-        xyWnd.second->updateFont();
-    }
+	for (const auto& xyWnd : _xyWnds)
+	{
+		xyWnd.second->updateFont();
+	}
 }
 
 bool XYWndManager::chaseMouse() const {
@@ -183,7 +183,7 @@ bool XYWndManager::chaseMouse() const {
 
 int XYWndManager::chaseMouseCap() const
 {
-    return _chaseMouseCap;
+	return _chaseMouseCap;
 }
 
 bool XYWndManager::camXYUpdate() const {
@@ -228,47 +228,47 @@ bool XYWndManager::showSizeInfo() const {
 
 int XYWndManager::fontSize() const
 {
-    return _fontSize;
+	return _fontSize;
 }
 
 IGLFont::Style XYWndManager::fontStyle() const
 {
-    return _fontStyle;
+	return _fontStyle;
 }
 
 float XYWndManager::maxZoomFactor() const
 {
-    return _maxZoomFactor;
+	return _maxZoomFactor;
 }
 
 bool XYWndManager::zoomCenteredOnMouseCursor() const
 {
-    return _zoomCenteredOnMouseCursor;
+	return _zoomCenteredOnMouseCursor;
 }
 
 void XYWndManager::updateAllViews(bool force)
 {
 	for (const auto& i : _xyWnds)
 	{
-        if (force)
-        {
-            i.second->forceRedraw();
-        }
-        else
-        {
-            i.second->queueDraw();
-        }
+		if (force)
+		{
+			i.second->forceRedraw();
+		}
+		else
+		{
+			i.second->queueDraw();
+		}
 	}
 }
 
 void XYWndManager::zoomIn(const cmd::ArgumentList& args)
 {
-    doWithActiveXyWnd([](auto& activeXyWnd) { activeXyWnd.zoomIn(); });
+	doWithActiveXyWnd([](auto& activeXyWnd) { activeXyWnd.zoomIn(); });
 }
 
 void XYWndManager::zoomOut(const cmd::ArgumentList& args)
 {
-    doWithActiveXyWnd([](auto& activeXyWnd) { activeXyWnd.zoomOut(); });
+	doWithActiveXyWnd([](auto& activeXyWnd) { activeXyWnd.zoomOut(); });
 }
 
 void XYWndManager::setOrigin(const Vector3& origin)
@@ -282,21 +282,21 @@ void XYWndManager::setOrigin(const Vector3& origin)
 
 Vector3 XYWndManager::getActiveViewOrigin()
 {
-    Vector3 result;
+	Vector3 result;
 
-    doWithActiveXyWnd([&](auto& activeXyWnd) { result = activeXyWnd.getOrigin(); });
+	doWithActiveXyWnd([&](auto& activeXyWnd) { result = activeXyWnd.getOrigin(); });
 
-    return result;
+	return result;
 }
 
 IOrthoView& XYWndManager::getActiveView()
 {
-    auto window = _xyWnds.find(_activeXYWndId);
+	auto window = _xyWnds.find(_activeXYWndId);
 
-    if (window == _xyWnds.end())
-    {
+	if (window == _xyWnds.end())
+	{
 		throw std::runtime_error("No active view found");
-    }
+	}
 
 	return *window->second;
 }
@@ -317,7 +317,7 @@ IOrthoView& XYWndManager::getViewByType(OrthoOrientation viewType)
 
 void XYWndManager::setScale(float scale)
 {
-    for (auto& [_, xyWnd] : _xyWnds)
+	for (auto& [_, xyWnd] : _xyWnds)
 	{
 		xyWnd->setScale(scale);
 	}
@@ -325,7 +325,7 @@ void XYWndManager::setScale(float scale)
 
 void XYWndManager::positionAllViews(const Vector3& origin)
 {
-    for (auto& [_, xyWnd] : _xyWnds)
+	for (auto& [_, xyWnd] : _xyWnds)
 	{
 		xyWnd->positionView(origin);
 	}
@@ -333,37 +333,37 @@ void XYWndManager::positionAllViews(const Vector3& origin)
 
 void XYWndManager::positionActiveView(const Vector3& origin)
 {
-    doWithActiveXyWnd([&](auto& activeXyWnd) { activeXyWnd.positionView(origin); });
+	doWithActiveXyWnd([&](auto& activeXyWnd) { activeXyWnd.positionView(origin); });
 }
 
 OrthoOrientation XYWndManager::getActiveViewType() const
 {
-    auto viewType = OrthoOrientation::XY;
+	auto viewType = OrthoOrientation::XY;
 
-    doWithActiveXyWnd([&](auto& activeXyWnd) { viewType = activeXyWnd.getOrientation(); });
+	doWithActiveXyWnd([&](auto& activeXyWnd) { viewType = activeXyWnd.getOrientation(); });
 
-    return viewType;
+	return viewType;
 }
 
 void XYWndManager::setActiveViewType(OrthoOrientation viewType)
 {
-    doWithActiveXyWnd([&](auto& activeXyWnd) { activeXyWnd.setOrientation(viewType); });
+	doWithActiveXyWnd([&](auto& activeXyWnd) { activeXyWnd.setOrientation(viewType); });
 }
 
 void XYWndManager::toggleActiveView(const cmd::ArgumentList& args)
 {
-    doWithActiveXyWnd([&](auto& activeXyWnd)
-    {
-        if (activeXyWnd.getOrientation() == OrthoOrientation::XY)
-            activeXyWnd.setOrientation(OrthoOrientation::XZ);
-        else if (activeXyWnd.getOrientation() == OrthoOrientation::XZ)
-            activeXyWnd.setOrientation(OrthoOrientation::YZ);
-        else
-            activeXyWnd.setOrientation(OrthoOrientation::XY);
+	doWithActiveXyWnd([&](auto& activeXyWnd)
+	{
+		if (activeXyWnd.getOrientation() == OrthoOrientation::XY)
+			activeXyWnd.setOrientation(OrthoOrientation::XZ);
+		else if (activeXyWnd.getOrientation() == OrthoOrientation::XZ)
+			activeXyWnd.setOrientation(OrthoOrientation::YZ);
+		else
+			activeXyWnd.setOrientation(OrthoOrientation::XY);
 
-        // Re-focus the view when toggling projections
-        activeXyWnd.setOrigin(getFocusPosition());
-    });
+		// Re-focus the view when toggling projections
+		activeXyWnd.setOrigin(getFocusPosition());
+	});
 }
 
 void XYWndManager::setActiveViewXY(const cmd::ArgumentList& args)
@@ -401,21 +401,21 @@ void XYWndManager::focusActiveView(const cmd::ArgumentList& args)
 
 void XYWndManager::setActiveXY(int id)
 {
-    // Notify the currently active XYView that is has been deactivated
-    doWithActiveXyWnd([](auto& activeXyWnd) { activeXyWnd.setActive(false); });
+	// Notify the currently active XYView that is has been deactivated
+	doWithActiveXyWnd([](auto& activeXyWnd) { activeXyWnd.setActive(false); });
 
-    // Find the ID in the map and update the active pointer
-    auto view = _xyWnds.find(id);
+	// Find the ID in the map and update the active pointer
+	auto view = _xyWnds.find(id);
 
-    if (view != _xyWnds.end())
-    {
-        _activeXYWndId = view->first;
-        view->second->setActive(true);
-    }
-    else
-    {
-        _activeXYWndId = -1;
-    }
+	if (view != _xyWnds.end())
+	{
+		_activeXYWndId = view->first;
+		view->second->setActive(true);
+	}
+	else
+	{
+		_activeXYWndId = -1;
+	}
 }
 
 /* greebo: This function determines the point currently being "looked" at, it is used for toggling the ortho views
@@ -424,27 +424,27 @@ void XYWndManager::setActiveXY(int id)
 */
 Vector3 XYWndManager::getFocusPosition()
 {
-    Vector3 position(0,0,0);
+	Vector3 position(0,0,0);
 
-    if (GlobalSelectionSystem().countSelected() != 0)
-    {
-        position = GlobalSelectionSystem().getCurrentSelectionCenter();
-    }
-    else if (GlobalSelectionSystem().selectionFocusIsActive())
-    {
-        // Use the selection focus area if nothing is selected
-        position = GlobalSelectionSystem().getSelectionFocusBounds().getOrigin();
-    }
-    else
-    {
-        auto cam = GlobalCamera().getActiveCamWnd();
+	if (GlobalSelectionSystem().countSelected() != 0)
+	{
+		position = GlobalSelectionSystem().getCurrentSelectionCenter();
+	}
+	else if (GlobalSelectionSystem().selectionFocusIsActive())
+	{
+		// Use the selection focus area if nothing is selected
+		position = GlobalSelectionSystem().getSelectionFocusBounds().getOrigin();
+	}
+	else
+	{
+		auto cam = GlobalCamera().getActiveCamWnd();
 
-        if (cam != NULL) {
-            position = cam->getCameraOrigin();
-        }
-    }
+		if (cam != NULL) {
+			position = cam->getCameraOrigin();
+		}
+	}
 
-    return position;
+	return position;
 }
 
 const std::string& XYWndManager::getName() const
@@ -455,39 +455,39 @@ const std::string& XYWndManager::getName() const
 
 const StringSet& XYWndManager::getDependencies() const
 {
-    static StringSet _dependencies
-    {
-        MODULE_XMLREGISTRY,
-        MODULE_EVENTMANAGER,
-        MODULE_RENDERSYSTEM,
-        MODULE_PREFERENCESYSTEM,
-        MODULE_COMMANDSYSTEM,
-        MODULE_MOUSETOOLMANAGER,
-        MODULE_STATUSBARMANAGER,
-        MODULE_USERINTERFACE,
-        MODULE_MAINFRAME,
-    };
+	static StringSet _dependencies
+	{
+		MODULE_XMLREGISTRY,
+		MODULE_EVENTMANAGER,
+		MODULE_RENDERSYSTEM,
+		MODULE_PREFERENCESYSTEM,
+		MODULE_COMMANDSYSTEM,
+		MODULE_MOUSETOOLMANAGER,
+		MODULE_STATUSBARMANAGER,
+		MODULE_USERINTERFACE,
+		MODULE_MAINFRAME,
+	};
 
 	return _dependencies;
 }
 
 void XYWndManager::observeKey(const std::string& key)
 {
-    GlobalRegistry().signalForKey(key).connect(
-        sigc::mem_fun(this, &XYWndManager::refreshFromRegistry)
-    );
+	GlobalRegistry().signalForKey(key).connect(
+		sigc::mem_fun(this, &XYWndManager::refreshFromRegistry)
+	);
 }
 
 namespace
 {
-    void nullDeleter(XYWndManager*) {}
+	void nullDeleter(XYWndManager*) {}
 }
 
 void XYWndManager::initialiseModule(const IApplicationContext& ctx)
 {
 	// Connect self to the according registry keys
 	observeKey(RKEY_CHASE_MOUSE);
-    observeKey(RKEY_CHASE_MOUSE_CAP);
+	observeKey(RKEY_CHASE_MOUSE_CAP);
 	observeKey(RKEY_CAMERA_XY_UPDATE);
 	observeKey(RKEY_SHOW_CROSSHAIRS);
 	observeKey(RKEY_SHOW_GRID);
@@ -523,55 +523,55 @@ void XYWndManager::initialiseModule(const IApplicationContext& ctx)
 
 	OrthoView::captureStates();
 
-    // Add default XY tools
-    IMouseToolGroup& toolGroup = GlobalMouseToolManager().getGroup(IMouseToolGroup::Type::OrthoView);
+	// Add default XY tools
+	IMouseToolGroup& toolGroup = GlobalMouseToolManager().getGroup(IMouseToolGroup::Type::OrthoView);
 
-    toolGroup.registerMouseTool(std::make_shared<BrushCreatorTool>());
-    toolGroup.registerMouseTool(std::make_shared<ClipperTool>());
-    toolGroup.registerMouseTool(std::make_shared<ZoomTool>());
-    toolGroup.registerMouseTool(std::make_shared<CameraAngleTool>());
-    toolGroup.registerMouseTool(std::make_shared<CameraMoveTool>());
-    toolGroup.registerMouseTool(std::make_shared<MoveViewTool>());
+	toolGroup.registerMouseTool(std::make_shared<BrushCreatorTool>());
+	toolGroup.registerMouseTool(std::make_shared<ClipperTool>());
+	toolGroup.registerMouseTool(std::make_shared<ZoomTool>());
+	toolGroup.registerMouseTool(std::make_shared<CameraAngleTool>());
+	toolGroup.registerMouseTool(std::make_shared<CameraMoveTool>());
+	toolGroup.registerMouseTool(std::make_shared<MoveViewTool>());
 	toolGroup.registerMouseTool(std::make_shared<MeasurementTool>());
 
-    GlobalUserInterface().registerControl(IUserControlCreator::Ptr(this, nullDeleter));
+	GlobalUserInterface().registerControl(IUserControlCreator::Ptr(this, nullDeleter));
 }
 
 void XYWndManager::shutdownModule()
 {
-    GlobalUserInterface().unregisterControl(UserControl::OrthoView);
+	GlobalUserInterface().unregisterControl(UserControl::OrthoView);
 
 	// Clear all tracked references
-    _xyWnds.clear();
+	_xyWnds.clear();
 
 	OrthoView::releaseStates();
 }
 
 MouseToolStack XYWndManager::getMouseToolsForEvent(wxMouseEvent& ev)
 {
-    unsigned int state = wxutil::MouseButton::GetButtonStateChangeForMouseEvent(ev);
-    return GlobalMouseToolManager().getMouseToolsForEvent(IMouseToolGroup::Type::OrthoView, state);
+	unsigned int state = wxutil::MouseButton::GetButtonStateChangeForMouseEvent(ev);
+	return GlobalMouseToolManager().getMouseToolsForEvent(IMouseToolGroup::Type::OrthoView, state);
 }
 
 void XYWndManager::foreachMouseTool(const std::function<void(const MouseToolPtr&)>& func)
 {
-    GlobalMouseToolManager().getGroup(IMouseToolGroup::Type::OrthoView).foreachMouseTool(func);
+	GlobalMouseToolManager().getGroup(IMouseToolGroup::Type::OrthoView).foreachMouseTool(func);
 }
 
 void XYWndManager::runBenchmark(const cmd::ArgumentList& args)
 {
-    auto cam = GlobalCamera().getActiveCamWnd();
+	auto cam = GlobalCamera().getActiveCamWnd();
 
-    cam->getCamera().setCameraOrigin({ 2517, -4511, 713 });
-    cam->getCamera().setCameraAngles({ -2.1, 123.91, 0 });
+	cam->getCamera().setCameraOrigin({ 2517, -4511, 713 });
+	cam->getCamera().setCameraAngles({ -2.1, 123.91, 0 });
 
-    int numRuns = args.empty() ? 1 : args[0].getInt();
+	int numRuns = args.empty() ? 1 : args[0].getInt();
 
-    ScopedDebugTimer timer("Camera refresh, " + string::to_string(numRuns) + " runs");
-    for (int i = 0; i < numRuns; ++i)
-    {
-        cam->getCamera().forceRedraw();
-    }
+	ScopedDebugTimer timer("Camera refresh, " + string::to_string(numRuns) + " runs");
+	for (int i = 0; i < numRuns; ++i)
+	{
+		cam->getCamera().forceRedraw();
+	}
 }
 
 // Define the static GlobalXYWnd module

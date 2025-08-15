@@ -148,23 +148,23 @@ void FavouritesBrowser::constructPopupMenu()
 void FavouritesBrowser::setupCategories()
 {
     _categories.emplace_back(FavouriteCategory{
-        decl::getTypeName(decl::Type::Material), _("Materials"), "icon_texture.png",
-        _iconList->Add(wxutil::GetLocalBitmap("icon_texture.png")),
+        decl::getTypeName(decl::Type::Material), _("Materials"), "favorites_textures.png",
+        _iconList->Add(wxutil::GetLocalBitmap("favorites_textures.png")),
         nullptr
     });
     _categories.emplace_back(FavouriteCategory{
-        "model", _("Models"), "model16green.png",
-        _iconList->Add(wxutil::GetLocalBitmap("icon_model.png")),
+        "model", _("Models"), "favorites_models.png",
+        _iconList->Add(wxutil::GetLocalBitmap("favorites_models.png")),
         nullptr
     });
     _categories.emplace_back(FavouriteCategory{
-        decl::getTypeName(decl::Type::EntityDef), _("EntityDefs"), "cmenu_add_entity.png",
-        _iconList->Add(wxutil::GetLocalBitmap("cmenu_add_entity.png")),
+        decl::getTypeName(decl::Type::EntityDef), _("EntityDefs"), "favorites_entities.png",
+        _iconList->Add(wxutil::GetLocalBitmap("favorites_entities.png")),
         nullptr
     });
     _categories.emplace_back(FavouriteCategory{
-        decl::getTypeName(decl::Type::SoundShader), _("Sound Shaders"), "icon_sound.png",
-        _iconList->Add(wxutil::GetLocalBitmap("icon_sound.png")),
+        decl::getTypeName(decl::Type::SoundShader), _("Sound Shaders"), "favorites_sound.png",
+        _iconList->Add(wxutil::GetLocalBitmap("favorites_sound.png")),
         nullptr
     });
 }

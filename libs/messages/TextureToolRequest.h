@@ -13,39 +13,39 @@ class TextureToolRequest :
 	public radiant::IMessage
 {
 public:
-    enum Action
-    {
-        ResetView,
-        UseLightTheme,
-        UseDarkTheme,
-        QueueViewRefresh,
-        ForceViewRefresh,
-    };
+	enum Action
+	{
+		ResetView,
+		UseLightTheme,
+		UseDarkTheme,
+		QueueViewRefresh,
+		ForceViewRefresh,
+	};
 
 private:
-    Action _action;
+	Action _action;
 
 public:
-    TextureToolRequest(Action action) :
-        _action(action)
-    {}
+	TextureToolRequest(Action action) :
+		_action(action)
+	{}
 
-    std::size_t getId() const override
-    {
-        return Type::TextureToolRequest;
-    }
+	std::size_t getId() const override
+	{
+		return Type::TextureToolRequest;
+	}
 
-    Action getAction() const
-    {
-        return _action;
-    }
+	Action getAction() const
+	{
+		return _action;
+	}
 
-    // Convenience method
-    static void Send(Action action)
-    {
-        TextureToolRequest msg(action);
-        GlobalRadiantCore().getMessageBus().sendMessage(msg);
-    }
+	// Convenience method
+	static void Send(Action action)
+	{
+		TextureToolRequest msg(action);
+		GlobalRadiantCore().getMessageBus().sendMessage(msg);
+	}
 };
 
 }

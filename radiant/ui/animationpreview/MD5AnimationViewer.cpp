@@ -19,32 +19,32 @@ namespace ui
  * Visitor class to retrieve modelDefs and add them to folders.
  */
 class ThreadedModelDefLoader final :
-    public wxutil::ThreadedDeclarationTreePopulator
+	public wxutil::ThreadedDeclarationTreePopulator
 {
 public:
-    ThreadedModelDefLoader(const wxutil::DeclarationTreeView::Columns& columns) :
-        ThreadedDeclarationTreePopulator(decl::Type::ModelDef, columns, "model16green.png")
-    {}
+	ThreadedModelDefLoader(const wxutil::DeclarationTreeView::Columns& columns) :
+		ThreadedDeclarationTreePopulator(decl::Type::ModelDef, columns, "icon_model.png")
+	{}
 
-    ~ThreadedModelDefLoader() override
-    {
-        EnsureStopped();
-    }
+	~ThreadedModelDefLoader() override
+	{
+		EnsureStopped();
+	}
 
 protected:
-    void PopulateModel(const wxutil::TreeModel::Ptr& model) override
-    {
-        wxutil::VFSTreePopulator populator(model);
+	void PopulateModel(const wxutil::TreeModel::Ptr& model) override
+	{
+		wxutil::VFSTreePopulator populator(model);
 
-        GlobalEntityClassManager().forEachModelDef([&](const IModelDef::Ptr& modelDef)
-        {
-            populator.addPath(modelDef->getModName() + "/" + modelDef->getDeclName(), [&](wxutil::TreeModel::Row& row,
-                const std::string& path, const std::string& leafName, bool isFolder)
-            {
-                AssignValuesToRow(row, path, modelDef->getDeclName(), leafName, isFolder);
-            });;
-        });
-    }
+		GlobalEntityClassManager().forEachModelDef([&](const IModelDef::Ptr& modelDef)
+		{
+			populator.addPath(modelDef->getModName() + "/" + modelDef->getDeclName(), [&](wxutil::TreeModel::Row& row,
+				const std::string& path, const std::string& leafName, bool isFolder)
+			{
+				AssignValuesToRow(row, path, modelDef->getDeclName(), leafName, isFolder);
+			});;
+		});
+	}
 };
 
 MD5AnimationViewer::MD5AnimationViewer(wxWindow* parent, RunMode runMode) :
@@ -107,10 +107,10 @@ wxWindow* MD5AnimationViewer::createListPane(wxWindow* parent)
 	auto listPane = new wxPanel(parent, wxID_ANY);
 	listPane->SetSizer(new wxBoxSizer(wxVERTICAL));
 
-    auto modelLabel = new wxStaticText(listPane, wxID_ANY, _("Model Definition"));
+	auto modelLabel = new wxStaticText(listPane, wxID_ANY, _("Model Definition"));
 	modelLabel->SetFont(modelLabel->GetFont().Bold());
 
-    auto animLabel = new wxStaticText(listPane, wxID_ANY, _("Available Animations"));
+	auto animLabel = new wxStaticText(listPane, wxID_ANY, _("Available Animations"));
 	animLabel->SetFont(animLabel->GetFont().Bold());
 	
 	listPane->GetSizer()->Add(modelLabel, 0, wxEXPAND | wxBOTTOM, 6);
@@ -123,12 +123,12 @@ wxWindow* MD5AnimationViewer::createListPane(wxWindow* parent)
 
 wxWindow* MD5AnimationViewer::createModelTreeView(wxWindow* parent)
 {
-    auto panel = new wxPanel(parent);
-    panel->SetSizer(new wxBoxSizer(wxVERTICAL));
+	auto panel = new wxPanel(parent);
+	panel->SetSizer(new wxBoxSizer(wxVERTICAL));
 
-    _modelTreeView = new wxutil::DeclarationTreeView(panel, decl::Type::ModelDef, _modelColumns, wxDV_NO_HEADER | wxDV_SINGLE);
+	_modelTreeView = new wxutil::DeclarationTreeView(panel, decl::Type::ModelDef, _modelColumns, wxDV_NO_HEADER | wxDV_SINGLE);
 	_modelTreeView->SetMinClientSize(wxSize(300, -1));
-    _modelTreeView->SetExpandTopLevelItemsAfterPopulation(true);
+	_modelTreeView->SetExpandTopLevelItemsAfterPopulation(true);
 
 	// Single text column
 	_modelTreeView->AppendIconTextColumn(_("Model Definition"), _modelColumns.iconAndName.getColumnIndex(),
@@ -140,9 +140,9 @@ wxWindow* MD5AnimationViewer::createModelTreeView(wxWindow* parent)
 	// Connect up the selection changed callback
 	_modelTreeView->Bind(wxEVT_DATAVIEW_SELECTION_CHANGED, &MD5AnimationViewer::_onModelSelChanged, this);
 
-    auto toolbar = new wxutil::ResourceTreeViewToolbar(panel, _modelTreeView);
-    panel->GetSizer()->Add(toolbar, 0, wxEXPAND | wxALIGN_LEFT | wxBOTTOM | wxLEFT | wxRIGHT, 6);
-    panel->GetSizer()->Add(_modelTreeView, 1, wxEXPAND);
+	auto toolbar = new wxutil::ResourceTreeViewToolbar(panel, _modelTreeView);
+	panel->GetSizer()->Add(toolbar, 0, wxEXPAND | wxALIGN_LEFT | wxBOTTOM | wxLEFT | wxRIGHT, 6);
+	panel->GetSizer()->Add(_modelTreeView, 1, wxEXPAND);
 
 	// Pack into scrolled window and return
 	return panel;
@@ -196,12 +196,12 @@ void MD5AnimationViewer::handleModelSelectionChange()
 
 std::string MD5AnimationViewer::getSelectedModel()
 {
-    return _modelTreeView->GetSelectedDeclName();
+	return _modelTreeView->GetSelectedDeclName();
 }
 
 void MD5AnimationViewer::setSelectedModel(const std::string& model)
 {
-    _modelTreeView->SetSelectedDeclName(model);
+	_modelTreeView->SetSelectedDeclName(model);
 }
 
 std::string MD5AnimationViewer::getSelectedAnim()
@@ -282,7 +282,7 @@ void MD5AnimationViewer::handleAnimSelectionChange()
 
 void MD5AnimationViewer::populateModelList()
 {
-    _modelTreeView->Populate(std::make_shared<ThreadedModelDefLoader>(_modelColumns));
+	_modelTreeView->Populate(std::make_shared<ThreadedModelDefLoader>(_modelColumns));
 }
 
 void MD5AnimationViewer::populateAnimationList()

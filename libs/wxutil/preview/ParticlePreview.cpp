@@ -52,7 +52,7 @@ ParticlePreview::ParticlePreview(wxWindow* parent) :
 		wxCommandEventHandler(ParticlePreview::onToolItemClickRefresh), NULL, this);
 
 	_showWireFrameButton = toolbar->AddCheckTool(TOOL_SHOW_WIREFRAME, "",
-		wxutil::GetLocalBitmap("wireframe.png", wxART_TOOLBAR));
+		wxutil::GetLocalBitmap("render_wireframe.png", wxART_TOOLBAR));
 	_showWireFrameButton->SetShortHelp(_("Show wireframe"));
 	toolbar->Connect(_showWireFrameButton->GetId(), wxEVT_TOOL,
 		wxCommandEventHandler(ParticlePreview::onToolItemClickRefresh), NULL, this);

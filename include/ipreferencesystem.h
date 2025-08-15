@@ -91,7 +91,7 @@ public:
 class IPreferencePage
 {
 public:
-    // destructor
+	// destructor
 	virtual ~IPreferencePage() {}
 
 	// Returns the title as displayed on top of the page's area
@@ -125,28 +125,28 @@ public:
 		double lower, double upper, double step_increment, double page_increment) = 0;
 
    /**
-    * \brief
-    * Add a drop-down combo box to the preference page.
-    *
-    * \param name
-    * The name to be displayed next to the combo box.
-    *
-    * \param registryKey
-    * The registry key which stores the value of the combo box.
-    *
-    * \param valueList
-    * List of strings containing the values that should be displayed in the
-    * combo box.
-    *
-    * \param storeValueNotIndex
-    * If true, store the selected text in the registry key. If false, store the
-    * numeric index of the selected item in the registry key. The default is
-    * false.
-    */
+	* \brief
+	* Add a drop-down combo box to the preference page.
+	*
+	* \param name
+	* The name to be displayed next to the combo box.
+	*
+	* \param registryKey
+	* The registry key which stores the value of the combo box.
+	*
+	* \param valueList
+	* List of strings containing the values that should be displayed in the
+	* combo box.
+	*
+	* \param storeValueNotIndex
+	* If true, store the selected text in the registry key. If false, store the
+	* numeric index of the selected item in the registry key. The default is
+	* false.
+	*/
    virtual void appendCombo(const std::string& name,
-                            const std::string& registryKey,
-                            const ComboBoxValueList& valueList,
-                            bool storeValueNotIndex = false) = 0;
+							const std::string& registryKey,
+							const ComboBoxValueList& valueList,
+							bool storeValueNotIndex = false) = 0;
 
 	/* greebo: Appends an entry field with <name> as caption which is connected to the given registryKey
 	 */

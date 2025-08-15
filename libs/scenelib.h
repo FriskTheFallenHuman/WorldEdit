@@ -13,12 +13,12 @@
 
 inline bool Node_isPrimitive(const scene::INodePtr& node)
 {
-    scene::INode::Type type = node->getNodeType();
+	scene::INode::Type type = node->getNodeType();
 	// greebo: Changed this routine to use the nodeType enum instead of two dynamic casts
 	// There shouldn't be any discrepancies, but I'll leave this assertion in here for a while
-    assert((type == scene::INode::Type::Brush || type == scene::INode::Type::Patch) == (Node_isBrush(node) || Node_isPatch(node)));
+	assert((type == scene::INode::Type::Brush || type == scene::INode::Type::Patch) == (Node_isBrush(node) || Node_isPatch(node)));
 
-    return type == scene::INode::Type::Brush || type == scene::INode::Type::Patch;
+	return type == scene::INode::Type::Brush || type == scene::INode::Type::Patch;
 }
 
 namespace scene
@@ -26,47 +26,47 @@ namespace scene
 
 // Reparents every visited primitive to the parent in the constructor arguments
 class PrimitiveReparentor :
-    public scene::NodeVisitor
+	public scene::NodeVisitor
 {
 private:
-    scene::INodePtr _parent;
+	scene::INodePtr _parent;
 
 public:
-    PrimitiveReparentor(const scene::INodePtr& parent) :
-        _parent(parent)
-    {}
+	PrimitiveReparentor(const scene::INodePtr& parent) :
+		_parent(parent)
+	{}
 
-    virtual bool pre(const scene::INodePtr& node) override
-    {
-        return false;
-    }
+	virtual bool pre(const scene::INodePtr& node) override
+	{
+		return false;
+	}
 
-    virtual void post(const scene::INodePtr& node) override
-    {
-        if (!Node_isPrimitive(node))
-        {
-            return;
-        }
+	virtual void post(const scene::INodePtr& node) override
+	{
+		if (!Node_isPrimitive(node))
+		{
+			return;
+		}
 
-        // We need to keep the hard reference to the node, such that the refcount doesn't reach 0
-        scene::INodePtr nodeRef = node;
+		// We need to keep the hard reference to the node, such that the refcount doesn't reach 0
+		scene::INodePtr nodeRef = node;
 
-        scene::INodePtr oldParent = nodeRef->getParent();
+		scene::INodePtr oldParent = nodeRef->getParent();
 
-        if (oldParent)
-        {
-            // greebo: remove the node from the old parent first
-            oldParent->removeChildNode(nodeRef);
-        }
+		if (oldParent)
+		{
+			// greebo: remove the node from the old parent first
+			oldParent->removeChildNode(nodeRef);
+		}
 
-        _parent->addChildNode(nodeRef);
-    }
+		_parent->addChildNode(nodeRef);
+	}
 };
 
 inline void parentPrimitives(const scene::INodePtr& subgraph, const scene::INodePtr& parent)
 {
-    PrimitiveReparentor visitor(parent);
-    subgraph->traverseChildren(visitor);
+	PrimitiveReparentor visitor(parent);
+	subgraph->traverseChildren(visitor);
 }
 
 /**
@@ -75,11 +75,11 @@ inline void parentPrimitives(const scene::INodePtr& subgraph, const scene::INode
  */
 inline bool hasChildPrimitives(const INodePtr& node)
 {
-    // A node without child nodes is not a group
-    if (!node->hasChildNodes())
+	// A node without child nodes is not a group
+	if (!node->hasChildNodes())
 	{
-        return false;
-    }
+		return false;
+	}
 
 	bool hasPrimitives = false;
 
@@ -87,16 +87,16 @@ inline bool hasChildPrimitives(const INodePtr& node)
 	{
 		if (Node_isPrimitive(child))
 		{
-            hasPrimitives = true;
+			hasPrimitives = true;
 			return false; // don't traverse any further
-        }
+		}
 		else
 		{
 			return true;
 		}
 	});
 
-    return hasPrimitives;
+	return hasPrimitives;
 }
 
 /**
@@ -105,16 +105,16 @@ inline bool hasChildPrimitives(const INodePtr& node)
  */
 inline void removeNodeFromParent(const INodePtr& node)
 {
-    // Check if the node has a parent in the first place
-    INodePtr parent = node->getParent();
+	// Check if the node has a parent in the first place
+	INodePtr parent = node->getParent();
 
-    if (parent != NULL)
+	if (parent != NULL)
 	{
-        // Unselect the node
-        Node_setSelected(node, false);
+		// Unselect the node
+		Node_setSelected(node, false);
 
-        parent->removeChildNode(node);
-    }
+		parent->removeChildNode(node);
+	}
 }
 
 /**
@@ -122,71 +122,71 @@ inline void removeNodeFromParent(const INodePtr& node)
  * Any previous assignments of the node get overwritten by this routine.
  */
 class AssignNodeToLayersWalker :
-    public NodeVisitor
+	public NodeVisitor
 {
-    const LayerList& _layers;
+	const LayerList& _layers;
 public:
-    AssignNodeToLayersWalker(const LayerList& layers) :
-        _layers(layers)
-    {}
+	AssignNodeToLayersWalker(const LayerList& layers) :
+		_layers(layers)
+	{}
 
-    bool pre(const INodePtr& node)
+	bool pre(const INodePtr& node)
 	{
-        // Pass the call to the single-node method
+		// Pass the call to the single-node method
 		node->assignToLayers(_layers);
 
-        return true; // full traverse
-    }
+		return true; // full traverse
+	}
 };
 
 class UpdateNodeVisibilityWalker :
-    public NodeVisitor
+	public NodeVisitor
 {
-    std::stack<bool> _visibilityStack;
-    ILayerManager& _layerManager;
+	std::stack<bool> _visibilityStack;
+	ILayerManager& _layerManager;
 
 public:
-    UpdateNodeVisibilityWalker(ILayerManager& layerManager) :
-        _layerManager(layerManager)
-    {}
+	UpdateNodeVisibilityWalker(ILayerManager& layerManager) :
+		_layerManager(layerManager)
+	{}
 
-    bool pre(const INodePtr& node) override
-    {
-        // Update the node visibility and store the result
-        bool nodeIsVisible = _layerManager.updateNodeVisibility(node);
+	bool pre(const INodePtr& node) override
+	{
+		// Update the node visibility and store the result
+		bool nodeIsVisible = _layerManager.updateNodeVisibility(node);
 
-        // Add a new element for this level
-        _visibilityStack.push(nodeIsVisible);
+		// Add a new element for this level
+		_visibilityStack.push(nodeIsVisible);
 
-        return true;
-    }
+		return true;
+	}
 
-    void post(const INodePtr& node) override
-    {
-        // Is this child visible?
-        bool childIsVisible = _visibilityStack.top();
+	void post(const INodePtr& node) override
+	{
+		// Is this child visible?
+		bool childIsVisible = _visibilityStack.top();
 
-        _visibilityStack.pop();
+		_visibilityStack.pop();
 
-        if (childIsVisible) 
-        {
-            // Show the node, regardless whether it was hidden before
-            // otherwise the parent would hide the visible children as well
-            node->disable(Node::eLayered);
-        }
-
-        if (node->checkStateFlag(Node::eLayered))
+		if (childIsVisible) 
 		{
-            // Node is hidden by layers after update (and no children are visible), de-select
-            Node_setSelected(node, false);
-        }
+			// Show the node, regardless whether it was hidden before
+			// otherwise the parent would hide the visible children as well
+			node->disable(Node::eLayered);
+		}
 
-        if (childIsVisible && !_visibilityStack.empty()) 
-        {
-            // The child was visible, set this parent to true
-            _visibilityStack.top() = true;
-        }
-    }
+		if (node->checkStateFlag(Node::eLayered))
+		{
+			// Node is hidden by layers after update (and no children are visible), de-select
+			Node_setSelected(node, false);
+		}
+
+		if (childIsVisible && !_visibilityStack.empty()) 
+		{
+			// The child was visible, set this parent to true
+			_visibilityStack.top() = true;
+		}
+	}
 };
 
 /**
@@ -195,38 +195,38 @@ public:
  */
 inline void addNodeToContainer(const INodePtr& node, const INodePtr& container) 
 {
-    // Insert the child
-    container->addChildNode(node);
+	// Insert the child
+	container->addChildNode(node);
 
-    // If the container is already connected to a root, check the layer visibility
-    auto rootNode = container->getRootNode();
+	// If the container is already connected to a root, check the layer visibility
+	auto rootNode = container->getRootNode();
 
-    if (rootNode)
-    {
-        // Ensure that worldspawn is visible
-        UpdateNodeVisibilityWalker walker(rootNode->getLayerManager());
-        container->traverse(walker);
-    }
+	if (rootNode)
+	{
+		// Ensure that worldspawn is visible
+		UpdateNodeVisibilityWalker walker(rootNode->getLayerManager());
+		container->traverse(walker);
+	}
 }
 
 } // namespace scene
 
 inline bool Node_hasSelectedChildNodes(const scene::INodePtr& node)
 {
-    bool selected = false;
+	bool selected = false;
 
 	node->foreachNode([&] (const scene::INodePtr& child)->bool
 	{
 		if (Node_isSelected(child))
 		{
-            selected = true;
+			selected = true;
 			return false; // stop searching
-        }
+		}
 
-        return true;
+		return true;
 	});
 
-    return selected;
+	return selected;
 }
 
 namespace scene
@@ -234,51 +234,51 @@ namespace scene
 
 inline void setNodeHidden(const INodePtr& node, bool hide)
 {
-    if (!node->supportsStateFlag(Node::eHidden))
-    {
-        return;
-    }
+	if (!node->supportsStateFlag(Node::eHidden))
+	{
+		return;
+	}
 
-    if (hide)
-    {
-        node->enable(Node::eHidden);
-    }
-    else
-    {
-        node->disable(Node::eHidden);
-    }
+	if (hide)
+	{
+		node->enable(Node::eHidden);
+	}
+	else
+	{
+		node->disable(Node::eHidden);
+	}
 }
 
 inline void showNode(const INodePtr& node)
 {
-    setNodeHidden(node, false);
+	setNodeHidden(node, false);
 }
 
 inline void showSubgraph(const INodePtr& node)
 {
-    showNode(node);
+	showNode(node);
 
-    node->foreachNode([&](const INodePtr& child)
-    {
-        showNode(child);
-        return true;
-    });
+	node->foreachNode([&](const INodePtr& child)
+	{
+		showNode(child);
+		return true;
+	});
 }
 
 inline void hideNode(const INodePtr& node)
 {
-    setNodeHidden(node, true);
+	setNodeHidden(node, true);
 }
 
 inline void hideSubgraph(const INodePtr& node)
 {
-    hideNode(node);
+	hideNode(node);
 
-    node->foreachNode([&](const INodePtr& child)
-    {
-        hideNode(child);
-        return true;
-    });
+	node->foreachNode([&](const INodePtr& child)
+	{
+		hideNode(child);
+		return true;
+	});
 }
 
 /**
@@ -291,62 +291,62 @@ inline void hideSubgraph(const INodePtr& node)
  * node->traverse(walker);
  */
 class NodeRemover :
-    public scene::NodeVisitor
+	public scene::NodeVisitor
 {
 public:
-    bool pre(const INodePtr& node) {
-        // Copy the node, the reference might point right to
-        // the parent's container
-        scene::INodePtr copy(node);
+	bool pre(const INodePtr& node) {
+		// Copy the node, the reference might point right to
+		// the parent's container
+		scene::INodePtr copy(node);
 
-        removeNodeFromParent(copy);
+		removeNodeFromParent(copy);
 
-        return false;
-    }
+		return false;
+	}
 };
 
 // Copies all visibility flags from the source to the target
 inline void assignVisibilityFlagsFromNode(INode& target, const INode& source)
 {
-    if (source.checkStateFlag(Node::eHidden) && target.supportsStateFlag(Node::eHidden))
-    {
-        target.enable(Node::eHidden);
-    }
+	if (source.checkStateFlag(Node::eHidden) && target.supportsStateFlag(Node::eHidden))
+	{
+		target.enable(Node::eHidden);
+	}
 
-    if (source.checkStateFlag(Node::eFiltered) && target.supportsStateFlag(Node::eFiltered))
-    {
-        target.enable(Node::eFiltered);
-    }
+	if (source.checkStateFlag(Node::eFiltered) && target.supportsStateFlag(Node::eFiltered))
+	{
+		target.enable(Node::eFiltered);
+	}
 
-    if (source.checkStateFlag(Node::eExcluded) && target.supportsStateFlag(Node::eExcluded))
-    {
-        target.enable(Node::eExcluded);
-    }
+	if (source.checkStateFlag(Node::eExcluded) && target.supportsStateFlag(Node::eExcluded))
+	{
+		target.enable(Node::eExcluded);
+	}
 
-    if (source.checkStateFlag(Node::eLayered) && target.supportsStateFlag(Node::eLayered))
-    {
-        target.enable(Node::eLayered);
-    }
+	if (source.checkStateFlag(Node::eLayered) && target.supportsStateFlag(Node::eLayered))
+	{
+		target.enable(Node::eLayered);
+	}
 }
 
 inline std::pair<Vector3, Vector3> getOriginAndAnglesToLookAtBounds(const AABB& aabb)
 {
-    Vector3 origin(aabb.origin);
+	Vector3 origin(aabb.origin);
 
-    // Move the camera a bit off the AABB origin
-    origin += Vector3(aabb.extents.getLength() * 3, 0, aabb.extents.getLength() * 3);
+	// Move the camera a bit off the AABB origin
+	origin += Vector3(aabb.extents.getLength() * 3, 0, aabb.extents.getLength() * 3);
 
-    // Rotate the camera a bit towards the "ground"
-    Vector3 angles(0, 0, 0);
-    angles[camera::CAMERA_PITCH] = -40;
-    angles[camera::CAMERA_YAW] = 180;
+	// Rotate the camera a bit towards the "ground"
+	Vector3 angles(0, 0, 0);
+	angles[camera::CAMERA_PITCH] = -40;
+	angles[camera::CAMERA_YAW] = 180;
 
-    return std::make_pair(origin, angles);
+	return std::make_pair(origin, angles);
 }
 
 inline std::pair<Vector3, Vector3> getOriginAndAnglesToLookAtNode(const scene::INode& node)
 {
-    return getOriginAndAnglesToLookAtBounds(node.worldAABB());
+	return getOriginAndAnglesToLookAtBounds(node.worldAABB());
 }
 
 } // namespace scene

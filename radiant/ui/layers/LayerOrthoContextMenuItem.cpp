@@ -56,17 +56,17 @@ void LayerOrthoContextMenuItem::preShow()
 
 void LayerOrthoContextMenuItem::AddToLayer(int layerID)
 {
-    GlobalCommandSystem().executeCommand("AddSelectionToLayer", cmd::Argument(layerID));
+	GlobalCommandSystem().executeCommand("AddSelectionToLayer", cmd::Argument(layerID));
 }
 
 void LayerOrthoContextMenuItem::MoveToLayer(int layerID)
 {
-    GlobalCommandSystem().executeCommand("MoveSelectionToLayer", cmd::Argument(layerID));
+	GlobalCommandSystem().executeCommand("MoveSelectionToLayer", cmd::Argument(layerID));
 }
 
 void LayerOrthoContextMenuItem::RemoveFromLayer(int layerID)
 {
-    GlobalCommandSystem().executeCommand("RemoveSelectionFromLayer", cmd::Argument(layerID));
+	GlobalCommandSystem().executeCommand("RemoveSelectionFromLayer", cmd::Argument(layerID));
 }
 
 } // namespace

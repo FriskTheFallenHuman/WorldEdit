@@ -33,7 +33,7 @@ namespace ui
 
 /**
  * Module responsible of registering and intialising the various
- * UI classes in DarkRadiant, e.g. the LayerSystem.
+ * UI classes in WorldEdit, e.g. the LayerSystem.
  *
  * Currently many UI classes are spread and initialised all across
  * the main binary, so there's still work left to do.
@@ -43,7 +43,7 @@ class UserInterfaceModule :
 	public IUserInterfaceModule
 {
 private:
-    std::map<std::string, IUserControlCreator::Ptr> _userControls;
+	std::map<std::string, IUserControlCreator::Ptr> _userControls;
 
 	std::unique_ptr<LongRunningOperationHandler> _longOperationHandler;
 	std::unique_ptr<MapFileProgressHandler> _mapFileProgressHandler;
@@ -61,8 +61,8 @@ private:
 
 	sigc::connection _entitySettingsConn;
 	sigc::connection _coloursUpdatedConn;
-    sigc::connection _mapEditModeChangedConn;
-    sigc::connection _reloadMaterialsConn;
+	sigc::connection _mapEditModeChangedConn;
+	sigc::connection _reloadMaterialsConn;
 
 	std::size_t _execFailedListener;
 	std::size_t _notificationListener;
@@ -71,7 +71,7 @@ private:
 
 	std::unique_ptr<map::AutoSaveTimer> _autosaveTimer;
 
-    std::unique_ptr<ViewMenu> _viewMenu;
+	std::unique_ptr<ViewMenu> _viewMenu;
 
 public:
 	// RegisterableModule
@@ -85,10 +85,10 @@ public:
 	// This method is safe to be called from any thread.
 	void dispatch(const std::function<void()>& action) override;
 
-    void registerControl(IUserControlCreator::Ptr control) override;
-    IUserControlCreator::Ptr findControl(const std::string& name) override;
-    void unregisterControl(const std::string& controlName) override;
-    void foreachControl(const std::function<void(const std::string&)>& functor) override;
+	void registerControl(IUserControlCreator::Ptr control) override;
+	IUserControlCreator::Ptr findControl(const std::string& name) override;
+	void unregisterControl(const std::string& controlName) override;
+	void foreachControl(const std::function<void(const std::string&)>& functor) override;
 
 private:
 	void registerUICommands();

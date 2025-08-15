@@ -35,18 +35,18 @@ namespace ui
 class IAccelerator
 {
 public:
-    using Ptr = std::shared_ptr<IAccelerator>;
+	using Ptr = std::shared_ptr<IAccelerator>;
 
-    // destructor
-    virtual ~IAccelerator() {}
+	// destructor
+	virtual ~IAccelerator() {}
 
-    // Get/set the key value
-    virtual void setKey(const int key) = 0;
-    virtual int getKey() const = 0;
+	// Get/set the key value
+	virtual void setKey(const int key) = 0;
+	virtual int getKey() const = 0;
 
-    // Get/Set the modifier flags
-    virtual void setModifiers(const unsigned int modifiers) = 0;
-    virtual unsigned int getModifiers() const = 0;
+	// Get/Set the modifier flags
+	virtual void setModifiers(const unsigned int modifiers) = 0;
+	virtual unsigned int getModifiers() const = 0;
 
 	// Returns a string representation of this accelerator.
 	// forMenu == true: returns the localised modifier strings
@@ -58,7 +58,7 @@ public:
 class IEvent
 {
 public:
-    // destructor
+	// destructor
 	virtual ~IEvent() {}
 
 	// Handles the incoming keyUp / keyDown calls
@@ -100,7 +100,7 @@ typedef std::shared_ptr<IEvent> IEventPtr;
 class IEventVisitor
 {
 public:
-    // destructor
+	// destructor
 	virtual ~IEventVisitor() {}
 
 	virtual void visit(const std::string& eventName, const IAccelerator& accel) = 0;
@@ -135,24 +135,24 @@ public:
 	// Creates a new keyevent that calls the given callback when invoked
 	virtual IEventPtr addKeyEvent(const std::string& name, const ui::KeyStateChangeCallback& keyStateChangeCallback) = 0;
 
-    // Creates a new toggle event that calls the given callback when toggled
-    virtual IEventPtr addAdvancedToggle(const std::string& name,
-                                        const AdvancedToggleCallback& onToggled) = 0;
-    virtual IEventPtr addWidgetToggle(const std::string& name) = 0;
-    virtual IEventPtr addRegistryToggle(const std::string& name, const std::string& registryKey) = 0;
+	// Creates a new toggle event that calls the given callback when toggled
+	virtual IEventPtr addAdvancedToggle(const std::string& name,
+										const AdvancedToggleCallback& onToggled) = 0;
+	virtual IEventPtr addWidgetToggle(const std::string& name) = 0;
+	virtual IEventPtr addRegistryToggle(const std::string& name, const std::string& registryKey) = 0;
 
-    /**
-     * \brief
-     * Add a simple toggle callback, which always succeeds.
-     *
-     * \see addAdvancedToggle
-     */
-    IEventPtr addToggle(const std::string& name, const ToggleCallback& onToggled)
-    {
-        return addAdvancedToggle(
-            name, [onToggled](bool v) { onToggled(v); return true; }
-        );
-    }
+	/**
+	 * \brief
+	 * Add a simple toggle callback, which always succeeds.
+	 *
+	 * \see addAdvancedToggle
+	 */
+	IEventPtr addToggle(const std::string& name, const ToggleCallback& onToggled)
+	{
+		return addAdvancedToggle(
+			name, [onToggled](bool v) { onToggled(v); return true; }
+		);
+	}
 
 	// Set the according Toggle command (identified by <name>) to the bool <toggled>
 	virtual void setToggled(const std::string& name, const bool toggled) = 0;
@@ -171,9 +171,9 @@ public:
 	// Disconnects the given command from any accelerators
 	virtual void disconnectAccelerator(const std::string& command) = 0;
 
-    // Returns the accelerator that is bound to the given event (name)
-    // Returns an empty reference if either event or accelerator were not found.
-    virtual IAccelerator::Ptr findAcceleratorForEvent(const std::string& eventName) = 0;
+	// Returns the accelerator that is bound to the given event (name)
+	// Returns an empty reference if either event or accelerator were not found.
+	virtual IAccelerator::Ptr findAcceleratorForEvent(const std::string& eventName) = 0;
 
 	// Register the given menu item with the given command. The event manager updates this item
 	// when the accelerator association changes

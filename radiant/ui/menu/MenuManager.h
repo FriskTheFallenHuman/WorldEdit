@@ -26,7 +26,7 @@ class MenuElement;
 typedef std::shared_ptr<MenuElement> MenuElementPtr;
 
 class MenuManager :
-    public IMenuManager
+	public IMenuManager
 {
 private:
 	// All menubars are child of this root item
@@ -87,11 +87,11 @@ public:
 	 */
 	void clear();
 
-    // RegisterableModule
-    const std::string& getName() const override;
-    const StringSet& getDependencies() const override;
-    void initialiseModule(const IApplicationContext& ctx) override;
-    void shutdownModule() override;
+	// RegisterableModule
+	const std::string& getName() const override;
+	const StringSet& getDependencies() const override;
+	void initialiseModule(const IApplicationContext& ctx) override;
+	void shutdownModule() override;
 
 private:
 	void handleElementAdded(const MenuElementPtr& element);

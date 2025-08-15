@@ -17,12 +17,12 @@ TextureMatrix::TextureMatrix()
 
 TextureMatrix::TextureMatrix(const Matrix3& transform)
 {
-    _coords[0][0] = transform.xx();
-    _coords[0][1] = transform.yx();
-    _coords[0][2] = transform.zx();
-    _coords[1][0] = transform.xy();
-    _coords[1][1] = transform.yy();
-    _coords[1][2] = transform.zy();
+	_coords[0][0] = transform.xx();
+	_coords[0][1] = transform.yx();
+	_coords[0][2] = transform.zx();
+	_coords[1][0] = transform.xy();
+	_coords[1][1] = transform.yy();
+	_coords[1][2] = transform.zy();
 }
 
 TextureMatrix::TextureMatrix(const ShiftScaleRotation& ssr)
@@ -66,26 +66,26 @@ ShiftScaleRotation TextureMatrix::getShiftScaleRotation(std::size_t width, std::
 {
 	ShiftScaleRotation ssr;
 
-    // These values are going to show up in the Surface Inspector, which takes the image
-    // dimensions into account. We stretch UV space using the image dimensions.
+	// These values are going to show up in the Surface Inspector, which takes the image
+	// dimensions into account. We stretch UV space using the image dimensions.
 
-    // Surface Inspector wants to display values such that scale == 1.0 means:
-    // a 512-unit wide face can display the full 512px of the editor image.
-    // The corresponding texture matrix transform features a scale value like 1/512
-    // to scale the 512 XYZ coord down to 1.0 in UV space.
+	// Surface Inspector wants to display values such that scale == 1.0 means:
+	// a 512-unit wide face can display the full 512px of the editor image.
+	// The corresponding texture matrix transform features a scale value like 1/512
+	// to scale the 512 XYZ coord down to 1.0 in UV space.
 	ssr.scale[0] = 1.0 / Vector2(_coords[0][0] * width, _coords[1][0] * height).getLength();
 	ssr.scale[1] = 1.0 / Vector2(_coords[0][1] * width, _coords[1][1] * height).getLength();
 
 	ssr.rotate = -radians_to_degrees(arctangent_yx(_coords[1][0] * height, _coords[0][0] * width));
 
-    // We want the shift values appear in pixels of the editor image,
-    // so scale up the UV values by the editor image dimensions
+	// We want the shift values appear in pixels of the editor image,
+	// so scale up the UV values by the editor image dimensions
 	ssr.shift[0] = -_coords[0][2] * width;
 	ssr.shift[1] = _coords[1][2] * height;
 
-    // We only need to display shift values in the range of the texture dimensions
-    ssr.shift[0] = float_mod(ssr.shift[0], width);
-    ssr.shift[1] = float_mod(ssr.shift[1], height);
+	// We only need to display shift values in the range of the texture dimensions
+	ssr.shift[0] = float_mod(ssr.shift[0], width);
+	ssr.shift[1] = float_mod(ssr.shift[1], height);
 
 	// determine whether or not an axis is flipped using a 2d cross-product
 	auto cross = Vector2(_coords[0][0], _coords[0][1]).crossProduct(Vector2(_coords[1][0], _coords[1][1]));
@@ -98,12 +98,12 @@ ShiftScaleRotation TextureMatrix::getShiftScaleRotation(std::size_t width, std::
 		// subtract out 180 degrees to compensate.
 		if (ssr.rotate >= 180.0)
 		{
-		    ssr.rotate -= 180.0;
-		    ssr.scale[0] = -ssr.scale[0];
+			ssr.rotate -= 180.0;
+			ssr.scale[0] = -ssr.scale[0];
 		}
 		else 
-        {
-		    ssr.scale[1] = -ssr.scale[1];
+		{
+			ssr.scale[1] = -ssr.scale[1];
 		}
 	}
 
@@ -118,19 +118,19 @@ void TextureMatrix::normalise(float width, float height)
 
 Matrix3 TextureMatrix::getMatrix3() const
 {
-    return Matrix3::byRows(
-        _coords[0][0], _coords[0][1], _coords[0][2],
-        _coords[1][0], _coords[1][1], _coords[1][2],
-        0, 0, 1
-    );
+	return Matrix3::byRows(
+		_coords[0][0], _coords[0][1], _coords[0][2],
+		_coords[1][0], _coords[1][1], _coords[1][2],
+		0, 0, 1
+	);
 }
 
 bool TextureMatrix::isSane() const
 {
-    return !std::isnan(_coords[0][0]) && !std::isinf(_coords[0][0]) &&
-           !std::isnan(_coords[0][1]) && !std::isinf(_coords[0][1]) &&
-           !std::isnan(_coords[0][2]) && !std::isinf(_coords[0][2]) &&
-           !std::isnan(_coords[1][0]) && !std::isinf(_coords[1][0]) &&
-           !std::isnan(_coords[1][1]) && !std::isinf(_coords[1][1]) &&
-           !std::isnan(_coords[1][2]) && !std::isinf(_coords[1][2]);
+	return !std::isnan(_coords[0][0]) && !std::isinf(_coords[0][0]) &&
+		   !std::isnan(_coords[0][1]) && !std::isinf(_coords[0][1]) &&
+		   !std::isnan(_coords[0][2]) && !std::isinf(_coords[0][2]) &&
+		   !std::isnan(_coords[1][0]) && !std::isinf(_coords[1][0]) &&
+		   !std::isnan(_coords[1][1]) && !std::isinf(_coords[1][1]) &&
+		   !std::isnan(_coords[1][2]) && !std::isinf(_coords[1][2]);
 }

@@ -200,7 +200,7 @@ protected:
 	const GLenum _mode;
 
 public:
-    using value_type = PointVertexVector::value_type;
+	using value_type = PointVertexVector::value_type;
 
 	RenderablePointVector(GLenum mode) :
 		_mode(mode)
@@ -211,10 +211,10 @@ public:
 		_mode(mode)
 	{}
 
-    const PointVertexVector& getPointVector() const
-    {
-        return _vector;
-    }
+	const PointVertexVector& getPointVector() const
+	{
+		return _vector;
+	}
 
 	// Convenience method to set the colour of the whole array
 	void setColour(const Colour4b& colour)
@@ -269,11 +269,11 @@ public:
 		_vector.push_back(point);
 	}
 
-    template<class... Args>
-    VertexCb& emplace_back(Args&&... args)
-    {
-        return _vector.emplace_back(std::forward<Args>(args)...);
-    }
+	template<class... Args>
+	VertexCb& emplace_back(Args&&... args)
+	{
+		return _vector.emplace_back(std::forward<Args>(args)...);
+	}
 };
 
 template<typename VertexContainerT> struct RemappingTraits
@@ -282,38 +282,38 @@ template<typename VertexContainerT> struct RemappingTraits
 template<>
 struct RemappingTraits<Vertex3>
 {
-    using ElementType = Vertex3::ElementType;
-    static Vertex3& getVertex(Vertex3& vertex) { return vertex; }
+	using ElementType = Vertex3::ElementType;
+	static Vertex3& getVertex(Vertex3& vertex) { return vertex; }
 };
 
 template<>
 struct RemappingTraits<VertexCb>
 {
-    using ElementType = Vertex3::ElementType;
-    static Vertex3& getVertex(VertexCb& container) { return container.vertex; }
+	using ElementType = Vertex3::ElementType;
+	static Vertex3& getVertex(VertexCb& container) { return container.vertex; }
 };
 
 template<>
 struct RemappingTraits<MeshVertex>
 {
-    using ElementType = Vertex3::ElementType;
-    static Vertex3& getVertex(MeshVertex& container) { return container.vertex; }
+	using ElementType = Vertex3::ElementType;
+	static Vertex3& getVertex(MeshVertex& container) { return container.vertex; }
 };
 
 template<>
 struct RemappingTraits<render::RenderVertex>
 {
-    using ElementType = Vector3f::ElementType;
-    static Vector3f& getVertex(render::RenderVertex& container) { return container.vertex; }
+	using ElementType = Vector3f::ElementType;
+	static Vector3f& getVertex(render::RenderVertex& container) { return container.vertex; }
 };
 
 class RemapXYZ
 {
 public:
-    template<typename VertexContainerT>
+	template<typename VertexContainerT>
 	static void set(VertexContainerT& container, Vertex3::ElementType x, Vertex3::ElementType y, Vertex3::ElementType z)
-    {
-        RemappingTraits<VertexContainerT>::getVertex(container).x() = static_cast<typename RemappingTraits<VertexContainerT>::ElementType>(x);
+	{
+		RemappingTraits<VertexContainerT>::getVertex(container).x() = static_cast<typename RemappingTraits<VertexContainerT>::ElementType>(x);
 		RemappingTraits<VertexContainerT>::getVertex(container).y() = static_cast<typename RemappingTraits<VertexContainerT>::ElementType>(y);
 		RemappingTraits<VertexContainerT>::getVertex(container).z() = static_cast<typename RemappingTraits<VertexContainerT>::ElementType>(z);
 	}
@@ -322,24 +322,24 @@ public:
 class RemapYZX
 {
 public:
-    template<typename VertexContainerT>
+	template<typename VertexContainerT>
 	static void set(VertexContainerT& container, Vertex3::ElementType x, Vertex3::ElementType y, Vertex3::ElementType z)
-    {
-        RemappingTraits<VertexContainerT>::getVertex(container).x() = static_cast<typename RemappingTraits<VertexContainerT>::ElementType>(z);
-        RemappingTraits<VertexContainerT>::getVertex(container).y() = static_cast<typename RemappingTraits<VertexContainerT>::ElementType>(x);
-        RemappingTraits<VertexContainerT>::getVertex(container).z() = static_cast<typename RemappingTraits<VertexContainerT>::ElementType>(y);
+	{
+		RemappingTraits<VertexContainerT>::getVertex(container).x() = static_cast<typename RemappingTraits<VertexContainerT>::ElementType>(z);
+		RemappingTraits<VertexContainerT>::getVertex(container).y() = static_cast<typename RemappingTraits<VertexContainerT>::ElementType>(x);
+		RemappingTraits<VertexContainerT>::getVertex(container).z() = static_cast<typename RemappingTraits<VertexContainerT>::ElementType>(y);
 	}
 };
 
 class RemapZXY
 {
 public:
-    template<typename VertexContainerT>
+	template<typename VertexContainerT>
 	static void set(VertexContainerT& container, Vertex3::ElementType x, Vertex3::ElementType y, Vertex3::ElementType z)
-    {
-        RemappingTraits<VertexContainerT>::getVertex(container).x() = static_cast<typename RemappingTraits<VertexContainerT>::ElementType>(y);
-        RemappingTraits<VertexContainerT>::getVertex(container).y() = static_cast<typename RemappingTraits<VertexContainerT>::ElementType>(z);
-        RemappingTraits<VertexContainerT>::getVertex(container).z() = static_cast<typename RemappingTraits<VertexContainerT>::ElementType>(x);
+	{
+		RemappingTraits<VertexContainerT>::getVertex(container).x() = static_cast<typename RemappingTraits<VertexContainerT>::ElementType>(y);
+		RemappingTraits<VertexContainerT>::getVertex(container).y() = static_cast<typename RemappingTraits<VertexContainerT>::ElementType>(z);
+		RemappingTraits<VertexContainerT>::getVertex(container).z() = static_cast<typename RemappingTraits<VertexContainerT>::ElementType>(x);
 	}
 };
 
@@ -347,24 +347,24 @@ public:
 template<typename remap_policy, typename VertexArray>
 inline void draw_ellipse(const std::size_t numSegments, const double radiusX, const double radiusY, VertexArray& vertices, std::size_t firstVertex = 0)
 {
-    // Per half circle we push in (Segments x 4) vertices (the caller made room for that)
-    const auto numVerticesPerHalf = numSegments << 2;
+	// Per half circle we push in (Segments x 4) vertices (the caller made room for that)
+	const auto numVerticesPerHalf = numSegments << 2;
 	const auto increment = math::PI / numVerticesPerHalf;
 
-    for (std::size_t curSegment = 0; curSegment < numVerticesPerHalf; ++curSegment)
-    {
-        auto curAngle = curSegment * increment;
+	for (std::size_t curSegment = 0; curSegment < numVerticesPerHalf; ++curSegment)
+	{
+		auto curAngle = curSegment * increment;
 
-        auto x = radiusX * cos(curAngle);
-        auto y = radiusY * sin(curAngle);
+		auto x = radiusX * cos(curAngle);
+		auto y = radiusY * sin(curAngle);
 
-        remap_policy::set(vertices[firstVertex + curSegment], x, y, 0);
-        remap_policy::set(vertices[firstVertex + curSegment + numVerticesPerHalf], -x, -y, 0);
-    }
+		remap_policy::set(vertices[firstVertex + curSegment], x, y, 0);
+		remap_policy::set(vertices[firstVertex + curSegment + numVerticesPerHalf], -x, -y, 0);
+	}
 }
 
 template<typename remap_policy, typename VertexArray>
 inline void draw_circle(const std::size_t segments, const double radius, VertexArray& vertices, std::size_t firstVertex = 0)
 {
-    draw_ellipse<remap_policy>(segments, radius, radius, vertices, firstVertex);
+	draw_ellipse<remap_policy>(segments, radius, radius, vertices, firstVertex);
 }

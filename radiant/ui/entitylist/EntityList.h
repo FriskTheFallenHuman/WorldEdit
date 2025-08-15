@@ -19,8 +19,8 @@ namespace ui
 
 class EntityList :
 	public wxutil::DockablePanel,
-    public selection::SelectionSystem::Observer,
-    public wxutil::SingleIdleCallback
+	public selection::SelectionSystem::Observer,
+	public wxutil::SingleIdleCallback
 {
 private:
 	// The GraphTreeModel instance
@@ -35,22 +35,22 @@ private:
 
 	sigc::connection _filtersConfigChangedConn;
 
-    wxDataViewItem _itemToScrollToWhenIdle;
-    std::vector<scene::INodeWeakPtr> _nodesToUpdate;
+	wxDataViewItem _itemToScrollToWhenIdle;
+	std::vector<scene::INodeWeakPtr> _nodesToUpdate;
 
 public:
 	EntityList(wxWindow* parent);
-    ~EntityList() override;
+	~EntityList() override;
 
 protected:
-    void onPanelActivated() override;
-    void onPanelDeactivated() override;
+	void onPanelActivated() override;
+	void onPanelDeactivated() override;
 
-    void onIdle() override;
+	void onIdle() override;
 
 private:
-    void connectListeners();
-    void disconnectListeners();
+	void connectListeners();
+	void disconnectListeners();
 
 	/** greebo: Creates the widgets
 	 */
@@ -60,8 +60,8 @@ private:
 	 */
 	void updateSelectionStatus();
 
-    // Repopulate the entire treestore from the scenegraph
-    void refreshTreeModel();
+	// Repopulate the entire treestore from the scenegraph
+	void refreshTreeModel();
 
 	/** 
 	 * greebo: SelectionSystem::Observer implementation.

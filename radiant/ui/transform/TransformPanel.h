@@ -51,12 +51,12 @@ public:
 	~TransformPanel() override;
 
 protected:
-    void onPanelActivated() override;
-    void onPanelDeactivated() override;
+	void onPanelActivated() override;
+	void onPanelDeactivated() override;
 
 private:
-    void connectListeners();
-    void disconnectListeners();
+	void connectListeners();
+	void disconnectListeners();
 
 	/** greebo: Updates the sensitivity of the widgets according to
 	 * 			the current selection.

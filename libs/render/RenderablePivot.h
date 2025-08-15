@@ -13,51 +13,51 @@ class RenderablePivot :
 {
 private:
 	const Vector3& _pivot;
-    bool _needsUpdate;
+	bool _needsUpdate;
 
 public:
-    // Pass a reference to the pivot is in world coordinates
-    RenderablePivot(const Vector3& pivot) :
-        _pivot(pivot),
-        _needsUpdate(true)
-    {}
+	// Pass a reference to the pivot is in world coordinates
+	RenderablePivot(const Vector3& pivot) :
+		_pivot(pivot),
+		_needsUpdate(true)
+	{}
 
-    void queueUpdate()
-    {
-        _needsUpdate = true;
-    }
+	void queueUpdate()
+	{
+		_needsUpdate = true;
+	}
 
 protected:
-    void updateGeometry() override
-    {
-        if (!_needsUpdate) return;
+	void updateGeometry() override
+	{
+		if (!_needsUpdate) return;
 
-        _needsUpdate = false;
+		_needsUpdate = false;
 
-        static const Vector4 ColourX{ 255, 0, 0, 255 };
-        static const Vector4 ColourY{ 0, 255, 0, 255 };
-        static const Vector4 ColourZ{ 0, 0, 255, 255 };
+		static const Vector4 ColourX{ 255, 0, 0, 255 };
+		static const Vector4 ColourY{ 0, 255, 0, 255 };
+		static const Vector4 ColourZ{ 0, 0, 255, 255 };
 
-        std::vector<RenderVertex> vertices;
+		std::vector<RenderVertex> vertices;
 
-        vertices.push_back(RenderVertex(_pivot, { 0, 0, 0 }, { 0, 0 }, ColourX));
-        vertices.push_back(RenderVertex(_pivot + Vector3(16, 0, 0), { 0, 0, 0 }, { 0, 0 }, ColourX));
+		vertices.push_back(RenderVertex(_pivot, { 0, 0, 0 }, { 0, 0 }, ColourX));
+		vertices.push_back(RenderVertex(_pivot + Vector3(16, 0, 0), { 0, 0, 0 }, { 0, 0 }, ColourX));
 
-        vertices.push_back(RenderVertex(_pivot, { 0, 0, 0 }, { 0, 0 }, ColourY));
-        vertices.push_back(RenderVertex(_pivot + Vector3(0, 16, 0), { 0, 0, 0 }, { 0, 0 }, ColourY));
+		vertices.push_back(RenderVertex(_pivot, { 0, 0, 0 }, { 0, 0 }, ColourY));
+		vertices.push_back(RenderVertex(_pivot + Vector3(0, 16, 0), { 0, 0, 0 }, { 0, 0 }, ColourY));
 
-        vertices.push_back(RenderVertex(_pivot, { 0, 0, 0 }, { 0, 0 }, ColourZ));
-        vertices.push_back(RenderVertex(_pivot + Vector3(0, 0, 16), { 0, 0, 0 }, { 0, 0 }, ColourZ));
+		vertices.push_back(RenderVertex(_pivot, { 0, 0, 0 }, { 0, 0 }, ColourZ));
+		vertices.push_back(RenderVertex(_pivot + Vector3(0, 0, 16), { 0, 0, 0 }, { 0, 0 }, ColourZ));
 
-        static std::vector<unsigned int> Indices =
-        {
-            0, 1,
-            2, 3,
-            4, 5
-        };
+		static std::vector<unsigned int> Indices =
+		{
+			0, 1,
+			2, 3,
+			4, 5
+		};
 
-        updateGeometryWithData(GeometryType::Lines, vertices, Indices);
-    }
+		updateGeometryWithData(GeometryType::Lines, vertices, Indices);
+	}
 };
 
 }

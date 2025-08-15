@@ -136,7 +136,7 @@ public:
 		return _viewer.testPlane(plane, localToWorld);
 	}
 
-    VolumeIntersectionValue TestAABB(const AABB& aabb) const override
+	VolumeIntersectionValue TestAABB(const AABB& aabb) const override
 	{
 		INC_COUNTER(_count_bboxs);
 		return _frustum.testIntersection(aabb);
@@ -178,7 +178,7 @@ public:
 		return _viewer.getVector3();
 	}
 
-    const Frustum& getFrustum() const override
+	const Frustum& getFrustum() const override
 	{
 		return _frustum;
 	}

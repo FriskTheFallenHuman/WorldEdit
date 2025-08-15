@@ -28,36 +28,36 @@ class MaterialSelector :
 	public wxutil::DeclarationSelector
 {
 public:
-    enum class TextureFilter
-    {
-        Regular, // prefix: "textures/"
-        Lights,  // prefix: light/, fog/
-        All,     // Shows all textures, no filter
-    };
+	enum class TextureFilter
+	{
+		Regular, // prefix: "textures/"
+		Lights,  // prefix: light/, fog/
+		All,     // Shows all textures, no filter
+	};
 
 private:
-    TextureFilter _textureFilter;
+	TextureFilter _textureFilter;
 
-    sigc::signal<void()> _selectionChanged;
+	sigc::signal<void()> _selectionChanged;
 
 public:
-    /**
-     * @brief Constructor.
-     * 
-     * @param filter Texture set to show in the selector
-     */
-    MaterialSelector(wxWindow* parent, TextureFilter filter);
+	/**
+	 * @brief Constructor.
+	 * 
+	 * @param filter Texture set to show in the selector
+	 */
+	MaterialSelector(wxWindow* parent, TextureFilter filter);
 
-    // Get the selected Material
-    MaterialPtr getSelectedShader();
+	// Get the selected Material
+	MaterialPtr getSelectedShader();
 
-    /// Signal emitted when the selection is changed by the user
-    sigc::signal<void()> signal_selectionChanged() const { return _selectionChanged; }
+	/// Signal emitted when the selection is changed by the user
+	sigc::signal<void()> signal_selectionChanged() const { return _selectionChanged; }
 
-    void Populate() override;
+	void Populate() override;
 
 protected:
-    void onTreeViewSelectionChanged() override;
+	void onTreeViewSelectionChanged() override;
 };
 
 } // namespace ui

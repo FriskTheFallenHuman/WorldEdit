@@ -64,10 +64,10 @@ class IFreeMoveView :
 public:
 	virtual ~IFreeMoveView() {}
 
-    // Freemove mode
-    virtual void enableFreeMove() = 0;
-    virtual void disableFreeMove() = 0;
-    virtual bool freeMoveEnabled() const = 0;
+	// Freemove mode
+	virtual void enableFreeMove() = 0;
+	virtual void disableFreeMove() = 0;
+	virtual bool freeMoveEnabled() const = 0;
 };
 
 class ICameraViewManager :

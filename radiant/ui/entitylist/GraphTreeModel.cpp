@@ -41,11 +41,11 @@ const GraphTreeNode::Ptr& GraphTreeModel::insert(const scene::INodePtr& node)
 	// Create a new GraphTreeNode
 	auto gtNode = std::make_shared<GraphTreeNode>(node, row.getItem());
 
-    // Assign root node member
-    if (node->getNodeType() == scene::INode::Type::MapRoot)
-    {
-        _mapRootNode = gtNode;
-    }
+	// Assign root node member
+	if (node->getNodeType() == scene::INode::Type::MapRoot)
+	{
+		_mapRootNode = gtNode;
+	}
 
 	// Fill in the values
 	row[_columns.node] = wxVariant(node.get());
@@ -70,10 +70,10 @@ void GraphTreeModel::erase(const scene::INodePtr& node)
 		// ...and from our lookup table
 		_nodemap.erase(found);
 
-        if (_mapRootNode && _mapRootNode->getNode() == node)
-        {
-            _mapRootNode.reset();
-        }
+		if (_mapRootNode && _mapRootNode->getNode() == node)
+		{
+			_mapRootNode.reset();
+		}
 	}
 }
 
@@ -88,27 +88,27 @@ void GraphTreeModel::clear()
 	// Remove everything, wx plus nodemap
 	_nodemap.clear();
 	_model->Clear();
-    _mapRootNode.reset();
+	_mapRootNode.reset();
 }
 
 void GraphTreeModel::refresh()
 {
 #if defined(__linux__)
-    _model->Clear();
+	_model->Clear();
 #else
-    // Create a new model from scratch and populate it
-    _model = new wxutil::TreeModel(_columns);
+	// Create a new model from scratch and populate it
+	_model = new wxutil::TreeModel(_columns);
 #endif
 
-    if (!GlobalSceneGraph().root()) return;
+	if (!GlobalSceneGraph().root()) return;
 
 	// Instantiate a scenegraph walker and visit every node in the graph
 	// The walker also clears the graph in its constructor
 	GraphTreeModelPopulator populator(*this, _visibleNodesOnly);
 	GlobalSceneGraph().root()->traverse(populator);
 
-    // Now sort the model once we have all nodes in the tree
-    _model->SortModelByColumn(_columns.name);
+	// Now sort the model once we have all nodes in the tree
+	_model->SortModelByColumn(_columns.name);
 }
 
 void GraphTreeModel::setConsiderVisibleNodesOnly(bool visibleOnly)
@@ -118,42 +118,42 @@ void GraphTreeModel::setConsiderVisibleNodesOnly(bool visibleOnly)
 
 void GraphTreeModel::updateSelectionStatus(const NotifySelectionUpdateFunc& notifySelectionChanged)
 {
-    // Don't traverse the entire scenegraph, visit selected nodes only
-    GlobalSelectionSystem().foreachSelected([&](const scene::INodePtr& node)
-    {
-        updateSelectionStatus(node, notifySelectionChanged);
-    });
+	// Don't traverse the entire scenegraph, visit selected nodes only
+	GlobalSelectionSystem().foreachSelected([&](const scene::INodePtr& node)
+	{
+		updateSelectionStatus(node, notifySelectionChanged);
+	});
 }
 
 void GraphTreeModel::updateSelectionStatus(const scene::INodePtr& node,
-    const NotifySelectionUpdateFunc& notifySelectionChanged)
+	const NotifySelectionUpdateFunc& notifySelectionChanged)
 {
-    if (auto found = _nodemap.find(node); found != _nodemap.end())
-    {
-        notifySelectionChanged(found->second->getIter(), Node_isSelected(node));
-    }
+	if (auto found = _nodemap.find(node); found != _nodemap.end())
+	{
+		notifySelectionChanged(found->second->getIter(), Node_isSelected(node));
+	}
 }
 
 wxDataViewItem GraphTreeModel::findParentIter(const scene::INodePtr& node)
 {
-    switch (node->getNodeType())
-    {
-    case scene::INode::Type::MapRoot:
-        return wxDataViewItem(); // root node is inserted at the root level
+	switch (node->getNodeType())
+	{
+	case scene::INode::Type::MapRoot:
+		return wxDataViewItem(); // root node is inserted at the root level
 
-    case scene::INode::Type::Entity:
-        if (!_mapRootNode)
-        {
-            // Create a new map root node right here
-            insert(node->getParent());
-        }
-        
-        return _mapRootNode->getIter();
+	case scene::INode::Type::Entity:
+		if (!_mapRootNode)
+		{
+			// Create a new map root node right here
+			insert(node->getParent());
+		}
+		
+		return _mapRootNode->getIter();
 
-    default:
-        rWarning() << "Node type " << getNameForNodeType(node->getNodeType()) << " should not be inserted into the tree" << std::endl;
-        return wxDataViewItem();
-    }
+	default:
+		rWarning() << "Node type " << getNameForNodeType(node->getNodeType()) << " should not be inserted into the tree" << std::endl;
+		return wxDataViewItem();
+	}
 }
 
 const GraphTreeModel::TreeColumns& GraphTreeModel::getColumns() const
@@ -168,16 +168,16 @@ wxutil::TreeModel::Ptr GraphTreeModel::getModel()
 
 void GraphTreeModel::onSceneNodeInsert(const scene::INodePtr& node)
 {
-    if (!NodeIsRelevant(node)) return;
+	if (!NodeIsRelevant(node)) return;
 
-    insert(node); // wrap to the actual insert() method
+	insert(node); // wrap to the actual insert() method
 }
 
 void GraphTreeModel::onSceneNodeErase(const scene::INodePtr& node)
 {
-    if (!NodeIsRelevant(node)) return;
+	if (!NodeIsRelevant(node)) return;
 
-    erase(node); // wrap to the actual erase() method
+	erase(node); // wrap to the actual erase() method
 }
 
 } // namespace

@@ -33,38 +33,38 @@ public:
 	class OperationException :
 		public std::runtime_error 
 	{
-    private:
-        bool _cancelled;
+	private:
+		bool _cancelled;
 
-    public:
+	public:
 		OperationException(const std::string& msg) :
-            OperationException(msg, false)
+			OperationException(msg, false)
 		{}
 
-        OperationException(const std::string& msg, bool cancelled) :
-            runtime_error(msg),
-            _cancelled(cancelled)
-        {
-            if (!_cancelled)
-            {
-                rMessage() << "MapResource Operation: " << msg << std::endl;
-            }
-        }
+		OperationException(const std::string& msg, bool cancelled) :
+			runtime_error(msg),
+			_cancelled(cancelled)
+		{
+			if (!_cancelled)
+			{
+				rMessage() << "MapResource Operation: " << msg << std::endl;
+			}
+		}
 
-        // Returns true if the operation has been cancelled by the user
-        bool operationCancelled() const
-        {
-            return _cancelled;
-        }
+		// Returns true if the operation has been cancelled by the user
+		bool operationCancelled() const
+		{
+			return _cancelled;
+		}
 	};
 
-    /**
-     * Returns true if this resource refers to a read-only location.
-     * This returns true for archived resources (loaded from PAK files),
-     * but might be returning true for other resource types too (e.g. when
-     * this process is lacking write access to the resource).
-     */
-    virtual bool isReadOnly() = 0;
+	/**
+	 * Returns true if this resource refers to a read-only location.
+	 * This returns true for archived resources (loaded from PAK files),
+	 * but might be returning true for other resource types too (e.g. when
+	 * this process is lacking write access to the resource).
+	 */
+	virtual bool isReadOnly() = 0;
 
 	/**
 	* Save this resource
@@ -78,20 +78,20 @@ public:
 	*/
 	virtual void save(const map::MapFormatPtr& mapFormat = map::MapFormatPtr()) = 0;
 
-    virtual const scene::IMapRootNodePtr& getRootNode() = 0;
+	virtual const scene::IMapRootNodePtr& getRootNode() = 0;
 
-    // Sets the root node of this resource. The use case is to create a resource
-    // around an existing map root for e.g. saving a read-only resource to a new path
-    virtual void setRootNode(const scene::IMapRootNodePtr& root) = 0;
+	// Sets the root node of this resource. The use case is to create a resource
+	// around an existing map root for e.g. saving a read-only resource to a new path
+	virtual void setRootNode(const scene::IMapRootNodePtr& root) = 0;
 
-    virtual void clear() = 0;
+	virtual void clear() = 0;
 
-    // Check if the target file on disk has been modified since it was last saved
-    virtual bool fileOnDiskHasBeenModifiedSinceLastSave() = 0;
+	// Check if the target file on disk has been modified since it was last saved
+	virtual bool fileOnDiskHasBeenModifiedSinceLastSave() = 0;
 
-    // A signal that is emitted as soon as the map modified status changes due
-    // to a regular edit, undo or redo. The bool value corresponds to the new modification state.
-    virtual sigc::signal<void(bool)>& signal_modifiedStatusChanged() = 0;
+	// A signal that is emitted as soon as the map modified status changes due
+	// to a regular edit, undo or redo. The bool value corresponds to the new modification state.
+	virtual sigc::signal<void(bool)>& signal_modifiedStatusChanged() = 0;
 };
 typedef std::shared_ptr<IMapResource> IMapResourcePtr;
 
@@ -106,14 +106,14 @@ public:
 	 */
 	virtual IMapResourcePtr createFromPath(const std::string& path) = 0;
 
-    /**
-     * Create a named map resource that is contained within a PAK archive
-     * outside the VFS.
-     * archivePath is the absolute path to the archive file, e.g. "/home/greebo/outpost.pk4"
-     * filePathWithinArchive is the relative path within the archive, e.g. "maps/outpost.map"
-     */
-    virtual IMapResourcePtr createFromArchiveFile(const std::string& archivePath, 
-        const std::string& filePathWithinArchive) = 0;
+	/**
+	 * Create a named map resource that is contained within a PAK archive
+	 * outside the VFS.
+	 * archivePath is the absolute path to the archive file, e.g. "/home/greebo/outpost.pk4"
+	 * filePathWithinArchive is the relative path within the archive, e.g. "maps/outpost.map"
+	 */
+	virtual IMapResourcePtr createFromArchiveFile(const std::string& archivePath, 
+		const std::string& filePathWithinArchive) = 0;
 
 	// Signal emitted when a MapExport is starting / is finished
 	typedef sigc::signal<void, const scene::IMapRootNodePtr&> ExportEvent;

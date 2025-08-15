@@ -178,12 +178,12 @@ private:
 	void tryVectorConversion()
 	{
 		// Use a stringstream to parse the string
-        std::stringstream strm(_strValue);
-        strm << std::skipws;
+		std::stringstream strm(_strValue);
+		strm << std::skipws;
 
 		// Try converting the first two values
-        strm >> _vector2Value.x();
-        strm >> _vector2Value.y();
+		strm >> _vector2Value.x();
+		strm >> _vector2Value.y();
 
 		if (!strm.fail()) {
 			_type |= ARGTYPE_VECTOR2;
@@ -216,7 +216,7 @@ typedef std::function<void (const ArgumentList&)> Function;
 /// Convert a zero-argument function into a Function by discarding the ArgumentList
 template <typename F> Function noArgs(F f)
 {
-    return [f](const ArgumentList&) { f(); };
+	return [f](const ArgumentList&) { f(); };
 }
 
 /**
@@ -247,7 +247,7 @@ struct AutoCompletionInfo
  *
  * Commands are self-contained blocks of code (function calls or lambdas) which
  * can be invoked from menu items or from typing string commands in the
- * DarkRadiant console. They can also be called from Python.
+ * WorldEdit console. They can also be called from Python.
  *
  * Commands can be invoked programmatically via the executeCommand() method,
  * which is sometimes useful if the implementing function isn't exposed via a
@@ -272,40 +272,40 @@ public:
 	virtual void addCommand(const std::string& name, Function func,
 							const Signature& signature = Signature()) = 0;
 
-    /**
-     * @brief Add a new command with a check function which can test if the
-     * command is currently runnable.
-     *
-     * This is aimed at commands which are not always available, e.g. because
-     * they require one or more objects to be selected. If the command is not
-     * currently available, the UI might choose to disable the button or menu
-     * item which invokes it.
-     *
-     * @param name
-     * Name of the command.
-     *
-     * @param func
-     * Function to call when the command is invoked.
-     *
-     * @param check
-     * Function to check whether the command should be enabled based on current
-     * application state.
-     */
-    virtual void addWithCheck(const std::string& name, Function func, CheckFunction check,
-                              const Signature& = {}) = 0;
+	/**
+	 * @brief Add a new command with a check function which can test if the
+	 * command is currently runnable.
+	 *
+	 * This is aimed at commands which are not always available, e.g. because
+	 * they require one or more objects to be selected. If the command is not
+	 * currently available, the UI might choose to disable the button or menu
+	 * item which invokes it.
+	 *
+	 * @param name
+	 * Name of the command.
+	 *
+	 * @param func
+	 * Function to call when the command is invoked.
+	 *
+	 * @param check
+	 * Function to check whether the command should be enabled based on current
+	 * application state.
+	 */
+	virtual void addWithCheck(const std::string& name, Function func, CheckFunction check,
+							  const Signature& = {}) = 0;
 
-    /// Returns true if the named command exists
-    virtual bool commandExists(const std::string& name) = 0;
+	/// Returns true if the named command exists
+	virtual bool commandExists(const std::string& name) = 0;
 
-    /**
-     * @brief Check if the named command is currently runnable.
-     *
-     * This is just a signal to the UI that a command should be disabled; the
-     * command system does NOT guarantee that a command for which canExecute()
-     * returns false won't actually be invoked by a subsequent call to
-     * executeCommand().
-     */
-    virtual bool canExecute(const std::string& name) const = 0;
+	/**
+	 * @brief Check if the named command is currently runnable.
+	 *
+	 * This is just a signal to the UI that a command should be disabled; the
+	 * command system does NOT guarantee that a command for which canExecute()
+	 * returns false won't actually be invoked by a subsequent call to
+	 * executeCommand().
+	 */
+	virtual bool canExecute(const std::string& name) const = 0;
 
 	/**
 	 * Remove a named command.
@@ -356,22 +356,22 @@ public:
 	 */
 	virtual void execute(const std::string& input) = 0;
 
-    /// Execute the named command with the given list of arguments
-    virtual void executeCommand(const std::string& name, const ArgumentList& args = {}) = 0;
+	/// Execute the named command with the given list of arguments
+	virtual void executeCommand(const std::string& name, const ArgumentList& args = {}) = 0;
 
-    /// Convenience method to execute a command with 1 argument
-    void executeCommand(const std::string& name, const Argument& arg1)
-    {
-        executeCommand(name, ArgumentList{arg1});
-    }
+	/// Convenience method to execute a command with 1 argument
+	void executeCommand(const std::string& name, const Argument& arg1)
+	{
+		executeCommand(name, ArgumentList{arg1});
+	}
 
-    /// Convenience method to execute a command with 2 arguments
-    void executeCommand(const std::string& name, const Argument& arg1, const Argument& arg2)
-    {
-        executeCommand(name, {arg1, arg2});
-    }
+	/// Convenience method to execute a command with 2 arguments
+	void executeCommand(const std::string& name, const Argument& arg1, const Argument& arg2)
+	{
+		executeCommand(name, {arg1, arg2});
+	}
 
-    /**
+	/**
 	 * greebo: Returns autocompletion info for the given prefix.
 	 */
 	virtual AutoCompletionInfo getAutoCompletionInfo(const std::string& prefix) = 0;

@@ -14,16 +14,16 @@ namespace ui
  * an origin or radius.
  */
 class Vector3PropertyEditor:
-    public PropertyEditor
+	public PropertyEditor
 {
 private:
 	// The 3 component fields.
 	wxSpinCtrl* _xValue;
-    wxSpinCtrl* _yValue;
-    wxSpinCtrl* _zValue;
+	wxSpinCtrl* _yValue;
+	wxSpinCtrl* _zValue;
 
-    // The target key
-    ITargetKey::Ptr _key;
+	// The target key
+	ITargetKey::Ptr _key;
 
 private:
 
@@ -38,10 +38,10 @@ public:
 
 	void updateFromEntity();
 
-    static Ptr CreateNew(wxWindow* parent, IEntitySelection& entities, const ITargetKey::Ptr& key)
-    {
-        return std::make_shared<Vector3PropertyEditor>(parent, entities, key);
-    }
+	static Ptr CreateNew(wxWindow* parent, IEntitySelection& entities, const ITargetKey::Ptr& key)
+	{
+		return std::make_shared<Vector3PropertyEditor>(parent, entities, key);
+	}
 };
 
 }

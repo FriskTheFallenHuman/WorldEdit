@@ -39,7 +39,7 @@ private:
 	wxutil::TreeModel::Ptr _listStore;
 	wxutil::TreeView* _treeView;
 
-    wxutil::PopupMenuPtr _popupMenu;
+	wxutil::PopupMenuPtr _popupMenu;
 
 public:
 	// Constructor
@@ -52,9 +52,9 @@ private:
 	// This is called to create the widgets
 	void populateTab();
 
-    void _onSelectItems(bool select);
-    bool _testSelectItems();
-    void _onContextMenu(wxDataViewEvent& ev);
+	void _onSelectItems(bool select);
+	bool _testSelectItems();
+	void _onContextMenu(wxDataViewEvent& ev);
 
 }; // class ModelInfoTab
 

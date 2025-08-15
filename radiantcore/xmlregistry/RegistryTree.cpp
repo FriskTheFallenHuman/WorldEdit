@@ -12,7 +12,7 @@ RegistryTree::RegistryTree() :
 	_defaultImportNode(std::string("/") + _topLevelNode),
 	_tree(xml::Document::create())
 {
-	// Create the base XML structure with the <darkradiant> top-level tag
+	// Create the base XML structure with the <worldedit> top-level tag
 	_tree.addTopLevelNode(_topLevelNode);
 }
 
@@ -37,7 +37,7 @@ std::string RegistryTree::prepareKey(const std::string& key)
 	}
 	else
 	{
-		// add the prefix <darkradiant> and return
+		// add the prefix <worldedit> and return
 		return std::string("/") + _topLevelNode + std::string("/") + key;
 	}
 }
@@ -67,7 +67,7 @@ std::size_t RegistryTree::deleteXPath(const std::string& path)
 		node.erase();
 	}
 
-    return nodeList.size();
+	return nodeList.size();
 }
 
 xml::Node RegistryTree::createKeyWithName(const std::string& path,
@@ -151,27 +151,27 @@ xml::Node RegistryTree::createKey(const std::string& key)
 
 void RegistryTree::set(const std::string& key, const std::string& value)
 {
-    // Add the toplevel node to the path if required
-    std::string fullKey = prepareKey(key);
+	// Add the toplevel node to the path if required
+	std::string fullKey = prepareKey(key);
 
-    // If the key doesn't exist, we have to create an empty one
-    if (!keyExists(fullKey)) {
-        createKey(fullKey);
-    }
+	// If the key doesn't exist, we have to create an empty one
+	if (!keyExists(fullKey)) {
+		createKey(fullKey);
+	}
 
-    // Try to find the node
-    if (xml::NodeList nodeList = _tree.findXPath(fullKey); !nodeList.empty()) {
-        // Write the content
-        nodeList[0].setContent(value);
-        // Remove any legacy "value" attribute
-        nodeList[0].removeAttribute("value");
-    }
-    else {
-        // If the key is still not found, something nasty has happened
-        throw std::logic_error(
-            "RegistryTree: created key [" + fullKey + "] but node not found"
-        );
-    }
+	// Try to find the node
+	if (xml::NodeList nodeList = _tree.findXPath(fullKey); !nodeList.empty()) {
+		// Write the content
+		nodeList[0].setContent(value);
+		// Remove any legacy "value" attribute
+		nodeList[0].removeAttribute("value");
+	}
+	else {
+		// If the key is still not found, something nasty has happened
+		throw std::logic_error(
+			"RegistryTree: created key [" + fullKey + "] but node not found"
+		);
+	}
 }
 
 void RegistryTree::setAttribute(const std::string& path,
@@ -213,32 +213,32 @@ void RegistryTree::importFromFile(const std::string& importFilePath,
 	}
 
 	// Check if the importKey exists - if not: create it
-  	std::string fullImportKey = prepareKey(importKey);
+	std::string fullImportKey = prepareKey(importKey);
 
-  	if (!keyExists(fullImportKey))
+	if (!keyExists(fullImportKey))
 	{
-  		createKey(fullImportKey);
-  	}
+		createKey(fullImportKey);
+	}
 
-  	// Lookup the mount point by using findXPath(), it must exist by now
-  	xml::NodeList importNodeList = _tree.findXPath(fullImportKey);
+	// Lookup the mount point by using findXPath(), it must exist by now
+	xml::NodeList importNodeList = _tree.findXPath(fullImportKey);
 
-  	if (importNodeList.empty())
+	if (importNodeList.empty())
 	{
-  		rMessage() << "XMLRegistry: Critical: ImportNode could not be found." << std::endl;
+		rMessage() << "XMLRegistry: Critical: ImportNode could not be found." << std::endl;
 		return;
-  	}
+	}
 
 	rMessage() << "XMLRegistry: Importing XML file: " << importFilePath << std::endl;
 
-  	// Load the file
+	// Load the file
 	xml::Document importDoc(importFilePath);
 
-  	if (!importDoc.isValid())
+	if (!importDoc.isValid())
 	{
 		// Throw the XMLImportException
-  		throw std::runtime_error("Unable to load file: " + importFilePath);
-  	}
+		throw std::runtime_error("Unable to load file: " + importFilePath);
+	}
 
 	// Import the document into our XML tree
 	_tree.importDocument(importDoc, importNodeList[0]);

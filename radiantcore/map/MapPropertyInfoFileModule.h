@@ -8,7 +8,7 @@ namespace map
 
 /**
 * Info File Module to persist the map property bag to the
-* .darkradiant map info file.
+* .project/.mapx map info file.
 */
 class MapPropertyInfoFileModule :
 	public IMapInfoFileModule

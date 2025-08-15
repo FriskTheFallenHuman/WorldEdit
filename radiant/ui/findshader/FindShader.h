@@ -22,23 +22,23 @@ class FindAndReplaceShader :
 	private wxutil::XmlResourceBasedWidget
 {
 private:
-    wxTextCtrl* _lastFocusedEntry;
+	wxTextCtrl* _lastFocusedEntry;
 
-    sigc::connection _shaderClipboardConn;
+	sigc::connection _shaderClipboardConn;
 
 public:
 	FindAndReplaceShader(wxWindow* parent);
-    ~FindAndReplaceShader() override;
+	~FindAndReplaceShader() override;
 
 protected:
-    void onPanelActivated() override;
-    void onPanelDeactivated() override;
+	void onPanelActivated() override;
+	void onPanelDeactivated() override;
 
 private:
-    void connectListeners();
-    void disconnectListeners();
+	void connectListeners();
+	void disconnectListeners();
 
-    void onShaderClipboardChanged();
+	void onShaderClipboardChanged();
 
 	// This is called to initialise the dialog window / create the widgets
 	void populateWindow();
@@ -53,12 +53,12 @@ private:
 	void onChooseFind(wxCommandEvent& ev);
 	void onChooseReplace(wxCommandEvent& ev);
 
-    void onChoosePick(wxCommandEvent& ev);
+	void onChoosePick(wxCommandEvent& ev);
 
 	void onEntryChanged(wxCommandEvent& ev);
-    void onEntryFocusChanged(wxFocusEvent& ev);
+	void onEntryFocusChanged(wxFocusEvent& ev);
 
-    std::string getPickHelpText();
+	std::string getPickHelpText();
 };
 
 } // namespace

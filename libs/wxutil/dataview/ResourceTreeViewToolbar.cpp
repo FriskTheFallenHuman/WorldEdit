@@ -42,7 +42,8 @@ ResourceTreeViewToolbar::ResourceTreeViewToolbar(wxWindow* parent, ResourceTreeV
     // Filter text entry box
     _rightSizer = new wxBoxSizer(wxHORIZONTAL);
 
-    auto* filterImage = new wxStaticBitmap(this, wxID_ANY, wxArtProvider::GetBitmap(wxART_FIND, wxART_TOOLBAR, wxSize(16, 16)));
+    auto filterImage = wxutil::GetLocalBitmap("find.png");
+    _findButton = new wxStaticBitmap(this, wxID_ANY, filterImage);
 
     _filterEntry = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
     _filterEntry->SetMinSize(wxSize(100, -1));
@@ -57,6 +58,7 @@ ResourceTreeViewToolbar::ResourceTreeViewToolbar(wxWindow* parent, ResourceTreeV
     auto prevImg = wxutil::GetLocalBitmap("arrow_up.png");
     _findPrevButton = new wxBitmapButton(this, wxID_ANY, prevImg);
 
+    _findButton->SetSize(wxSize(16, 16));
     _findNextButton->SetSize(wxSize(16, 16));
     _findPrevButton->SetSize(wxSize(16, 16));
 
@@ -72,7 +74,7 @@ ResourceTreeViewToolbar::ResourceTreeViewToolbar(wxWindow* parent, ResourceTreeV
         JumpToPrevFilterMatch();
     });
 
-    _rightSizer->Add(filterImage, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 6);
+    _rightSizer->Add(_findButton, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 6);
     _rightSizer->Add(_filterEntry, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 6);
     _rightSizer->Add(_findPrevButton, 0, wxEXPAND | wxRIGHT, 3);
     _rightSizer->Add(_findNextButton, 0, wxEXPAND, 6);

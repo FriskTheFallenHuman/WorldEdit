@@ -33,58 +33,58 @@ const std::string RKEY_EMIT_CSG_SUBTRACT_WARNING("user/ui/brush/emitCSGSubtractW
 void hollowBrush(const BrushNodePtr& sourceBrush, bool makeRoom)
 {
 	// Hollow the brush using the current grid size
-    sourceBrush->getBrush().forEachFace([&] (Face& face)
-    {
-        if (!face.contributes())
-        {
-            return;
-        }
+	sourceBrush->getBrush().forEachFace([&] (Face& face)
+	{
+		if (!face.contributes())
+		{
+			return;
+		}
 
-        scene::INodePtr parent = sourceBrush->getParent();
+		scene::INodePtr parent = sourceBrush->getParent();
 
-        scene::INodePtr newNode = GlobalBrushCreator().createBrush();
-        BrushNodePtr brushNode = std::dynamic_pointer_cast<BrushNode>(newNode);
-        assert(brushNode);
+		scene::INodePtr newNode = GlobalBrushCreator().createBrush();
+		BrushNodePtr brushNode = std::dynamic_pointer_cast<BrushNode>(newNode);
+		assert(brushNode);
 
-        float offset = GlobalGrid().getGridSize();
+		float offset = GlobalGrid().getGridSize();
 
 		if (makeRoom)
 		{
 			face.getPlane().offset(offset);
 		}
 
-        // Add the child to the same parent as the source brush
-        parent->addChildNode(brushNode);
+		// Add the child to the same parent as the source brush
+		parent->addChildNode(brushNode);
 
-        // Move the child brushes to the same layer as their source
-        brushNode->assignToLayers(sourceBrush->getLayers());
+		// Move the child brushes to the same layer as their source
+		brushNode->assignToLayers(sourceBrush->getLayers());
 
-        // Copy all faces from the source brush
-        brushNode->getBrush().copy(sourceBrush->getBrush());
+		// Copy all faces from the source brush
+		brushNode->getBrush().copy(sourceBrush->getBrush());
 
 		if (makeRoom)
 		{
 			face.getPlane().offset(-offset);
 		}
 
-        Node_setSelected(brushNode, true);
+		Node_setSelected(brushNode, true);
 
-        FacePtr newFace = brushNode->getBrush().addFace(face);
+		FacePtr newFace = brushNode->getBrush().addFace(face);
 
-        if (newFace != 0)
-        {
-            newFace->flipWinding();
+		if (newFace != 0)
+		{
+			newFace->flipWinding();
 
 			if (!makeRoom)
 			{
-	            newFace->getPlane().offset(offset);
+				newFace->getPlane().offset(offset);
 			}
 
-            newFace->planeChanged();
-        }
+			newFace->planeChanged();
+		}
 
-        brushNode->getBrush().removeEmptyFaces();
-    });
+		brushNode->getBrush().removeEmptyFaces();
+	});
 
 	// Now unselect and remove the source brush from the scene
 	scene::removeNodeFromParent(sourceBrush);
@@ -284,7 +284,7 @@ void subtractBrushesFromUnselected(const cmd::ArgumentList& args)
 			_("This Is Not Dromed Warning"));
 
 		// Disable this warning
-        registry::setValue(RKEY_EMIT_CSG_SUBTRACT_WARNING, false);
+		registry::setValue(RKEY_EMIT_CSG_SUBTRACT_WARNING, false);
 	}
 
 	// Collect all selected brushes
@@ -358,10 +358,10 @@ bool Brush_merge(Brush& brush, const BrushPtrVector& in, bool onlyshape) {
 				if (face1.plane3() == face2.plane3()) {
 					// if the texture/shader references should be the same but are not
 					if (!onlyshape && !shader_equal(
-                            face1.getFaceShader().getMaterialName(),
-                            face2.getFaceShader().getMaterialName()
-                        ))
-                    {
+							face1.getFaceShader().getMaterialName(),
+							face2.getFaceShader().getMaterialName()
+						))
+					{
 						return false;
 					}
 
@@ -494,13 +494,13 @@ void mergeSelectedBrushes(const cmd::ArgumentList& args)
 
 void registerCommands()
 {
-    using selection::pred::haveBrush;
+	using selection::pred::haveBrush;
 
-    GlobalCommandSystem().addWithCheck("CSGSubtract", subtractBrushesFromUnselected,
-                                       haveBrush);
-    GlobalCommandSystem().addWithCheck("CSGMerge", mergeSelectedBrushes, haveBrush);
-    GlobalCommandSystem().addWithCheck("CSGHollow", hollowSelectedBrushes, haveBrush);
-    GlobalCommandSystem().addWithCheck("CSGRoom", makeRoomForSelectedBrushes, haveBrush);
+	GlobalCommandSystem().addWithCheck("CSGSubtract", subtractBrushesFromUnselected,
+									   haveBrush);
+	GlobalCommandSystem().addWithCheck("CSGMerge", mergeSelectedBrushes, haveBrush);
+	GlobalCommandSystem().addWithCheck("CSGHollow", hollowSelectedBrushes, haveBrush);
+	GlobalCommandSystem().addWithCheck("CSGRoom", makeRoomForSelectedBrushes, haveBrush);
 }
 
 } // namespace algorithm

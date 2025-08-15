@@ -29,17 +29,17 @@ public:
 		_model.clear();
 	}
 
-    bool pre(const scene::INodePtr& node) override
-    {
-        if ((!_visibleNodesOnly || node->visible()) && GraphTreeModel::NodeIsRelevant(node))
-        {
-            // Insert this node into the GraphTreeModel
-            _model.insert(node);
-            return node->getNodeType() == scene::INode::Type::MapRoot; // don't traverse entity children
-        }
+	bool pre(const scene::INodePtr& node) override
+	{
+		if ((!_visibleNodesOnly || node->visible()) && GraphTreeModel::NodeIsRelevant(node))
+		{
+			// Insert this node into the GraphTreeModel
+			_model.insert(node);
+			return node->getNodeType() == scene::INode::Type::MapRoot; // don't traverse entity children
+		}
 
-        return true; // traverse children
-    }
+		return true; // traverse children
+	}
 };
 
 } // namespace

@@ -62,7 +62,7 @@ void CreateLayerDialog::CreateNewLayer(const cmd::ArgumentList& args)
 		if (layerID != -1)
 		{
 			// Success, break the loop
-            GlobalMapModule().setModified(true);
+			GlobalMapModule().setModified(true);
 			break;
 		}
 		else

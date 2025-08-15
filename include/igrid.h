@@ -52,8 +52,8 @@ inline const char* getStringForSize(GridSize size)
 // World grid, while the Texture Tool is working in UV space.
 enum class Space
 {
-    World,
-    Texture,
+	World,
+	Texture,
 };
 
 }
@@ -80,13 +80,13 @@ public:
 
 	virtual void setGridSize(GridSize gridSize) = 0;
 	
-    // Returns the grid spacing in units of the given space
-    virtual float getGridSize(grid::Space = grid::Space::World) const = 0;
+	// Returns the grid spacing in units of the given space
+	virtual float getGridSize(grid::Space = grid::Space::World) const = 0;
 
-    // Returns the grid power of the currently active grid size
+	// Returns the grid power of the currently active grid size
 	virtual int getGridPower(grid::Space = grid::Space::World) const = 0;
 
-    // Returns the base number the exponent is applied to (e.g. 2)
+	// Returns the base number the exponent is applied to (e.g. 2)
 	virtual int getGridBase(grid::Space = grid::Space::World) const = 0;
 
 	virtual void gridDown() = 0;
@@ -95,7 +95,7 @@ public:
 	virtual GridLook getMajorLook() const = 0;
 	virtual GridLook getMinorLook() const = 0;
 
-    /// Signal emitted when the grid is changed
+	/// Signal emitted when the grid is changed
 	virtual sigc::signal<void> signal_gridChanged() const = 0;
 };
 

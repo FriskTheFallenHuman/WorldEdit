@@ -34,7 +34,7 @@ class Camera :
 
 	render::IRenderView& _view;
 
-    registry::CachedKey<bool> _dragSelectionEnabled;
+	registry::CachedKey<bool> _dragSelectionEnabled;
 
 public:
 	Camera(render::IRenderView& view, const std::function<void(bool)>& requestRedraw);
@@ -46,8 +46,8 @@ public:
 
 	float getFarClipPlaneDistance() const override;
 	void setFarClipPlaneDistance(float distance) override;
-    bool getFarClipPlaneEnabled() const override;
-    void setFarClipPlaneEnabled(bool enabled) override;
+	bool getFarClipPlaneEnabled() const override;
+	void setFarClipPlaneEnabled(bool enabled) override;
 
 	void freemoveUpdateAxes();
 	void moveUpdateAxes();
@@ -73,7 +73,7 @@ public:
 
 	SelectionTestPtr createSelectionTestForPoint(const Vector2& point) override;
 	const VolumeTest& getVolumeTest() const override;
-    bool supportsDragSelections() override;
+	bool supportsDragSelections() override;
 	void queueDraw() override;
 	void forceRedraw() override;
 

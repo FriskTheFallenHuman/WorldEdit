@@ -142,20 +142,20 @@ void FilterDialog::update()
 
 void FilterDialog::populateWindow()
 {
-    wxPanel* panel = loadNamedPanel(this, "FilterDialogMainPanel");
+	wxPanel* panel = loadNamedPanel(this, "FilterDialogMainPanel");
 
-    // Pack the treeview into the main window's vbox
-    createFiltersPanel();
+	// Pack the treeview into the main window's vbox
+	createFiltersPanel();
 
-    wxButton* okButton = findNamedObject<wxButton>(this, "FilterDialogOkButton");
-    wxButton* cancelButton = findNamedObject<wxButton>(this, "FilterDialogCancelButton");
+	wxButton* okButton = findNamedObject<wxButton>(this, "FilterDialogOkButton");
+	wxButton* cancelButton = findNamedObject<wxButton>(this, "FilterDialogCancelButton");
 
-    okButton->Connect(wxEVT_BUTTON, wxCommandEventHandler(FilterDialog::onSave), NULL, this);
-    cancelButton->Connect(wxEVT_BUTTON, wxCommandEventHandler(FilterDialog::onCancel), NULL, this);
+	okButton->Connect(wxEVT_BUTTON, wxCommandEventHandler(FilterDialog::onSave), NULL, this);
+	cancelButton->Connect(wxEVT_BUTTON, wxCommandEventHandler(FilterDialog::onCancel), NULL, this);
 
-    wxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
-    mainSizer->Add(panel, 1, wxEXPAND, 0);
-    SetSizerAndFit(mainSizer);
+	wxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
+	mainSizer->Add(panel, 1, wxEXPAND, 0);
+	SetSizerAndFit(mainSizer);
 }
 
 void FilterDialog::createFiltersPanel()
@@ -252,51 +252,51 @@ void FilterDialog::onSave(wxCommandEvent& ev)
 
 void FilterDialog::showEditDialogForNewFilter(const FilterPtr& newFilter)
 {
-    // Instantiate a new editor, will block
-    auto* editor = new FilterEditor(*newFilter, this, false);
+	// Instantiate a new editor, will block
+	auto* editor = new FilterEditor(*newFilter, this, false);
 
-    auto editorResult = editor->ShowModal();
+	auto editorResult = editor->ShowModal();
 
-    editor->Destroy();
+	editor->Destroy();
 
-    if (editorResult != wxID_OK)
-    {
-        // User hit cancel, we're done
-        return;
-    }
+	if (editorResult != wxID_OK)
+	{
+		// User hit cancel, we're done
+		return;
+	}
 
-    if (newFilter->rules.empty())
-    {
-        // Empty ruleset, notify user
-        auto dialog = GlobalDialogManager().createMessageBox(_("Empty Filter"),
-            _("No rules defined for this filter, cannot insert."), ui::IDialog::MESSAGE_ERROR);
+	if (newFilter->rules.empty())
+	{
+		// Empty ruleset, notify user
+		auto dialog = GlobalDialogManager().createMessageBox(_("Empty Filter"),
+			_("No rules defined for this filter, cannot insert."), ui::IDialog::MESSAGE_ERROR);
 
-        dialog->run();
-        return;
-    }
+		dialog->run();
+		return;
+	}
 
-    auto result = _filters.emplace(newFilter->name, newFilter);
+	auto result = _filters.emplace(newFilter->name, newFilter);
 
-    if (!result.second)
-    {
-        // Empty ruleset, notify user
-        auto dialog = GlobalDialogManager().createMessageBox(_("Name Conflict"),
-            _("Cannot add, filter with same name already exists."), ui::IDialog::MESSAGE_ERROR);
+	if (!result.second)
+	{
+		// Empty ruleset, notify user
+		auto dialog = GlobalDialogManager().createMessageBox(_("Name Conflict"),
+			_("Cannot add, filter with same name already exists."), ui::IDialog::MESSAGE_ERROR);
 
-        dialog->run();
-        return;
-    }
+		dialog->run();
+		return;
+	}
 
-    update();
+	update();
 }
 
 void FilterDialog::onAddFilter(wxCommandEvent& ev)
 {
 	// Construct a new filter with an empty name (this indicates it has not been there before when saving)
 	auto newFilter = std::make_shared<Filter>("", false, false);
-    newFilter->name = _("NewFilter");
+	newFilter->name = _("NewFilter");
 
-    showEditDialogForNewFilter(newFilter);
+	showEditDialogForNewFilter(newFilter);
 }
 
 void FilterDialog::onViewFilter(wxCommandEvent& ev)
@@ -399,25 +399,25 @@ void FilterDialog::onDeleteFilter(wxCommandEvent& ev)
 
 void FilterDialog::onCopyFilter(wxCommandEvent& ev)
 {
-    // Lookup the Filter object
-    FilterMap::iterator f = _filters.find(_selectedFilter);
+	// Lookup the Filter object
+	FilterMap::iterator f = _filters.find(_selectedFilter);
 
-    if (f == _filters.end())
-    {
-        return; // not found or read-only
-    }
+	if (f == _filters.end())
+	{
+		return; // not found or read-only
+	}
 
-    // Construct a new filter with an empty name (this indicates it has not been there before when saving)
-    auto newFilter = std::make_shared<Filter>("", false, false);
-    newFilter->name = f->second->name + " " + _("Copy");
+	// Construct a new filter with an empty name (this indicates it has not been there before when saving)
+	auto newFilter = std::make_shared<Filter>("", false, false);
+	newFilter->name = f->second->name + " " + _("Copy");
 
-    // Copy all the rules
-    for (const auto& existingRule : f->second->rules)
-    {
-        newFilter->rules.push_back(existingRule);
-    }
+	// Copy all the rules
+	for (const auto& existingRule : f->second->rules)
+	{
+		newFilter->rules.push_back(existingRule);
+	}
 
-    showEditDialogForNewFilter(newFilter);
+	showEditDialogForNewFilter(newFilter);
 }
 
 void FilterDialog::onFilterSelectionChanged(wxDataViewEvent& ev)

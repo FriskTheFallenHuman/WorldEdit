@@ -31,9 +31,9 @@ private:
 	void saveOptionsToRegistry();
 	void handleFormatSelectionChange();
 
-    Vector3 getExportOrigin();
-    model::ModelExportOrigin getSelectedExportOrigin();
-    void setSelectedExportOrigin(model::ModelExportOrigin exportOrigin);
+	Vector3 getExportOrigin();
+	model::ModelExportOrigin getSelectedExportOrigin();
+	void setSelectedExportOrigin(model::ModelExportOrigin exportOrigin);
 };
 
 }

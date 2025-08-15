@@ -7,16 +7,16 @@
 #include "RenderableWinding.h"
 
 class BrushClipPlane final :
-    public render::RenderableWinding
+	public render::RenderableWinding
 {
 private:
 	Winding _winding;
 	ShaderPtr _shader;
 
 public:
-    BrushClipPlane() :
-        RenderableWinding(_winding, false)
-    {}
+	BrushClipPlane() :
+		RenderableWinding(_winding, false)
+	{}
 
 	void setPlane(const Brush& brush, const Plane3& plane, IRenderEntity& entity)
 	{
@@ -24,16 +24,16 @@ public:
 		{
 			brush.windingForClipPlane(_winding, plane);
 
-            _winding.updateNormals(plane.normal());
+			_winding.updateNormals(plane.normal());
 
-            // Update the RenderableWinding
-            queueUpdate();
-            update(_shader, entity);
+			// Update the RenderableWinding
+			queueUpdate();
+			update(_shader, entity);
 		}
 		else 
 		{
 			_winding.resize(0);
-            clear();
+			clear();
 		}
 	}
 

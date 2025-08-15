@@ -1,5 +1,5 @@
 import os
-import darkradiant as dr
+import worldedit as dr
 
 # Some interface tests
 

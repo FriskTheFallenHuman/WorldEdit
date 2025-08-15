@@ -134,8 +134,8 @@ scene::INodePtr BrushDefParser::parse(parser::DefTokeniser& tok) const
 	// Final outer "}"
 	tok.assertNextToken("}");
 
-    // Cleanup redundant face planes
-    brush.removeRedundantFaces();
+	// Cleanup redundant face planes
+	brush.removeRedundantFaces();
 
 	return node;
 }
@@ -211,31 +211,31 @@ scene::INodePtr LegacyBrushDefParser::parse(parser::DefTokeniser& tok) const
 			// Construct the plane from the three points
 			Plane3 plane(p3, p2, p1);
 
-            // Parse Shader, brushDef has an implicit "textures/" not written to the map
+			// Parse Shader, brushDef has an implicit "textures/" not written to the map
 			std::string shader = GlobalTexturePrefix_get() + tok.nextToken();
 
 			// Parse texdef (shift rotation scale)
-            ShiftScaleRotation ssr;
+			ShiftScaleRotation ssr;
 
-            ssr.shift[0] = string::to_float(tok.nextToken());
-            ssr.shift[1] = string::to_float(tok.nextToken());
+			ssr.shift[0] = string::to_float(tok.nextToken());
+			ssr.shift[1] = string::to_float(tok.nextToken());
 
-            ssr.rotate = string::to_float(tok.nextToken());
+			ssr.rotate = string::to_float(tok.nextToken());
 
-            ssr.scale[0] = string::to_float(tok.nextToken());
-            ssr.scale[1] = string::to_float(tok.nextToken());
+			ssr.scale[0] = string::to_float(tok.nextToken());
+			ssr.scale[1] = string::to_float(tok.nextToken());
 
-            if (ssr.scale[0] == 0)
-            {
-                ssr.scale[0] = 0.5;
-            }
+			if (ssr.scale[0] == 0)
+			{
+				ssr.scale[0] = 0.5;
+			}
 
-            if (ssr.scale[1] == 0)
-            {
-                ssr.scale[1] = 0.5;
-            }
+			if (ssr.scale[1] == 0)
+			{
+				ssr.scale[1] = 0.5;
+			}
 
-            auto texdef = calculateTextureMatrix(shader, plane.normal(), ssr);
+			auto texdef = calculateTextureMatrix(shader, plane.normal(), ssr);
 
 			// Parse Flags (usually each brush has all faces detail or all faces structural)
 			auto flag = static_cast<IBrush::DetailFlag>(
@@ -255,8 +255,8 @@ scene::INodePtr LegacyBrushDefParser::parse(parser::DefTokeniser& tok) const
 		}
 	}
 
-    // Cleanup redundant face planes
-    brush.removeRedundantFaces();
+	// Cleanup redundant face planes
+	brush.removeRedundantFaces();
 
 	return node;
 }
@@ -269,30 +269,30 @@ Matrix3 LegacyBrushDefParser::calculateTextureMatrix(const std::string& shader, 
 	auto texture = GlobalMaterialManager().getMaterial(shader)->getEditorImage();
 
 	if (texture)
-    {
-        imageWidth = static_cast<float>(texture->getWidth());
-        imageHeight = static_cast<float>(texture->getHeight());
+	{
+		imageWidth = static_cast<float>(texture->getWidth());
+		imageHeight = static_cast<float>(texture->getHeight());
 	}
 
 	if (imageWidth == 0 || imageHeight == 0)
-    {
+	{
 		rError() << "LegacyBrushDefParser: Failed to load image: " << shader << std::endl;
 	}
 
-    // Call the Q3 texture matrix calculation code as used in GtkRadiant
-    auto transform = quake3::calculateTextureMatrix(normal, ssr, imageWidth, imageHeight);
+	// Call the Q3 texture matrix calculation code as used in GtkRadiant
+	auto transform = quake3::calculateTextureMatrix(normal, ssr, imageWidth, imageHeight);
 
-    // DarkRadiant's texture emission algorithm is applying a base transform before
-    // projecting the vertices to UV space - this is something performed in the
-    // idTech4 dmap compiler too, so we have to keep that behaviour.
-    // To compensate that effect we're applying an inverse base transformation matrix
-    // to this texture transform so we get the same visuals as in Q3.
-    // This fix will only work effectively for axis-aligned faces, everything else
-    // will not be stored in the 6 floats forming DR's TextureProjections.
-    auto axisBase = getBasisTransformForNormal(normal);
-    
-    // The axis base matrix is orthonormal, so we can invert it by transposing
-    transform.multiplyBy(axisBase.getTransposed());
+	// WorldEdit's texture emission algorithm is applying a base transform before
+	// projecting the vertices to UV space - this is something performed in the
+	// idTech4 dmap compiler too, so we have to keep that behaviour.
+	// To compensate that effect we're applying an inverse base transformation matrix
+	// to this texture transform so we get the same visuals as in Q3.
+	// This fix will only work effectively for axis-aligned faces, everything else
+	// will not be stored in the 6 floats forming DR's TextureProjections.
+	auto axisBase = getBasisTransformForNormal(normal);
+	
+	// The axis base matrix is orthonormal, so we can invert it by transposing
+	transform.multiplyBy(axisBase.getTransposed());
 
 	return getTextureMatrixFromMatrix4(transform);
 }

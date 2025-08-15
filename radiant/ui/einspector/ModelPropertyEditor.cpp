@@ -59,78 +59,78 @@ void ModelPropertyEditor::_onModelButton(wxCommandEvent& ev)
 		_entities.getSharedKeyValue(_key->getFullKey(), true), false, false // pass the current model, don't show options or skins
 	);
 
-    if (result.objectKind != ModelSelector::Result::ObjectKind::Model)
-    {
-        return;
-    }
+	if (result.objectKind != ModelSelector::Result::ObjectKind::Model)
+	{
+		return;
+	}
 
-    UndoableCommand cmd("setModelProperty");
+	UndoableCommand cmd("setModelProperty");
 
-    _entities.foreachEntity([&](const EntityNodePtr& node)
-    {
-        auto& entity = node->getEntity();
-        std::string prevModel = entity.getKeyValue(_key->getFullKey());
-        std::string name = entity.getKeyValue("name");
+	_entities.foreachEntity([&](const EntityNodePtr& node)
+	{
+		auto& entity = node->getEntity();
+		std::string prevModel = entity.getKeyValue(_key->getFullKey());
+		std::string name = entity.getKeyValue("name");
 
-        bool wasBrushBasedModel = prevModel == name;
+		bool wasBrushBasedModel = prevModel == name;
 
-        if (!result.name.empty())
-        {
-            bool willBeBrushBasedModel = result.name == name;
+		if (!result.name.empty())
+		{
+			bool willBeBrushBasedModel = result.name == name;
 
-            // Check if any brushes should be removed, but inform the user about this
-            if (!willBeBrushBasedModel && wasBrushBasedModel && hasChildPrimitives(node))
-            {
-                // Warn the user and proceed
-                wxutil::Messagebox::Show(_("Warning"),
-                    _("Changing this entity's model to the selected value will\nremove all child primitives from it:\n") + name,
-                    IDialog::MessageType::MESSAGE_WARNING);
+			// Check if any brushes should be removed, but inform the user about this
+			if (!willBeBrushBasedModel && wasBrushBasedModel && hasChildPrimitives(node))
+			{
+				// Warn the user and proceed
+				wxutil::Messagebox::Show(_("Warning"),
+					_("Changing this entity's model to the selected value will\nremove all child primitives from it:\n") + name,
+					IDialog::MessageType::MESSAGE_WARNING);
 
-                scene::NodeRemover walker;
-                node->traverseChildren(walker);
-            }
+				scene::NodeRemover walker;
+				node->traverseChildren(walker);
+			}
 
-            // Save the model key now
-            entity.setKeyValue(_key->getFullKey(), result.name);
+			// Save the model key now
+			entity.setKeyValue(_key->getFullKey(), result.name);
 
-            signal_keyValueApplied().emit(_key->getFullKey(), result.name);
-        }
-    });
+			signal_keyValueApplied().emit(_key->getFullKey(), result.name);
+		}
+	});
 }
 
 void ModelPropertyEditor::_onParticleButton(wxCommandEvent& ev)
 {
 	// Invoke ParticlesChooser
-    std::string currentSelection = getKeyValueFromSelection(_key->getFullKey());
+	std::string currentSelection = getKeyValueFromSelection(_key->getFullKey());
 	std::string particle = ParticleChooserDialog::ChooseParticle(currentSelection);
 
 	if (!particle.empty())
 	{
-        setKeyValueOnSelection(_key->getFullKey(), particle);
+		setKeyValueOnSelection(_key->getFullKey(), particle);
 	}
 }
 
 void ModelPropertyEditor::_onSkinButton(wxCommandEvent& ev)
 {
-    // Check the key this model property editor is attached to first
-    auto model = getKeyValueFromSelection(_key->getFullKey());
+	// Check the key this model property editor is attached to first
+	auto model = getKeyValueFromSelection(_key->getFullKey());
 
-    // Fall back to "model" if nothing found
-    if (model.empty())
-    {
-        model = getKeyValueFromSelection("model");
-    }
+	// Fall back to "model" if nothing found
+	if (model.empty())
+	{
+		model = getKeyValueFromSelection("model");
+	}
 
-    if (model.empty())
-    {
-        wxutil::Messagebox::ShowError(
-            _("The model key values of the selection are ambiguous, cannot choose a skin."), getWidget());
-        return;
-    }
+	if (model.empty())
+	{
+		wxutil::Messagebox::ShowError(
+			_("The model key values of the selection are ambiguous, cannot choose a skin."), getWidget());
+		return;
+	}
 
-    // Target the "skin" property
-    auto skinKey = _key->clone();
-    skinKey->setAffectedKey("skin");
+	// Target the "skin" property
+	auto skinKey = _key->clone();
+	skinKey->setAffectedKey("skin");
 
 	std::string prevSkin = getKeyValueFromSelection(skinKey->getFullKey());
 	std::string skin = SkinChooser::ChooseSkin(model, prevSkin);
@@ -138,7 +138,7 @@ void ModelPropertyEditor::_onSkinButton(wxCommandEvent& ev)
 	if (skin != prevSkin)
 	{
 		// Apply the key to the entity
-        setKeyValueOnSelection(skinKey->getFullKey(), skin);
+		setKeyValueOnSelection(skinKey->getFullKey(), skin);
 	}
 }
 

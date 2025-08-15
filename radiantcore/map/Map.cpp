@@ -67,268 +67,268 @@ namespace map
 
 namespace
 {
-    const char* const MAP_UNNAMED_STRING = N_("unnamed.map");
+	const char* const MAP_UNNAMED_STRING = N_("unnamed.map");
 }
 
 Map::Map() :
-    _lastCopyMapName(""),
-    _modified(false),
-    _saveInProgress(false),
-    _shutdownListener(0)
+	_lastCopyMapName(""),
+	_modified(false),
+	_saveInProgress(false),
+	_shutdownListener(0)
 {}
 
 void Map::clearMapResource()
 {
-    // Map is unnamed or load failed, reset map resource node to empty
-    _resource->clear();
+	// Map is unnamed or load failed, reset map resource node to empty
+	_resource->clear();
 
-    _resource->getRootNode()->getUndoChangeTracker().setSavedChangeCount();
+	_resource->getRootNode()->getUndoChangeTracker().setSavedChangeCount();
 
-    // Rename the map to "unnamed" in any case to avoid overwriting the failed map
-    setMapName(_(MAP_UNNAMED_STRING));
+	// Rename the map to "unnamed" in any case to avoid overwriting the failed map
+	setMapName(_(MAP_UNNAMED_STRING));
 }
 
 void Map::connectToRootNode()
 {
-    _modifiedStatusListener.disconnect();
-    _undoEventListener.disconnect();
-    _layerHierarchyChangedListener.disconnect();
+	_modifiedStatusListener.disconnect();
+	_undoEventListener.disconnect();
+	_layerHierarchyChangedListener.disconnect();
 
-    _modifiedStatusListener = _resource->signal_modifiedStatusChanged().connect(
-        [this](bool newStatus) { setModified(newStatus); }
-    );
+	_modifiedStatusListener = _resource->signal_modifiedStatusChanged().connect(
+		[this](bool newStatus) { setModified(newStatus); }
+	);
 
-    if (!_resource->getRootNode()) return;
+	if (!_resource->getRootNode()) return;
 
-    _undoEventListener = _resource->getRootNode()->getUndoSystem().signal_undoEvent().connect(
-        sigc::mem_fun(*this, &Map::onUndoEvent)
-    );
+	_undoEventListener = _resource->getRootNode()->getUndoSystem().signal_undoEvent().connect(
+		sigc::mem_fun(*this, &Map::onUndoEvent)
+	);
 
-    // This is a workaround - changing layer hierarchies is not an undoable operation
-    // and this by hitting undo or redo the status might be reset to "unmodified" anytime
-    _layerHierarchyChangedListener = _resource->getRootNode()->getLayerManager()
-        .signal_layerHierarchyChanged().connect(sigc::mem_fun(*this, &Map::onLayerHierarchyChanged));
+	// This is a workaround - changing layer hierarchies is not an undoable operation
+	// and this by hitting undo or redo the status might be reset to "unmodified" anytime
+	_layerHierarchyChangedListener = _resource->getRootNode()->getLayerManager()
+		.signal_layerHierarchyChanged().connect(sigc::mem_fun(*this, &Map::onLayerHierarchyChanged));
 }
 
 void Map::onLayerHierarchyChanged()
 {
-    setModified(true);
+	setModified(true);
 }
 
 void Map::onUndoEvent(IUndoSystem::EventType type, const std::string& operationName)
 {
-    switch (type)
-    {
-    case IUndoSystem::EventType::OperationRecorded:
-        OperationMessage::Send(operationName);
-        break;
+	switch (type)
+	{
+	case IUndoSystem::EventType::OperationRecorded:
+		OperationMessage::Send(operationName);
+		break;
 
-    case IUndoSystem::EventType::OperationUndone:
-        _mapPostUndoSignal.emit();
-        OperationMessage::Send(fmt::format(_("Undo: {0}"), operationName));
-        break;
+	case IUndoSystem::EventType::OperationUndone:
+		_mapPostUndoSignal.emit();
+		OperationMessage::Send(fmt::format(_("Undo: {0}"), operationName));
+		break;
 
-    case IUndoSystem::EventType::OperationRedone:
-        _mapPostRedoSignal.emit();
-        OperationMessage::Send(fmt::format(_("Redo: {0}"), operationName));
-        break;
-    }
+	case IUndoSystem::EventType::OperationRedone:
+		_mapPostRedoSignal.emit();
+		OperationMessage::Send(fmt::format(_("Redo: {0}"), operationName));
+		break;
+	}
 }
 
 void Map::loadMapResourceFromPath(const std::string& path)
 {
-    // Create a MapLocation defining a physical file, and forward the call
-    loadMapResourceFromLocation(MapLocation{path, false, ""});
+	// Create a MapLocation defining a physical file, and forward the call
+	loadMapResourceFromLocation(MapLocation{path, false, ""});
 }
 
 void Map::loadMapResourceFromArchive(const std::string& archive, const std::string& archiveRelativePath)
 {
-    // Create a MapLocation defining an archive file, and forward the call
-    loadMapResourceFromLocation(MapLocation{ archive, true, archiveRelativePath });
+	// Create a MapLocation defining an archive file, and forward the call
+	loadMapResourceFromLocation(MapLocation{ archive, true, archiveRelativePath });
 }
 
 void Map::loadMapResourceFromLocation(const MapLocation& location)
 {
-    rMessage() << "Loading map from " << location.path <<
-        (location.isArchive ? " [" + location.archiveRelativePath + "]" : "") << std::endl;
+	rMessage() << "Loading map from " << location.path <<
+		(location.isArchive ? " [" + location.archiveRelativePath + "]" : "") << std::endl;
 
 	// Map loading started
 	emitMapEvent(MapLoading);
 
-    // Abort any ongoing merge
-    abortMergeOperation();
+	// Abort any ongoing merge
+	abortMergeOperation();
 
 	_resource = location.isArchive ?
-        GlobalMapResourceManager().createFromArchiveFile(location.path, location.archiveRelativePath) :
-        GlobalMapResourceManager().createFromPath(location.path);
+		GlobalMapResourceManager().createFromArchiveFile(location.path, location.archiveRelativePath) :
+		GlobalMapResourceManager().createFromPath(location.path);
 
-    assert(_resource);
+	assert(_resource);
 
-    try
-    {
-        util::ScopeTimer timer("map load");
+	try
+	{
+		util::ScopeTimer timer("map load");
 
-        if (isUnnamed() || !_resource->load())
-        {
-            clearMapResource();
-        }
-    }
-    catch (const IMapResource::OperationException& ex)
-    {
-        radiant::NotificationMessage::SendError(ex.what());
-        clearMapResource();
-    }
+		if (isUnnamed() || !_resource->load())
+		{
+			clearMapResource();
+		}
+	}
+	catch (const IMapResource::OperationException& ex)
+	{
+		radiant::NotificationMessage::SendError(ex.what());
+		clearMapResource();
+	}
 
-    connectToRootNode();
+	connectToRootNode();
 
-    // Take the new node and insert it as map root
-    GlobalSceneGraph().setRoot(_resource->getRootNode());
+	// Take the new node and insert it as map root
+	GlobalSceneGraph().setRoot(_resource->getRootNode());
 
 	// Traverse the scenegraph and find the worldspawn
 	findWorldspawn();
 
-    // Associate the Scenegaph with the global RenderSystem
-    // This usually takes a while since all editor textures are loaded - display a dialog to inform the user
-    {
-        radiant::ScopedLongRunningOperation blocker(_("Loading textures..."));
+	// Associate the Scenegaph with the global RenderSystem
+	// This usually takes a while since all editor textures are loaded - display a dialog to inform the user
+	{
+		radiant::ScopedLongRunningOperation blocker(_("Loading textures..."));
 
-        assignRenderSystem(GlobalSceneGraph().root());
-    }
+		assignRenderSystem(GlobalSceneGraph().root());
+	}
 
-    // Update layer visibility of all nodes
-    scene::UpdateNodeVisibilityWalker updater(_resource->getRootNode()->getLayerManager());
-    _resource->getRootNode()->traverse(updater);
+	// Update layer visibility of all nodes
+	scene::UpdateNodeVisibilityWalker updater(_resource->getRootNode()->getLayerManager());
+	_resource->getRootNode()->traverse(updater);
 
-    // Map loading finished, emit the signal
-    emitMapEvent(MapLoaded);
+	// Map loading finished, emit the signal
+	emitMapEvent(MapLoaded);
 
-    OperationMessage::Send(_("Map loaded"));
+	OperationMessage::Send(_("Map loaded"));
 
-    rMessage() << "--- LoadMapFile ---\n";
-    rMessage() << _mapName << "\n";
+	rMessage() << "--- LoadMapFile ---\n";
+	rMessage() << _mapName << "\n";
 
-    rMessage() << GlobalCounters().getCounter(counterBrushes).get() << " brushes\n";
-    rMessage() << GlobalCounters().getCounter(counterPatches).get() << " patches\n";
-    rMessage() << GlobalCounters().getCounter(counterEntities).get() << " entities\n";
+	rMessage() << GlobalCounters().getCounter(counterBrushes).get() << " brushes\n";
+	rMessage() << GlobalCounters().getCounter(counterPatches).get() << " patches\n";
+	rMessage() << GlobalCounters().getCounter(counterEntities).get() << " entities\n";
 
-    // Let the filtersystem update the filtered status of all instances
-    GlobalFilterSystem().update();
+	// Let the filtersystem update the filtered status of all instances
+	GlobalFilterSystem().update();
 
-    // Clear the modified flag
-    setModified(false);
+	// Clear the modified flag
+	setModified(false);
 }
 
 void Map::assignRenderSystem(const scene::IMapRootNodePtr& root)
 {
-    root->setRenderSystem(std::dynamic_pointer_cast<RenderSystem>(
-        module::GlobalModuleRegistry().getModule(MODULE_RENDERSYSTEM)));
+	root->setRenderSystem(std::dynamic_pointer_cast<RenderSystem>(
+		module::GlobalModuleRegistry().getModule(MODULE_RENDERSYSTEM)));
 }
 
 void Map::finishMergeOperation()
 {
-    if (getEditMode() != EditMode::Merge)
-    {
-        rWarning() << "Not in merge edit mode, cannot finish any operation" << std::endl;
-        return;
-    }
+	if (getEditMode() != EditMode::Merge)
+	{
+		rWarning() << "Not in merge edit mode, cannot finish any operation" << std::endl;
+		return;
+	}
 
-    if (!_mergeOperation)
-    {
-        rError() << "Cannot merge, no active operation attached to this map." << std::endl;
-        return;
-    }
+	if (!_mergeOperation)
+	{
+		rError() << "Cannot merge, no active operation attached to this map." << std::endl;
+		return;
+	}
 
-    // Prepare the scene, let the merge nodes know about the upcoming merge
-    // and remove them from the scene, to leave it untouched
-    for (const auto& mergeActionNode : _mergeActionNodes)
-    {
-        mergeActionNode->prepareForMerge();
+	// Prepare the scene, let the merge nodes know about the upcoming merge
+	// and remove them from the scene, to leave it untouched
+	for (const auto& mergeActionNode : _mergeActionNodes)
+	{
+		mergeActionNode->prepareForMerge();
 
-        scene::removeNodeFromParent(mergeActionNode);
+		scene::removeNodeFromParent(mergeActionNode);
 
-        // Clear any references this node holds
-        mergeActionNode->clear();
-    }
+		// Clear any references this node holds
+		mergeActionNode->clear();
+	}
 
-    _mergeActionNodes.clear();
+	_mergeActionNodes.clear();
 
-    // At this point the scene should look the same as before the merge
-    {
-        UndoableCommand cmd("mergeMap");
-        _mergeOperation->applyActions();
+	// At this point the scene should look the same as before the merge
+	{
+		UndoableCommand cmd("mergeMap");
+		_mergeOperation->applyActions();
 
-        cleanupMergeOperation();
-    }
-    setEditMode(EditMode::Normal);
-    emitMapEvent(IMap::MapMergeOperationFinished);
+		cleanupMergeOperation();
+	}
+	setEditMode(EditMode::Normal);
+	emitMapEvent(IMap::MapMergeOperationFinished);
 }
 
 void Map::cleanupMergeOperation()
 {
-    for (const auto& mergeActionNode : _mergeActionNodes)
-    {
-        // If the node is already removed from the scene, this does nothing
-        scene::removeNodeFromParent(mergeActionNode);
+	for (const auto& mergeActionNode : _mergeActionNodes)
+	{
+		// If the node is already removed from the scene, this does nothing
+		scene::removeNodeFromParent(mergeActionNode);
 
-        // Clear any references this node holds
-        mergeActionNode->clear();
-    }
+		// Clear any references this node holds
+		mergeActionNode->clear();
+	}
 
-    _mergeOperationListener.disconnect();
-    _mergeActionNodes.clear();
-    _mergeOperation.reset();
+	_mergeOperationListener.disconnect();
+	_mergeActionNodes.clear();
+	_mergeOperation.reset();
 }
 
 void Map::abortMergeOperation()
 {
-    bool mergeWasActive = _mergeOperation != nullptr;
+	bool mergeWasActive = _mergeOperation != nullptr;
 
-    // Remove the nodes and switch back to normal without applying the operation
-    cleanupMergeOperation();
-    setEditMode(EditMode::Normal);
+	// Remove the nodes and switch back to normal without applying the operation
+	cleanupMergeOperation();
+	setEditMode(EditMode::Normal);
 
-    if (mergeWasActive)
-    {
-        emitMapEvent(IMap::MapMergeOperationAborted);
-    }
+	if (mergeWasActive)
+	{
+		emitMapEvent(IMap::MapMergeOperationAborted);
+	}
 }
 
 scene::merge::IMergeOperation::Ptr Map::getActiveMergeOperation()
 {
-    return _editMode == EditMode::Merge ? _mergeOperation : scene::merge::IMergeOperation::Ptr();
+	return _editMode == EditMode::Merge ? _mergeOperation : scene::merge::IMergeOperation::Ptr();
 }
 
 void Map::setMapName(const std::string& newName)
 {
-    bool mapNameChanged = _mapName != newName;
+	bool mapNameChanged = _mapName != newName;
 
-    // Store the name into the member
-    _mapName = newName;
+	// Store the name into the member
+	_mapName = newName;
 
-    // Update the map resource's root node, if there is one
-    if (_resource)
+	// Update the map resource's root node, if there is one
+	if (_resource)
 	{
-        _resource->rename(newName);
-    }
+		_resource->rename(newName);
+	}
 
-    if (mapNameChanged)
-    {
-        // Fire the signal to any observers
-        signal_mapNameChanged().emit();
-    }
+	if (mapNameChanged)
+	{
+		// Fire the signal to any observers
+		signal_mapNameChanged().emit();
+	}
 }
 
 sigc::signal<void>& Map::signal_mapNameChanged()
 {
-    return _mapNameChangedSignal;
+	return _mapNameChangedSignal;
 }
 
 std::string Map::getMapName() const {
-    return _mapName;
+	return _mapName;
 }
 
 bool Map::isUnnamed() const {
-    return _mapName == _(MAP_UNNAMED_STRING);
+	return _mapName == _(MAP_UNNAMED_STRING);
 }
 
 namespace
@@ -336,52 +336,52 @@ namespace
 
 bool pointfileNameMatch(const std::string& candidate, const std::string& mapStem)
 {
-    // A matching point file either has an identical stem to the map file, or the map file stem
-    // with an underscore suffix (e.g. "mapfile_portal_123_456.lin")
-    return string::iequals(candidate, mapStem) || string::istarts_with(candidate, mapStem + "_");
+	// A matching point file either has an identical stem to the map file, or the map file stem
+	// with an underscore suffix (e.g. "mapfile_portal_123_456.lin")
+	return string::iequals(candidate, mapStem) || string::istarts_with(candidate, mapStem + "_");
 }
 
 } // namespace
 
 void Map::forEachPointfile(PointfileFunctor func) const
 {
-    static const char* LIN_EXT = ".lin";
+	static const char* LIN_EXT = ".lin";
 
-    const fs::path map(getMapName());
-    const fs::path mapDir = map.parent_path();
-    const fs::path mapStem = map.stem();
+	const fs::path map(getMapName());
+	const fs::path mapDir = map.parent_path();
+	const fs::path mapStem = map.stem();
 
-    // Don't bother trying to iterate over a missing map directory, this will
-    // just throw an exception.
-    if (!fs::is_directory(mapDir))
-        return;
+	// Don't bother trying to iterate over a missing map directory, this will
+	// just throw an exception.
+	if (!fs::is_directory(mapDir))
+		return;
 
-    // Iterate over files in the map directory, putting them in a sorted set
-    std::set<fs::path> paths;
-    for (const auto& entry: fs::directory_iterator(mapDir))
-    {
-        // Ignore anything which isn't a .lin file
-        auto entryPath = entry.path();
-        if (entryPath.extension() == LIN_EXT
-            && pointfileNameMatch(entryPath.stem().string(), mapStem.string()))
-        {
-            paths.insert(entryPath);
-        }
-    }
+	// Iterate over files in the map directory, putting them in a sorted set
+	std::set<fs::path> paths;
+	for (const auto& entry: fs::directory_iterator(mapDir))
+	{
+		// Ignore anything which isn't a .lin file
+		auto entryPath = entry.path();
+		if (entryPath.extension() == LIN_EXT
+			&& pointfileNameMatch(entryPath.stem().string(), mapStem.string()))
+		{
+			paths.insert(entryPath);
+		}
+	}
 
-    // Call functor on paths in order
-    for (const fs::path& p: paths)
-        func(p);
+	// Call functor on paths in order
+	for (const fs::path& p: paths)
+		func(p);
 }
 
 void Map::showPointFile(const fs::path& filePath)
 {
-    _pointTrace->show(filePath);
+	_pointTrace->show(filePath);
 }
 
 bool Map::isPointTraceVisible() const
 {
-    return _pointTrace->isVisible();
+	return _pointTrace->isVisible();
 }
 
 void Map::onSceneNodeErase(const scene::INodePtr& node)
@@ -395,7 +395,7 @@ void Map::onSceneNodeErase(const scene::INodePtr& node)
 
 void Map::setWorldspawn(const scene::INodePtr& node)
 {
-    _worldSpawnNode = node;
+	_worldSpawnNode = node;
 }
 
 Map::MapEventSignal Map::signal_mapEvent() const
@@ -405,182 +405,182 @@ Map::MapEventSignal Map::signal_mapEvent() const
 
 Map::EditMode Map::getEditMode()
 {
-    return _editMode;
+	return _editMode;
 }
 
 void Map::setEditMode(EditMode mode)
 {
-    _editMode = mode;
+	_editMode = mode;
 
-    if (_editMode == EditMode::Merge)
-    {
-        GlobalSelectionSystem().setSelectedAll(false);
-        GlobalSelectionSystem().setSelectionMode(selection::SelectionMode::MergeAction);
+	if (_editMode == EditMode::Merge)
+	{
+		GlobalSelectionSystem().setSelectedAll(false);
+		GlobalSelectionSystem().setSelectionMode(selection::SelectionMode::MergeAction);
 
-        if (getRoot())
-        {
-            getRoot()->getRenderSystem()->setMergeModeEnabled(true);
-        }
-    }
-    else
-    {
-        GlobalSelectionSystem().setSelectionMode(selection::SelectionMode::Primitive);
+		if (getRoot())
+		{
+			getRoot()->getRenderSystem()->setMergeModeEnabled(true);
+		}
+	}
+	else
+	{
+		GlobalSelectionSystem().setSelectionMode(selection::SelectionMode::Primitive);
 
-        if (getRoot())
-        {
-            getRoot()->getRenderSystem()->setMergeModeEnabled(false);
-        }
-    }
+		if (getRoot())
+		{
+			getRoot()->getRenderSystem()->setMergeModeEnabled(false);
+		}
+	}
 
-    signal_editModeChanged().emit(_editMode);
-    SceneChangeNotify();
+	signal_editModeChanged().emit(_editMode);
+	SceneChangeNotify();
 }
 
 sigc::signal<void, IMap::EditMode>& Map::signal_editModeChanged()
 {
-    return _mapEditModeChangedSignal;
+	return _mapEditModeChangedSignal;
 }
 
 const scene::INodePtr& Map::getWorldspawn()
 {
-    return _worldSpawnNode;
+	return _worldSpawnNode;
 }
 
 scene::IMapRootNodePtr Map::getRoot()
 {
-    if (_resource)
+	if (_resource)
 	{
-        // Try to cast the node onto a root node and return
-        return _resource->getRootNode();
-    }
+		// Try to cast the node onto a root node and return
+		return _resource->getRootNode();
+	}
 
-    return scene::IMapRootNodePtr();
+	return scene::IMapRootNodePtr();
 }
 
 MapFormatPtr Map::getFormat()
 {
-    return GlobalMapFormatManager().getMapFormatForFilename(_mapName);
+	return GlobalMapFormatManager().getMapFormatForFilename(_mapName);
 }
 
 MapFormatPtr Map::getMapFormatForFilenameSafe(const std::string& filename)
 {
-    auto candidate = GlobalMapFormatManager().getMapFormatForFilename(filename);
+	auto candidate = GlobalMapFormatManager().getMapFormatForFilename(filename);
 
-    // Fall back to the format of the current map if the selection is empty (#5808)
-    return candidate ? candidate : getFormat();
+	// Fall back to the format of the current map if the selection is empty (#5808)
+	return candidate ? candidate : getFormat();
 }
 
 // free all map elements, reinitialize the structures that depend on them
 void Map::freeMap()
 {
-    // Abort any ongoing merge
-    abortMergeOperation();
+	// Abort any ongoing merge
+	abortMergeOperation();
 
 	// Fire the map unloading event,
 	// This will de-select stuff, clear the pointfile, etc.
-    emitMapEvent(MapUnloading);
+	emitMapEvent(MapUnloading);
 
 	setWorldspawn(scene::INodePtr());
 
 	GlobalSceneGraph().setRoot(scene::IMapRootNodePtr());
 
-    emitMapEvent(MapUnloaded);
+	emitMapEvent(MapUnloaded);
 
-    // Reset the resource pointer
-    _modifiedStatusListener.disconnect();
-    _resource.reset();
+	// Reset the resource pointer
+	_modifiedStatusListener.disconnect();
+	_resource.reset();
 }
 
 bool Map::isModified() const
 {
-    return _modified;
+	return _modified;
 }
 
 void Map::setModified(bool modifiedFlag)
 {
-    if (_modified != modifiedFlag)
-    {
-        _modified = modifiedFlag;
+	if (_modified != modifiedFlag)
+	{
+		_modified = modifiedFlag;
 
-        // when the map is modified, let the listeners now
-        signal_modifiedChanged().emit();
-    }
+		// when the map is modified, let the listeners now
+		signal_modifiedChanged().emit();
+	}
 
-    // Reset the map save timer
-    _mapSaveTimer.restart();
+	// Reset the map save timer
+	_mapSaveTimer.restart();
 }
 
 sigc::signal<void>& Map::signal_modifiedChanged()
 {
-    return _mapModifiedChangedSignal;
+	return _mapModifiedChangedSignal;
 }
 
 sigc::signal<void>& Map::signal_postUndo()
 {
-    return _mapPostUndoSignal;
+	return _mapPostUndoSignal;
 }
 
 sigc::signal<void>& Map::signal_postRedo()
 {
-    return _mapPostRedoSignal;
+	return _mapPostRedoSignal;
 }
 
 IUndoSystem& Map::getUndoSystem()
 {
-    const auto& rootNode = _resource->getRootNode();
+	const auto& rootNode = _resource->getRootNode();
 
-    if (!rootNode)
-    {
-        throw std::runtime_error("No map resource loaded");
-    }
+	if (!rootNode)
+	{
+		throw std::runtime_error("No map resource loaded");
+	}
 
-    return rootNode->getUndoSystem();
+	return rootNode->getUndoSystem();
 }
 
 // move the view to a certain position
 void Map::focusViews(const Vector3& point, const Vector3& angles)
 {
-    // Set the camera and the views to the given point
-    GlobalCameraManager().focusAllCameras(point, angles);
+	// Set the camera and the views to the given point
+	GlobalCameraManager().focusAllCameras(point, angles);
 
-    // ortho views might not be present in headless mode
-    if (module::GlobalModuleRegistry().moduleExists(MODULE_ORTHOVIEWMANAGER))
-    {
-        GlobalOrthoViewManager().setOrigin(point);
-    }
+	// ortho views might not be present in headless mode
+	if (module::GlobalModuleRegistry().moduleExists(MODULE_ORTHOVIEWMANAGER))
+	{
+		GlobalOrthoViewManager().setOrigin(point);
+	}
 }
 
 void Map::focusViewCmd(const cmd::ArgumentList& args)
 {
-    if (args.size() != 2)
-    {
-        rWarning() << "Usage: FocusViews <origin:Vector3> <angles:Vector3>" << std::endl;
-        return;
-    }
+	if (args.size() != 2)
+	{
+		rWarning() << "Usage: FocusViews <origin:Vector3> <angles:Vector3>" << std::endl;
+		return;
+	}
 
-    focusViews(args[0].getVector3(), args[1].getVector3());
+	focusViews(args[0].getVector3(), args[1].getVector3());
 }
 
 void Map::focusCameraOnSelectionCmd(const cmd::ArgumentList& args)
 {
-    if (GlobalSelectionSystem().countSelected() == 0)
-    {
-        throw cmd::ExecutionNotPossible(_("Cannot focus, selection is empty"));
-    }
+	if (GlobalSelectionSystem().countSelected() == 0)
+	{
+		throw cmd::ExecutionNotPossible(_("Cannot focus, selection is empty"));
+	}
 
-    // Determine the bounds of the current selection
-    const auto& workZone = GlobalSelectionSystem().getWorkZone();
-    auto originAndAngles = scene::getOriginAndAnglesToLookAtBounds(workZone.bounds);
+	// Determine the bounds of the current selection
+	const auto& workZone = GlobalSelectionSystem().getWorkZone();
+	auto originAndAngles = scene::getOriginAndAnglesToLookAtBounds(workZone.bounds);
 
-    // Set the camera and the views to the given point
-    GlobalCameraManager().focusAllCameras(originAndAngles.first, originAndAngles.second);
+	// Set the camera and the views to the given point
+	GlobalCameraManager().focusAllCameras(originAndAngles.first, originAndAngles.second);
 }
 
 scene::INodePtr Map::findWorldspawn()
 {
 	scene::INodePtr worldspawn;
 
-    // Traverse the scenegraph and search for the worldspawn
+	// Traverse the scenegraph and search for the worldspawn
 	GlobalSceneGraph().root()->foreachNode([&](const scene::INodePtr& node)
 	{
 		if (Node_isWorldspawn(node))
@@ -595,7 +595,7 @@ scene::INodePtr Map::findWorldspawn()
 	// Set the worldspawn, might be null if nothing was found
 	setWorldspawn(worldspawn);
 
-    return worldspawn;
+	return worldspawn;
 }
 
 scene::INodePtr Map::createWorldspawn()
@@ -618,125 +618,125 @@ const scene::INodePtr& Map::findOrInsertWorldspawn()
 		setWorldspawn(createWorldspawn());
 	}
 
-    return _worldSpawnNode;
+	return _worldSpawnNode;
 }
 
 void Map::load(const std::string& filename)
 {
-    setMapName(filename);
-    loadMapResourceFromPath(_mapName);
+	setMapName(filename);
+	loadMapResourceFromPath(_mapName);
 }
 
 bool Map::save(const MapFormatPtr& mapFormat)
 {
-    if (_saveInProgress) return false; // safeguard
+	if (_saveInProgress) return false; // safeguard
 
-    if (_resource->isReadOnly())
-    {
-        rError() << "This map is read-only and cannot be saved." << std::endl;
-        return false;
-    }
+	if (_resource->isReadOnly())
+	{
+		rError() << "This map is read-only and cannot be saved." << std::endl;
+		return false;
+	}
 
-    // Check if the map file has been modified in the meantime
-    if (_resource->fileOnDiskHasBeenModifiedSinceLastSave() &&
-        !radiant::FileOverwriteConfirmation::SendAndReceiveAnswer(
-            fmt::format(_("The file {0} has been modified since it was last saved,\nperhaps by another application. "
-                "Do you really want to overwrite the file?"), _mapName), _("File modification detected")))
-    {
-        return false;
-    }
+	// Check if the map file has been modified in the meantime
+	if (_resource->fileOnDiskHasBeenModifiedSinceLastSave() &&
+		!radiant::FileOverwriteConfirmation::SendAndReceiveAnswer(
+			fmt::format(_("The file {0} has been modified since it was last saved,\nperhaps by another application. "
+				"Do you really want to overwrite the file?"), _mapName), _("File modification detected")))
+	{
+		return false;
+	}
 
-    _saveInProgress = true;
+	_saveInProgress = true;
 
-    emitMapEvent(MapSaving);
+	emitMapEvent(MapSaving);
 
-    util::ScopeTimer timer("map save");
+	util::ScopeTimer timer("map save");
 
-    bool success = false;
+	bool success = false;
 
-    // Save the actual map resource
-    try
-    {
-        _resource->save(mapFormat);
+	// Save the actual map resource
+	try
+	{
+		_resource->save(mapFormat);
 
-        // Clear the modified flag
-        setModified(false);
+		// Clear the modified flag
+		setModified(false);
 
-        success = true;
-    }
-    catch (IMapResource::OperationException & ex)
-    {
-        radiant::NotificationMessage::SendError(ex.what());
-    }
+		success = true;
+	}
+	catch (IMapResource::OperationException & ex)
+	{
+		radiant::NotificationMessage::SendError(ex.what());
+	}
 
-    emitMapEvent(MapSaved);
-    OperationMessage::Send(_("Map saved"));
+	emitMapEvent(MapSaved);
+	OperationMessage::Send(_("Map saved"));
 
-    _saveInProgress = false;
+	_saveInProgress = false;
 
-    // Redraw the views, sometimes the backbuffer containing
-    // the previous frame will remain visible
-    SceneChangeNotify();
+	// Redraw the views, sometimes the backbuffer containing
+	// the previous frame will remain visible
+	SceneChangeNotify();
 
-    return success;
+	return success;
 }
 
 void Map::createNewMap()
 {
-    setMapName(_(MAP_UNNAMED_STRING));
+	setMapName(_(MAP_UNNAMED_STRING));
 
 	loadMapResourceFromPath(_mapName);
 
-    SceneChangeNotify();
+	SceneChangeNotify();
 
-    setModified(false);
+	setModified(false);
 
-    OperationMessage::Send(_("Empty Map created"));
-    focusViews(Vector3(0,0,30), Vector3(0,0,0));
+	OperationMessage::Send(_("Empty Map created"));
+	focusViews(Vector3(0,0,30), Vector3(0,0,0));
 }
 
 IMapExporter::Ptr Map::createMapExporter(IMapWriter& writer,
-    const scene::IMapRootNodePtr& root, std::ostream& mapStream)
+	const scene::IMapRootNodePtr& root, std::ostream& mapStream)
 {
-    return std::make_shared<MapExporter>(writer, root, mapStream, 0);
+	return std::make_shared<MapExporter>(writer, root, mapStream, 0);
 }
 
 bool Map::import(const std::string& filename)
 {
-    bool success = false;
+	bool success = false;
 
-    IMapResourcePtr resource = GlobalMapResourceManager().createFromPath(filename);
+	IMapResourcePtr resource = GlobalMapResourceManager().createFromPath(filename);
 
-    try
-    {
-        if (resource->load())
-        {
-            // load() returned TRUE, this means that the resource node
-            // is not the NULL node
-            const auto& otherRoot = resource->getRootNode();
+	try
+	{
+		if (resource->load())
+		{
+			// load() returned TRUE, this means that the resource node
+			// is not the NULL node
+			const auto& otherRoot = resource->getRootNode();
 
-            // Adjust all new names to fit into the existing map namespace
-            algorithm::prepareNamesForImport(getRoot(), otherRoot);
+			// Adjust all new names to fit into the existing map namespace
+			algorithm::prepareNamesForImport(getRoot(), otherRoot);
 
-            algorithm::importMap(otherRoot);
-            success = true;
-        }
+			algorithm::importMap(otherRoot);
+			success = true;
+		}
 
-        SceneChangeNotify();
-    }
-    catch (const IMapResource::OperationException& ex)
-    {
-        radiant::NotificationMessage::SendError(ex.what());
-    }
+		SceneChangeNotify();
+	}
+	catch (const IMapResource::OperationException& ex)
+	{
+		radiant::NotificationMessage::SendError(ex.what());
+	}
 
-    return success;
+	return success;
 }
 
 void Map::saveDirect(const std::string& filename, const MapFormatPtr& mapFormat)
 {
-    if (_saveInProgress) return; // safeguard
+	if (_saveInProgress) return; // safeguard
 
-    _saveInProgress = true;
+	_saveInProgress = true;
 
 	MapFormatPtr format = mapFormat;
 
@@ -745,23 +745,23 @@ void Map::saveDirect(const std::string& filename, const MapFormatPtr& mapFormat)
 		format = getMapFormatForFilenameSafe(filename);
 	}
 
-    try
-    {
-        MapResource::saveFile(*format, GlobalSceneGraph().root(), scene::traverse, filename);
-    }
-    catch (const IMapResource::OperationException& ex)
-    {
-        radiant::NotificationMessage::SendError(ex.what());
-    }
+	try
+	{
+		MapResource::saveFile(*format, GlobalSceneGraph().root(), scene::traverse, filename);
+	}
+	catch (const IMapResource::OperationException& ex)
+	{
+		radiant::NotificationMessage::SendError(ex.what());
+	}
 
-    _saveInProgress = false;
+	_saveInProgress = false;
 }
 
 void Map::saveSelected(const std::string& filename, const MapFormatPtr& mapFormat)
 {
-    if (_saveInProgress) return; // safeguard
+	if (_saveInProgress) return; // safeguard
 
-    _saveInProgress = true;
+	_saveInProgress = true;
 
 	MapFormatPtr format = mapFormat;
 
@@ -770,198 +770,198 @@ void Map::saveSelected(const std::string& filename, const MapFormatPtr& mapForma
 		format = getMapFormatForFilenameSafe(filename);
 	}
 
-    try
-    {
-        MapResource::saveFile(
-            *format,
-            GlobalSceneGraph().root(),
-            scene::traverseSelected, // TraversalFunc
-            filename
-        );
-    }
-    catch (const IMapResource::OperationException& ex)
-    {
-        radiant::NotificationMessage::SendError(ex.what());
-    }
+	try
+	{
+		MapResource::saveFile(
+			*format,
+			GlobalSceneGraph().root(),
+			scene::traverseSelected, // TraversalFunc
+			filename
+		);
+	}
+	catch (const IMapResource::OperationException& ex)
+	{
+		radiant::NotificationMessage::SendError(ex.what());
+	}
 
-    _saveInProgress = false;
+	_saveInProgress = false;
 }
 
 std::string Map::getSaveConfirmationText() const
 {
-    std::string primaryText = fmt::format(_("Save changes to map \"{0}\"\nbefore closing?"), _mapName);
+	std::string primaryText = fmt::format(_("Save changes to map \"{0}\"\nbefore closing?"), _mapName);
 
-    // Display "x seconds" or "x minutes"
-    int seconds = static_cast<int>(_mapSaveTimer.getSecondsPassed());
-    std::string timeString;
-    if (seconds > 120)
-    {
-        timeString = fmt::format(_("{0:d} minutes"), (seconds / 60));
-    }
-    else
-    {
-        timeString = fmt::format(_("{0:d} seconds"), seconds);
-    }
+	// Display "x seconds" or "x minutes"
+	int seconds = static_cast<int>(_mapSaveTimer.getSecondsPassed());
+	std::string timeString;
+	if (seconds > 120)
+	{
+		timeString = fmt::format(_("{0:d} minutes"), (seconds / 60));
+	}
+	else
+	{
+		timeString = fmt::format(_("{0:d} seconds"), seconds);
+	}
 
-    std::string secondaryText = fmt::format(
-        _("If you don't save, changes from the last {0}\nwill be lost."), timeString);
+	std::string secondaryText = fmt::format(
+		_("If you don't save, changes from the last {0}\nwill be lost."), timeString);
 
-    std::string confirmText = fmt::format("{0}\n\n{1}", primaryText, secondaryText);
+	std::string confirmText = fmt::format("{0}\n\n{1}", primaryText, secondaryText);
 
-    return confirmText;
+	return confirmText;
 }
 
 bool Map::askForSave(const std::string& title)
 {
-    if (!isModified())
-    {
-        // Map is not modified, return positive
-        return true;
-    }
+	if (!isModified())
+	{
+		// Map is not modified, return positive
+		return true;
+	}
 
-    // Ask the user
-    auto answer = radiant::FileSaveConfirmation::SendAndReceiveAnswer(getSaveConfirmationText(), title);
+	// Ask the user
+	auto answer = radiant::FileSaveConfirmation::SendAndReceiveAnswer(getSaveConfirmationText(), title);
 
-    if (answer == radiant::FileSaveConfirmation::Action::Cancel)
-    {
-        return false;
-    }
+	if (answer == radiant::FileSaveConfirmation::Action::Cancel)
+	{
+		return false;
+	}
 
-    if (answer == radiant::FileSaveConfirmation::Action::SaveChanges)
-    {
-        // The user wants to save the map
-        if (isUnnamed())
-        {
-            // Map still unnamed, try to save the map with a new name
-            // and take the return value from the other routine.
-            return saveAs();
-        }
-        else
-        {
-            // Map is named, save it
-            save();
-        }
-    }
+	if (answer == radiant::FileSaveConfirmation::Action::SaveChanges)
+	{
+		// The user wants to save the map
+		if (isUnnamed())
+		{
+			// Map still unnamed, try to save the map with a new name
+			// and take the return value from the other routine.
+			return saveAs();
+		}
+		else
+		{
+			// Map is named, save it
+			save();
+		}
+	}
 
-    // Default behaviour: allow the action
-    return true;
+	// Default behaviour: allow the action
+	return true;
 }
 
 bool Map::saveAs()
 {
-    if (_saveInProgress) return false; // safeguard
+	if (_saveInProgress) return false; // safeguard
 
-    auto fileInfo = MapFileManager::getMapFileSelection(false,
-        _("Save Map"), filetype::TYPE_MAP, getMapName());
+	auto fileInfo = MapFileManager::getMapFileSelection(false,
+		_("Save Map"), filetype::TYPE_MAP, getMapName());
 
-    if (fileInfo.fullPath.empty())
-    {
-        // Invalid filename entered, return false
-        return false;
-    }
+	if (fileInfo.fullPath.empty())
+	{
+		// Invalid filename entered, return false
+		return false;
+	}
 
-    // Remember the old resource, we might need to revert
-    auto oldResource = _resource;
+	// Remember the old resource, we might need to revert
+	auto oldResource = _resource;
 
-    // Create a new resource pointing to the given path...
-    _resource = GlobalMapResourceManager().createFromPath(fileInfo.fullPath);
+	// Create a new resource pointing to the given path...
+	_resource = GlobalMapResourceManager().createFromPath(fileInfo.fullPath);
 
-    // ...and import the existing root node into that resource
-    _resource->setRootNode(oldResource->getRootNode());
+	// ...and import the existing root node into that resource
+	_resource->setRootNode(oldResource->getRootNode());
 
-    // Try to save the resource, this might fail
-    if (!save(fileInfo.mapFormat))
-    {
-        // Failure, revert the change
-        _resource = oldResource;
-        return false;
-    }
+	// Try to save the resource, this might fail
+	if (!save(fileInfo.mapFormat))
+	{
+		// Failure, revert the change
+		_resource = oldResource;
+		return false;
+	}
 
-    connectToRootNode();
+	connectToRootNode();
 
-    // Resource save was successful, notify about this name change
-    rename(fileInfo.fullPath);
+	// Resource save was successful, notify about this name change
+	rename(fileInfo.fullPath);
 
-    // add an MRU entry on success
-    GlobalMRU().insert(fileInfo.fullPath);
+	// add an MRU entry on success
+	GlobalMRU().insert(fileInfo.fullPath);
 
-    return true;
+	return true;
 }
 
 void Map::saveCopyAs()
 {
-    // Let's see if we can remember a map name from a previous save
-    if (_lastCopyMapName.empty())
-    {
-        _lastCopyMapName = getMapName();
-    }
+	// Let's see if we can remember a map name from a previous save
+	if (_lastCopyMapName.empty())
+	{
+		_lastCopyMapName = getMapName();
+	}
 
 	auto fileInfo = MapFileManager::getMapFileSelection(false,
-        _("Save Copy As..."), filetype::TYPE_MAP, _lastCopyMapName);
+		_("Save Copy As..."), filetype::TYPE_MAP, _lastCopyMapName);
 
 	if (!fileInfo.fullPath.empty())
 	{
-        saveCopyAs(fileInfo.fullPath, fileInfo.mapFormat);
-    }
+		saveCopyAs(fileInfo.fullPath, fileInfo.mapFormat);
+	}
 }
 
 void Map::saveCopyAs(const std::string& absolutePath, const MapFormatPtr& mapFormat)
 {
-    if (absolutePath.empty())
-    {
-        rWarning() << "Map::saveCopyAs: path must not be empty" << std::endl;
-        return;
-    }
+	if (absolutePath.empty())
+	{
+		rWarning() << "Map::saveCopyAs: path must not be empty" << std::endl;
+		return;
+	}
 
-    // Remember the last name
-    _lastCopyMapName = absolutePath;
+	// Remember the last name
+	_lastCopyMapName = absolutePath;
 
-    // Return the result of the actual save method
-    saveDirect(absolutePath, mapFormat);
+	// Return the result of the actual save method
+	saveDirect(absolutePath, mapFormat);
 }
 
 void Map::loadPrefabAt(const cmd::ArgumentList& args)
 {
-    if (args.size() < 2 || args.size() > 4)
-    {
-        rWarning() << "Usage: " << LOAD_PREFAB_AT_CMD <<
-            " <prefabPath:String> <targetCoords:Vector3> [insertAsGroup:0|1] [recalculatePrefabOrigin:0|1]" << std::endl;
-        return;
-    }
+	if (args.size() < 2 || args.size() > 4)
+	{
+		rWarning() << "Usage: " << LOAD_PREFAB_AT_CMD <<
+			" <prefabPath:String> <targetCoords:Vector3> [insertAsGroup:0|1] [recalculatePrefabOrigin:0|1]" << std::endl;
+		return;
+	}
 
-    auto prefabPath = args[0].getString();
-    auto targetCoords = args[1].getVector3();
-    auto insertAsGroup = args.size() > 2 ? args[2].getBoolean() : false;
-    auto recalculatePrefabOrigin = args.size() > 3 ? args[3].getBoolean() : true;
+	auto prefabPath = args[0].getString();
+	auto targetCoords = args[1].getVector3();
+	auto insertAsGroup = args.size() > 2 ? args[2].getBoolean() : false;
+	auto recalculatePrefabOrigin = args.size() > 3 ? args[3].getBoolean() : true;
 
 	if (!prefabPath.empty())
 	{
-        UndoableCommand undo("loadPrefabAt");
+		UndoableCommand undo("loadPrefabAt");
 
-        // Deselect everything
-        GlobalSelectionSystem().setSelectedAll(false);
+		// Deselect everything
+		GlobalSelectionSystem().setSelectedAll(false);
 
-        // Now import the prefab (imported items get selected)
+		// Now import the prefab (imported items get selected)
 		import(prefabPath);
 
-        // Get the selection bounds, snap its origin to the grid
-        scene::PrefabBoundsAccumulator accumulator;
-        GlobalSelectionSystem().foreachSelected(accumulator);
+		// Get the selection bounds, snap its origin to the grid
+		scene::PrefabBoundsAccumulator accumulator;
+		GlobalSelectionSystem().foreachSelected(accumulator);
 
-        if (recalculatePrefabOrigin)
-        {
-            auto prefabCenter = accumulator.getBounds().getOrigin().getSnapped(GlobalGrid().getGridSize());
+		if (recalculatePrefabOrigin)
+		{
+			auto prefabCenter = accumulator.getBounds().getOrigin().getSnapped(GlobalGrid().getGridSize());
 
-            // Switch texture lock on
-            bool prevTexLockState = GlobalBrush().textureLockEnabled();
-            GlobalBrush().setTextureLock(true);
+			// Switch texture lock on
+			bool prevTexLockState = GlobalBrush().textureLockEnabled();
+			GlobalBrush().setTextureLock(true);
 
-            // Translate the selection to the given point
-            selection::algorithm::translateSelected(targetCoords - prefabCenter);
+			// Translate the selection to the given point
+			selection::algorithm::translateSelected(targetCoords - prefabCenter);
 
-            // Revert to previous state
-            GlobalBrush().setTextureLock(prevTexLockState);
-        }
+			// Revert to previous state
+			GlobalBrush().setTextureLock(prevTexLockState);
+		}
 
 		// Check whether we should group the prefab parts
 		if (insertAsGroup && GlobalSelectionSystem().countSelected() > 1)
@@ -976,613 +976,613 @@ void Map::loadPrefabAt(const cmd::ArgumentList& args)
 				rError() << "Error grouping the prefab: " << ex.what() << std::endl;
 			}
 		}
-    }
+	}
 }
 
 void Map::saveMapCopyAs(const cmd::ArgumentList& args)
 {
-    if (args.size() == 0 || args[0].getString().empty())
-    {
-        // Use the overload without arguments, it will ask for a file name
-        saveCopyAs();
-    }
-    else
-    {
-        // Pass the first argument we got
-        saveCopyAs(args[0].getString());
-    }
+	if (args.size() == 0 || args[0].getString().empty())
+	{
+		// Use the overload without arguments, it will ask for a file name
+		saveCopyAs();
+	}
+	else
+	{
+		// Pass the first argument we got
+		saveCopyAs(args[0].getString());
+	}
 }
 
 void Map::saveAutomaticMapBackup(const cmd::ArgumentList& args)
 {
-    // Use the saveDirect routine to not change with the _lastCopyMapName member
-    saveDirect(args[0].getString());
+	// Use the saveDirect routine to not change with the _lastCopyMapName member
+	saveDirect(args[0].getString());
 }
 
 void Map::registerCommands()
 {
-    GlobalCommandSystem().addCommand("NewMap", Map::newMap);
-    GlobalCommandSystem().addCommand("OpenMap", std::bind(&Map::openMapCmd, this, std::placeholders::_1),
-        { cmd::ARGTYPE_STRING | cmd::ARGTYPE_OPTIONAL });
-    GlobalCommandSystem().addCommand("OpenMapFromArchive", Map::openMapFromArchive, { cmd::ARGTYPE_STRING, cmd::ARGTYPE_STRING });
-    GlobalCommandSystem().addCommand("ImportMap", Map::importMap);
-    GlobalCommandSystem().addCommand("StartMergeOperation", std::bind(&Map::startMergeOperationCmd, this, std::placeholders::_1),
-        { cmd::ARGTYPE_STRING | cmd::ARGTYPE_OPTIONAL, cmd::ARGTYPE_STRING | cmd::ARGTYPE_OPTIONAL });
-    GlobalCommandSystem().addCommand("AbortMergeOperation", std::bind(&Map::abortMergeOperationCmd, this, std::placeholders::_1));
-    GlobalCommandSystem().addCommand("FinishMergeOperation", std::bind(&Map::finishMergeOperationCmd, this, std::placeholders::_1));
-    GlobalCommandSystem().addCommand(LOAD_PREFAB_AT_CMD, std::bind(&Map::loadPrefabAt, this, std::placeholders::_1),
-        { cmd::ARGTYPE_STRING, cmd::ARGTYPE_VECTOR3, cmd::ARGTYPE_INT|cmd::ARGTYPE_OPTIONAL, cmd::ARGTYPE_INT | cmd::ARGTYPE_OPTIONAL });
-    GlobalCommandSystem().addCommand("SaveSelectedAsPrefab", Map::saveSelectedAsPrefab);
-    GlobalCommandSystem().addCommand("SaveMap", std::bind(&Map::saveMapCmd, this, std::placeholders::_1));
-    GlobalCommandSystem().addCommand("SaveMapAs", Map::saveMapAs);
-    GlobalCommandSystem().addCommand("SaveMapCopyAs", std::bind(&Map::saveMapCopyAs, this, std::placeholders::_1), { cmd::ARGTYPE_STRING | cmd::ARGTYPE_OPTIONAL });
-    // Command used by the autosaver to save a copy without messing with the remembered paths
-    GlobalCommandSystem().addCommand("SaveAutomaticBackup", std::bind(&Map::saveAutomaticMapBackup, this, std::placeholders::_1), { cmd::ARGTYPE_STRING });
-    GlobalCommandSystem().addCommand("ExportMap", std::bind(&Map::exportMap, this, std::placeholders::_1));
-    GlobalCommandSystem().addCommand("SaveSelected", Map::exportSelection);
-    GlobalCommandSystem().addCommand("FocusViews", std::bind(&Map::focusViewCmd, this, std::placeholders::_1), { cmd::ARGTYPE_VECTOR3, cmd::ARGTYPE_VECTOR3 });
-    GlobalCommandSystem().addCommand("FocusCameraViewOnSelection", std::bind(&Map::focusCameraOnSelectionCmd, this, std::placeholders::_1));
-    // ExportSelectedAsModel <Path> <ExportFormat> [<ExportOrigin>] [<OriginEntityName>] [<CustomOrigin>] [<SkipCaulk>] [<ReplaceSelectionWithModel>] [<ExportLightsAsObjects>]
+	GlobalCommandSystem().addCommand("NewMap", Map::newMap);
+	GlobalCommandSystem().addCommand("OpenMap", std::bind(&Map::openMapCmd, this, std::placeholders::_1),
+		{ cmd::ARGTYPE_STRING | cmd::ARGTYPE_OPTIONAL });
+	GlobalCommandSystem().addCommand("OpenMapFromArchive", Map::openMapFromArchive, { cmd::ARGTYPE_STRING, cmd::ARGTYPE_STRING });
+	GlobalCommandSystem().addCommand("ImportMap", Map::importMap);
+	GlobalCommandSystem().addCommand("StartMergeOperation", std::bind(&Map::startMergeOperationCmd, this, std::placeholders::_1),
+		{ cmd::ARGTYPE_STRING | cmd::ARGTYPE_OPTIONAL, cmd::ARGTYPE_STRING | cmd::ARGTYPE_OPTIONAL });
+	GlobalCommandSystem().addCommand("AbortMergeOperation", std::bind(&Map::abortMergeOperationCmd, this, std::placeholders::_1));
+	GlobalCommandSystem().addCommand("FinishMergeOperation", std::bind(&Map::finishMergeOperationCmd, this, std::placeholders::_1));
+	GlobalCommandSystem().addCommand(LOAD_PREFAB_AT_CMD, std::bind(&Map::loadPrefabAt, this, std::placeholders::_1),
+		{ cmd::ARGTYPE_STRING, cmd::ARGTYPE_VECTOR3, cmd::ARGTYPE_INT|cmd::ARGTYPE_OPTIONAL, cmd::ARGTYPE_INT | cmd::ARGTYPE_OPTIONAL });
+	GlobalCommandSystem().addCommand("SaveSelectedAsPrefab", Map::saveSelectedAsPrefab);
+	GlobalCommandSystem().addCommand("SaveMap", std::bind(&Map::saveMapCmd, this, std::placeholders::_1));
+	GlobalCommandSystem().addCommand("SaveMapAs", Map::saveMapAs);
+	GlobalCommandSystem().addCommand("SaveMapCopyAs", std::bind(&Map::saveMapCopyAs, this, std::placeholders::_1), { cmd::ARGTYPE_STRING | cmd::ARGTYPE_OPTIONAL });
+	// Command used by the autosaver to save a copy without messing with the remembered paths
+	GlobalCommandSystem().addCommand("SaveAutomaticBackup", std::bind(&Map::saveAutomaticMapBackup, this, std::placeholders::_1), { cmd::ARGTYPE_STRING });
+	GlobalCommandSystem().addCommand("ExportMap", std::bind(&Map::exportMap, this, std::placeholders::_1));
+	GlobalCommandSystem().addCommand("SaveSelected", Map::exportSelection);
+	GlobalCommandSystem().addCommand("FocusViews", std::bind(&Map::focusViewCmd, this, std::placeholders::_1), { cmd::ARGTYPE_VECTOR3, cmd::ARGTYPE_VECTOR3 });
+	GlobalCommandSystem().addCommand("FocusCameraViewOnSelection", std::bind(&Map::focusCameraOnSelectionCmd, this, std::placeholders::_1));
+	// ExportSelectedAsModel <Path> <ExportFormat> [<ExportOrigin>] [<OriginEntityName>] [<CustomOrigin>] [<SkipCaulk>] [<ReplaceSelectionWithModel>] [<ExportLightsAsObjects>]
 	GlobalCommandSystem().addCommand("ExportSelectedAsModel", algorithm::exportSelectedAsModelCmd,
-        { cmd::ARGTYPE_STRING, // path
-          cmd::ARGTYPE_STRING, // export format
-          cmd::ARGTYPE_STRING | cmd::ARGTYPE_OPTIONAL, // export origin type
-          cmd::ARGTYPE_STRING | cmd::ARGTYPE_OPTIONAL, // origin entity name
-          cmd::ARGTYPE_VECTOR3 | cmd::ARGTYPE_OPTIONAL, // custom origin
-          cmd::ARGTYPE_INT | cmd::ARGTYPE_OPTIONAL, // skip caulk
-          cmd::ARGTYPE_INT | cmd::ARGTYPE_OPTIONAL, // replace selection with model
-          cmd::ARGTYPE_INT | cmd::ARGTYPE_OPTIONAL }); // export lights as objects
+		{ cmd::ARGTYPE_STRING, // path
+		  cmd::ARGTYPE_STRING, // export format
+		  cmd::ARGTYPE_STRING | cmd::ARGTYPE_OPTIONAL, // export origin type
+		  cmd::ARGTYPE_STRING | cmd::ARGTYPE_OPTIONAL, // origin entity name
+		  cmd::ARGTYPE_VECTOR3 | cmd::ARGTYPE_OPTIONAL, // custom origin
+		  cmd::ARGTYPE_INT | cmd::ARGTYPE_OPTIONAL, // skip caulk
+		  cmd::ARGTYPE_INT | cmd::ARGTYPE_OPTIONAL, // replace selection with model
+		  cmd::ARGTYPE_INT | cmd::ARGTYPE_OPTIONAL }); // export lights as objects
 
-    // Add undo commands
-    GlobalCommandSystem().addCommand("Undo", std::bind(&Map::undoCmd, this, std::placeholders::_1));
-    GlobalCommandSystem().addCommand("Redo", std::bind(&Map::redoCmd, this, std::placeholders::_1));
+	// Add undo commands
+	GlobalCommandSystem().addCommand("Undo", std::bind(&Map::undoCmd, this, std::placeholders::_1));
+	GlobalCommandSystem().addCommand("Redo", std::bind(&Map::redoCmd, this, std::placeholders::_1));
 }
 
 void Map::undoCmd(const cmd::ArgumentList& args)
 {
-    try
-    {
-        getUndoSystem().undo();
-    }
-    catch (const std::runtime_error& err)
-    {
-        throw cmd::ExecutionNotPossible(err.what());
-    }
+	try
+	{
+		getUndoSystem().undo();
+	}
+	catch (const std::runtime_error& err)
+	{
+		throw cmd::ExecutionNotPossible(err.what());
+	}
 }
 
 void Map::redoCmd(const cmd::ArgumentList& args)
 {
-    try
-    {
-        getUndoSystem().redo();
-    }
-    catch (const std::runtime_error& err)
-    {
-        throw cmd::ExecutionNotPossible(err.what());
-    }
+	try
+	{
+		getUndoSystem().redo();
+	}
+	catch (const std::runtime_error& err)
+	{
+		throw cmd::ExecutionNotPossible(err.what());
+	}
 }
 
 // Static command targets
 void Map::newMap(const cmd::ArgumentList& args)
 {
-    if (GlobalMap().askForSave(_("New Map")))
+	if (GlobalMap().askForSave(_("New Map")))
 	{
-        GlobalMap().freeMap();
-        GlobalMap().createNewMap();
-    }
+		GlobalMap().freeMap();
+		GlobalMap().createNewMap();
+	}
 }
 
 void Map::openMapCmd(const cmd::ArgumentList& args)
 {
-    if (!askForSave(_("Open Map"))) return;
+	if (!askForSave(_("Open Map"))) return;
 
-    std::string candidate;
+	std::string candidate;
 
-    if (!args.empty())
-    {
-        candidate = args[0].getString();
-    }
-    else
-    {
-        // No arguments passed, get the map file name to load
-        auto fileInfo = MapFileManager::getMapFileSelection(true, _("Open map"), filetype::TYPE_MAP);
-        candidate = fileInfo.fullPath;
-    }
-
-    std::string mapToLoad;
-
-    if (os::fileOrDirExists(candidate))
-    {
-        mapToLoad = candidate;
-    }
-    else if (!candidate.empty())
-    {
-        // Try to open this file from the VFS (this will hit physical files
-        // in the active project as well as files in registered PK4)
-        if (GlobalFileSystem().openTextFile(candidate))
-        {
-            mapToLoad = candidate;
-        }
-        else
-        {
-            // Next, try to look up the map in the regular maps path
-            fs::path mapsPath = GlobalGameManager().getMapPath();
-            fs::path fullMapPath = mapsPath / candidate;
-
-            if (os::fileOrDirExists(fullMapPath.string()))
-            {
-                mapToLoad = fullMapPath.string();
-            }
-            else
-            {
-                throw cmd::ExecutionFailure(fmt::format(_("File doesn't exist: {0}"), candidate));
-            }
-        }
-    }
-
-    if (!mapToLoad.empty())
+	if (!args.empty())
 	{
-        GlobalMRU().insert(mapToLoad);
+		candidate = args[0].getString();
+	}
+	else
+	{
+		// No arguments passed, get the map file name to load
+		auto fileInfo = MapFileManager::getMapFileSelection(true, _("Open map"), filetype::TYPE_MAP);
+		candidate = fileInfo.fullPath;
+	}
 
-        freeMap();
-        load(mapToLoad);
-    }
+	std::string mapToLoad;
+
+	if (os::fileOrDirExists(candidate))
+	{
+		mapToLoad = candidate;
+	}
+	else if (!candidate.empty())
+	{
+		// Try to open this file from the VFS (this will hit physical files
+		// in the active project as well as files in registered PK4)
+		if (GlobalFileSystem().openTextFile(candidate))
+		{
+			mapToLoad = candidate;
+		}
+		else
+		{
+			// Next, try to look up the map in the regular maps path
+			fs::path mapsPath = GlobalGameManager().getMapPath();
+			fs::path fullMapPath = mapsPath / candidate;
+
+			if (os::fileOrDirExists(fullMapPath.string()))
+			{
+				mapToLoad = fullMapPath.string();
+			}
+			else
+			{
+				throw cmd::ExecutionFailure(fmt::format(_("File doesn't exist: {0}"), candidate));
+			}
+		}
+	}
+
+	if (!mapToLoad.empty())
+	{
+		GlobalMRU().insert(mapToLoad);
+
+		freeMap();
+		load(mapToLoad);
+	}
 }
 
 void Map::openMapFromArchive(const cmd::ArgumentList& args)
 {
-    if (args.size() != 2)
-    {
-        rWarning() << "Usage: OpenMapFromArchive <pathToPakFile> <pathWithinArchive>" << std::endl;
-        return;
-    }
+	if (args.size() != 2)
+	{
+		rWarning() << "Usage: OpenMapFromArchive <pathToPakFile> <pathWithinArchive>" << std::endl;
+		return;
+	}
 
-    if (!GlobalMap().askForSave(_("Open Map"))) return;
+	if (!GlobalMap().askForSave(_("Open Map"))) return;
 
-    std::string pathToArchive = args[0].getString();
-    std::string relativePath = args[1].getString();
+	std::string pathToArchive = args[0].getString();
+	std::string relativePath = args[1].getString();
 
-    if (!os::fileOrDirExists(pathToArchive))
-    {
-        throw cmd::ExecutionFailure(fmt::format(_("File not found: {0}"), pathToArchive));
-    }
+	if (!os::fileOrDirExists(pathToArchive))
+	{
+		throw cmd::ExecutionFailure(fmt::format(_("File not found: {0}"), pathToArchive));
+	}
 
-    if (!pathToArchive.empty())
-    {
-        GlobalMap().freeMap();
-        GlobalMap().setMapName(relativePath);
-        GlobalMap().loadMapResourceFromArchive(pathToArchive, relativePath);
-    }
+	if (!pathToArchive.empty())
+	{
+		GlobalMap().freeMap();
+		GlobalMap().setMapName(relativePath);
+		GlobalMap().loadMapResourceFromArchive(pathToArchive, relativePath);
+	}
 }
 
 void Map::importMap(const cmd::ArgumentList& args)
 {
-    MapFileSelection fileInfo =
-        MapFileManager::getMapFileSelection(true, _("Import map"), filetype::TYPE_MAP);
+	MapFileSelection fileInfo =
+		MapFileManager::getMapFileSelection(true, _("Import map"), filetype::TYPE_MAP);
 
-    if (!fileInfo.fullPath.empty())
-    {
-        UndoableCommand undo("mapImport");
-        GlobalMap().import(fileInfo.fullPath);
-    }
+	if (!fileInfo.fullPath.empty())
+	{
+		UndoableCommand undo("mapImport");
+		GlobalMap().import(fileInfo.fullPath);
+	}
 }
 
 void Map::saveMapAs(const cmd::ArgumentList& args) {
-    GlobalMap().saveAs();
+	GlobalMap().saveAs();
 }
 
 void Map::saveMapCmd(const cmd::ArgumentList& args)
 {
-    if (isUnnamed() || (_resource && _resource->isReadOnly()))
-    {
-        saveAs();
-    }
-    // greebo: Always let the map be saved, regardless of the modified status.
-    else /*if(GlobalMap().isModified())*/
-    {
-        save();
-    }
+	if (isUnnamed() || (_resource && _resource->isReadOnly()))
+	{
+		saveAs();
+	}
+	// greebo: Always let the map be saved, regardless of the modified status.
+	else /*if(GlobalMap().isModified())*/
+	{
+		save();
+	}
 }
 
 void Map::exportMap(const cmd::ArgumentList& args)
 {
-    auto fileInfo = MapFileManager::getMapFileSelection(false, _("Export Map"), filetype::TYPE_MAP_EXPORT);
+	auto fileInfo = MapFileManager::getMapFileSelection(false, _("Export Map"), filetype::TYPE_MAP_EXPORT);
 
-    if (!fileInfo.fullPath.empty())
+	if (!fileInfo.fullPath.empty())
 	{
-        if (!fileInfo.mapFormat)
-        {
-            fileInfo.mapFormat = getMapFormatForFilenameSafe(fileInfo.fullPath);
-        }
+		if (!fileInfo.mapFormat)
+		{
+			fileInfo.mapFormat = getMapFormatForFilenameSafe(fileInfo.fullPath);
+		}
 
-        emitMapEvent(MapSaving);
+		emitMapEvent(MapSaving);
 
-        MapResource::saveFile(*fileInfo.mapFormat,
-            GlobalSceneGraph().root(),
-            scene::traverse,
-            fileInfo.fullPath);
+		MapResource::saveFile(*fileInfo.mapFormat,
+			GlobalSceneGraph().root(),
+			scene::traverse,
+			fileInfo.fullPath);
 
-        emitMapEvent(MapSaved);
-    }
+		emitMapEvent(MapSaved);
+	}
 }
 
 void Map::exportSelection(const cmd::ArgumentList& args)
 {
-    MapFileSelection fileInfo =
-        MapFileManager::getMapFileSelection(false, _("Export selection"), filetype::TYPE_MAP);
+	MapFileSelection fileInfo =
+		MapFileManager::getMapFileSelection(false, _("Export selection"), filetype::TYPE_MAP);
 
-    if (!fileInfo.fullPath.empty())
+	if (!fileInfo.fullPath.empty())
 	{
 		GlobalMap().saveSelected(fileInfo.fullPath, fileInfo.mapFormat);
-    }
+	}
 }
 
 void Map::saveSelectedAsPrefab(const cmd::ArgumentList& args)
 {
-    MapFileSelection fileInfo =
-        MapFileManager::getMapFileSelection(false, _("Save selected as Prefab"), filetype::TYPE_PREFAB);
+	MapFileSelection fileInfo =
+		MapFileManager::getMapFileSelection(false, _("Save selected as Prefab"), filetype::TYPE_PREFAB);
 
 	if (!fileInfo.fullPath.empty())
-    {
-        GlobalMap().saveSelected(fileInfo.fullPath, fileInfo.mapFormat);
-    }
+	{
+		GlobalMap().saveSelected(fileInfo.fullPath, fileInfo.mapFormat);
+	}
 }
 
 void Map::rename(const std::string& filename)
 {
-    if (_mapName != filename)
-    {
-        setMapName(filename);
-        SceneChangeNotify();
-    }
-    else
-    {
-        _resource->save();
-        setModified(false);
-    }
+	if (_mapName != filename)
+	{
+		setMapName(filename);
+		SceneChangeNotify();
+	}
+	else
+	{
+		_resource->save();
+		setModified(false);
+	}
 }
 
 void Map::exportSelected(std::ostream& out)
 {
-    exportSelected(out, getFormat());
+	exportSelected(out, getFormat());
 }
 
 void Map::exportSelected(std::ostream& out, const MapFormatPtr& format)
 {
-    assert(format);
+	assert(format);
 
-    // Create our main MapExporter walker for traversal
-    auto writer = format->getMapWriter();
+	// Create our main MapExporter walker for traversal
+	auto writer = format->getMapWriter();
 
-    try
-    {
-        MapExporter exporter(*writer, GlobalSceneGraph().root(), out);
-        exporter.disableProgressMessages();
+	try
+	{
+		MapExporter exporter(*writer, GlobalSceneGraph().root(), out);
+		exporter.disableProgressMessages();
 
-        // Pass the traverseSelected function and start writing selected nodes
-        exporter.exportMap(GlobalSceneGraph().root(), scene::traverseSelected);
-    }
-    catch (FileOperation::OperationCancelled&)
-    {
-        radiant::NotificationMessage::SendInformation(_("Map export cancelled"));
-    }
+		// Pass the traverseSelected function and start writing selected nodes
+		exporter.exportMap(GlobalSceneGraph().root(), scene::traverseSelected);
+	}
+	catch (FileOperation::OperationCancelled&)
+	{
+		radiant::NotificationMessage::SendInformation(_("Map export cancelled"));
+	}
 }
 
 void Map::onMergeActionAdded(const scene::merge::IMergeAction::Ptr& action)
 {
-    UndoableCommand cmd("insertMergeAction");
+	UndoableCommand cmd("insertMergeAction");
 
-    _mergeActionNodes.emplace_back(std::make_shared<scene::RegularMergeActionNode>(action));
-    getRoot()->addChildNode(_mergeActionNodes.back());
+	_mergeActionNodes.emplace_back(std::make_shared<scene::RegularMergeActionNode>(action));
+	getRoot()->addChildNode(_mergeActionNodes.back());
 }
 
 void Map::createMergeActions()
 {
-    // Group spawnarg actions into one single node if applicable
-    std::map<scene::INodePtr, std::vector<scene::merge::IMergeAction::Ptr>> entityChanges;
-    std::vector<scene::merge::IMergeAction::Ptr> otherChanges;
+	// Group spawnarg actions into one single node if applicable
+	std::map<scene::INodePtr, std::vector<scene::merge::IMergeAction::Ptr>> entityChanges;
+	std::vector<scene::merge::IMergeAction::Ptr> otherChanges;
 
-    _mergeOperation->foreachAction([&](const scene::merge::IMergeAction::Ptr& action)
-    {
-        if (scene::merge::actionIsTargetingKeyValue(action))
-        {
-            auto& actions = entityChanges.try_emplace(action->getAffectedNode()).first->second;
-            actions.push_back(action);
-        }
-        else // regular change, add it to the misc pile
-        {
-            otherChanges.push_back(action);
-        }
-    });
+	_mergeOperation->foreachAction([&](const scene::merge::IMergeAction::Ptr& action)
+	{
+		if (scene::merge::actionIsTargetingKeyValue(action))
+		{
+			auto& actions = entityChanges.try_emplace(action->getAffectedNode()).first->second;
+			actions.push_back(action);
+		}
+		else // regular change, add it to the misc pile
+		{
+			otherChanges.push_back(action);
+		}
+	});
 
-    _mergeOperationListener = _mergeOperation->sig_ActionAdded().connect(sigc::mem_fun(this, &Map::onMergeActionAdded));
+	_mergeOperationListener = _mergeOperation->sig_ActionAdded().connect(sigc::mem_fun(this, &Map::onMergeActionAdded));
 
-    UndoableCommand cmd("createMergeOperation");
+	UndoableCommand cmd("createMergeOperation");
 
-    // Construct all entity changes...
-    for (const auto& pair : entityChanges)
-    {
-        _mergeActionNodes.emplace_back(std::make_shared<scene::KeyValueMergeActionNode>(pair.second));
-        getRoot()->addChildNode(_mergeActionNodes.back());
-    }
+	// Construct all entity changes...
+	for (const auto& pair : entityChanges)
+	{
+		_mergeActionNodes.emplace_back(std::make_shared<scene::KeyValueMergeActionNode>(pair.second));
+		getRoot()->addChildNode(_mergeActionNodes.back());
+	}
 
-    // ...and the regular ones
-    for (const auto& action : otherChanges)
-    {
-        _mergeActionNodes.emplace_back(std::make_shared<scene::RegularMergeActionNode>(action));
-        getRoot()->addChildNode(_mergeActionNodes.back());
-    }
+	// ...and the regular ones
+	for (const auto& action : otherChanges)
+	{
+		_mergeActionNodes.emplace_back(std::make_shared<scene::RegularMergeActionNode>(action));
+		getRoot()->addChildNode(_mergeActionNodes.back());
+	}
 }
 
 void Map::prepareMergeOperation()
 {
-    if (!getRoot())
-    {
-        throw cmd::ExecutionNotPossible(_("No map loaded, cannot merge"));
-    }
+	if (!getRoot())
+	{
+		throw cmd::ExecutionNotPossible(_("No map loaded, cannot merge"));
+	}
 
-    {
-        // Make sure we have a worldspawn in this map
-        UndoableCommand cmd("ensureWorldSpawn");
-        findOrInsertWorldspawn();
-    }
+	{
+		// Make sure we have a worldspawn in this map
+		UndoableCommand cmd("ensureWorldSpawn");
+		findOrInsertWorldspawn();
+	}
 
-    // Stop any pending merge operation
-    abortMergeOperation();
+	// Stop any pending merge operation
+	abortMergeOperation();
 }
 
 void Map::startMergeOperation(const std::string& sourceMap)
 {
-    if (!os::fileOrDirExists(sourceMap))
-    {
-        throw cmd::ExecutionFailure(fmt::format(_("File doesn't exist: {0}"), sourceMap));
-    }
+	if (!os::fileOrDirExists(sourceMap))
+	{
+		throw cmd::ExecutionFailure(fmt::format(_("File doesn't exist: {0}"), sourceMap));
+	}
 
-    prepareMergeOperation();
+	prepareMergeOperation();
 
-    auto sourceMapResource = GlobalMapResourceManager().createFromPath(sourceMap);
+	auto sourceMapResource = GlobalMapResourceManager().createFromPath(sourceMap);
 
-    try
-    {
-        if (sourceMapResource->load())
-        {
-            assignRenderSystem(sourceMapResource->getRootNode());
+	try
+	{
+		if (sourceMapResource->load())
+		{
+			assignRenderSystem(sourceMapResource->getRootNode());
 
-            // Compare the scenes and get the report
-            auto result = scene::merge::GraphComparer::Compare(sourceMapResource->getRootNode(), getRoot());
+			// Compare the scenes and get the report
+			auto result = scene::merge::GraphComparer::Compare(sourceMapResource->getRootNode(), getRoot());
 
-            // Create the merge actions
-            _mergeOperation = scene::merge::MergeOperation::CreateFromComparisonResult(*result);
+			// Create the merge actions
+			_mergeOperation = scene::merge::MergeOperation::CreateFromComparisonResult(*result);
 
-            if (_mergeOperation->hasActions())
-            {
-                // Create renderable merge actions
-                createMergeActions();
+			if (_mergeOperation->hasActions())
+			{
+				// Create renderable merge actions
+				createMergeActions();
 
-                // Switch to merge mode
-                setEditMode(EditMode::Merge);
+				// Switch to merge mode
+				setEditMode(EditMode::Merge);
 
-                emitMapEvent(IMap::MapMergeOperationStarted);
-            }
-            else
-            {
-                radiant::NotificationMessage::SendInformation(_("The Merge Operation turns out to be empty, nothing to do."));
-            }
+				emitMapEvent(IMap::MapMergeOperationStarted);
+			}
+			else
+			{
+				radiant::NotificationMessage::SendInformation(_("The Merge Operation turns out to be empty, nothing to do."));
+			}
 
-            // Dispose of the resource, we don't need it anymore
-            sourceMapResource->clear();
-        }
-    }
-    catch (const IMapResource::OperationException& ex)
-    {
-        radiant::NotificationMessage::SendError(ex.what());
-    }
+			// Dispose of the resource, we don't need it anymore
+			sourceMapResource->clear();
+		}
+	}
+	catch (const IMapResource::OperationException& ex)
+	{
+		radiant::NotificationMessage::SendError(ex.what());
+	}
 }
 
 void Map::startMergeOperation(const std::string& sourceMap, const std::string& baseMap)
 {
-    prepareMergeOperation();
+	prepareMergeOperation();
 
-    auto baseMapResource = GlobalMapResourceManager().createFromPath(baseMap);
-    auto sourceMapResource = GlobalMapResourceManager().createFromPath(sourceMap);
+	auto baseMapResource = GlobalMapResourceManager().createFromPath(baseMap);
+	auto sourceMapResource = GlobalMapResourceManager().createFromPath(sourceMap);
 
-    try
-    {
-        if (sourceMapResource->load() && baseMapResource->load())
-        {
-            // Assign a rendersystem to let all nodes capture their shaders
-            assignRenderSystem(sourceMapResource->getRootNode());
-            assignRenderSystem(baseMapResource->getRootNode());
+	try
+	{
+		if (sourceMapResource->load() && baseMapResource->load())
+		{
+			// Assign a rendersystem to let all nodes capture their shaders
+			assignRenderSystem(sourceMapResource->getRootNode());
+			assignRenderSystem(baseMapResource->getRootNode());
 
-            _mergeOperation = scene::merge::ThreeWayMergeOperation::Create(
-                baseMapResource->getRootNode(), sourceMapResource->getRootNode(), getRoot());
+			_mergeOperation = scene::merge::ThreeWayMergeOperation::Create(
+				baseMapResource->getRootNode(), sourceMapResource->getRootNode(), getRoot());
 
-            if (_mergeOperation->hasActions())
-            {
-                // Create renderable merge actions
-                createMergeActions();
+			if (_mergeOperation->hasActions())
+			{
+				// Create renderable merge actions
+				createMergeActions();
 
-                // Switch to merge mode
-                setEditMode(EditMode::Merge);
+				// Switch to merge mode
+				setEditMode(EditMode::Merge);
 
-                emitMapEvent(IMap::MapMergeOperationStarted);
-            }
-            else
-            {
-                radiant::NotificationMessage::SendInformation(_("The Merge Operation turns out to be empty, nothing to do."));
-            }
+				emitMapEvent(IMap::MapMergeOperationStarted);
+			}
+			else
+			{
+				radiant::NotificationMessage::SendInformation(_("The Merge Operation turns out to be empty, nothing to do."));
+			}
 
-            // Dispose of the resources, we don't need it anymore
-            sourceMapResource->clear();
-            baseMapResource->clear();
-        }
-    }
-    catch (const IMapResource::OperationException& ex)
-    {
-        radiant::NotificationMessage::SendError(ex.what());
-    }
+			// Dispose of the resources, we don't need it anymore
+			sourceMapResource->clear();
+			baseMapResource->clear();
+		}
+	}
+	catch (const IMapResource::OperationException& ex)
+	{
+		radiant::NotificationMessage::SendError(ex.what());
+	}
 }
 
 void Map::startMergeOperationCmd(const cmd::ArgumentList& args)
 {
-    if (!getRoot())
-    {
-        throw cmd::ExecutionNotPossible(_("No map loaded, cannot merge"));
-    }
+	if (!getRoot())
+	{
+		throw cmd::ExecutionNotPossible(_("No map loaded, cannot merge"));
+	}
 
-    std::string sourceCandidate;
-    std::string baseCandidate;
+	std::string sourceCandidate;
+	std::string baseCandidate;
 
-    if (!args.empty())
-    {
-        sourceCandidate = args[0].getString();
-    }
-    else
-    {
-        // No arguments passed, get the map file name to load
-        auto fileInfo = MapFileManager::getMapFileSelection(true, _("Select Map File to merge"), filetype::TYPE_MAP);
+	if (!args.empty())
+	{
+		sourceCandidate = args[0].getString();
+	}
+	else
+	{
+		// No arguments passed, get the map file name to load
+		auto fileInfo = MapFileManager::getMapFileSelection(true, _("Select Map File to merge"), filetype::TYPE_MAP);
 
-        if (fileInfo.fullPath.empty())
-        {
-            return; // operation cancelled
-        }
+		if (fileInfo.fullPath.empty())
+		{
+			return; // operation cancelled
+		}
 
-        sourceCandidate = fileInfo.fullPath;
-    }
+		sourceCandidate = fileInfo.fullPath;
+	}
 
-    if (!os::fileOrDirExists(sourceCandidate))
-    {
-        throw cmd::ExecutionFailure(fmt::format(_("File doesn't exist: {0}"), sourceCandidate));
-    }
+	if (!os::fileOrDirExists(sourceCandidate))
+	{
+		throw cmd::ExecutionFailure(fmt::format(_("File doesn't exist: {0}"), sourceCandidate));
+	}
 
-    // Do we have a second argument (base map)
-    if (args.size() > 1)
-    {
-        baseCandidate = args[1].getString();
+	// Do we have a second argument (base map)
+	if (args.size() > 1)
+	{
+		baseCandidate = args[1].getString();
 
-        if (!os::fileOrDirExists(baseCandidate))
-        {
-            throw cmd::ExecutionFailure(fmt::format(_("File doesn't exist: {0}"), baseCandidate));
-        }
-    }
+		if (!os::fileOrDirExists(baseCandidate))
+		{
+			throw cmd::ExecutionFailure(fmt::format(_("File doesn't exist: {0}"), baseCandidate));
+		}
+	}
 
-    if (!baseCandidate.empty())
-    {
-        startMergeOperation(sourceCandidate, baseCandidate);
-    }
-    else
-    {
-        startMergeOperation(sourceCandidate);
-    }
+	if (!baseCandidate.empty())
+	{
+		startMergeOperation(sourceCandidate, baseCandidate);
+	}
+	else
+	{
+		startMergeOperation(sourceCandidate);
+	}
 }
 
 void Map::abortMergeOperationCmd(const cmd::ArgumentList& args)
 {
-    abortMergeOperation();
+	abortMergeOperation();
 }
 
 void Map::finishMergeOperationCmd(const cmd::ArgumentList& args)
 {
-    finishMergeOperation();
+	finishMergeOperation();
 }
 
 void Map::emitMapEvent(MapEvent ev)
 {
-    try
-    {
-        signal_mapEvent().emit(ev);
-    }
-    catch (std::runtime_error & ex)
-    {
-        radiant::NotificationMessage::SendError(fmt::format(_("Failure running map event {0}:\n{1}"), static_cast<int>(ev), ex.what()));
-    }
+	try
+	{
+		signal_mapEvent().emit(ev);
+	}
+	catch (std::runtime_error & ex)
+	{
+		radiant::NotificationMessage::SendError(fmt::format(_("Failure running map event {0}:\n{1}"), static_cast<int>(ev), ex.what()));
+	}
 }
 
 // RegisterableModule implementation
 const std::string& Map::getName() const
 {
-    static std::string _name(MODULE_MAP);
-    return _name;
+	static std::string _name(MODULE_MAP);
+	return _name;
 }
 
 const StringSet& Map::getDependencies() const
 {
-    static StringSet _dependencies
-    {
-        MODULE_GAMEMANAGER,
-        MODULE_SCENEGRAPH,
-        MODULE_MAPINFOFILEMANAGER,
-        MODULE_FILETYPES,
-        MODULE_MAPRESOURCEMANAGER,
-        MODULE_COMMANDSYSTEM
-    };
+	static StringSet _dependencies
+	{
+		MODULE_GAMEMANAGER,
+		MODULE_SCENEGRAPH,
+		MODULE_MAPINFOFILEMANAGER,
+		MODULE_FILETYPES,
+		MODULE_MAPRESOURCEMANAGER,
+		MODULE_COMMANDSYSTEM
+	};
 
-    return _dependencies;
+	return _dependencies;
 }
 
 void Map::initialiseModule(const IApplicationContext& ctx)
 {
-    // Register for the startup event
+	// Register for the startup event
 	_mapPositionManager.reset(new MapPositionManager);
 
-    GlobalSceneGraph().addSceneObserver(this);
+	GlobalSceneGraph().addSceneObserver(this);
 
-    // Add the Map-related commands to the EventManager
-    registerCommands();
+	// Add the Map-related commands to the EventManager
+	registerCommands();
 
-    _scaledModelExporter.initialise();
-    _modelScalePreserver.reset(new ModelScalePreserver);
+	_scaledModelExporter.initialise();
+	_modelScalePreserver.reset(new ModelScalePreserver);
 
-    // Construct point trace and connect it to map signals
-    _pointTrace.reset(new PointFile());
-    signal_mapEvent().connect([this](IMap::MapEvent e)
-                              { _pointTrace->onMapEvent(e); });
+	// Construct point trace and connect it to map signals
+	_pointTrace.reset(new PointFile());
+	signal_mapEvent().connect([this](IMap::MapEvent e)
+							  { _pointTrace->onMapEvent(e); });
 
 	MapFileManager::registerFileTypes();
 
-    // Register an info file module to save the map property bag
-    GlobalMapInfoFileManager().registerInfoFileModule(
-        std::make_shared<MapPropertyInfoFileModule>()
-    );
+	// Register an info file module to save the map property bag
+	GlobalMapInfoFileManager().registerInfoFileModule(
+		std::make_shared<MapPropertyInfoFileModule>()
+	);
 
-    // Free the map right before all modules are shut down
-    module::GlobalModuleRegistry().signal_modulesUninitialising().connect(
-        sigc::mem_fun(this, &Map::freeMap)
-    );
+	// Free the map right before all modules are shut down
+	module::GlobalModuleRegistry().signal_modulesUninitialising().connect(
+		sigc::mem_fun(this, &Map::freeMap)
+	);
 
-    _shutdownListener = GlobalRadiantCore().getMessageBus().addListener(
-        radiant::IMessage::Type::ApplicationShutdownRequest,
-        radiant::TypeListener<radiant::ApplicationShutdownRequest>(
-            sigc::mem_fun(this, &Map::handleShutdownRequest)));
+	_shutdownListener = GlobalRadiantCore().getMessageBus().addListener(
+		radiant::IMessage::Type::ApplicationShutdownRequest,
+		radiant::TypeListener<radiant::ApplicationShutdownRequest>(
+			sigc::mem_fun(this, &Map::handleShutdownRequest)));
 }
 
 void Map::shutdownModule()
 {
-    _undoEventListener.disconnect();
+	_undoEventListener.disconnect();
 
-    abortMergeOperation();
+	abortMergeOperation();
 
-    GlobalRadiantCore().getMessageBus().removeListener(_shutdownListener);
+	GlobalRadiantCore().getMessageBus().removeListener(_shutdownListener);
 
-    _scaledModelExporter.shutdown();
+	_scaledModelExporter.shutdown();
 
 	GlobalSceneGraph().removeSceneObserver(this);
 
-    _modelScalePreserver.reset();
+	_modelScalePreserver.reset();
 	_mapPositionManager.reset();
 }
 
 void Map::handleShutdownRequest(radiant::ApplicationShutdownRequest& request)
 {
-    if (!askForSave(_("Exit DarkRadiant")))
-    {
-        request.deny();
-    }
+	if (!askForSave(_("Exit WorldEdit")))
+	{
+		request.deny();
+	}
 
-    if (!request.isDenied())
-    {
-        abortMergeOperation();
-    }
+	if (!request.isDenied())
+	{
+		abortMergeOperation();
+	}
 }
 
 } // namespace map

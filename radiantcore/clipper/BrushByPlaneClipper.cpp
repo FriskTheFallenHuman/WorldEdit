@@ -88,7 +88,7 @@ void BrushByPlaneClipper::split(const BrushPtrVector& brushes)
 			FacePtr newFace = brush.addPlane(_p0, _p1, _p2, _mostUsedShader, _mostUsedProjection);
 
 			if (newFace && _split == eFront)
-            {
+			{
 				newFace->flipWinding();
 			}
 
@@ -112,11 +112,11 @@ void BrushByPlaneClipper::getMostUsedTexturing(const Brush& brush) const
 	{
 		_mostUsedShader =  _caulkShader;
 
-        // Use the same texture matrix as the first face of the brush
-        if (!brush.empty())
-        {
-            (*brush.begin())->GetTexdef(_mostUsedProjection);
-        }
+		// Use the same texture matrix as the first face of the brush
+		if (!brush.empty())
+		{
+			(*brush.begin())->GetTexdef(_mostUsedProjection);
+		}
 
 		return;
 	}
@@ -141,7 +141,7 @@ void BrushByPlaneClipper::getMostUsedTexturing(const Brush& brush) const
 		shaderCount[shader]++;
 
 		if (shaderCount[shader] > mostUsedShaderCount)
-        {
+		{
 			_mostUsedShader = shader;
 			mostUsedShaderCount = shaderCount[shader];
 

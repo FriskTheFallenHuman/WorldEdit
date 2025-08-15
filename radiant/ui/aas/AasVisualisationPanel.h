@@ -16,35 +16,35 @@ class AasVisualisationPanel :
 	public wxutil::DockablePanel
 {
 private:
-    std::vector<AasFileControlPtr> _aasControls;
+	std::vector<AasFileControlPtr> _aasControls;
 
 	wxPanel* _dialogPanel;
 
 	wxFlexGridSizer* _controlContainer;
-    wxButton* _rescanButton;
+	wxButton* _rescanButton;
 
 	sigc::connection _mapEventSlot;
 
 public:
 	AasVisualisationPanel(wxWindow* parent);
-    ~AasVisualisationPanel() override;
+	~AasVisualisationPanel() override;
 
 protected:
-    void onPanelActivated() override;
-    void onPanelDeactivated() override;
+	void onPanelActivated() override;
+	void onPanelDeactivated() override;
 
 private:
-    void connectListeners();
-    void disconnectListeners();
+	void connectListeners();
+	void disconnectListeners();
 
-    // Re-populates the window
+	// Re-populates the window
 	void refresh();
 
 	// Updates the state of all controls
 	void update();
 
 	void populateWindow();
-    void createButtons();
+	void createButtons();
 	void clearControls();
 
 	void onMapEvent(IMap::MapEvent ev);

@@ -20,7 +20,7 @@ PropertyEditor::~PropertyEditor()
 	if (_mainWidget != nullptr)
 	{
 		_mainWidget->Destroy();
-        _mainWidget = nullptr;
+		_mainWidget = nullptr;
 	}
 }
 
@@ -28,12 +28,12 @@ void PropertyEditor::setMainWidget(wxPanel* widget)
 {
 	_mainWidget = widget;
 
-    // Get notified upon main widget destruction, we need
-    // to forget about our reference to avoid double deletions
-    _mainWidget->Bind(wxEVT_DESTROY, [&] (wxWindowDestroyEvent&)
-    {
-        _mainWidget = nullptr;
-    });
+	// Get notified upon main widget destruction, we need
+	// to forget about our reference to avoid double deletions
+	_mainWidget->Bind(wxEVT_DESTROY, [&] (wxWindowDestroyEvent&)
+	{
+		_mainWidget = nullptr;
+	});
 }
 
 wxPanel* PropertyEditor::getWidget()
@@ -44,21 +44,21 @@ wxPanel* PropertyEditor::getWidget()
 
 std::string PropertyEditor::getKeyValueFromSelection(const std::string& key)
 {
-    return _entities.getSharedKeyValue(key, true);
+	return _entities.getSharedKeyValue(key, true);
 }
 
 void PropertyEditor::setKeyValueOnSelection(const std::string& key, const std::string& value)
 {
-    if (_entities.empty()) return;
+	if (_entities.empty()) return;
 
-    UndoableCommand cmd("setProperty");
+	UndoableCommand cmd("setProperty");
 
-    _entities.foreachEntity([&](const EntityNodePtr& entity)
-    {
-        entity->getEntity().setKeyValue(key, value);
-    });
+	_entities.foreachEntity([&](const EntityNodePtr& entity)
+	{
+		entity->getEntity().setKeyValue(key, value);
+	});
 
-    signal_keyValueApplied().emit(key, value);
+	signal_keyValueApplied().emit(key, value);
 }
 
 void PropertyEditor::constructBrowseButtonPanel(wxWindow* parent, const std::string& label,
@@ -87,7 +87,7 @@ void PropertyEditor::_onBrowseButtonClick(wxCommandEvent& ev)
 
 sigc::signal<void(const std::string&, const std::string&)>& PropertyEditor::signal_keyValueApplied()
 {
-    return _sigKeyValueApplied;
+	return _sigKeyValueApplied;
 }
 
 } // namespace ui

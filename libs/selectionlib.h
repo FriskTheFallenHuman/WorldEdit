@@ -19,14 +19,14 @@
 class SelectionInfo
 {
 public:
-    int totalCount = 0;     // number of selected items
-    int patchCount = 0;     // number of selected patches
-    int brushCount = 0;     // -- " -- brushes
-    int entityCount = 0;    // -- " -- entities
-    int componentCount = 0; // -- " -- components (faces, edges, vertices)
+	int totalCount = 0;     // number of selected items
+	int patchCount = 0;     // number of selected patches
+	int brushCount = 0;     // -- " -- brushes
+	int entityCount = 0;    // -- " -- entities
+	int componentCount = 0; // -- " -- components (faces, edges, vertices)
 
-    // Zeroes all the counters
-    void clear() { *this = SelectionInfo(); }
+	// Zeroes all the counters
+	void clear() { *this = SelectionInfo(); }
 };
 
 namespace selection
@@ -172,72 +172,72 @@ inline std::string getShaderFromSelection()
  */
 inline void applyShaderToSelection(const std::string& shaderName)
 {
-    GlobalSelectionSystem().foreachFace([&](IFace& face) { face.setShader(shaderName); });
-    GlobalSelectionSystem().foreachPatch([&](IPatch& patch) { patch.setShader(shaderName); });
+	GlobalSelectionSystem().foreachFace([&](IFace& face) { face.setShader(shaderName); });
+	GlobalSelectionSystem().foreachPatch([&](IPatch& patch) { patch.setShader(shaderName); });
 
-    SceneChangeNotify();
+	SceneChangeNotify();
 }
 
 // Replaces the group assignments of the given node with the given groups
 inline void assignNodeToSelectionGroups(const scene::INodePtr& node, const IGroupSelectable::GroupIds& groups)
 {
-    auto groupSelectable = std::dynamic_pointer_cast<IGroupSelectable>(node);
+	auto groupSelectable = std::dynamic_pointer_cast<IGroupSelectable>(node);
 
-    if (!groupSelectable)
-    {
-        return;
-    }
+	if (!groupSelectable)
+	{
+		return;
+	}
 
-    const auto& groupIds = groupSelectable->getGroupIds();
+	const auto& groupIds = groupSelectable->getGroupIds();
 
-    auto previousGroups = groupSelectable->getGroupIds();
+	auto previousGroups = groupSelectable->getGroupIds();
 
-    for (auto id : previousGroups)
-    {
-        groupSelectable->removeFromGroup(id);
-    }
+	for (auto id : previousGroups)
+	{
+		groupSelectable->removeFromGroup(id);
+	}
 
-    // Add one by one, keeping the order intact
-    for (auto id : groupIds)
-    {
-        groupSelectable->addToGroup(id);
-    }
+	// Add one by one, keeping the order intact
+	for (auto id : groupIds)
+	{
+		groupSelectable->addToGroup(id);
+	}
 }
 
 /// Selection predicates (e.g. for testing if a command should be runnable)
 namespace pred
 {
-    /// Return true if there is at least one selected brush
-    inline bool haveBrush()
-    {
-        return GlobalSelectionSystem().getSelectionInfo().brushCount > 0;
-    }
+	/// Return true if there is at least one selected brush
+	inline bool haveBrush()
+	{
+		return GlobalSelectionSystem().getSelectionInfo().brushCount > 0;
+	}
 
-    /// Return true if exactly the given number of entities are selected (and nothing else)
-    inline bool haveEntitiesExact(int n)
-    {
-        const auto& info = GlobalSelectionSystem().getSelectionInfo();
-        return info.totalCount == n && info.entityCount == n;
-    }
+	/// Return true if exactly the given number of entities are selected (and nothing else)
+	inline bool haveEntitiesExact(int n)
+	{
+		const auto& info = GlobalSelectionSystem().getSelectionInfo();
+		return info.totalCount == n && info.entityCount == n;
+	}
 
-    /// Return true if the exact given number of patches are selected (and nothing else)
-    inline bool havePatchesExact(int n)
-    {
-        const auto& info = GlobalSelectionSystem().getSelectionInfo();
-        return info.totalCount == n && info.patchCount == n;
-    }
+	/// Return true if the exact given number of patches are selected (and nothing else)
+	inline bool havePatchesExact(int n)
+	{
+		const auto& info = GlobalSelectionSystem().getSelectionInfo();
+		return info.totalCount == n && info.patchCount == n;
+	}
 
-    /// Return true if at least the given number of patches are selected
-    inline bool havePatchesAtLeast(int n)
-    {
-        return GlobalSelectionSystem().getSelectionInfo().patchCount >= n;
-    }
+	/// Return true if at least the given number of patches are selected
+	inline bool havePatchesAtLeast(int n)
+	{
+		return GlobalSelectionSystem().getSelectionInfo().patchCount >= n;
+	}
 
-    /// Return true if at least one patch is selected
-    inline bool havePatch()
-    {
-        return havePatchesAtLeast(1);
-    }
+	/// Return true if at least one patch is selected
+	inline bool havePatch()
+	{
+		return havePatchesAtLeast(1);
+	}
 }
 
 } // namespace selection

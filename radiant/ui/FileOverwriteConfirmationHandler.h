@@ -14,10 +14,10 @@ private:
 	std::size_t _msgSubscription;
 
 public:
-    FileOverwriteConfirmationHandler()
+	FileOverwriteConfirmationHandler()
 	{
 		_msgSubscription = GlobalRadiantCore().getMessageBus().addListener(
-            radiant::IMessage::Type::FileOverwriteConfirmation,
+			radiant::IMessage::Type::FileOverwriteConfirmation,
 			radiant::TypeListener<radiant::FileOverwriteConfirmation>(
 				sigc::mem_fun(this, &FileOverwriteConfirmationHandler::handleRequest)));
 	}
@@ -30,21 +30,21 @@ public:
 private:
 	void handleRequest(radiant::FileOverwriteConfirmation& msg)
 	{
-        // Ask the user
-        auto msgBox = GlobalDialogManager().createMessageBox(
-            msg.hasTitle() ? msg.getTitle() : _("Confirm overwrite"),
-            msg.getMessage(),
-            ui::IDialog::MESSAGE_ASK
-        );
+		// Ask the user
+		auto msgBox = GlobalDialogManager().createMessageBox(
+			msg.hasTitle() ? msg.getTitle() : _("Confirm overwrite"),
+			msg.getMessage(),
+			ui::IDialog::MESSAGE_ASK
+		);
 
-        auto result = msgBox->run();
+		auto result = msgBox->run();
 
-        if (result == ui::IDialog::RESULT_YES)
-        {
-            msg.confirmOverwrite();
-        }
+		if (result == ui::IDialog::RESULT_YES)
+		{
+			msg.confirmOverwrite();
+		}
 
-        msg.setHandled(true);
+		msg.setHandled(true);
 	}
 };
 

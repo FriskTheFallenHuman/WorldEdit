@@ -23,7 +23,7 @@ class Winding final :
 	public IWinding
 {
 private:
-    std::vector<unsigned int> _indices;
+	std::vector<unsigned int> _indices;
 
 public:
 	/** greebo: Calculates the AABB of this winding

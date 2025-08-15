@@ -16,20 +16,20 @@ class InheritPropertyEditor :
 {
 private:
 	// Keyvalue to set
-    ITargetKey::Ptr _key;
+	ITargetKey::Ptr _key;
 
 private:
 
-    void _onShowDefinition(wxCommandEvent& ev);
-    void _onShowInDefTree(wxCommandEvent& ev);
+	void _onShowDefinition(wxCommandEvent& ev);
+	void _onShowInDefTree(wxCommandEvent& ev);
 
 public:
-    InheritPropertyEditor(wxWindow* parent, IEntitySelection& entities, const ITargetKey::Ptr& key);
+	InheritPropertyEditor(wxWindow* parent, IEntitySelection& entities, const ITargetKey::Ptr& key);
 
-    static Ptr CreateNew(wxWindow* parent, IEntitySelection& entities, const ITargetKey::Ptr& key)
-    {
-        return std::make_shared<InheritPropertyEditor>(parent, entities, key);
-    }
+	static Ptr CreateNew(wxWindow* parent, IEntitySelection& entities, const ITargetKey::Ptr& key)
+	{
+		return std::make_shared<InheritPropertyEditor>(parent, entities, key);
+	}
 };
 
 }

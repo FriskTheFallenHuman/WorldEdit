@@ -55,44 +55,44 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="properties\DarkRadiant Base Debug Win32.props" />
+    <Import Project="properties\Core Base Debug Win32.props" />
     <Import Project="properties\wxWidgets.props" />
     <Import Project="properties\GLEW.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="properties\DarkRadiant Base Debug x64.props" />
+    <Import Project="properties\Core Base Debug x64.props" />
     <Import Project="properties\wxWidgets.props" />
     <Import Project="properties\GLEW.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="properties\DarkRadiant Base Release Win32.props" />
+    <Import Project="properties\Core Base Release Win32.props" />
     <Import Project="properties\wxWidgets.props" />
     <Import Project="properties\GLEW.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="properties\DarkRadiant Base Release x64.props" />
+    <Import Project="properties\Core Base Release x64.props" />
     <Import Project="properties\wxWidgets.props" />
     <Import Project="properties\GLEW.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(DarkRadiantRoot)\include;$(DarkRadiantRoot)\libs;$(W32DepsDir)\libsigc++\include;$(IncludePath)</IncludePath>
-    <OutDir>$(DarkRadiantRoot)build\output\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
+    <IncludePath>$(WorldEditRoot)\include;$(WorldEditRoot)\libs;$(W32DepsDir)\libsigc++\include;$(IncludePath)</IncludePath>
+    <OutDir>$(WorldEditRoot)build\output\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(DarkRadiantRoot)\include;$(DarkRadiantRoot)\libs;$(W32DepsDir)\libsigc++\include;$(IncludePath)</IncludePath>
-    <OutDir>$(DarkRadiantRoot)build\output\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
+    <IncludePath>$(WorldEditRoot)\include;$(WorldEditRoot)\libs;$(W32DepsDir)\libsigc++\include;$(IncludePath)</IncludePath>
+    <OutDir>$(WorldEditRoot)build\output\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(DarkRadiantRoot)\include;$(DarkRadiantRoot)\libs;$(W32DepsDir)\libsigc++\include;$(IncludePath)</IncludePath>
-    <OutDir>$(DarkRadiantRoot)build\output\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
+    <IncludePath>$(WorldEditRoot)\include;$(WorldEditRoot)\libs;$(W32DepsDir)\libsigc++\include;$(IncludePath)</IncludePath>
+    <OutDir>$(WorldEditRoot)build\output\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(DarkRadiantRoot)\include;$(DarkRadiantRoot)\libs;$(W32DepsDir)\libsigc++\include;$(IncludePath)</IncludePath>
-    <OutDir>$(DarkRadiantRoot)build\output\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
+    <IncludePath>$(WorldEditRoot)\include;$(WorldEditRoot)\libs;$(W32DepsDir)\libsigc++\include;$(IncludePath)</IncludePath>
+    <OutDir>$(WorldEditRoot)build\output\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -167,7 +167,6 @@
     <ClInclude Include="..\..\libs\generic\callback.h" />
     <ClInclude Include="..\..\libs\KeyValueStore.h" />
     <ClInclude Include="..\..\libs\maplib.h" />
-    <ClInclude Include="..\..\libs\materials\FrobStageSetup.h" />
     <ClInclude Include="..\..\libs\materials\ParseLib.h" />
     <ClInclude Include="..\..\libs\messages\ApplicationIsActiveRequest.h" />
     <ClInclude Include="..\..\libs\messages\ApplicationShutdownRequest.h" />

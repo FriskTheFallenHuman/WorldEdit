@@ -18,12 +18,12 @@ inline bool shader_equal(const std::string& shader, const std::string& other)
 inline bool shader_valid(const char* shader)
 {
   return string_is_ascii(shader)
-    && strchr(shader, ' ') == 0
-    && strchr(shader, '\n') == 0
-    && strchr(shader, '\r') == 0
-    && strchr(shader, '\t') == 0
-    && strchr(shader, '\v') == 0
-    && strchr(shader, '\\') == 0;
+	&& strchr(shader, ' ') == 0
+	&& strchr(shader, '\n') == 0
+	&& strchr(shader, '\r') == 0
+	&& strchr(shader, '\t') == 0
+	&& strchr(shader, '\v') == 0
+	&& strchr(shader, '\\') == 0;
 }
 
 inline const char* GlobalTexturePrefix_get()

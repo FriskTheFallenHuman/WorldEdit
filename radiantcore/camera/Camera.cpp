@@ -31,7 +31,7 @@ Camera::Camera(render::IRenderView& view, const std::function<void(bool)>& reque
 	_projection(Matrix4::getIdentity()),
 	_modelview(Matrix4::getIdentity()),
 	_view(view),
-    _dragSelectionEnabled(RKEY_CAMERA_DRAG_SELECTION_ENABLED)
+	_dragSelectionEnabled(RKEY_CAMERA_DRAG_SELECTION_ENABLED)
 {}
 
 void Camera::updateModelview()
@@ -39,7 +39,7 @@ void Camera::updateModelview()
 	_prevAngles = _angles;
 	_prevOrigin = _origin;
 
-    _modelview = calculateModelViewMatrix(_origin, _angles);
+	_modelview = calculateModelViewMatrix(_origin, _angles);
 
 	updateVectors();
 
@@ -189,7 +189,7 @@ const VolumeTest& Camera::getVolumeTest() const
 
 bool Camera::supportsDragSelections()
 {
-    return _dragSelectionEnabled.get();
+	return _dragSelectionEnabled.get();
 }
 
 void Camera::queueDraw()
@@ -227,18 +227,18 @@ void Camera::setFarClipPlaneDistance(float distance)
 
 bool Camera::getFarClipPlaneEnabled() const
 {
-    return _farClipPlaneEnabled;
+	return _farClipPlaneEnabled;
 }
 
 void Camera::setFarClipPlaneEnabled(bool enabled)
 {
-    _farClipPlaneEnabled = enabled;
-    updateProjection();
+	_farClipPlaneEnabled = enabled;
+	updateProjection();
 }
 
 void Camera::updateProjection()
 {
-    auto farClip = _farClipPlaneEnabled ? getFarClipPlaneDistance() : 32768.0f;
+	auto farClip = _farClipPlaneEnabled ? getFarClipPlaneDistance() : 32768.0f;
 	_projection = calculateProjectionMatrix(farClip / 4096.0f, farClip, _fieldOfView, _width, _height);
 
 	_view.construct(_projection, _modelview, _width, _height);

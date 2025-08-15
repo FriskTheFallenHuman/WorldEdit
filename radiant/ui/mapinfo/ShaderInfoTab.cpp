@@ -64,13 +64,13 @@ void ShaderInfoTab::construct()
 		wxDATAVIEW_CELL_INERT, wxCOL_WIDTH_AUTOSIZE, wxALIGN_NOT, wxDATAVIEW_COL_SORTABLE);
 	_treeView->AppendTextColumn(_("Patches"), _columns.patchCount.getColumnIndex(), 
 		wxDATAVIEW_CELL_INERT, wxCOL_WIDTH_AUTOSIZE, wxALIGN_NOT, wxDATAVIEW_COL_SORTABLE);
-    _treeView->AppendTextColumn(_("Models"), _columns.modelCount.getColumnIndex(),
-        wxDATAVIEW_CELL_INERT, wxCOL_WIDTH_AUTOSIZE, wxALIGN_NOT, wxDATAVIEW_COL_SORTABLE);
-    _treeView->AppendTextColumn(_("Particles"), _columns.particleCount.getColumnIndex(),
-        wxDATAVIEW_CELL_INERT, wxCOL_WIDTH_AUTOSIZE, wxALIGN_NOT, wxDATAVIEW_COL_SORTABLE);
+	_treeView->AppendTextColumn(_("Models"), _columns.modelCount.getColumnIndex(),
+		wxDATAVIEW_CELL_INERT, wxCOL_WIDTH_AUTOSIZE, wxALIGN_NOT, wxDATAVIEW_COL_SORTABLE);
+	_treeView->AppendTextColumn(_("Particles"), _columns.particleCount.getColumnIndex(),
+		wxDATAVIEW_CELL_INERT, wxCOL_WIDTH_AUTOSIZE, wxALIGN_NOT, wxDATAVIEW_COL_SORTABLE);
 
 	// Populate the liststore with the entity count information
-    for (auto i = _shaderBreakdown.begin(); i != _shaderBreakdown.end(); ++i)
+	for (auto i = _shaderBreakdown.begin(); i != _shaderBreakdown.end(); ++i)
 	{
 		wxutil::TreeModel::Row row = _listStore->AddItem();
 
@@ -83,7 +83,7 @@ void ShaderInfoTab::construct()
 		row.SendItemAdded();
 	}
 
-    // The table containing the statistics
+	// The table containing the statistics
 	wxGridSizer* table = new wxGridSizer(1, 2, 3, 6);
 
 	wxStaticText* shaderLabel = new wxStaticText(this, wxID_ANY, _("Materials used:"));

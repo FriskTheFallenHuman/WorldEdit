@@ -51,59 +51,59 @@ namespace
 
 MapResource::MapResource(const std::string& resourcePath)
 {
-    constructPaths(resourcePath);
+	constructPaths(resourcePath);
 
-    // Check the last modified time, to be able to save over this resource
-    // right after construction, as it happens in Map::saveAs
-    refreshLastModifiedTime();
+	// Check the last modified time, to be able to save over this resource
+	// right after construction, as it happens in Map::saveAs
+	refreshLastModifiedTime();
 }
 
 MapResource::~MapResource()
 {
-    clear();
+	clear();
 }
 
 void MapResource::rename(const std::string& fullPath)
 {
-    constructPaths(fullPath);
+	constructPaths(fullPath);
 
 	// Rename the map root as well
-    _mapRoot->setName(_name);
+	_mapRoot->setName(_name);
 }
 
 void MapResource::constructPaths(const std::string& resourcePath)
 {
-    // Since the resource path can contain dots like this ".."
-    // pass the filename part only to getExtension().
-    _extension = os::getExtension(os::getFilename(resourcePath));
+	// Since the resource path can contain dots like this ".."
+	// pass the filename part only to getExtension().
+	_extension = os::getExtension(os::getFilename(resourcePath));
 
-    // Try to find a folder part of the VFS and use that as base path
-    // Will result to an empty string if the path is outside the VFS
-    _path = rootPath(resourcePath);
+	// Try to find a folder part of the VFS and use that as base path
+	// Will result to an empty string if the path is outside the VFS
+	_path = rootPath(resourcePath);
 
-    // Try to create a relative path, based on the VFS directories
-    // If no relative path can be deducted, use the absolute resourcePath
-    // in unmodified form.
-    _name = os::getRelativePath(resourcePath, _path);
+	// Try to create a relative path, based on the VFS directories
+	// If no relative path can be deducted, use the absolute resourcePath
+	// in unmodified form.
+	_name = os::getRelativePath(resourcePath, _path);
 }
 
 std::string MapResource::getAbsoluteResourcePath()
 {
-    // Concatenate path+name, since they either contain base + relative:
-    //      _path == "c:/games/darkmod/"
-    //      _name == "maps/arkham.map"
-    // or an empty _path with _name holding the full path:
-    //      _path == ""
-    //      _name == "c:/some/non/vfs/folder/arkham.map"
-    return _path + _name;
+	// Concatenate path+name, since they either contain base + relative:
+	//      _path == "c:/games/doom3/"
+	//      _name == "maps/mars_city1.map"
+	// or an empty _path with _name holding the full path:
+	//      _path == ""
+	//      _name == "c:/some/non/vfs/folder/test_box.map"
+	return _path + _name;
 }
 
 bool MapResource::load()
 {
 	if (!_mapRoot)
-    {
+	{
 		// Map not loaded yet, acquire map root node from loader
-        setRootNode(loadMapNode());
+		setRootNode(loadMapNode());
 		mapSave();
 	}
 
@@ -112,7 +112,7 @@ bool MapResource::load()
 
 bool MapResource::isReadOnly()
 {
-    return !FileIsWriteable(getAbsoluteResourcePath());
+	return !FileIsWriteable(getAbsoluteResourcePath());
 }
 
 void MapResource::save(const MapFormatPtr& mapFormat)
@@ -149,7 +149,7 @@ void MapResource::save(const MapFormatPtr& mapFormat)
 	// Save the actual file (throws on fail)
 	saveFile(*format, _mapRoot, scene::traverse, fullpath);
 
-    refreshLastModifiedTime();
+	refreshLastModifiedTime();
 
 	mapSave();
 }
@@ -174,7 +174,7 @@ bool MapResource::saveBackup()
 		fs::path backup = fullpath;
 		backup.replace_extension(".bak");
 
-		// replace_extension() doesn't accept something like ".darkradiant.bak", so roll our own
+		// replace_extension() doesn't accept something like ".project.bak"/".mapx.bak", so roll our own
 		fs::path auxFileBackup = auxFile.string() + ".bak";
 
 		bool errorOccurred = false;
@@ -197,7 +197,7 @@ bool MapResource::saveBackup()
 			errorOccurred = true;
 		}
 
-		// Handle the .darkradiant file only if the above succeeded
+		// Handle the .project/.mapx file only if the above succeeded
 		if (!errorOccurred)
 		{
 			try
@@ -208,7 +208,7 @@ bool MapResource::saveBackup()
 					fs::remove(auxFileBackup);
 				}
 
-				// Check if the .darkradiant file exists in the first place
+				// Check if the .project/.mapx file exists in the first place
 				if (fs::exists(auxFile))
 				{
 					// rename current to backup
@@ -236,47 +236,47 @@ const scene::IMapRootNodePtr& MapResource::getRootNode()
 
 void MapResource::setRootNode(const scene::IMapRootNodePtr& root)
 {
-    // Unsubscribe from the old root node first
-    _mapChangeCountListener.disconnect();
+	// Unsubscribe from the old root node first
+	_mapChangeCountListener.disconnect();
 
-    _mapRoot = root;
+	_mapRoot = root;
 
-    if (_mapRoot)
-    {
-        _mapChangeCountListener = _mapRoot->getUndoChangeTracker().signal_changed().connect(
-            sigc::mem_fun(this, &MapResource::onMapChanged)
-        );
-    }
+	if (_mapRoot)
+	{
+		_mapChangeCountListener = _mapRoot->getUndoChangeTracker().signal_changed().connect(
+			sigc::mem_fun(this, &MapResource::onMapChanged)
+		);
+	}
 }
 
 void MapResource::clear()
 {
-    setRootNode(std::make_shared<RootNode>(""));
+	setRootNode(std::make_shared<RootNode>(""));
 }
 
 bool MapResource::fileOnDiskHasBeenModifiedSinceLastSave()
 {
-    auto fullPath = getAbsoluteResourcePath();
+	auto fullPath = getAbsoluteResourcePath();
 
-    return os::fileOrDirExists(fullPath) && fs::last_write_time(fullPath) > _lastKnownModificationTime;
+	return os::fileOrDirExists(fullPath) && fs::last_write_time(fullPath) > _lastKnownModificationTime;
 }
 
 sigc::signal<void(bool)>& MapResource::signal_modifiedStatusChanged()
 {
-    return _signalModifiedStatusChanged;
+	return _signalModifiedStatusChanged;
 }
 
 void MapResource::onMapChanged()
 {
-    _signalModifiedStatusChanged.emit(!_mapRoot->getUndoChangeTracker().isAtSavedPosition());
+	_signalModifiedStatusChanged.emit(!_mapRoot->getUndoChangeTracker().isAtSavedPosition());
 }
 
 void MapResource::mapSave()
 {
-    if (_mapRoot)
-    {
-        _mapRoot->getUndoChangeTracker().setSavedChangeCount();
-    }
+	if (_mapRoot)
+	{
+		_mapRoot->getUndoChangeTracker().setSavedChangeCount();
+	}
 }
 
 RootNodePtr MapResource::loadMapNode()
@@ -284,110 +284,110 @@ RootNodePtr MapResource::loadMapNode()
 	RootNodePtr rootNode;
 
 	// Open a stream - will throw on failure
-    auto stream = openMapfileStream();
+	auto stream = openMapfileStream();
 
-    if (!stream || !stream->isOpen())
-    {
-        throw OperationException(_("Could not open map stream"));
-    }
+	if (!stream || !stream->isOpen())
+	{
+		throw OperationException(_("Could not open map stream"));
+	}
 
-    try
-    {
-        // Get the mapformat
-        auto format = algorithm::determineMapFormat(stream->getStream(), _extension);
+	try
+	{
+		// Get the mapformat
+		auto format = algorithm::determineMapFormat(stream->getStream(), _extension);
 
-        if (!format)
-        {
-            throw OperationException(_("Could not determine map format"));
-        }
+		if (!format)
+		{
+			throw OperationException(_("Could not determine map format"));
+		}
 
-        // Instantiate a loader to process the map file stream
-        MapResourceLoader loader(stream->getStream(), *format);
+		// Instantiate a loader to process the map file stream
+		MapResourceLoader loader(stream->getStream(), *format);
 
-        // Load the root from the primary stream (throws on failure or cancel)
-        rootNode = loader.load();
+		// Load the root from the primary stream (throws on failure or cancel)
+		rootNode = loader.load();
 
-        if (rootNode)
-        {
-            rootNode->setName(_name);
-        }
+		if (rootNode)
+		{
+			rootNode->setName(_name);
+		}
 
-        // Check if an info file is supported by this map format
-        if (format->allowInfoFileCreation())
-        {
-            auto infoFileStream = openInfofileStream();
+		// Check if an info file is supported by this map format
+		if (format->allowInfoFileCreation())
+		{
+			auto infoFileStream = openInfofileStream();
 
-            if (infoFileStream && infoFileStream->isOpen())
-            {
-                loader.loadInfoFile(infoFileStream->getStream(), rootNode);
-            }
-        }
+			if (infoFileStream && infoFileStream->isOpen())
+			{
+				loader.loadInfoFile(infoFileStream->getStream(), rootNode);
+			}
+		}
 
-        refreshLastModifiedTime();
-    }
-    catch (const OperationException& ex)
-    {
-        // Re-throw the exception, prepending the map file path to the message (if not cancelled)
-        throw ex.operationCancelled() ? ex :
-            OperationException(fmt::format(_("Failure reading map file:\n{0}\n\n{1}"), getAbsoluteResourcePath(), ex.what()));
-    }
+		refreshLastModifiedTime();
+	}
+	catch (const OperationException& ex)
+	{
+		// Re-throw the exception, prepending the map file path to the message (if not cancelled)
+		throw ex.operationCancelled() ? ex :
+			OperationException(fmt::format(_("Failure reading map file:\n{0}\n\n{1}"), getAbsoluteResourcePath(), ex.what()));
+	}
 
 	return rootNode;
 }
 
 stream::MapResourceStream::Ptr MapResource::openFileStream(const std::string& path)
 {
-    // Call the factory method to acquire a stream
-    auto stream = stream::MapResourceStream::OpenFromPath(path);
+	// Call the factory method to acquire a stream
+	auto stream = stream::MapResourceStream::OpenFromPath(path);
 
-    if (!stream->isOpen())
-    {
-        throw OperationException(fmt::format(_("Could not open file:\n{0}"), path));
-    }
+	if (!stream->isOpen())
+	{
+		throw OperationException(fmt::format(_("Could not open file:\n{0}"), path));
+	}
 
-    return stream;
+	return stream;
 }
 
 stream::MapResourceStream::Ptr MapResource::openMapfileStream()
 {
-    return openFileStream(getAbsoluteResourcePath());
+	return openFileStream(getAbsoluteResourcePath());
 }
 
 stream::MapResourceStream::Ptr MapResource::openInfofileStream()
 {
-    auto fullPath = getAbsoluteResourcePath();
-    auto infoFilePath = os::replaceExtension(fullPath, game::current::getInfoFileExtension());
+	auto fullPath = getAbsoluteResourcePath();
+	auto infoFilePath = os::replaceExtension(fullPath, game::current::getInfoFileExtension());
 
-    try
-    {
-        return openFileStream(infoFilePath);
-    }
-    catch (const OperationException& ex)
-    {
-        // Info file load file does not stop us, just issue a warning
-        radiant::NotificationMessage::SendWarning(
-            fmt::format(_("No existing file named {0} found, could not load any group or layer information. "
-                "A new info file will be created the next time the map is saved."), os::getFilename(infoFilePath)),
-            _("Missing .darkradiant File"));
-        rWarning() << ex.what() << std::endl;
-        return stream::MapResourceStream::Ptr();
-    }
+	try
+	{
+		return openFileStream(infoFilePath);
+	}
+	catch (const OperationException& ex)
+	{
+		// Info file load file does not stop us, just issue a warning
+		radiant::NotificationMessage::SendWarning(
+			fmt::format(_("No existing file named {0} found, could not load any group or layer information. "
+				"A new info file will be created the next time the map is saved."), os::getFilename(infoFilePath)),
+			_("Missing Project File"));
+		rWarning() << ex.what() << std::endl;
+		return stream::MapResourceStream::Ptr();
+	}
 }
 
 void MapResource::refreshLastModifiedTime()
 {
-    auto fullPath = getAbsoluteResourcePath();
+	auto fullPath = getAbsoluteResourcePath();
 
-    if (os::fileOrDirExists(fullPath))
-    {
-        // Remember the last modified timestamp after a successful load
-        _lastKnownModificationTime = fs::last_write_time(fullPath);
-    }
+	if (os::fileOrDirExists(fullPath))
+	{
+		// Remember the last modified timestamp after a successful load
+		_lastKnownModificationTime = fs::last_write_time(fullPath);
+	}
 }
 
 bool MapResource::FileIsWriteable(const fs::path& path)
 {
-    return !os::fileOrDirExists(path.string()) || os::fileIsWritable(path);
+	return !os::fileOrDirExists(path.string()) || os::fileIsWritable(path);
 }
 
 void MapResource::throwIfNotWriteable(const fs::path& path)
@@ -466,9 +466,9 @@ void MapResource::saveFile(const MapFormat& format, const scene::IMapRootNodePtr
 
 	try
 	{
-        // Pass the traversal function and the root of the subgraph to export
-        exporter->exportMap(root, traverse);
-        exporter.reset();
+		// Pass the traversal function and the root of the subgraph to export
+		exporter->exportMap(root, traverse);
+		exporter.reset();
 	}
 	catch (FileOperation::OperationCancelled&)
 	{

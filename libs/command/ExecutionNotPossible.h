@@ -14,12 +14,12 @@ namespace cmd
  * displayed in an error popup window.
  */
 class ExecutionNotPossible :
-    public ExecutionFailure
+	public ExecutionFailure
 {
 public:
-    ExecutionNotPossible(const std::string& msg) :
-        ExecutionFailure(msg)
-    {}
+	ExecutionNotPossible(const std::string& msg) :
+		ExecutionFailure(msg)
+	{}
 
 	// Converts a function that is throwing an ExecutionNotPossible
 	// to one that returns false instead (true if no exception is thrown)

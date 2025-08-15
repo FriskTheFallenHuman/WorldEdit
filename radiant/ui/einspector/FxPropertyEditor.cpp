@@ -16,20 +16,20 @@ namespace ui
 {
 
 FxPropertyEditor::FxPropertyEditor(wxWindow* parent, IEntitySelection& entities, const ITargetKey::Ptr& key) :
-    PropertyEditor(entities),
-    _key(key)
+	PropertyEditor(entities),
+	_key(key)
 {
-    auto mainVBox = new wxPanel(parent, wxID_ANY);
-    mainVBox->SetSizer(new wxBoxSizer(wxHORIZONTAL));
+	auto mainVBox = new wxPanel(parent, wxID_ANY);
+	mainVBox->SetSizer(new wxBoxSizer(wxHORIZONTAL));
 
-    // Register the main widget in the base class
-    setMainWidget(mainVBox);
+	// Register the main widget in the base class
+	setMainWidget(mainVBox);
 
-    auto browseButton = new wxButton(mainVBox, wxID_ANY, _("Choose FX..."));
-    browseButton->SetBitmap(PropertyEditorFactory::getBitmapFor("fx"));
-    browseButton->Bind(wxEVT_BUTTON, &FxPropertyEditor::_onBrowseButton, this);
+	auto browseButton = new wxButton(mainVBox, wxID_ANY, _("Choose FX..."));
+	browseButton->SetBitmap(PropertyEditorFactory::getBitmapFor("fx"));
+	browseButton->Bind(wxEVT_BUTTON, &FxPropertyEditor::_onBrowseButton, this);
 
-    mainVBox->GetSizer()->Add(browseButton, 0, wxALIGN_CENTER_VERTICAL | wxALL, 6);
+	mainVBox->GetSizer()->Add(browseButton, 0, wxALIGN_CENTER_VERTICAL | wxALL, 6);
 }
 
 void FxPropertyEditor::_onBrowseButton(wxCommandEvent& ev)
@@ -45,7 +45,7 @@ void FxPropertyEditor::_onBrowseButton(wxCommandEvent& ev)
 		// Apply the change to the current selection, dispatch the command
 		GlobalCommandSystem().executeCommand("SetEntityKeyValue", _key->getFullKey(), selectedDecl);
 
-        signal_keyValueApplied().emit(_key->getFullKey(), selectedDecl);
+		signal_keyValueApplied().emit(_key->getFullKey(), selectedDecl);
 	}
 }
 

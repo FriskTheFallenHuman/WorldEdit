@@ -16,7 +16,7 @@ namespace ui
 {
 
 TopLevelFrame::TopLevelFrame() :
-	wxFrame(nullptr, wxID_ANY, wxT("DarkRadiant")),
+	wxFrame(nullptr, wxID_ANY, wxT("WorldEdit")),
 	_topLevelContainer(nullptr),
 	_mainContainer(nullptr)
 {
@@ -37,16 +37,16 @@ TopLevelFrame::TopLevelFrame() :
 	{
 		_toolbars[IMainFrame::Toolbar::TOP] = viewToolbar;
 
-        // Add a version label to the right
-        auto versionToolbar = new wxToolBar(this, wxID_ANY);
-        auto versionLabel = new wxStaticText(versionToolbar, wxID_ANY, std::string(RADIANT_VERSION) + " ");
-        versionToolbar->AddControl(versionLabel);
-        versionToolbar->Realize();
+		// Add a version label to the right
+		auto versionToolbar = new wxToolBar(this, wxID_ANY);
+		auto versionLabel = new wxStaticText(versionToolbar, wxID_ANY, std::string(RADIANT_VERSION) + " ");
+		versionToolbar->AddControl(versionLabel);
+		versionToolbar->Realize();
 
-        auto sizer = new wxBoxSizer(wxHORIZONTAL);
-        
-        sizer->Add(_toolbars[IMainFrame::Toolbar::TOP].get(), 1);
-        sizer->Add(versionToolbar, 0, wxEXPAND);
+		auto sizer = new wxBoxSizer(wxHORIZONTAL);
+		
+		sizer->Add(_toolbars[IMainFrame::Toolbar::TOP].get(), 1);
+		sizer->Add(versionToolbar, 0, wxEXPAND);
 
 		_topLevelContainer->Add(sizer, 0, wxEXPAND);
 	}
@@ -81,11 +81,11 @@ TopLevelFrame::TopLevelFrame() :
 
 	// Set the window icon
 	wxIcon appIcon;
-	appIcon.CopyFromBitmap(wxutil::GetLocalBitmap("darkradiant_icon_64x64.png"));
+	appIcon.CopyFromBitmap(wxutil::GetLocalBitmap("logo.png"));
 	SetIcon(appIcon);
 
-    // Redirect scroll events to the window below the cursor
-    _scrollEventFilter.reset(new wxutil::ScrollEventPropagationFilter);
+	// Redirect scroll events to the window below the cursor
+	_scrollEventFilter.reset(new wxutil::ScrollEventPropagationFilter);
 
 #if (wxMAJOR_VERSION >= 3) && (wxMINOR_VERSION < 1)
 	// In wxWidgets < 3.1.0 we don't receive the wxEVT_MENU_OPEN event on 
@@ -111,7 +111,7 @@ bool TopLevelFrame::Destroy()
 
 wxMenuBar* TopLevelFrame::createMenuBar()
 {
-    // Return the "main" menubar from the UIManager
+	// Return the "main" menubar from the UIManager
 	return GlobalMenuManager().getMenuBar("main");
 }
 

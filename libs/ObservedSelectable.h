@@ -14,34 +14,34 @@ namespace selection
 class ObservedSelectable : 
 	public ISelectable
 {
-    // Callback to invoke on selection changed
-    SelectionChangedSlot _onchanged;
+	// Callback to invoke on selection changed
+	SelectionChangedSlot _onchanged;
 
-    // Current selection state
-    bool _selected;
+	// Current selection state
+	bool _selected;
 
 public:
 
-    /**
-     * \brief
-     * Construct an ObservedSelectable with the given callback function.
-     */
-    ObservedSelectable(const SelectionChangedSlot& onchanged) : 
+	/**
+	 * \brief
+	 * Construct an ObservedSelectable with the given callback function.
+	 */
+	ObservedSelectable(const SelectionChangedSlot& onchanged) : 
 		_onchanged(onchanged), 
 		_selected(false)
-    { }
+	{ }
 
-    /**
-     * \brief
-     * Copy constructor.
-     */
-    ObservedSelectable(const ObservedSelectable& other) : 
+	/**
+	 * \brief
+	 * Copy constructor.
+	 */
+	ObservedSelectable(const ObservedSelectable& other) : 
 		ISelectable(other), 
 		_onchanged(other._onchanged), 
 		_selected(false)
-    {
-        setSelected(other.isSelected());
-    }
+	{
+		setSelected(other.isSelected());
+	}
 
 	ObservedSelectable& operator=(const ObservedSelectable& other)
 	{
@@ -54,24 +54,24 @@ public:
 		setSelected(false);
 	}
 
-    /**
-     * \brief
-     * Set the selection state.
-     */
-    virtual void setSelected(bool select) override
-    {
-        // Change state and invoke callback only if the new state is different
-        // from the current state
-        if (select ^ _selected)
-        {
-            _selected = select;
+	/**
+	 * \brief
+	 * Set the selection state.
+	 */
+	virtual void setSelected(bool select) override
+	{
+		// Change state and invoke callback only if the new state is different
+		// from the current state
+		if (select ^ _selected)
+		{
+			_selected = select;
 
 			if (_onchanged)
 			{
 				_onchanged(*this);
 			}
-        }
-    }
+		}
+	}
 
 	virtual bool isSelected() const override
 	{

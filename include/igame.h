@@ -23,43 +23,43 @@ namespace game
 class IGame
 {
 public:
-    /// Destructor
-    virtual ~IGame() {}
+	/// Destructor
+	virtual ~IGame() {}
 
-    /**
-     * \brief Get a string key value from the game file.
-     *
-     * The "key values" are the attributes on the top-level <game> node, for example "type",
-     * "name" and "index". Originally these were the only data items stored in the .game
-     * file, before it was expanded into a general XML tree.
-     *
-     * \param key
-     * Name of the key to retrieve. If this key does not exist, a warning is
-     * emitted and the empty string is returned.
+	/**
+	 * \brief Get a string key value from the game file.
+	 *
+	 * The "key values" are the attributes on the top-level <game> node, for example "type",
+	 * "name" and "index". Originally these were the only data items stored in the .game
+	 * file, before it was expanded into a general XML tree.
+	 *
+	 * \param key
+	 * Name of the key to retrieve. If this key does not exist, a warning is
+	 * emitted and the empty string is returned.
 	 */
-    virtual std::string getKeyValue(const std::string& key) const = 0;
+	virtual std::string getKeyValue(const std::string& key) const = 0;
 
-    /**
-     * @brief Test if this game has a specific optional feature.
-     *
-     * Games are allowed to specify certain features to expose in the UI, which might not be
-     * required in other games. Each feature is defined by a single text string which appears under
-     * the <features> node.
-     */
-    virtual bool hasFeature(const std::string& feature) const = 0;
+	/**
+	 * @brief Test if this game has a specific optional feature.
+	 *
+	 * Games are allowed to specify certain features to expose in the UI, which might not be
+	 * required in other games. Each feature is defined by a single text string which appears under
+	 * the <features> node.
+	 */
+	virtual bool hasFeature(const std::string& feature) const = 0;
 
-    /// Get the name of this game
-    virtual std::string getName() const = 0;
+	/// Get the name of this game
+	virtual std::string getName() const = 0;
 
-    /**
-     * \brief
-     * Search an XPath relative to the this game node.
-     *
-     * \param xpath
-     * The <b>relative</b> XPath under the game node, including the initial
-     * forward-slash(es).
-     */
-    virtual xml::NodeList getLocalXPath(const std::string& path) const = 0;
+	/**
+	 * \brief
+	 * Search an XPath relative to the this game node.
+	 *
+	 * \param xpath
+	 * The <b>relative</b> XPath under the game node, including the initial
+	 * forward-slash(es).
+	 */
+	virtual xml::NodeList getLocalXPath(const std::string& path) const = 0;
 };
 
 typedef std::shared_ptr<IGame> IGamePtr;
@@ -101,13 +101,13 @@ public:
 	virtual std::string getUserEnginePath() = 0;
 
 	/**
-	 * greebo: Gets the mod path (e.g. ~/.doom3/gathers/).
+	 * greebo: Gets the mod path (e.g. ~/.doom3/d3xp/).
 	 * Returns the mod base path if the mod path itself is empty.
 	 */
 	virtual const std::string& getModPath() const = 0;
 
 	/**
-	 * greebo: Returns the mod base path (e.g. ~/.doom3/darkmod/),
+	 * greebo: Returns the mod base path (e.g. ~/.doom3/base/),
 	 * can be an empty string if fs_game_base is not set.
 	 */
 	virtual const std::string& getModBasePath() const = 0;
@@ -132,8 +132,8 @@ public:
 	// Returns the absolute path where prefabs are going to be saved to
 	virtual const std::string& getPrefabPath() = 0;
 
-    // Returns the active game configuration
-    virtual const GameConfiguration& getConfig() const = 0;
+	// Returns the active game configuration
+	virtual const GameConfiguration& getConfig() const = 0;
 
 	// Activates the given mod configuration
 	// Stores the given config, initialises VFS and constructs a few secondary paths

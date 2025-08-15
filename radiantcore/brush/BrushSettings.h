@@ -11,13 +11,13 @@ class BrushSettings :
 {
 private:
 	Vector3 _vertexColour; 
-    Vector3 _selectedVertexColour;
+	Vector3 _selectedVertexColour;
 
 	sigc::signal<void> _signalSettingsChanged;
 public:
 	BrushSettings() :
 		_vertexColour(0, 1, 0),
-        _selectedVertexColour(0, 0, 1)
+		_selectedVertexColour(0, 0, 1)
 	{}
 
 	const Vector3& getVertexColour() const override
@@ -32,17 +32,17 @@ public:
 		_signalSettingsChanged.emit();
 	}
 
-    const Vector3& getSelectedVertexColour() const override
-    {
-        return _selectedVertexColour;
-    }
+	const Vector3& getSelectedVertexColour() const override
+	{
+		return _selectedVertexColour;
+	}
 
-    void setSelectedVertexColour(const Vector3& colour) override
-    {
-        _selectedVertexColour = colour;
+	void setSelectedVertexColour(const Vector3& colour) override
+	{
+		_selectedVertexColour = colour;
 
-        _signalSettingsChanged.emit();
-    }
+		_signalSettingsChanged.emit();
+	}
 
 	sigc::signal<void>& signal_settingsChanged() override
 	{

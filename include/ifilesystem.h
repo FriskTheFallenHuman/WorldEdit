@@ -40,100 +40,100 @@ public:
 /// Visibility of an asset in the mod installation
 enum class Visibility
 {
-    /// Standard visibility, shown in all relevant areas
-    NORMAL,
+	/// Standard visibility, shown in all relevant areas
+	NORMAL,
 
-    /// Hidden from selectors, but rendered as normal in the map itself
-    HIDDEN
+	/// Hidden from selectors, but rendered as normal in the map itself
+	HIDDEN
 };
 
 inline std::ostream& operator<< (std::ostream& s, const Visibility& v)
 {
-    if (v == Visibility::HIDDEN)
-        return s << "Visibility::HIDDEN";
-    else if (v == Visibility::NORMAL)
-        return s << "Visibility::NORMAL";
-    else
-        return s << "Visibility(invalid)";
+	if (v == Visibility::HIDDEN)
+		return s << "Visibility::HIDDEN";
+	else if (v == Visibility::NORMAL)
+		return s << "Visibility::NORMAL";
+	else
+		return s << "Visibility(invalid)";
 }
 
 /// Metadata about a file in the virtual filesystem
 class FileInfo
 {
 private:
-    // Info provider to load additional info on demand, used by e.g. getSize()
-    IArchiveFileInfoProvider* _infoProvider;
+	// Info provider to load additional info on demand, used by e.g. getSize()
+	IArchiveFileInfoProvider* _infoProvider;
 public:
-    FileInfo() :
-        FileInfo(std::string(), std::string(), Visibility::HIDDEN)
-    {}
+	FileInfo() :
+		FileInfo(std::string(), std::string(), Visibility::HIDDEN)
+	{}
 
-    FileInfo(const std::string& topDir_, const std::string& name_, Visibility visibility_) :
-        _infoProvider(nullptr),
-        topDir(topDir_),
-        name(name_),
-        visibility(visibility_)
-    {}
+	FileInfo(const std::string& topDir_, const std::string& name_, Visibility visibility_) :
+		_infoProvider(nullptr),
+		topDir(topDir_),
+		name(name_),
+		visibility(visibility_)
+	{}
 
-    FileInfo(const std::string& topDir_, const std::string& name_, 
-        Visibility visibility_, IArchiveFileInfoProvider& infoProvider) :
-        FileInfo(topDir_, name_, visibility_)
-    {
-        _infoProvider = &infoProvider;
-    }
+	FileInfo(const std::string& topDir_, const std::string& name_, 
+		Visibility visibility_, IArchiveFileInfoProvider& infoProvider) :
+		FileInfo(topDir_, name_, visibility_)
+	{
+		_infoProvider = &infoProvider;
+	}
 
-    FileInfo(const FileInfo& other) = default;
-    FileInfo(FileInfo&& other) = default;
-    FileInfo& operator=(const FileInfo& other) = default;
-    FileInfo& operator=(FileInfo&& other) = default;
+	FileInfo(const FileInfo& other) = default;
+	FileInfo(FileInfo&& other) = default;
+	FileInfo& operator=(const FileInfo& other) = default;
+	FileInfo& operator=(FileInfo&& other) = default;
 
-    /// Top-level directory (if any), e.g. "def" or "models"
-    std::string topDir;
+	/// Top-level directory (if any), e.g. "def" or "models"
+	std::string topDir;
 
-    /// Name of the file, including intermediate directories under the topDir
-    std::string name;
+	/// Name of the file, including intermediate directories under the topDir
+	std::string name;
 
-    /// Visibility of the file
-    Visibility visibility = Visibility::NORMAL;
+	/// Visibility of the file
+	Visibility visibility = Visibility::NORMAL;
 
-    bool isEmpty() const
-    {
-        return name.empty();
-    }
+	bool isEmpty() const
+	{
+		return name.empty();
+	}
 
-    /// Return the full mod-relative path, including the containing directory
-    std::string fullPath() const
-    {
-        if (topDir.empty())
-            return name;
-        else
-            return topDir + (topDir.back() == '/' ? "" : "/") + name;
-    }
+	/// Return the full mod-relative path, including the containing directory
+	std::string fullPath() const
+	{
+		if (topDir.empty())
+			return name;
+		else
+			return topDir + (topDir.back() == '/' ? "" : "/") + name;
+	}
 
-    // See IArchiveFileInfoProvider::getFileSize
-    std::size_t getSize() const
-    {
-        return _infoProvider ? _infoProvider->getFileSize(fullPath()) : 0;
-    }
+	// See IArchiveFileInfoProvider::getFileSize
+	std::size_t getSize() const
+	{
+		return _infoProvider ? _infoProvider->getFileSize(fullPath()) : 0;
+	}
 
-    // See IArchiveFileInfoProvider::getIsPhysicalFile
-    bool getIsPhysicalFile() const
-    {
-        return _infoProvider ? _infoProvider->getIsPhysical(fullPath()) : false;
-    }
+	// See IArchiveFileInfoProvider::getIsPhysicalFile
+	bool getIsPhysicalFile() const
+	{
+		return _infoProvider ? _infoProvider->getIsPhysical(fullPath()) : false;
+	}
 
-    // See IArchiveFileInfoProvider::getArchivePath
-    std::string getArchivePath() const
-    {
-        return _infoProvider ? _infoProvider->getArchivePath(fullPath()) : "";
-    }
+	// See IArchiveFileInfoProvider::getArchivePath
+	std::string getArchivePath() const
+	{
+		return _infoProvider ? _infoProvider->getArchivePath(fullPath()) : "";
+	}
 
-    /// Equality comparison with another FileInfo
-    bool operator== (const FileInfo& rhs) const
-    {
-        return topDir == rhs.topDir && name == rhs.name
-            && visibility == rhs.visibility;
-    }
+	/// Equality comparison with another FileInfo
+	bool operator== (const FileInfo& rhs) const
+	{
+		return topDir == rhs.topDir && name == rhs.name
+			&& visibility == rhs.visibility;
+	}
 };
 
 /**
@@ -152,26 +152,26 @@ class VirtualFileSystem :
 public:
 	virtual ~VirtualFileSystem() {}
 
-    // Functor taking the filename and visibility as argument. The filename is
-    // relative to the base path passed to the GlobalFileSystem().foreach*()
-    // method.
+	// Functor taking the filename and visibility as argument. The filename is
+	// relative to the base path passed to the GlobalFileSystem().foreach*()
+	// method.
 	typedef std::function<void(const FileInfo&)> VisitorFunc;
 
 	// Initialises the filesystem using the given search order.
 	virtual void initialise(const SearchPaths& vfsSearchPaths, const std::set<std::string>& allowedArchiveExtensions) = 0;
 
-    // Returns true if the filesystem has already been initialised
-    virtual bool isInitialised() const = 0;
+	// Returns true if the filesystem has already been initialised
+	virtual bool isInitialised() const = 0;
 
 	/// \brief Shuts down the filesystem.
 	virtual void shutdown() = 0;
 
-    // Returns the extension set this VFS instance has been initialised with
-    virtual const std::set<std::string>& getArchiveExtensions() const = 0;
+	// Returns the extension set this VFS instance has been initialised with
+	virtual const std::set<std::string>& getArchiveExtensions() const = 0;
 
-    // A signal that is emitted when the VFS has been initialised, i.e. the paths have been
-    // set, the archives/directories are known and can be traversed
-    virtual sigc::signal<void>& signal_Initialised() = 0;
+	// A signal that is emitted when the VFS has been initialised, i.e. the paths have been
+	// set, the archives/directories are known and can be traversed
+	virtual sigc::signal<void>& signal_Initialised() = 0;
 
 	// Returns the number of files in the VFS matching the given filename
 	virtual int getFileCount(const std::string& filename) = 0;
@@ -191,10 +191,10 @@ public:
 	/// This is a variant of openTextFile taking an absolute path as argument.
 	virtual ArchiveTextFilePtr openTextFileInAbsolutePath(const std::string& filename) = 0;
 
-    // Opens an independent archive located in the given physical path.
-    // (This archive can be located somewhere outside the current VFS hierarchy.)
-    // Loading this archive won't have any effect on the VFS setup, it is opened stand-alone.
-    virtual IArchive::Ptr openArchiveInAbsolutePath(const std::string& pathToArchive) = 0;
+	// Opens an independent archive located in the given physical path.
+	// (This archive can be located somewhere outside the current VFS hierarchy.)
+	// Loading this archive won't have any effect on the VFS setup, it is opened stand-alone.
+	virtual IArchive::Ptr openArchiveInAbsolutePath(const std::string& pathToArchive) = 0;
 
 	/// \brief Calls the visitor function for each file under \p basedir matching \p extension.
 	/// Use "*" as \p extension to match all file extensions.
@@ -211,13 +211,13 @@ public:
 		const VisitorFunc& visitorFunc,
 		std::size_t depth = 1) = 0;
 
-    // Similar to forEachFile, this routine traverses an archive in the given path
-    // searching for files matching a certain extension and invoking
-    // the given visitor functor on each occurrence.
-    virtual void forEachFileInArchive(const std::string& absoluteArchivePath,
-        const std::string& extension,
-        const VisitorFunc& visitorFunc,
-        std::size_t depth = 1) = 0;
+	// Similar to forEachFile, this routine traverses an archive in the given path
+	// searching for files matching a certain extension and invoking
+	// the given visitor functor on each occurrence.
+	virtual void forEachFileInArchive(const std::string& absoluteArchivePath,
+		const std::string& extension,
+		const VisitorFunc& visitorFunc,
+		std::size_t depth = 1) = 0;
 
 	/// \brief Returns the absolute filename for a relative \p name, or "" if not found.
 	virtual std::string findFile(const std::string& name) = 0;
@@ -229,9 +229,9 @@ public:
 	// Returns the list of registered VFS paths, ordered by search priority
 	virtual const SearchPaths& getVfsSearchPaths() = 0;
 
-    // Gets the file info structure for the given VFS file.
-    // The info structure will be empty if the file was not located in the current VFS tree
-    virtual vfs::FileInfo getFileInfo(const std::string& vfsRelativePath) = 0;
+	// Gets the file info structure for the given VFS file.
+	// The info structure will be empty if the file was not located in the current VFS tree
+	virtual vfs::FileInfo getFileInfo(const std::string& vfsRelativePath) = 0;
 };
 
 }

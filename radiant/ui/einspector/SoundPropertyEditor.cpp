@@ -26,27 +26,27 @@ SoundPropertyEditor::SoundPropertyEditor(wxWindow* parent, IEntitySelection& ent
 	constructBrowseButtonPanel(parent, _("Choose sound..."),
 		PropertyEditorFactory::getBitmapFor("sound"));
 
-    if (module::GlobalModuleRegistry().moduleExists(MODULE_SOUNDMANAGER))
-    {
-        // Check if there's a silence shader to display the button
-        auto button = new wxButton(getWidget(), wxID_ANY, _("Assign Silence"));
-        button->SetBitmap(wxutil::GetLocalBitmap("icon_sound_mute.png"));
-        button->Bind(wxEVT_BUTTON, &SoundPropertyEditor::onAssignSilence, this);
-        button->SetToolTip(_("Assigns the 'silence' sound shader (if available)"));
+	if (module::GlobalModuleRegistry().moduleExists(MODULE_SOUNDMANAGER))
+	{
+		// Check if there's a silence shader to display the button
+		auto button = new wxButton(getWidget(), wxID_ANY, _("Assign Silence"));
+		button->SetBitmap(wxutil::GetLocalBitmap("icon_sound_mute.png"));
+		button->Bind(wxEVT_BUTTON, &SoundPropertyEditor::onAssignSilence, this);
+		button->SetToolTip(_("Assigns the 'silence' sound shader (if available)"));
 
-        getWidget()->GetSizer()->Add(button, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 6);
+		getWidget()->GetSizer()->Add(button, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 6);
 
-        button->Enable(GlobalSoundManager().getSoundShader(SILENCE_SHADER) != nullptr);
-    }
-    else
-    {
-        getWidget()->Disable();
-    }
+		button->Enable(GlobalSoundManager().getSoundShader(SILENCE_SHADER) != nullptr);
+	}
+	else
+	{
+		getWidget()->Disable();
+	}
 }
 
 void SoundPropertyEditor::onAssignSilence(wxCommandEvent& ev)
 {
-    setKeyValueOnSelection(_key->getFullKey(), SILENCE_SHADER);
+	setKeyValueOnSelection(_key->getFullKey(), SILENCE_SHADER);
 }
 
 void SoundPropertyEditor::onBrowseButtonClick()
@@ -60,7 +60,7 @@ void SoundPropertyEditor::onBrowseButtonClick()
 	if (!picked.empty())
 	{
 		// Apply the change to the entity
-        setKeyValueOnSelection(_key->getFullKey(), picked);
+		setKeyValueOnSelection(_key->getFullKey(), picked);
 	}
 
 	chooser->destroyDialog();

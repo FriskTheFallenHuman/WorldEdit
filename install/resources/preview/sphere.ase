@@ -1,5 +1,5 @@
 *3DSMAX_ASCIIEXPORT	200
-*COMMENT "Ascii Scene Exporter v2.52"
+*COMMENT "WorldEdit ASCII Scene Export(*.ase)"
 *SCENE {
 	*SCENE_FILENAME "sphere.blend"
 	*SCENE_FIRSTFRAME 0

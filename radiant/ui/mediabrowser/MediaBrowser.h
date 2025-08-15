@@ -32,7 +32,7 @@ class TexturePreviewCombo;
  */
 class MediaBrowser : 
 	public wxutil::DockablePanel,
-    public wxutil::SingleIdleCallback
+	public wxutil::SingleIdleCallback
 {
 private:
 	MediaBrowserTreeView* _treeView;
@@ -47,16 +47,16 @@ private:
 
 	bool _blockShaderClipboardUpdates;
 	bool _reloadTreeOnIdle;
-    bool _showThumbnailBrowserOnIdle;
-    std::string _queuedSelection;
+	bool _showThumbnailBrowserOnIdle;
+	std::string _queuedSelection;
 
-    std::size_t _focusMaterialHandler;
+	std::size_t _focusMaterialHandler;
 
-    wxWeakRef<wxutil::TransientPopupWindow> _browserPopup;
+	wxWeakRef<wxutil::TransientPopupWindow> _browserPopup;
 
 public:
 	MediaBrowser(wxWindow* parent);
-    ~MediaBrowser() override;
+	~MediaBrowser() override;
 
 	// Returns the currently selected item, or an empty string if nothing is selected
 	std::string getSelection();
@@ -71,31 +71,31 @@ public:
 	void setSelection(const std::string& selection);
 
 protected:
-    void onIdle() override;
-    void onPanelActivated() override;
-    void onPanelDeactivated() override;
+	void onIdle() override;
+	void onPanelActivated() override;
+	void onPanelDeactivated() override;
 
 private:
-    void construct();
-    void _onTreeViewSelectionChanged(wxDataViewEvent& ev);
+	void construct();
+	void _onTreeViewSelectionChanged(wxDataViewEvent& ev);
 
-    void queueTreeReload();
-    void queueSelection(const std::string& material);
+	void queueTreeReload();
+	void queueSelection(const std::string& material);
 
-    void connectListeners();
-    void disconnectListeners();
+	void connectListeners();
+	void disconnectListeners();
 
 	// These are called when the MaterialManager is loading/unloading the defs
 	void onMaterialDefsUnloaded();
 	void onMaterialDefsLoaded();
 
 	void onMapEvent(IMap::MapEvent ev);
-    void focusMaterial(FocusMaterialRequest& request);
+	void focusMaterial(FocusMaterialRequest& request);
 
 	void onShaderClipboardSourceChanged();
 	void sendSelectionToShaderClipboard();
-    wxutil::TransientPopupWindow* findOrCreateBrowserPopup();
-    void closePopup();
+	wxutil::TransientPopupWindow* findOrCreateBrowserPopup();
+	void closePopup();
 };
 
 }

@@ -25,9 +25,9 @@ ColourPropertyEditor::ColourPropertyEditor(wxWindow* parent, IEntitySelection& e
 	setMainWidget(mainVBox);
 
 	// Create the colour button
-    _colorButton = new wxColourPickerCtrl(mainVBox, wxID_ANY,
-                                          wxColour(0, 0, 0), wxDefaultPosition,
-                                          wxDefaultSize, wxCLRP_USE_TEXTCTRL);
+	_colorButton = new wxColourPickerCtrl(mainVBox, wxID_ANY,
+										  wxColour(0, 0, 0), wxDefaultPosition,
+										  wxDefaultSize, wxCLRP_USE_TEXTCTRL);
 
 	_colorButton->Connect(wxEVT_COLOURPICKER_CHANGED,
 		wxColourPickerEventHandler(ColourPropertyEditor::_onColorSet), NULL, this);
@@ -73,7 +73,7 @@ std::string ColourPropertyEditor::getSelectedColour()
 void ColourPropertyEditor::_onColorSet(wxColourPickerEvent& ev)
 {
 	// Set the new keyvalue on the entity
-    setKeyValueOnSelection(_key->getFullKey(), getSelectedColour());
+	setKeyValueOnSelection(_key->getFullKey(), getSelectedColour());
 }
 
 

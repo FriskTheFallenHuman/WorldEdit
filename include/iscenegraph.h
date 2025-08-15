@@ -55,10 +55,10 @@ public:
 	};
 
 	// Returns the root-node of the graph.
-    virtual const IMapRootNodePtr& root() const = 0;
+	virtual const IMapRootNodePtr& root() const = 0;
 
 	// Sets the root-node of the graph to be 'newRoot'.
-    virtual void setRoot(const IMapRootNodePtr& newRoot) = 0;
+	virtual void setRoot(const IMapRootNodePtr& newRoot) = 0;
 
 	// greebo: Adds a node to the scenegraph
 	virtual void insert(const scene::INodePtr& node) = 0;
@@ -74,8 +74,8 @@ public:
 	// greebo: Remove the scene observer from the list
 	virtual void removeSceneObserver(Observer* observer) = 0;
 
-    /// Accessor for the signal emitted when bounds are changed
-    virtual sigc::signal<void> signal_boundsChanged() const = 0;
+	/// Accessor for the signal emitted when bounds are changed
+	virtual sigc::signal<void> signal_boundsChanged() const = 0;
 
 	/// \brief Invokes all bounds-changed callbacks. Called when the bounds of any instance in the scene change.
 	/// \todo Move to a separate class.

@@ -10,7 +10,7 @@ namespace wxutil
 
 namespace
 {
-	const char* const MENU_ICON = "iconFilter16.png";
+	const char* const MENU_ICON = "icon_filter.png";
 }
 
 FilterPopupMenu::FilterPopupMenu()

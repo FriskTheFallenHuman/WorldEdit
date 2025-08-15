@@ -24,7 +24,7 @@ namespace ui
 
 namespace
 {
-    const char* const EDITOR_WINDOW_TITLE = N_("Edit Colour Schemes");
+	const char* const EDITOR_WINDOW_TITLE = N_("Edit Colour Schemes");
 }
 
 ColourSchemeEditor::ColourSchemeEditor() :
@@ -35,7 +35,7 @@ ColourSchemeEditor::ColourSchemeEditor() :
 	constructWindow();
 
 	// Load all the list items
-  	populateTree();
+	populateTree();
 
 	// Highlight the currently selected scheme
 	selectActiveScheme();
@@ -49,99 +49,99 @@ ColourSchemeEditor::ColourSchemeEditor() :
 void ColourSchemeEditor::populateTree()
 {
 	GlobalColourSchemeManager().foreachScheme(
-        [&](const std::string& name, colours::IColourScheme&)
-        {
-            wxVector<wxVariant> row;
-            row.push_back(wxVariant(name));
-            _schemeList->AppendItem(row);
-        }
-    );
+		[&](const std::string& name, colours::IColourScheme&)
+		{
+			wxVector<wxVariant> row;
+			row.push_back(wxVariant(name));
+			_schemeList->AppendItem(row);
+		}
+	);
 }
 
 wxBoxSizer* ColourSchemeEditor::constructListButtons()
 {
-    wxBoxSizer* buttonBox = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer* buttonBox = new wxBoxSizer(wxHORIZONTAL);
 
-    _deleteButton = new wxButton(this, wxID_DELETE, _("Delete"));
-    wxButton* copyButton = new wxButton(this, wxID_COPY, _("Copy"));
+	_deleteButton = new wxButton(this, wxID_DELETE, _("Delete"));
+	wxButton* copyButton = new wxButton(this, wxID_COPY, _("Copy"));
 
-    buttonBox->Add(copyButton, 1, wxEXPAND | wxRIGHT, 6);
-    buttonBox->Add(_deleteButton, 1, wxEXPAND);
+	buttonBox->Add(copyButton, 1, wxEXPAND | wxRIGHT, 6);
+	buttonBox->Add(_deleteButton, 1, wxEXPAND);
 
-    copyButton->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) { copyScheme(); });
-    _deleteButton->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) { deleteScheme(); });
+	copyButton->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) { copyScheme(); });
+	_deleteButton->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) { deleteScheme(); });
 
-    return buttonBox;
+	return buttonBox;
 }
 
 void ColourSchemeEditor::addOptionsPanel(wxBoxSizer& vbox)
 {
-    wxStaticLine* sep = new wxStaticLine(this);
-    vbox.Add(sep, 0, wxEXPAND | wxTOP, 6);
+	wxStaticLine* sep = new wxStaticLine(this);
+	vbox.Add(sep, 0, wxEXPAND | wxTOP, 6);
 
-    // Override light colour checkbox
-    wxCheckBox* overrideLightsCB = new wxCheckBox(
-        this, wxID_ANY, _("Override light volume colour")
-    );
-    overrideLightsCB->SetToolTip(
-        _("Render all light volumes in a single colour set by the colour "
-          "scheme, rather than a per-entity colour controlled by the _color "
-          "spawnarg")
-    );
-    registry::bindWidget(overrideLightsCB, colours::RKEY_OVERRIDE_LIGHTCOL);
+	// Override light colour checkbox
+	wxCheckBox* overrideLightsCB = new wxCheckBox(
+		this, wxID_ANY, _("Override light volume colour")
+	);
+	overrideLightsCB->SetToolTip(
+		_("Render all light volumes in a single colour set by the colour "
+		  "scheme, rather than a per-entity colour controlled by the _color "
+		  "spawnarg")
+	);
+	registry::bindWidget(overrideLightsCB, colours::RKEY_OVERRIDE_LIGHTCOL);
 
-    vbox.Add(overrideLightsCB, 0, wxEXPAND | wxTOP, 6);
+	vbox.Add(overrideLightsCB, 0, wxEXPAND | wxTOP, 6);
 }
 
 void ColourSchemeEditor::constructWindow()
 {
-    wxBoxSizer* mainHBox = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer* mainHBox = new wxBoxSizer(wxHORIZONTAL);
 
-    GetSizer()->Add(mainHBox, 1, wxEXPAND | wxALL, 12);
-    GetSizer()->Add(CreateStdDialogButtonSizer(wxOK | wxCANCEL), 0,
-        wxALIGN_RIGHT | wxLEFT | wxBOTTOM | wxRIGHT, 12);
+	GetSizer()->Add(mainHBox, 1, wxEXPAND | wxALL, 12);
+	GetSizer()->Add(CreateStdDialogButtonSizer(wxOK | wxCANCEL), 0,
+		wxALIGN_RIGHT | wxLEFT | wxBOTTOM | wxRIGHT, 12);
 
-    // Create the scheme list and the buttons
-    wxBoxSizer* leftVBox = new wxBoxSizer(wxVERTICAL);
-    mainHBox->Add(leftVBox, 0, wxEXPAND | wxRIGHT, 6);
+	// Create the scheme list and the buttons
+	wxBoxSizer* leftVBox = new wxBoxSizer(wxVERTICAL);
+	mainHBox->Add(leftVBox, 0, wxEXPAND | wxRIGHT, 6);
 
-    _schemeList = new wxDataViewListCtrl(this, wxID_ANY, wxDefaultPosition,
-                                     wxDefaultSize, wxDV_NO_HEADER);
-    _schemeList->SetMinClientSize(wxSize(256, -1));
-    leftVBox->Add(_schemeList, 1, wxEXPAND | wxBOTTOM, 6);
+	_schemeList = new wxDataViewListCtrl(this, wxID_ANY, wxDefaultPosition,
+									 wxDefaultSize, wxDV_NO_HEADER);
+	_schemeList->SetMinClientSize(wxSize(256, -1));
+	leftVBox->Add(_schemeList, 1, wxEXPAND | wxBOTTOM, 6);
 
-    // Create a text column to show the scheme name
-    _schemeList->AppendTextColumn(
-        _("Colour scheme"), wxDATAVIEW_CELL_INERT, wxCOL_WIDTH_AUTOSIZE,
-        wxALIGN_LEFT, wxDATAVIEW_COL_SORTABLE
-    );
+	// Create a text column to show the scheme name
+	_schemeList->AppendTextColumn(
+		_("Colour scheme"), wxDATAVIEW_CELL_INERT, wxCOL_WIDTH_AUTOSIZE,
+		wxALIGN_LEFT, wxDATAVIEW_COL_SORTABLE
+	);
 
-    // Connect the signal AFTER selecting the active scheme
-    _schemeList->Connect(wxEVT_DATAVIEW_SELECTION_CHANGED,
-        wxDataViewEventHandler(ColourSchemeEditor::callbackSelChanged), NULL, this);
+	// Connect the signal AFTER selecting the active scheme
+	_schemeList->Connect(wxEVT_DATAVIEW_SELECTION_CHANGED,
+		wxDataViewEventHandler(ColourSchemeEditor::callbackSelChanged), NULL, this);
 
-    // Treeview buttons
-    leftVBox->Add(constructListButtons(), 0, wxEXPAND, 6);
+	// Treeview buttons
+	leftVBox->Add(constructListButtons(), 0, wxEXPAND, 6);
 
-    // Options panel below the copy/delete buttons
-    addOptionsPanel(*leftVBox);
+	// Options panel below the copy/delete buttons
+	addOptionsPanel(*leftVBox);
 
-    // The Box containing the Colour, pack it into the right half of the hbox
-    _colourFrame = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxDOUBLE_BORDER);
-    mainHBox->Add(_colourFrame, 1, wxEXPAND);
+	// The Box containing the Colour, pack it into the right half of the hbox
+	_colourFrame = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxDOUBLE_BORDER);
+	mainHBox->Add(_colourFrame, 1, wxEXPAND);
 }
 
 void ColourSchemeEditor::selectActiveScheme()
 {
-    // Find a row matching the active colour scheme name
-    wxString name = GlobalColourSchemeManager().getActiveScheme().getName();
-    int r = 0;
-    for ( ; r < _schemeList->GetItemCount(); ++r)
-    {
-        wxString rowName = _schemeList->GetTextValue(r, 0);
-        if (rowName == name)
-            break;
-    }
+	// Find a row matching the active colour scheme name
+	wxString name = GlobalColourSchemeManager().getActiveScheme().getName();
+	int r = 0;
+	for ( ; r < _schemeList->GetItemCount(); ++r)
+	{
+		wxString rowName = _schemeList->GetTextValue(r, 0);
+		if (rowName == name)
+			break;
+	}
 
 	_schemeList->SelectRow(r);
 	selectionChanged();
@@ -149,14 +149,14 @@ void ColourSchemeEditor::selectActiveScheme()
 
 void ColourSchemeEditor::deleteSchemeFromList()
 {
-    // Delete the selected row
+	// Delete the selected row
 	int row = _schemeList->GetSelectedRow();
 	if (row != wxNOT_FOUND)
 		_schemeList->DeleteItem(row);
 
 	// Select the first scheme
-    if (_schemeList->GetItemCount() > 0)
-        _schemeList->SelectRow(0);
+	if (_schemeList->GetItemCount() > 0)
+		_schemeList->SelectRow(0);
 }
 
 std::string ColourSchemeEditor::getSelectedScheme()
@@ -164,8 +164,8 @@ std::string ColourSchemeEditor::getSelectedScheme()
 	int row = _schemeList->GetSelectedRow();
 	if (row != wxNOT_FOUND)
 		return _schemeList->GetTextValue(row, 0).ToStdString();
-    else
-        return "";
+	else
+		return "";
 }
 
 wxSizer* ColourSchemeEditor::constructColourSelector(colours::IColourItem& colour, const std::string& name)
@@ -228,10 +228,10 @@ void ColourSchemeEditor::updateColourSelectors()
 
 void ColourSchemeEditor::updateWindows()
 {
-    // Force an eclass update for previewing purposes
-    // If the colours are reverted later, this will be cleaned up
-    // by the Ok/Cancel handling code anyway
-    GlobalColourSchemeManager().emitEclassOverrides();
+	// Force an eclass update for previewing purposes
+	// If the colours are reverted later, this will be cleaned up
+	// by the Ok/Cancel handling code anyway
+	GlobalColourSchemeManager().emitEclassOverrides();
 
 	signal_ColoursChanged().emit();
 
@@ -311,9 +311,9 @@ void ColourSchemeEditor::copyScheme()
 	GlobalColourSchemeManager().setActive(newName);
 
 	// Add the new list item to the ListStore
-    wxVector<wxVariant> rowData;
-    rowData.push_back(wxVariant(newName));
-    _schemeList->AppendItem(rowData);
+	wxVector<wxVariant> rowData;
+	rowData.push_back(wxVariant(newName));
+	_schemeList->AppendItem(rowData);
 
 	// Highlight the copied scheme
 	selectActiveScheme();

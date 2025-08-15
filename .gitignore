@@ -5,8 +5,8 @@ CMakeCache.txt
 cmake_install.cmake
 /config.h
 /install_manifest.txt
-/radiant/darkradiant
-/install/darkradiant.desktop
+/radiant/worldedit
+/install/worldedit.desktop
 /test/drtest
 *.o
 *.lo
@@ -28,6 +28,7 @@ tags
 # Windows directories
 w32deps
 w64deps
+winincludes
 build
 
 # Windows build files
@@ -44,8 +45,8 @@ tools/msvc/*.exe
 
 # Windows Visual Studio stuff
 *.user
-DarkRadiant.opensdf
-DarkRadiant.sdf
+WorldEdit.opensdf
+WorldEdit.sdf
 gtkrc
 testsuite.ilk
 
@@ -71,14 +72,14 @@ xcuserdata
 
 /install/*.zip
 /tools/msvc/.vs
-/tools/msvc/DarkRadiant.VC.db
+/tools/msvc/WorldEdit.VC.db
 /tools/innosetup/*.zip
 /tools/lwo_analyse/.vs
 /radiant/*.aps
 
 # Portable installation temp folders
-/tools/scripts/DarkRadiant_install.x64
-/tools/scripts/DarkRadiant_install
+/tools/scripts/WorldEdit_install.x64
+/tools/scripts/WorldEdit_install
 /install/*.ilk
 /tools/msvc/Tests/x64
 /tools/msvc/x64
@@ -86,6 +87,5 @@ xcuserdata
 /install/*.testdurations
 *.ilk
 .vs/
-windeps*.7z
+*.7z
 /packages
-/windeps

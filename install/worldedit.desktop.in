@@ -1,0 +1,20 @@
+[Desktop Entry]
+Version=1.0
+Name=WorldEdit
+GenericName=Level editor
+Keywords=doom;doom3;quake;quake3;quake4;prey;prey06;idtech;idtech4;level;map;game development;
+
+Comment=3D level editor for Doom 3
+Comment[de]=3D Level Editor für Doom 3
+
+Icon=net.worldedit.WorldEdit
+
+# The %f means a single, local, absolute file. Remote files will be
+# first copied in a local temp location and then given to the program:
+Exec=@CMAKE_INSTALL_PREFIX@/bin/worldedit %f
+
+Terminal=false
+
+Type=Application
+
+Categories=Game;3DGraphics;

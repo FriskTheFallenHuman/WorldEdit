@@ -32,80 +32,80 @@ typedef std::shared_ptr<ModelSelector> ModelSelectorPtr;
 class ModelSelector: public wxutil::DialogBase, private wxutil::XmlResourceBasedWidget
 {
 public:
-    /**
-     * Data structure containing the kind (model/eclass),
-     * the name of the object and a possible skin name.
-     * Als contains the options (whether to create Monsterclip).
-     */
-    struct Result
-    {
-        enum class ObjectKind
-        {
-            Model,
-            EntityClass,
-        };
+	/**
+	 * Data structure containing the kind (model/eclass),
+	 * the name of the object and a possible skin name.
+	 * Als contains the options (whether to create Monsterclip).
+	 */
+	struct Result
+	{
+		enum class ObjectKind
+		{
+			Model,
+			EntityClass,
+		};
 
-        // The object to create
-        ObjectKind objectKind;
+		// The object to create
+		ObjectKind objectKind;
 
-        // Eclass/Model name
-        std::string name;
+		// Eclass/Model name
+		std::string name;
 
-        // The skin of the model (if not empty)
-        std::string skin;
+		// The skin of the model (if not empty)
+		std::string skin;
 
-        // Model creation options
-        bool createClip = false;
-    };
+		// Model creation options
+		bool createClip = false;
+	};
 
 private:
 	wxPanel* _dialogPanel;
 
 	// Model preview widget
-    std::unique_ptr<wxutil::ModelPreview> _modelPreview;
+	std::unique_ptr<wxutil::ModelPreview> _modelPreview;
 
-    // Main tree view with model hierarchy
+	// Main tree view with model hierarchy
 	ModelTreeView* _treeView;
-    wxToggleButton* _showSkinsBtn = nullptr;
+	wxToggleButton* _showSkinsBtn = nullptr;
 
-    // The model name which the info panels are currently displaying info for
-    std::string _infoModel;
-    std::string _infoSkin;
+	// The model name which the info panels are currently displaying info for
+	std::string _infoModel;
+	std::string _infoSkin;
 
-    // Key/value table for model information
-    wxutil::KeyValueTable* _infoTable;
+	// Key/value table for model information
+	wxutil::KeyValueTable* _infoTable;
 
-    // Materials list table
-    MaterialsList* _materialsList;
+	// Materials list table
+	MaterialsList* _materialsList;
 
-    struct RelatedEntityColumns :
-        public wxutil::TreeModel::ColumnRecord
-    {
-        RelatedEntityColumns() :
-            eclassName(add(wxutil::TreeModel::Column::String)),
-            skin(add(wxutil::TreeModel::Column::String))
-        {}
+	struct RelatedEntityColumns :
+		public wxutil::TreeModel::ColumnRecord
+	{
+		RelatedEntityColumns() :
+			eclassName(add(wxutil::TreeModel::Column::String)),
+			skin(add(wxutil::TreeModel::Column::String))
+		{}
 
-        wxutil::TreeModel::Column eclassName;
-        wxutil::TreeModel::Column skin;
-    };
+		wxutil::TreeModel::Column eclassName;
+		wxutil::TreeModel::Column skin;
+	};
 
-    RelatedEntityColumns _relatedEntityColumns;
-    wxutil::TreeModel::Ptr _relatedEntityStore;
-    wxutil::TreeView* _relatedEntityView;
-    wxutil::PopupMenuPtr _relatedEntityContextMenu;
+	RelatedEntityColumns _relatedEntityColumns;
+	wxutil::TreeModel::Ptr _relatedEntityStore;
+	wxutil::TreeView* _relatedEntityView;
+	wxutil::PopupMenuPtr _relatedEntityContextMenu;
 
 	// The window position tracker
 	wxutil::WindowPosition _position;
 	wxutil::PanedPosition _panedPosition;
 
-    // Whether to show advanced options panel
-    bool _showOptions;
+	// Whether to show advanced options panel
+	bool _showOptions;
 
 	sigc::connection _modelsReloadedConn;
 	sigc::connection _skinsReloadedConn;
 
-    Result _result;
+	Result _result;
 
 private:
 	// Private constructor, creates widgets
@@ -121,9 +121,9 @@ private:
 	Result showAndBlock(const std::string& curModel, bool showOptions, bool showSkins);
 
 	// Helper functions to configure GUI components
-    void setupAdvancedPanel(wxWindow* parent);
-    void setupTreeView(wxWindow* parent);
-    wxWindow* setupTreeViewToolbar(wxWindow* parent);
+	void setupAdvancedPanel(wxWindow* parent);
+	void setupTreeView(wxWindow* parent);
+	wxWindow* setupTreeViewToolbar(wxWindow* parent);
 
 	// Populate the tree view with models
 	void populateModels();
@@ -137,10 +137,10 @@ private:
 	void onCancel(wxCommandEvent& ev);
 	void onReloadModels(wxCommandEvent& ev);
 	void onReloadSkins(wxCommandEvent& ev);
-    void onRescanFolders(wxCommandEvent& ev);
-    void onTreeViewPopulationFinished(wxutil::ResourceTreeView::PopulationFinishedEvent& ev);
+	void onRescanFolders(wxCommandEvent& ev);
+	void onTreeViewPopulationFinished(wxutil::ResourceTreeView::PopulationFinishedEvent& ev);
 
-    // Update the info table with information from the currently-selected model, and
+	// Update the info table with information from the currently-selected model, and
 	// update the displayed model.
 	void onSelectionChanged(wxDataViewEvent& ev);
 
@@ -153,7 +153,7 @@ private:
 	void onSkinsOrModelsReloaded();
 
 	void onModelLoaded(const model::ModelNodePtr& modelNode);
-    void onMaterialVisibilityStatusChanged();
+	void onMaterialVisibilityStatusChanged();
 	void onMainFrameShuttingDown();
 
 protected:
@@ -175,7 +175,7 @@ public:
 	static Result chooseModel(const std::string& curModel = "", bool showOptions = true, bool showSkins = true);
 
 	// Starts the background population thread
-    static void Populate();
+	static void Populate();
 };
 
 }

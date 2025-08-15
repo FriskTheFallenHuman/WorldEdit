@@ -38,9 +38,9 @@ private:
 
 protected:
 	// The selected entities we're working with
-    IEntitySelection& _entities;
+	IEntitySelection& _entities;
 
-    sigc::signal<void(const std::string&, const std::string&)> _sigKeyValueApplied;
+	sigc::signal<void(const std::string&, const std::string&)> _sigKeyValueApplied;
 
 	// Protected constructor
 	PropertyEditor(IEntitySelection& entities);
@@ -86,10 +86,10 @@ public:
 	// IPropertyEditor implementation
 	wxPanel* getWidget() override;
 
-    void updateFromEntities() override
-    {}
+	void updateFromEntities() override
+	{}
 
-    sigc::signal<void(const std::string&, const std::string&)>& signal_keyValueApplied() override;
+	sigc::signal<void(const std::string&, const std::string&)>& signal_keyValueApplied() override;
 };
 
 } // namespace

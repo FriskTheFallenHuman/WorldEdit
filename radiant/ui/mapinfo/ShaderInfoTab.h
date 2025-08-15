@@ -24,8 +24,8 @@ private:
 			shader(add(wxutil::TreeModel::Column::String)),
 			faceCount(add(wxutil::TreeModel::Column::Integer)),
 			patchCount(add(wxutil::TreeModel::Column::Integer)),
-            modelCount(add(wxutil::TreeModel::Column::Integer)),
-            particleCount(add(wxutil::TreeModel::Column::Integer))
+			modelCount(add(wxutil::TreeModel::Column::Integer)),
+			particleCount(add(wxutil::TreeModel::Column::Integer))
 		{}
 
 		wxutil::TreeModel::Column shader;

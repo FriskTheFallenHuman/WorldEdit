@@ -24,7 +24,7 @@ private:
 	// The working copy of the Filter
 	Filter _filter;
 
-    // List of filter rules in order
+	// List of filter rules in order
 	wxDataViewListCtrl* _ruleList = nullptr;
 
 	int _selectedRule = -1;

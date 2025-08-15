@@ -28,9 +28,9 @@ namespace ui
 class SurfaceInspector :
 	public wxutil::DockablePanel,
 	public sigc::trackable,
-    public wxutil::SingleIdleCallback
+	public wxutil::SingleIdleCallback
 {
-    // Manipulatable value field with nudge buttons and a step size selector
+	// Manipulatable value field with nudge buttons and a step size selector
 	struct ManipulatorRow
 	{
 		wxTextCtrl* value;
@@ -38,8 +38,8 @@ class SurfaceInspector :
 		wxutil::ControlButton* larger;
 		wxTextCtrl* stepEntry;
 
-        // Set the text control to show the given value
-        void setValue(double val);
+		// Set the text control to show the given value
+		void setValue(double val);
 	};
 
 	// This are the named manipulator rows (shift, scale, rotation, etc)
@@ -54,12 +54,12 @@ class SurfaceInspector :
 	{
 		wxStaticText* x;
 		wxButton* fitButton;
-        wxToggleButton* preserveAspectButton;
+		wxToggleButton* preserveAspectButton;
 		wxSpinCtrlDouble* width;
 		wxSpinCtrlDouble* height;
 
-        // Set sensitivity of all widgets
-        void enable(bool enabled);
+		// Set sensitivity of all widgets
+		void enable(bool enabled);
 	} _fitTexture;
 
 	struct FlipTextureWidgets
@@ -83,9 +83,9 @@ class SurfaceInspector :
 
 	wxSpinCtrlDouble* _defaultTexScale;
 	wxToggleButton* _texLockButton;
-    wxButton* _useHorizScale;
-    wxToggleButton* _scaleLinkToggle;
-    wxButton* _useVertScale;
+	wxButton* _useHorizScale;
+	wxToggleButton* _scaleLinkToggle;
+	wxButton* _useVertScale;
 
 	// To avoid key changed loopbacks when the registry is updated
 	bool _callbackActive;
@@ -101,24 +101,24 @@ public:
 
 	SurfaceInspector(wxWindow* parent);
 
-    ~SurfaceInspector() override;
+	~SurfaceInspector() override;
 
-    /// Update the instance if it exists, otherwise do nothing
-    void update();
+	/// Update the instance if it exists, otherwise do nothing
+	void update();
 
 	/** greebo: Gets called when the default texscale registry key changes
 	 */
 	void keyChanged();
 
 protected:
-    void onIdle() override;
+	void onIdle() override;
 
-    void onPanelActivated() override;
-    void onPanelDeactivated() override;
+	void onPanelActivated() override;
+	void onPanelDeactivated() override;
 
 private:
-    void connectEventHandlers();
-    void disconnectEventHandlers();
+	void connectEventHandlers();
+	void disconnectEventHandlers();
 
 	void doUpdate();
 
@@ -129,14 +129,14 @@ private:
 	 *
 	 * @returns: the structure containing the widget pointers.
 	 */
-    ManipulatorRow createManipulatorRow(const std::string& label, wxutil::FormLayout& table,
-                                        const std::string& bitmapSmaller,
-                                        const std::string& bitmapLarger);
+	ManipulatorRow createManipulatorRow(const std::string& label, wxutil::FormLayout& table,
+										const std::string& bitmapSmaller,
+										const std::string& bitmapLarger);
 
-    // Widget construction
+	// Widget construction
 	void populateWindow();
-    wxBoxSizer* createFitTextureRow();
-    void createScaleLinkButtons(wxutil::FormLayout& table);
+	wxBoxSizer* createFitTextureRow();
+	void createScaleLinkButtons(wxutil::FormLayout& table);
 
 	// Connect IEvents to the widgets
 	void connectButtons();
@@ -150,9 +150,9 @@ private:
 	// Applies the entered shader to the current selection
 	void emitShader();
 
-    // Fit texture on one or both axes
-    enum class Axis { X, Y, BOTH };
-    wxSpinCtrlDouble* makeFitSpinBox(Axis axis);
+	// Fit texture on one or both axes
+	enum class Axis { X, Y, BOTH };
+	wxSpinCtrlDouble* makeFitSpinBox(Axis axis);
 	void fitTexture(Axis axis);
 	void onFit(Axis axis);
 
@@ -170,8 +170,8 @@ private:
 
 	void handleTextureChangedMessage(radiant::TextureChangedMessage& msg);
 
-    void onScale(const std::string& scaleId, bool larger);
-    void onHarmoniseScale(bool useHorizontal);
+	void onScale(const std::string& scaleId, bool larger);
+	void onHarmoniseScale(bool useHorizontal);
 
 }; // class SurfaceInspector
 

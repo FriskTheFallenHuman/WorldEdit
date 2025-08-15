@@ -65,9 +65,9 @@ $target = $Platform
 
 Write-Host ("Compiling for target: {0}" -f $target)
 
-$portableFilenameTemplate = "darkradiant-{0}-$target.portable.7z"
-$pdbFilenameTemplate = "darkradiant-{0}-$target.pdb.7z"
-$innoSetupFilenameTemplate = "darkradiant-{0}-$target.exe"
+$portableFilenameTemplate = "worldedit-{0}-$target.portable.7z"
+$pdbFilenameTemplate = "worldedit-{0}-$target.pdb.7z"
+$innoSetupFilenameTemplate = "worldedit-{0}-$target.exe"
 
 $versionRegex = '#define RADIANT_VERSION "(.+)"'
 $versionIncludeFile = "..\..\include\version.h"
@@ -110,21 +110,21 @@ if ($null -eq $vcRedistFolder)
 if ($target -eq "x86")
 {
     $platform = "Win32"
-    $issFile = "..\innosetup\darkradiant.iss"
-    $portablePath = "DarkRadiant_install"
+    $issFile = "..\innosetup\worldedit.iss"
+    $portablePath = "WorldEdit_install"
 	$redistSource = Join-Path $vcRedistFolder "x86\Microsoft.VC143.CRT"
 } 
 else
 {
     $platform = "x64"
-    $issFile = "..\innosetup\darkradiant.x64.iss"
-    $portablePath = "DarkRadiant_install.x64"
+    $issFile = "..\innosetup\worldedit.x64.iss"
+    $portablePath = "WorldEdit_install.x64"
 	$redistSource = Join-Path $vcRedistFolder "x64\Microsoft.VC143.CRT"
 }
 
 if (-not $SkipBuild)
 {
-	Start-Process "msbuild" -ArgumentList ("..\..\DarkRadiant.sln", "/p:configuration=release", "/t:rebuild", "/p:platform=$platform", "/maxcpucount:4", "/nodeReuse:false", "/p:UseSharedConfiguration=false") -NoNewWindow -Wait
+	Start-Process "msbuild" -ArgumentList ("..\..\WorldEdit.sln", "/p:configuration=release", "/t:rebuild", "/p:platform=$platform", "/maxcpucount:4", "/nodeReuse:false", "/p:UseSharedConfiguration=false") -NoNewWindow -Wait
 }
 
 # Copy files to portable files folder
@@ -143,7 +143,7 @@ Get-ChildItem -Path $portableFilesFolder | Remove-Item -Recurse -Force
 Write-Host ("Copying files...")
 
 $installFolder = Get-Item "..\..\install"
-$excludes = @('*.exp', '*.lib', '*.iobj', '*.ipdb', '*.suo', '*.pgd', '*.fbp', 'darkradiant.desktop.in', 'Tests.*')
+$excludes = @('*.exp', '*.lib', '*.iobj', '*.ipdb', '*.suo', '*.pgd', '*.fbp', 'worldedit.desktop.in', 'Tests.*')
 
 Get-ChildItem $installFolder -Recurse -Exclude $excludes | Copy-Item -Destination { Join-Path $portableFilesFolder $_.FullName.Substring($installFolder.FullName.Length) }
 
@@ -170,7 +170,7 @@ if ($GenerateSetupPackage)
     # Write the version to the innosetup source file
     Write-Host ("Writing version {0} to InnoSetup file" -f $foundVersionString)
     $issContent = Get-Content $issFile
-    $issContent = $issContent -replace '#define DarkRadiantVersion "(.+)"', ('#define DarkRadiantVersion "{0}"' -f $foundVersionString)
+    $issContent = $issContent -replace '#define WorldEditVersion "(.+)"', ('#define WorldEditVersion "{0}"' -f $foundVersionString)
     Write-Host ("Writing redist folder {0} to InnoSetup file" -f $vcRedistFolder)
     $issContent = $issContent -replace '#define VCRedistDir "(.+)"', ('#define VCRedistDir "{0}"' -f $vcRedistFolder)
     Set-Content -Path $issFile -Value $issContent

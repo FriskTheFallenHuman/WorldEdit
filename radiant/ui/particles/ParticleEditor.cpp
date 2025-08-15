@@ -39,59 +39,59 @@ using namespace particles;
 // CONSTANTS
 namespace
 {
-    const char* const DIALOG_TITLE = N_("Particle Editor");
+	const char* const DIALOG_TITLE = N_("Particle Editor");
 
-    const std::string RKEY_ROOT = "user/ui/particleEditor/";
-    const std::string RKEY_SPLIT_POS = RKEY_ROOT + "splitPos";
-    const std::string RKEY_WINDOW_STATE = RKEY_ROOT + "window";
-    const std::string RKEY_RECENT_PATH = RKEY_ROOT + "recentSavePath";
+	const std::string RKEY_ROOT = "user/ui/particleEditor/";
+	const std::string RKEY_SPLIT_POS = RKEY_ROOT + "splitPos";
+	const std::string RKEY_WINDOW_STATE = RKEY_ROOT + "window";
+	const std::string RKEY_RECENT_PATH = RKEY_ROOT + "recentSavePath";
 
-    const std::string EDIT_SUFFIX = "___editor";
+	const std::string EDIT_SUFFIX = "___editor";
 }
 
 namespace
 {
-    // Columns for the def list
-    struct DefColumns :
-        public wxutil::TreeModel::ColumnRecord
-    {
-        DefColumns() : 
+	// Columns for the def list
+	struct DefColumns :
+		public wxutil::TreeModel::ColumnRecord
+	{
+		DefColumns() : 
 			name(add(wxutil::TreeModel::Column::String))
 		{}
 
-        wxutil::TreeModel::Column name;
-    };
-    DefColumns& DEF_COLS() { static DefColumns _i; return _i; }
+		wxutil::TreeModel::Column name;
+	};
+	DefColumns& DEF_COLS() { static DefColumns _i; return _i; }
 
-    // Columns for the stages list
-    struct StageColumns :
-        public wxutil::TreeModel::ColumnRecord
-    {
-        StageColumns() :
+	// Columns for the stages list
+	struct StageColumns :
+		public wxutil::TreeModel::ColumnRecord
+	{
+		StageColumns() :
 			name(add(wxutil::TreeModel::Column::String)),
 			index(add(wxutil::TreeModel::Column::Integer)),
 			visible(add(wxutil::TreeModel::Column::Boolean))
 		{}
 
-        wxutil::TreeModel::Column name;
-        wxutil::TreeModel::Column index;
-        wxutil::TreeModel::Column visible;
-    };
-    StageColumns& STAGE_COLS() { static StageColumns _i; return _i; }
+		wxutil::TreeModel::Column name;
+		wxutil::TreeModel::Column index;
+		wxutil::TreeModel::Column visible;
+	};
+	StageColumns& STAGE_COLS() { static StageColumns _i; return _i; }
 }
 
 ParticleEditor::ParticleEditor() :
-    DialogBase(DIALOG_TITLE),
-    _defList(new wxutil::TreeModel(DEF_COLS(), true)),
+	DialogBase(DIALOG_TITLE),
+	_defList(new wxutil::TreeModel(DEF_COLS(), true)),
 	_defView(NULL),
-    _stageList(new wxutil::TreeModel(STAGE_COLS(), true)),
+	_stageList(new wxutil::TreeModel(STAGE_COLS(), true)),
 	_stageView(NULL),
-    _callbacksDisabled(false),
-    _saveInProgress(false)
+	_callbacksDisabled(false),
+	_saveInProgress(false)
 {
 	loadNamedPanel(this, "ParticleEditorMainPanel");
 
-    // Wire up the close button
+	// Wire up the close button
 	findNamedObject<wxButton>(this, "ParticleEditorCloseButton")->Connect(
 		wxEVT_BUTTON, wxCommandEventHandler(ParticleEditor::_onClose), NULL, this);
 
@@ -108,39 +108,39 @@ ParticleEditor::ParticleEditor() :
 
 	previewPanel->GetSizer()->Add(_preview->getWidget(), 1, wxEXPAND);
 	
-    // Set the default size of the window
+	// Set the default size of the window
 	FitToScreen(0.6f, 0.6f);
 
-    // Setup the splitter and preview
+	// Setup the splitter and preview
 	wxSplitterWindow* splitter = findNamedObject<wxSplitterWindow>(this, "ParticleEditorSplitter");
 	splitter->SetSashPosition(GetSize().GetWidth() * 0.6f);
-    splitter->SetMinimumPaneSize(10); // disallow unsplitting
+	splitter->SetMinimumPaneSize(10); // disallow unsplitting
 
 	setupParticleDefList();
-    setupParticleStageList();
-    setupSettingsPages();
+	setupParticleStageList();
+	setupSettingsPages();
 
 	Layout();
 	Fit();
 
 	// Connect the window position tracker
-    _windowPosition.loadFromPath(RKEY_WINDOW_STATE);
-    _windowPosition.connect(this);
-    _windowPosition.applyPosition();
+	_windowPosition.loadFromPath(RKEY_WINDOW_STATE);
+	_windowPosition.connect(this);
+	_windowPosition.applyPosition();
 
-    _panedPosition.connect(splitter);
-    _panedPosition.loadFromPath(RKEY_SPLIT_POS);
+	_panedPosition.connect(splitter);
+	_panedPosition.loadFromPath(RKEY_SPLIT_POS);
 
-    CenterOnParent();
+	CenterOnParent();
 
-    // Fire the selection changed signal to initialise the sensitivity
-    handleDefSelChanged();
-    handleStageSelChanged();
+	// Fire the selection changed signal to initialise the sensitivity
+	handleDefSelChanged();
+	handleStageSelChanged();
 }
 
 bool ParticleEditor::_onDeleteEvent()
 {
-    if (!promptUserToSaveChanges(false)) return true; // action not allowed or cancelled
+	if (!promptUserToSaveChanges(false)) return true; // action not allowed or cancelled
 
 	// Pass to base class, which defaults to "ok, let's close"
 	return DialogBase::_onDeleteEvent();
@@ -157,35 +157,35 @@ void ParticleEditor::setupParticleDefList()
 	_defView->AppendTextColumn(_("Particle"), DEF_COLS().name.getColumnIndex(),
 		wxDATAVIEW_CELL_INERT, wxCOL_WIDTH_AUTOSIZE, wxALIGN_NOT, wxDATAVIEW_COL_SORTABLE);
 
-    // Apply full-text search to the column
+	// Apply full-text search to the column
 	_defView->AddSearchColumn(DEF_COLS().name);
-    
-    populateParticleDefList();
+	
+	populateParticleDefList();
 
-    // Connect up the selection changed callback
+	// Connect up the selection changed callback
 	_defView->Connect(wxEVT_DATAVIEW_SELECTION_CHANGED,
 		wxDataViewEventHandler(ParticleEditor::_onDefSelChanged), NULL, this);
 }
 
 void ParticleEditor::populateParticleDefList()
 {
-    _selectedDefIter = wxDataViewItem();
-    _defList->Clear();
+	_selectedDefIter = wxDataViewItem();
+	_defList->Clear();
 
-    // Create and use a ParticlesVisitor to populate the list
-    GlobalParticlesManager().forEachParticleDef([&] (const IParticleDef& particle)
+	// Create and use a ParticlesVisitor to populate the list
+	GlobalParticlesManager().forEachParticleDef([&] (const IParticleDef& particle)
 	{
-        auto name = particle.getDeclName();
+		auto name = particle.getDeclName();
 
-        if (string::ends_with(name, EDIT_SUFFIX))
-        {
-            return; // skip the edit particles, they should not be showing up
-        }
+		if (string::ends_with(name, EDIT_SUFFIX))
+		{
+			return; // skip the edit particles, they should not be showing up
+		}
 
 		// Add the Def name to the list store
-        wxutil::TreeModel::Row row = _defList->AddItem();
+		wxutil::TreeModel::Row row = _defList->AddItem();
 
-        row[DEF_COLS().name] = name;
+		row[DEF_COLS().name] = name;
 
 		row.SendItemAdded();
 	});
@@ -213,11 +213,11 @@ void ParticleEditor::setupParticleStageList()
 	_stageView->AppendTextColumn(_("Stage"), DEF_COLS().name.getColumnIndex(),
 		wxDATAVIEW_CELL_INERT, wxCOL_WIDTH_AUTOSIZE, wxALIGN_NOT, wxDATAVIEW_COL_SORTABLE);
 
-    // Connect up the selection changed callback
+	// Connect up the selection changed callback
 	_stageView->Connect(wxEVT_DATAVIEW_SELECTION_CHANGED,
 		wxDataViewEventHandler(ParticleEditor::_onStageSelChanged), NULL, this);
 
-    // Connect the stage control buttons
+	// Connect the stage control buttons
 	findNamedObject<wxButton>(this, "ParticleEditorAddStageButton")->Connect(
 		wxEVT_BUTTON, wxCommandEventHandler(ParticleEditor::_onAddStage), NULL, this);
 	findNamedObject<wxButton>(this, "ParticleEditorRemoveStageButton")->Connect(
@@ -235,19 +235,19 @@ void ParticleEditor::setupParticleStageList()
 wxSpinCtrlDouble* ParticleEditor::convertToSpinCtrlDouble(const std::string& name, double min, double max, double increment, int digits)
 {
 	auto spinCtrlDouble = XmlResourceBasedWidget::convertToSpinCtrlDouble(this, name, min, max, increment, digits);
-    spinCtrlDouble->SetMaxSize(wxSize(70, -1));
-    return spinCtrlDouble;
+	spinCtrlDouble->SetMaxSize(wxSize(70, -1));
+	return spinCtrlDouble;
 }
 
 void ParticleEditor::setupSettingsPages()
 {
-    // Depth Hack
+	// Depth Hack
 	wxSpinCtrlDouble* depthHack = convertToSpinCtrlDouble("ParticleEditorDepthHack", 0, 999, 0.1, 2);
 	
 	depthHack->Connect(wxEVT_SPINCTRLDOUBLE, 
 		wxSpinDoubleEventHandler(ParticleEditor::_onDepthHackChanged), NULL, this);
 
-    // SHADER
+	// SHADER
 	findNamedObject<wxTextCtrl>(this, "ParticleEditorStageShader")->Connect(
 		wxEVT_TEXT, wxCommandEventHandler(ParticleEditor::_onShaderControlsChanged), NULL, this);
 	findNamedObject<wxTextCtrl>(this, "ParticleEditorStageColour")->Connect(
@@ -263,27 +263,27 @@ void ParticleEditor::setupSettingsPages()
 	convertToSpinCtrlDouble("ParticleEditorStageFadeIdxFrac", 0, 1, 0.01, 2);
 	convertToSpinCtrlDouble("ParticleEditorStageAnimRate", 0, 600, 0.1, 2);
 
-    connectSpinner("ParticleEditorStageFadeInFrac", &ParticleEditor::_onShaderControlsChanged);
+	connectSpinner("ParticleEditorStageFadeInFrac", &ParticleEditor::_onShaderControlsChanged);
 	connectSpinner("ParticleEditorStageFadeOutFrac", &ParticleEditor::_onShaderControlsChanged);
-    connectSpinner("ParticleEditorStageFadeIdxFrac", &ParticleEditor::_onShaderControlsChanged);
-    connectSpinner("ParticleEditorStageAnimFrames", &ParticleEditor::_onShaderControlsChanged);
-    connectSpinner("ParticleEditorStageAnimRate", &ParticleEditor::_onShaderControlsChanged);
+	connectSpinner("ParticleEditorStageFadeIdxFrac", &ParticleEditor::_onShaderControlsChanged);
+	connectSpinner("ParticleEditorStageAnimFrames", &ParticleEditor::_onShaderControlsChanged);
+	connectSpinner("ParticleEditorStageAnimRate", &ParticleEditor::_onShaderControlsChanged);
 
-    // COUNT
+	// COUNT
 
 	convertToSpinCtrlDouble("ParticleEditorStageDuration", 0, 999, 0.1, 2);
 	convertToSpinCtrlDouble("ParticleEditorStageBunching", 0, 1, 0.1, 2);
 	convertToSpinCtrlDouble("ParticleEditorStageTimeOffset", 0, 999, 0.1, 2);
 	convertToSpinCtrlDouble("ParticleEditorStageDeadTime", 0, 999, 0.1, 2);
 
-    connectSpinner("ParticleEditorStageCount", &ParticleEditor::_onCountTimeControlsChanged);
-    connectSpinner("ParticleEditorStageDuration", &ParticleEditor::_onCountTimeControlsChanged);
-    connectSpinner("ParticleEditorStageBunching", &ParticleEditor::_onCountTimeControlsChanged);
-    connectSpinner("ParticleEditorStageCycles", &ParticleEditor::_onCountTimeControlsChanged);
-    connectSpinner("ParticleEditorStageTimeOffset", &ParticleEditor::_onCountTimeControlsChanged);
-    connectSpinner("ParticleEditorStageDeadTime", &ParticleEditor::_onCountTimeControlsChanged);
+	connectSpinner("ParticleEditorStageCount", &ParticleEditor::_onCountTimeControlsChanged);
+	connectSpinner("ParticleEditorStageDuration", &ParticleEditor::_onCountTimeControlsChanged);
+	connectSpinner("ParticleEditorStageBunching", &ParticleEditor::_onCountTimeControlsChanged);
+	connectSpinner("ParticleEditorStageCycles", &ParticleEditor::_onCountTimeControlsChanged);
+	connectSpinner("ParticleEditorStageTimeOffset", &ParticleEditor::_onCountTimeControlsChanged);
+	connectSpinner("ParticleEditorStageDeadTime", &ParticleEditor::_onCountTimeControlsChanged);
 
-    // DISTRIBUTION
+	// DISTRIBUTION
 
 	findNamedObject<wxRadioButton>(this, "ParticleEditorStageShapeRect")->Connect(
 		wxEVT_RADIOBUTTON, wxCommandEventHandler(ParticleEditor::_onDistributionControlsChanged), NULL, this);
@@ -297,17 +297,17 @@ void ParticleEditor::setupSettingsPages()
 	convertToSpinCtrlDouble("ParticleEditorStageZSize", 0, 999, 0.1, 2);
 	convertToSpinCtrlDouble("ParticleEditorStageRingSize", 0, 999, 0.1, 2);
 
-    connectSpinner("ParticleEditorStageXSize", &ParticleEditor::_onDistributionControlsChanged);
-    connectSpinner("ParticleEditorStageYSize", &ParticleEditor::_onDistributionControlsChanged);
-    connectSpinner("ParticleEditorStageZSize", &ParticleEditor::_onDistributionControlsChanged);
-    connectSpinner("ParticleEditorStageRingSize", &ParticleEditor::_onDistributionControlsChanged);
+	connectSpinner("ParticleEditorStageXSize", &ParticleEditor::_onDistributionControlsChanged);
+	connectSpinner("ParticleEditorStageYSize", &ParticleEditor::_onDistributionControlsChanged);
+	connectSpinner("ParticleEditorStageZSize", &ParticleEditor::_onDistributionControlsChanged);
+	connectSpinner("ParticleEditorStageRingSize", &ParticleEditor::_onDistributionControlsChanged);
 
 	findNamedObject<wxTextCtrl>(this, "ParticleEditorStageOffset")->Connect(
 		wxEVT_TEXT, wxCommandEventHandler(ParticleEditor::_onDistributionControlsChanged), NULL, this);
 	findNamedObject<wxCheckBox>(this, "ParticleEditorStageRandomDist")->Connect(
 		wxEVT_CHECKBOX, wxCommandEventHandler(ParticleEditor::_onDistributionControlsChanged), NULL, this);
 
-    // DIRECTION / ORIENTATION
+	// DIRECTION / ORIENTATION
 
 	findNamedObject<wxRadioButton>(this, "ParticleEditorStageCone")->Connect(
 		wxEVT_RADIOBUTTON, wxCommandEventHandler(ParticleEditor::_onDirectionControlsChanged), NULL, this);
@@ -319,8 +319,8 @@ void ParticleEditor::setupSettingsPages()
 	convertToSpinCtrlDouble("ParticleEditorStageAimedTime", 0, 60, 0.1, 2);
 	convertToSpinCtrlDouble("ParticleEditorStageInitialAngle", 0, 359, 0.1, 2);
 	
-    connectSpinner("ParticleEditorStageConeAngle", &ParticleEditor::_onDirectionControlsChanged);
-    connectSpinner("ParticleEditorStageUpwardBias", &ParticleEditor::_onDirectionControlsChanged);
+	connectSpinner("ParticleEditorStageConeAngle", &ParticleEditor::_onDirectionControlsChanged);
+	connectSpinner("ParticleEditorStageUpwardBias", &ParticleEditor::_onDirectionControlsChanged);
 
 	findNamedObject<wxRadioButton>(this, "ParticleEditorStageOrientView")->Connect(
 		wxEVT_RADIOBUTTON, wxCommandEventHandler(ParticleEditor::_onDirectionControlsChanged), NULL, this);
@@ -333,11 +333,11 @@ void ParticleEditor::setupSettingsPages()
 	findNamedObject<wxRadioButton>(this, "ParticleEditorStageOrientZ")->Connect(
 		wxEVT_RADIOBUTTON, wxCommandEventHandler(ParticleEditor::_onDirectionControlsChanged), NULL, this);
 
-    connectSpinner("ParticleEditorStageTrails", &ParticleEditor::_onDirectionControlsChanged);
-    connectSpinner("ParticleEditorStageAimedTime", &ParticleEditor::_onDirectionControlsChanged);
-    connectSpinner("ParticleEditorStageInitialAngle", &ParticleEditor::_onDirectionControlsChanged);
+	connectSpinner("ParticleEditorStageTrails", &ParticleEditor::_onDirectionControlsChanged);
+	connectSpinner("ParticleEditorStageAimedTime", &ParticleEditor::_onDirectionControlsChanged);
+	connectSpinner("ParticleEditorStageInitialAngle", &ParticleEditor::_onDirectionControlsChanged);
 
-    // SIZE / SPEED / ASPECT
+	// SIZE / SPEED / ASPECT
 
 	convertToSpinCtrlDouble("ParticleEditorStageSpeedFrom", -500, 500, 0.5, 1);
 	convertToSpinCtrlDouble("ParticleEditorStageSpeedTo", -500, 500, 0.5, 1);
@@ -350,21 +350,21 @@ void ParticleEditor::setupSettingsPages()
 	convertToSpinCtrlDouble("ParticleEditorStageGravity", -999, 999, 0.1, 1);
 	convertToSpinCtrlDouble("ParticleEditorStageBoundsExpansion", 0, 2500, 0.1, 2);
 
-    connectSpinner("ParticleEditorStageSpeedFrom", &ParticleEditor::_onSizeControlsChanged);
-    connectSpinner("ParticleEditorStageSpeedTo", &ParticleEditor::_onSizeControlsChanged);
-    connectSpinner("ParticleEditorStageSizeFrom", &ParticleEditor::_onSizeControlsChanged);
-    connectSpinner("ParticleEditorStageSizeTo", &ParticleEditor::_onSizeControlsChanged);
-    connectSpinner("ParticleEditorStageRotationSpeedFrom", &ParticleEditor::_onSizeControlsChanged);
-    connectSpinner("ParticleEditorStageRotationSpeedTo", &ParticleEditor::_onSizeControlsChanged);
-    connectSpinner("ParticleEditorStageAspectFrom", &ParticleEditor::_onSizeControlsChanged);
-    connectSpinner("ParticleEditorStageAspectTo", &ParticleEditor::_onSizeControlsChanged);
-    connectSpinner("ParticleEditorStageGravity", &ParticleEditor::_onSizeControlsChanged);
-    connectSpinner("ParticleEditorStageBoundsExpansion", &ParticleEditor::_onSizeControlsChanged);
+	connectSpinner("ParticleEditorStageSpeedFrom", &ParticleEditor::_onSizeControlsChanged);
+	connectSpinner("ParticleEditorStageSpeedTo", &ParticleEditor::_onSizeControlsChanged);
+	connectSpinner("ParticleEditorStageSizeFrom", &ParticleEditor::_onSizeControlsChanged);
+	connectSpinner("ParticleEditorStageSizeTo", &ParticleEditor::_onSizeControlsChanged);
+	connectSpinner("ParticleEditorStageRotationSpeedFrom", &ParticleEditor::_onSizeControlsChanged);
+	connectSpinner("ParticleEditorStageRotationSpeedTo", &ParticleEditor::_onSizeControlsChanged);
+	connectSpinner("ParticleEditorStageAspectFrom", &ParticleEditor::_onSizeControlsChanged);
+	connectSpinner("ParticleEditorStageAspectTo", &ParticleEditor::_onSizeControlsChanged);
+	connectSpinner("ParticleEditorStageGravity", &ParticleEditor::_onSizeControlsChanged);
+	connectSpinner("ParticleEditorStageBoundsExpansion", &ParticleEditor::_onSizeControlsChanged);
 
 	findNamedObject<wxCheckBox>(this, "ParticleEditorStageUseWorldGravity")->Connect(
 		wxEVT_CHECKBOX, wxCommandEventHandler(ParticleEditor::_onSizeControlsChanged), NULL, this);
 
-    // PATH
+	// PATH
 
 	findNamedObject<wxRadioButton>(this, "ParticleEditorStagePathStandard")->Connect(
 		wxEVT_RADIOBUTTON, wxCommandEventHandler(ParticleEditor::_onPathControlsChanged), NULL, this);
@@ -380,109 +380,109 @@ void ParticleEditor::setupSettingsPages()
 	convertToSpinCtrlDouble("ParticleEditorStageCylSizeY", 0, 999, 0.1, 2);
 	convertToSpinCtrlDouble("ParticleEditorStageCylSizeZ", 0, 999, 0.1, 2);
 
-    connectSpinner("ParticleEditorStageRadialSpeed", &ParticleEditor::_onPathControlsChanged);
-    connectSpinner("ParticleEditorStageAxialSpeed", &ParticleEditor::_onPathControlsChanged);
-    connectSpinner("ParticleEditorStageSphereRadius", &ParticleEditor::_onPathControlsChanged);
-    connectSpinner("ParticleEditorStageCylSizeX", &ParticleEditor::_onPathControlsChanged);
-    connectSpinner("ParticleEditorStageCylSizeY", &ParticleEditor::_onPathControlsChanged);
-    connectSpinner("ParticleEditorStageCylSizeZ", &ParticleEditor::_onPathControlsChanged);
+	connectSpinner("ParticleEditorStageRadialSpeed", &ParticleEditor::_onPathControlsChanged);
+	connectSpinner("ParticleEditorStageAxialSpeed", &ParticleEditor::_onPathControlsChanged);
+	connectSpinner("ParticleEditorStageSphereRadius", &ParticleEditor::_onPathControlsChanged);
+	connectSpinner("ParticleEditorStageCylSizeX", &ParticleEditor::_onPathControlsChanged);
+	connectSpinner("ParticleEditorStageCylSizeY", &ParticleEditor::_onPathControlsChanged);
+	connectSpinner("ParticleEditorStageCylSizeZ", &ParticleEditor::_onPathControlsChanged);
 }
 
 void ParticleEditor::_onShaderControlsChanged(wxCommandEvent& ev)
 {
-    if (_callbacksDisabled || !_currentDef || !_selectedStageIter.IsOk()) return;
+	if (_callbacksDisabled || !_currentDef || !_selectedStageIter.IsOk()) return;
 
-    const auto& stage = _currentDef->getStage(getSelectedStageIndex());
+	const auto& stage = _currentDef->getStage(getSelectedStageIndex());
 
-    std::string material = findNamedObject<wxTextCtrl>(this, "ParticleEditorStageShader")->GetValue().ToStdString();
+	std::string material = findNamedObject<wxTextCtrl>(this, "ParticleEditorStageShader")->GetValue().ToStdString();
 
-    // Only assign a new material if it has actually changed, otherwise the whole particle gets re-shuffled
-    if (material != stage->getMaterialName())
-    {
-        stage->setMaterialName(material);
-    }
+	// Only assign a new material if it has actually changed, otherwise the whole particle gets re-shuffled
+	if (material != stage->getMaterialName())
+	{
+		stage->setMaterialName(material);
+	}
 
-    stage->setColour(string::convert<Vector4>(
+	stage->setColour(string::convert<Vector4>(
 		findNamedObject<wxTextCtrl>(this, "ParticleEditorStageColour")->GetValue().ToStdString()));
 
-    stage->setUseEntityColour(findNamedObject<wxCheckBox>(this, "ParticleEditorStageUseEntityColour")->GetValue());
-    stage->setFadeColour(string::convert<Vector4>(
+	stage->setUseEntityColour(findNamedObject<wxCheckBox>(this, "ParticleEditorStageUseEntityColour")->GetValue());
+	stage->setFadeColour(string::convert<Vector4>(
 		findNamedObject<wxTextCtrl>(this, "ParticleEditorStageFadeColour")->GetValue().ToStdString()));
 
-    stage->setFadeInFraction(getSpinButtonValueAsFloat("ParticleEditorStageFadeInFrac"));
-    stage->setFadeOutFraction(getSpinButtonValueAsFloat("ParticleEditorStageFadeOutFrac"));
-    stage->setFadeIndexFraction(getSpinButtonValueAsFloat("ParticleEditorStageFadeIdxFrac"));
-    stage->setAnimationFrames(getSpinButtonValueAsInt("ParticleEditorStageAnimFrames"));
-    stage->setAnimationRate(getSpinButtonValueAsFloat("ParticleEditorStageAnimRate"));
+	stage->setFadeInFraction(getSpinButtonValueAsFloat("ParticleEditorStageFadeInFrac"));
+	stage->setFadeOutFraction(getSpinButtonValueAsFloat("ParticleEditorStageFadeOutFrac"));
+	stage->setFadeIndexFraction(getSpinButtonValueAsFloat("ParticleEditorStageFadeIdxFrac"));
+	stage->setAnimationFrames(getSpinButtonValueAsInt("ParticleEditorStageAnimFrames"));
+	stage->setAnimationRate(getSpinButtonValueAsFloat("ParticleEditorStageAnimRate"));
 }
 
 void ParticleEditor::_onCountTimeControlsChanged(wxCommandEvent& ev)
 {
-    if (_callbacksDisabled || !_currentDef || !_selectedStageIter.IsOk()) return;
+	if (_callbacksDisabled || !_currentDef || !_selectedStageIter.IsOk()) return;
 
-    const auto& stage = _currentDef->getStage(getSelectedStageIndex());
+	const auto& stage = _currentDef->getStage(getSelectedStageIndex());
 
-    stage->setCount(getSpinButtonValueAsInt("ParticleEditorStageCount"));
-    stage->setDuration(getSpinButtonValueAsFloat("ParticleEditorStageDuration"));
-    stage->setBunching(getSpinButtonValueAsFloat("ParticleEditorStageBunching"));
-    stage->setCycles(getSpinButtonValueAsInt("ParticleEditorStageCycles"));
-    stage->setTimeOffset(getSpinButtonValueAsFloat("ParticleEditorStageTimeOffset"));
-    stage->setDeadTime(getSpinButtonValueAsFloat("ParticleEditorStageDeadTime"));
+	stage->setCount(getSpinButtonValueAsInt("ParticleEditorStageCount"));
+	stage->setDuration(getSpinButtonValueAsFloat("ParticleEditorStageDuration"));
+	stage->setBunching(getSpinButtonValueAsFloat("ParticleEditorStageBunching"));
+	stage->setCycles(getSpinButtonValueAsInt("ParticleEditorStageCycles"));
+	stage->setTimeOffset(getSpinButtonValueAsFloat("ParticleEditorStageTimeOffset"));
+	stage->setDeadTime(getSpinButtonValueAsFloat("ParticleEditorStageDeadTime"));
 }
 
 void ParticleEditor::_onDistributionControlsChanged(wxCommandEvent& ev)
 {
-    if (_callbacksDisabled || !_currentDef || !_selectedStageIter.IsOk()) return;
+	if (_callbacksDisabled || !_currentDef || !_selectedStageIter.IsOk()) return;
 
-    const auto& stage = _currentDef->getStage(getSelectedStageIndex());
+	const auto& stage = _currentDef->getStage(getSelectedStageIndex());
 
 	if (findNamedObject<wxRadioButton>(this, "ParticleEditorStageShapeRect")->GetValue())
-    {
-        stage->setDistributionType(IStageDef::DISTRIBUTION_RECT);
-    }
-    else if (findNamedObject<wxRadioButton>(this, "ParticleEditorStageShapeCyl")->GetValue())
-    {
-        stage->setDistributionType(IStageDef::DISTRIBUTION_CYLINDER);
-    }
-    else if (findNamedObject<wxRadioButton>(this, "ParticleEditorStageSpherical")->GetValue())
-    {
-        stage->setDistributionType(IStageDef::DISTRIBUTION_SPHERE);
-    }
+	{
+		stage->setDistributionType(IStageDef::DISTRIBUTION_RECT);
+	}
+	else if (findNamedObject<wxRadioButton>(this, "ParticleEditorStageShapeCyl")->GetValue())
+	{
+		stage->setDistributionType(IStageDef::DISTRIBUTION_CYLINDER);
+	}
+	else if (findNamedObject<wxRadioButton>(this, "ParticleEditorStageSpherical")->GetValue())
+	{
+		stage->setDistributionType(IStageDef::DISTRIBUTION_SPHERE);
+	}
 
-    bool useRingSize = stage->getDistributionType() != IStageDef::DISTRIBUTION_RECT;
+	bool useRingSize = stage->getDistributionType() != IStageDef::DISTRIBUTION_RECT;
 
-    findNamedObject<wxWindow>(this, "ParticleEditorStageRingSize")->Enable(useRingSize);
+	findNamedObject<wxWindow>(this, "ParticleEditorStageRingSize")->Enable(useRingSize);
 	findNamedObject<wxSlider>(this, "ParticleEditorStageRingSizeSlider")->Enable(useRingSize);
-    findNamedObject<wxStaticText>(this, "ParticleEditorStageRingSizeLabel")->Enable(useRingSize);
+	findNamedObject<wxStaticText>(this, "ParticleEditorStageRingSizeLabel")->Enable(useRingSize);
 
-    stage->setDistributionParm(0, getSpinButtonValueAsFloat("ParticleEditorStageXSize"));
-    stage->setDistributionParm(1, getSpinButtonValueAsFloat("ParticleEditorStageYSize"));
-    stage->setDistributionParm(2, getSpinButtonValueAsFloat("ParticleEditorStageZSize"));
-    stage->setDistributionParm(3, getSpinButtonValueAsFloat("ParticleEditorStageRingSize"));
+	stage->setDistributionParm(0, getSpinButtonValueAsFloat("ParticleEditorStageXSize"));
+	stage->setDistributionParm(1, getSpinButtonValueAsFloat("ParticleEditorStageYSize"));
+	stage->setDistributionParm(2, getSpinButtonValueAsFloat("ParticleEditorStageZSize"));
+	stage->setDistributionParm(3, getSpinButtonValueAsFloat("ParticleEditorStageRingSize"));
 
-    stage->setOffset(string::convert<Vector3>(
+	stage->setOffset(string::convert<Vector3>(
 		findNamedObject<wxTextCtrl>(this, "ParticleEditorStageOffset")->GetValue().ToStdString()));
 
-    stage->setRandomDistribution(
+	stage->setRandomDistribution(
 		findNamedObject<wxCheckBox>(this, "ParticleEditorStageRandomDist")->GetValue());
 }
 
 void ParticleEditor::_onDirectionControlsChanged(wxCommandEvent& ev)
 {
-    if (_callbacksDisabled || !_currentDef || !_selectedStageIter.IsOk()) return;
+	if (_callbacksDisabled || !_currentDef || !_selectedStageIter.IsOk()) return;
 
-    const auto& stage = _currentDef->getStage(getSelectedStageIndex());
+	const auto& stage = _currentDef->getStage(getSelectedStageIndex());
 
-    if (findNamedObject<wxRadioButton>(this, "ParticleEditorStageCone")->GetValue())
-    {
-        stage->setDirectionType(IStageDef::DIRECTION_CONE);
-        stage->setDirectionParm(0, getSpinButtonValueAsFloat("ParticleEditorStageConeAngle"));
-    }
-    else if (findNamedObject<wxRadioButton>(this, "ParticleEditorStageOutward")->GetValue())
-    {
-        stage->setDirectionType(IStageDef::DIRECTION_OUTWARD);
-        stage->setDirectionParm(0, getSpinButtonValueAsFloat("ParticleEditorStageUpwardBias"));
-    }
+	if (findNamedObject<wxRadioButton>(this, "ParticleEditorStageCone")->GetValue())
+	{
+		stage->setDirectionType(IStageDef::DIRECTION_CONE);
+		stage->setDirectionParm(0, getSpinButtonValueAsFloat("ParticleEditorStageConeAngle"));
+	}
+	else if (findNamedObject<wxRadioButton>(this, "ParticleEditorStageOutward")->GetValue())
+	{
+		stage->setDirectionType(IStageDef::DIRECTION_OUTWARD);
+		stage->setDirectionParm(0, getSpinButtonValueAsFloat("ParticleEditorStageUpwardBias"));
+	}
 
 	findNamedObject<wxStaticText>(this, "ParticleEditorStageConeAngleLabel")->Enable(
 		stage->getDirectionType() == IStageDef::DIRECTION_CONE);
@@ -498,29 +498,29 @@ void ParticleEditor::_onDirectionControlsChanged(wxCommandEvent& ev)
 	findNamedObject<wxSlider>(this, "ParticleEditorStageUpwardBiasSlider")->Enable(
 		stage->getDirectionType() == IStageDef::DIRECTION_OUTWARD);
 
-    if (findNamedObject<wxRadioButton>(this, "ParticleEditorStageOrientView")->GetValue())
-    {
-        stage->setOrientationType(IStageDef::ORIENTATION_VIEW);
-    }
-    else if (findNamedObject<wxRadioButton>(this, "ParticleEditorStageOrientAimed")->GetValue())
-    {
-        stage->setOrientationType(IStageDef::ORIENTATION_AIMED);
+	if (findNamedObject<wxRadioButton>(this, "ParticleEditorStageOrientView")->GetValue())
+	{
+		stage->setOrientationType(IStageDef::ORIENTATION_VIEW);
+	}
+	else if (findNamedObject<wxRadioButton>(this, "ParticleEditorStageOrientAimed")->GetValue())
+	{
+		stage->setOrientationType(IStageDef::ORIENTATION_AIMED);
 
-        stage->setOrientationParm(0, getSpinButtonValueAsInt("ParticleEditorStageTrails"));
-        stage->setOrientationParm(1, getSpinButtonValueAsFloat("ParticleEditorStageAimedTime"));
-    }
-    else if (findNamedObject<wxRadioButton>(this, "ParticleEditorStageOrientX")->GetValue())
-    {
-        stage->setOrientationType(IStageDef::ORIENTATION_X);
-    }
-    else if (findNamedObject<wxRadioButton>(this, "ParticleEditorStageOrientY")->GetValue())
-    {
-        stage->setOrientationType(IStageDef::ORIENTATION_Y);
-    }
-    else if (findNamedObject<wxRadioButton>(this, "ParticleEditorStageOrientZ")->GetValue())
-    {
-        stage->setOrientationType(IStageDef::ORIENTATION_Z);
-    }
+		stage->setOrientationParm(0, getSpinButtonValueAsInt("ParticleEditorStageTrails"));
+		stage->setOrientationParm(1, getSpinButtonValueAsFloat("ParticleEditorStageAimedTime"));
+	}
+	else if (findNamedObject<wxRadioButton>(this, "ParticleEditorStageOrientX")->GetValue())
+	{
+		stage->setOrientationType(IStageDef::ORIENTATION_X);
+	}
+	else if (findNamedObject<wxRadioButton>(this, "ParticleEditorStageOrientY")->GetValue())
+	{
+		stage->setOrientationType(IStageDef::ORIENTATION_Y);
+	}
+	else if (findNamedObject<wxRadioButton>(this, "ParticleEditorStageOrientZ")->GetValue())
+	{
+		stage->setOrientationType(IStageDef::ORIENTATION_Z);
+	}
 
 	findNamedObject<wxWindow>(this, "ParticleEditorStageTrails")->Enable(
 		stage->getOrientationType() == IStageDef::ORIENTATION_AIMED);
@@ -536,103 +536,103 @@ void ParticleEditor::_onDirectionControlsChanged(wxCommandEvent& ev)
 	findNamedObject<wxWindow>(this, "ParticleEditorStageTimeLabel")->Enable(
 		stage->getOrientationType() == IStageDef::ORIENTATION_AIMED);
 
-    stage->setInitialAngle(getSpinButtonValueAsFloat("ParticleEditorStageInitialAngle"));
+	stage->setInitialAngle(getSpinButtonValueAsFloat("ParticleEditorStageInitialAngle"));
 }
 
 void ParticleEditor::_onSizeControlsChanged(wxCommandEvent& ev)
 {
-    if (_callbacksDisabled || !_currentDef || !_selectedStageIter.IsOk()) return;
+	if (_callbacksDisabled || !_currentDef || !_selectedStageIter.IsOk()) return;
 
-    const auto& stage = _currentDef->getStage(getSelectedStageIndex());
+	const auto& stage = _currentDef->getStage(getSelectedStageIndex());
 
-    stage->getSize().setFrom(getSpinButtonValueAsFloat("ParticleEditorStageSizeFrom"));
-    stage->getSize().setTo(getSpinButtonValueAsFloat("ParticleEditorStageSizeTo"));
+	stage->getSize().setFrom(getSpinButtonValueAsFloat("ParticleEditorStageSizeFrom"));
+	stage->getSize().setTo(getSpinButtonValueAsFloat("ParticleEditorStageSizeTo"));
 
-    stage->getSpeed().setFrom(getSpinButtonValueAsFloat("ParticleEditorStageSpeedFrom"));
-    stage->getSpeed().setTo(getSpinButtonValueAsFloat("ParticleEditorStageSpeedTo"));
+	stage->getSpeed().setFrom(getSpinButtonValueAsFloat("ParticleEditorStageSpeedFrom"));
+	stage->getSpeed().setTo(getSpinButtonValueAsFloat("ParticleEditorStageSpeedTo"));
 
-    stage->getRotationSpeed().setFrom(getSpinButtonValueAsFloat("ParticleEditorStageRotationSpeedFrom"));
-    stage->getRotationSpeed().setTo(getSpinButtonValueAsFloat("ParticleEditorStageRotationSpeedTo"));
+	stage->getRotationSpeed().setFrom(getSpinButtonValueAsFloat("ParticleEditorStageRotationSpeedFrom"));
+	stage->getRotationSpeed().setTo(getSpinButtonValueAsFloat("ParticleEditorStageRotationSpeedTo"));
 
-    stage->getAspect().setFrom(getSpinButtonValueAsFloat("ParticleEditorStageAspectFrom"));
-    stage->getAspect().setTo(getSpinButtonValueAsFloat("ParticleEditorStageAspectTo"));
+	stage->getAspect().setFrom(getSpinButtonValueAsFloat("ParticleEditorStageAspectFrom"));
+	stage->getAspect().setTo(getSpinButtonValueAsFloat("ParticleEditorStageAspectTo"));
 
-    stage->setGravity(getSpinButtonValueAsFloat("ParticleEditorStageGravity"));
-    stage->setWorldGravityFlag(
+	stage->setGravity(getSpinButtonValueAsFloat("ParticleEditorStageGravity"));
+	stage->setWorldGravityFlag(
 		findNamedObject<wxCheckBox>(this, "ParticleEditorStageUseWorldGravity")->GetValue());
 
-    stage->setBoundsExpansion(getSpinButtonValueAsFloat("ParticleEditorStageBoundsExpansion"));
+	stage->setBoundsExpansion(getSpinButtonValueAsFloat("ParticleEditorStageBoundsExpansion"));
 }
 
 void ParticleEditor::_onPathControlsChanged(wxCommandEvent& ev)
 {
-    if (_callbacksDisabled || !_currentDef || !_selectedStageIter.IsOk()) return;
+	if (_callbacksDisabled || !_currentDef || !_selectedStageIter.IsOk()) return;
 
-    const auto& stage = _currentDef->getStage(getSelectedStageIndex());
+	const auto& stage = _currentDef->getStage(getSelectedStageIndex());
 
-    if (findNamedObject<wxRadioButton>(this, "ParticleEditorStagePathStandard")->GetValue())
-    {
-        stage->setCustomPathType(IStageDef::PATH_STANDARD);
-    }
-    else if (findNamedObject<wxRadioButton>(this, "ParticleEditorStagePathFlies")->GetValue())
-    {
-        stage->setCustomPathType(IStageDef::PATH_FLIES);
+	if (findNamedObject<wxRadioButton>(this, "ParticleEditorStagePathStandard")->GetValue())
+	{
+		stage->setCustomPathType(IStageDef::PATH_STANDARD);
+	}
+	else if (findNamedObject<wxRadioButton>(this, "ParticleEditorStagePathFlies")->GetValue())
+	{
+		stage->setCustomPathType(IStageDef::PATH_FLIES);
 
-        stage->setCustomPathParm(0, getSpinButtonValueAsFloat("ParticleEditorStageRadialSpeed"));
-        stage->setCustomPathParm(1, getSpinButtonValueAsFloat("ParticleEditorStageAxialSpeed"));
-        stage->setCustomPathParm(2, getSpinButtonValueAsFloat("ParticleEditorStageSphereRadius"));
-    }
-    else if (findNamedObject<wxRadioButton>(this, "ParticleEditorStagePathHelix")->GetValue())
-    {
-        stage->setCustomPathType(IStageDef::PATH_HELIX);
+		stage->setCustomPathParm(0, getSpinButtonValueAsFloat("ParticleEditorStageRadialSpeed"));
+		stage->setCustomPathParm(1, getSpinButtonValueAsFloat("ParticleEditorStageAxialSpeed"));
+		stage->setCustomPathParm(2, getSpinButtonValueAsFloat("ParticleEditorStageSphereRadius"));
+	}
+	else if (findNamedObject<wxRadioButton>(this, "ParticleEditorStagePathHelix")->GetValue())
+	{
+		stage->setCustomPathType(IStageDef::PATH_HELIX);
 
-        stage->setCustomPathParm(0, getSpinButtonValueAsFloat("ParticleEditorStageCylSizeX"));
-        stage->setCustomPathParm(1, getSpinButtonValueAsFloat("ParticleEditorStageCylSizeY"));
-        stage->setCustomPathParm(2, getSpinButtonValueAsFloat("ParticleEditorStageCylSizeZ"));
-        stage->setCustomPathParm(3, getSpinButtonValueAsFloat("ParticleEditorStageRadialSpeed"));
-        stage->setCustomPathParm(4, getSpinButtonValueAsFloat("ParticleEditorStageAxialSpeed"));
-    }
+		stage->setCustomPathParm(0, getSpinButtonValueAsFloat("ParticleEditorStageCylSizeX"));
+		stage->setCustomPathParm(1, getSpinButtonValueAsFloat("ParticleEditorStageCylSizeY"));
+		stage->setCustomPathParm(2, getSpinButtonValueAsFloat("ParticleEditorStageCylSizeZ"));
+		stage->setCustomPathParm(3, getSpinButtonValueAsFloat("ParticleEditorStageRadialSpeed"));
+		stage->setCustomPathParm(4, getSpinButtonValueAsFloat("ParticleEditorStageAxialSpeed"));
+	}
 
-    updatePathWidgetSensitivity();
+	updatePathWidgetSensitivity();
 }
 
 void ParticleEditor::_onDepthHackChanged(wxSpinDoubleEvent& ev)
 {
-    if (_callbacksDisabled || !_currentDef) return;
+	if (_callbacksDisabled || !_currentDef) return;
 
-    _currentDef->setDepthHack(getSpinButtonValueAsFloat("ParticleEditorDepthHack"));
+	_currentDef->setDepthHack(getSpinButtonValueAsFloat("ParticleEditorDepthHack"));
 }
 
 void ParticleEditor::updatePathWidgetSensitivity()
 {
-    const auto& stage = _currentDef->getStage(getSelectedStageIndex());
+	const auto& stage = _currentDef->getStage(getSelectedStageIndex());
 
-    // Sensitivity
-    bool useAnySpinner = stage->getCustomPathType() != IStageDef::PATH_STANDARD;
-    bool useFlies = stage->getCustomPathType() == IStageDef::PATH_FLIES;
+	// Sensitivity
+	bool useAnySpinner = stage->getCustomPathType() != IStageDef::PATH_STANDARD;
+	bool useFlies = stage->getCustomPathType() == IStageDef::PATH_FLIES;
 
-    findNamedObject<wxWindow>(this, "ParticleEditorStageRadialSpeedLabel")->Enable(useAnySpinner);
-    findNamedObject<wxWindow>(this, "ParticleEditorStageAxialSpeedLabel")->Enable(useAnySpinner);
+	findNamedObject<wxWindow>(this, "ParticleEditorStageRadialSpeedLabel")->Enable(useAnySpinner);
+	findNamedObject<wxWindow>(this, "ParticleEditorStageAxialSpeedLabel")->Enable(useAnySpinner);
 
-    findNamedObject<wxWindow>(this, "ParticleEditorStageRadialSpeed")->Enable(useAnySpinner);
+	findNamedObject<wxWindow>(this, "ParticleEditorStageRadialSpeed")->Enable(useAnySpinner);
 	findNamedObject<wxWindow>(this, "ParticleEditorStageRadialSpeedSlider")->Enable(useAnySpinner);
 
 	findNamedObject<wxWindow>(this, "ParticleEditorStageAxialSpeed")->Enable(useAnySpinner);
 	findNamedObject<wxWindow>(this, "ParticleEditorStageAxialSpeedSlider")->Enable(useAnySpinner);
 	
-    findNamedObject<wxWindow>(this, "ParticleEditorStageSphereRadiusLabel")->Enable(useAnySpinner && useFlies);
-    findNamedObject<wxWindow>(this, "ParticleEditorStageSphereRadius")->Enable(useAnySpinner && useFlies);
+	findNamedObject<wxWindow>(this, "ParticleEditorStageSphereRadiusLabel")->Enable(useAnySpinner && useFlies);
+	findNamedObject<wxWindow>(this, "ParticleEditorStageSphereRadius")->Enable(useAnySpinner && useFlies);
 	findNamedObject<wxWindow>(this, "ParticleEditorStageSphereRadiusSlider")->Enable(useAnySpinner && useFlies);
 	
-    findNamedObject<wxWindow>(this, "ParticleEditorStageCylSizeXLabel")->Enable(useAnySpinner && !useFlies);
-    findNamedObject<wxWindow>(this, "ParticleEditorStageCylSizeYLabel")->Enable(useAnySpinner && !useFlies);
-    findNamedObject<wxWindow>(this, "ParticleEditorStageCylSizeZLabel")->Enable(useAnySpinner && !useFlies);
-    findNamedObject<wxWindow>(this, "ParticleEditorStageCylSizeX")->Enable(useAnySpinner && !useFlies);
-    findNamedObject<wxWindow>(this, "ParticleEditorStageCylSizeY")->Enable(useAnySpinner && !useFlies);
-    findNamedObject<wxWindow>(this, "ParticleEditorStageCylSizeZ")->Enable(useAnySpinner && !useFlies);
+	findNamedObject<wxWindow>(this, "ParticleEditorStageCylSizeXLabel")->Enable(useAnySpinner && !useFlies);
+	findNamedObject<wxWindow>(this, "ParticleEditorStageCylSizeYLabel")->Enable(useAnySpinner && !useFlies);
+	findNamedObject<wxWindow>(this, "ParticleEditorStageCylSizeZLabel")->Enable(useAnySpinner && !useFlies);
+	findNamedObject<wxWindow>(this, "ParticleEditorStageCylSizeX")->Enable(useAnySpinner && !useFlies);
+	findNamedObject<wxWindow>(this, "ParticleEditorStageCylSizeY")->Enable(useAnySpinner && !useFlies);
+	findNamedObject<wxWindow>(this, "ParticleEditorStageCylSizeZ")->Enable(useAnySpinner && !useFlies);
 	findNamedObject<wxWindow>(this, "ParticleEditorStageCylSizeXSlider")->Enable(useAnySpinner && !useFlies);
-    findNamedObject<wxWindow>(this, "ParticleEditorStageCylSizeYSlider")->Enable(useAnySpinner && !useFlies);
-    findNamedObject<wxWindow>(this, "ParticleEditorStageCylSizeZSlider")->Enable(useAnySpinner && !useFlies);
+	findNamedObject<wxWindow>(this, "ParticleEditorStageCylSizeYSlider")->Enable(useAnySpinner && !useFlies);
+	findNamedObject<wxWindow>(this, "ParticleEditorStageCylSizeZSlider")->Enable(useAnySpinner && !useFlies);
 }
 
 void ParticleEditor::connectSpinner(const std::string& name, MemberMethod func)
@@ -732,40 +732,40 @@ float ParticleEditor::getSpinButtonValueAsFloat(const std::string& widgetName)
 int ParticleEditor::getSpinButtonValueAsInt(const std::string& widgetName)
 {
 	wxSpinCtrl* sb = findNamedObject<wxSpinCtrl>(this, widgetName);
-    return sb->GetValue();
+	return sb->GetValue();
 }
 
 void ParticleEditor::activateEditPanels()
 {
 	findNamedObject<wxStaticText>(this, "ParticleEditorStageLabel")->Enable(true);
-    findNamedObject<wxStaticText>(this, "ParticleEditorStageSettingsLabel")->Enable(true);
-    
-    activateSettingsEditPanels();
+	findNamedObject<wxStaticText>(this, "ParticleEditorStageSettingsLabel")->Enable(true);
+	
+	activateSettingsEditPanels();
 }
 
 void ParticleEditor::deactivateEditPanels()
 {
 	findNamedObject<wxStaticText>(this, "ParticleEditorStageLabel")->Enable(false);
-    findNamedObject<wxPanel>(this, "ParticleEditorStagePanel")->Enable(false);
+	findNamedObject<wxPanel>(this, "ParticleEditorStagePanel")->Enable(false);
 
-    deactivateSettingsEditPanels();
+	deactivateSettingsEditPanels();
 }
 
 void ParticleEditor::activateSettingsEditPanels()
 {
 	findNamedObject<wxPanel>(this, "ParticleEditorStagePanel")->Enable(true);
-    findNamedObject<wxNotebook>(this, "ParticleEditorSettingsNotebook")->Enable(true);
+	findNamedObject<wxNotebook>(this, "ParticleEditorSettingsNotebook")->Enable(true);
 }
 
 void ParticleEditor::deactivateSettingsEditPanels()
 {
-    findNamedObject<wxStaticText>(this, "ParticleEditorStageSettingsLabel")->Enable(false);
-    findNamedObject<wxNotebook>(this, "ParticleEditorSettingsNotebook")->Enable(false);
+	findNamedObject<wxStaticText>(this, "ParticleEditorStageSettingsLabel")->Enable(false);
+	findNamedObject<wxNotebook>(this, "ParticleEditorSettingsNotebook")->Enable(false);
 }
 
 std::size_t ParticleEditor::getSelectedStageIndex()
 {
-    // Get the selection and store it
+	// Get the selection and store it
 	wxDataViewItem item = _stageView->GetSelection();
 
 	if (item.IsOk())
@@ -781,7 +781,7 @@ std::size_t ParticleEditor::getSelectedStageIndex()
 		return value;
 	}
 
-    throw std::logic_error("Nothing selected, cannot get selected stage index.");
+	throw std::logic_error("Nothing selected, cannot get selected stage index.");
 }
 
 void ParticleEditor::selectStage(std::size_t index)
@@ -793,21 +793,21 @@ void ParticleEditor::selectStage(std::size_t index)
 
 void ParticleEditor::setSaveButtonsSensitivity(bool sensitive)
 {
-    findNamedObject<wxButton>(this, "ParticleEditorSaveDefButton")->Enable(sensitive);
-    findNamedObject<wxButton>(this, "ParticleEditorCopyDefButton")->Enable(sensitive);
+	findNamedObject<wxButton>(this, "ParticleEditorSaveDefButton")->Enable(sensitive);
+	findNamedObject<wxButton>(this, "ParticleEditorCopyDefButton")->Enable(sensitive);
 }
 
 std::string ParticleEditor::getParticleNameFromIter(const wxDataViewItem& item)
 {
-    if (!item.IsOk())
-    {
-        return "";
-    }
-    else
-    {
+	if (!item.IsOk())
+	{
+		return "";
+	}
+	else
+	{
 		wxutil::TreeModel::Row row(item, *_defList);
-        return row[DEF_COLS().name];
-    }
+		return row[DEF_COLS().name];
+	}
 }
 
 void ParticleEditor::_onDefSelChanged(wxDataViewEvent& ev)
@@ -817,47 +817,47 @@ void ParticleEditor::_onDefSelChanged(wxDataViewEvent& ev)
 
 void ParticleEditor::handleDefSelChanged()
 {
-    // Get the selection and store it
-    wxDataViewItem item = _defView->GetSelection();
+	// Get the selection and store it
+	wxDataViewItem item = _defView->GetSelection();
 
-    if (!promptUserToSaveChanges())
-    {
-        // Revert the selection (re-enter this function) and cancel the operation
-        _defView->Select(_selectedDefIter);
-        return;
-    }
+	if (!promptUserToSaveChanges())
+	{
+		// Revert the selection (re-enter this function) and cancel the operation
+		_defView->Select(_selectedDefIter);
+		return;
+	}
 
-    if (_selectedDefIter.IsOk() && item.IsOk() && _selectedDefIter == item)
-    {
-        return; // nothing to do so far
-    }
+	if (_selectedDefIter.IsOk() && item.IsOk() && _selectedDefIter == item)
+	{
+		return; // nothing to do so far
+	}
 
-    // Selected particle changed, free the existing edit particle
-    releaseEditParticle();
+	// Selected particle changed, free the existing edit particle
+	releaseEditParticle();
 
-    // Store new selection
-    _selectedDefIter = item;
+	// Store new selection
+	_selectedDefIter = item;
 
-    if (_selectedDefIter.IsOk())
-    {
-        // Copy the particle def and set it up for editing
-        setupEditParticle();
+	if (_selectedDefIter.IsOk())
+	{
+		// Copy the particle def and set it up for editing
+		setupEditParticle();
 
-        activateEditPanels();
-        setSaveButtonsSensitivity(true);
+		activateEditPanels();
+		setSaveButtonsSensitivity(true);
 
-        // Load particle data
-        updateWidgetsFromParticle();
-    }
-    else
-    {
-        _preview->ClearPreview();
+		// Load particle data
+		updateWidgetsFromParticle();
+	}
+	else
+	{
+		_preview->ClearPreview();
 		_stageView->UnselectAll();
-        _selectedStageIter = wxDataViewItem();
-        _stageList->Clear();
-        deactivateEditPanels();
-        setSaveButtonsSensitivity(false);
-    }
+		_selectedStageIter = wxDataViewItem();
+		_stageList->Clear();
+		deactivateEditPanels();
+		setSaveButtonsSensitivity(false);
+	}
 }
 
 void ParticleEditor::_onStageSelChanged(wxDataViewEvent& ev)
@@ -867,156 +867,156 @@ void ParticleEditor::_onStageSelChanged(wxDataViewEvent& ev)
 
 void ParticleEditor::handleStageSelChanged()
 {
-    // Get the selection and store it
-    wxDataViewItem item = _stageView->GetSelection();
+	// Get the selection and store it
+	wxDataViewItem item = _stageView->GetSelection();
 
-    if (_selectedStageIter && item.IsOk() && _selectedStageIter == item)
-    {
-        return; // nothing to do so far
-    }
+	if (_selectedStageIter && item.IsOk() && _selectedStageIter == item)
+	{
+		return; // nothing to do so far
+	}
 
-    _selectedStageIter = item;
+	_selectedStageIter = item;
 
-    bool isStageSelected = false;
+	bool isStageSelected = false;
 
-    if (_selectedStageIter)
-    {
-        activateSettingsEditPanels();
+	if (_selectedStageIter)
+	{
+		activateSettingsEditPanels();
 
-        // Activate delete, move and toggle buttons
-        isStageSelected = true;
+		// Activate delete, move and toggle buttons
+		isStageSelected = true;
 
 		wxutil::TreeModel::Row row(_selectedStageIter, *_stageList);
-        std::size_t index = row[STAGE_COLS().index].getInteger();
+		std::size_t index = row[STAGE_COLS().index].getInteger();
 
 		findNamedObject<wxButton>(this, "ParticleEditorMoveUpStageButton")->Enable(index > 0);
 		findNamedObject<wxButton>(this, "ParticleEditorMoveDownStageButton")->Enable(index < _currentDef->getNumStages() - 1);
-    }
-    else
-    {
-        // No valid selection
-        deactivateSettingsEditPanels();
+	}
+	else
+	{
+		// No valid selection
+		deactivateSettingsEditPanels();
 
-        // Deactivate delete, move and toggle buttons
-        isStageSelected = false;
+		// Deactivate delete, move and toggle buttons
+		isStageSelected = false;
 
 		findNamedObject<wxButton>(this, "ParticleEditorMoveUpStageButton")->Enable(false);
 		findNamedObject<wxButton>(this, "ParticleEditorMoveDownStageButton")->Enable(false);
-    }
+	}
 
 	findNamedObject<wxButton>(this, "ParticleEditorRemoveStageButton")->Enable(isStageSelected);
 	findNamedObject<wxButton>(this, "ParticleEditorToggleStageButton")->Enable(isStageSelected);
 	findNamedObject<wxButton>(this, "ParticleEditorDuplicateStageButton")->Enable(isStageSelected);
 
-    // Reload the current stage data
-    updateWidgetsFromStage();
+	// Reload the current stage data
+	updateWidgetsFromStage();
 }
 
 void ParticleEditor::_onAddStage(wxCommandEvent& ev)
 {
-    if (!_currentDef) return;
+	if (!_currentDef) return;
 
-    // Add a new stage at the end of the list
-    std::size_t newStage = _currentDef->addParticleStage();
+	// Add a new stage at the end of the list
+	std::size_t newStage = _currentDef->addParticleStage();
 
-    reloadStageList();
+	reloadStageList();
 
-    selectStage(newStage);
+	selectStage(newStage);
 }
 
 void ParticleEditor::_onRemoveStage(wxCommandEvent& ev)
 {
-    if (!_currentDef || !_selectedStageIter.IsOk()) return;
+	if (!_currentDef || !_selectedStageIter.IsOk()) return;
 
-    _currentDef->removeParticleStage(getSelectedStageIndex());
+	_currentDef->removeParticleStage(getSelectedStageIndex());
 
-    reloadStageList();
+	reloadStageList();
 }
 
 void ParticleEditor::_onToggleStage(wxCommandEvent& ev)
 {
-    if (!_currentDef || !_selectedStageIter.IsOk()) return;
+	if (!_currentDef || !_selectedStageIter.IsOk()) return;
 
-    std::size_t index = getSelectedStageIndex();
+	std::size_t index = getSelectedStageIndex();
 
-    const auto& stage = _currentDef->getStage(index);
+	const auto& stage = _currentDef->getStage(index);
 
-    stage->setVisible(!stage->isVisible());
+	stage->setVisible(!stage->isVisible());
 
-    reloadStageList();
-    selectStage(index);
+	reloadStageList();
+	selectStage(index);
 }
 
 void ParticleEditor::_onMoveUpStage(wxCommandEvent& ev)
 {
-    if (!_currentDef) return;
+	if (!_currentDef) return;
 
-    std::size_t selIndex = getSelectedStageIndex();
-    assert(selIndex > 0);
+	std::size_t selIndex = getSelectedStageIndex();
+	assert(selIndex > 0);
 
-    _currentDef->swapParticleStages(selIndex, selIndex - 1);
+	_currentDef->swapParticleStages(selIndex, selIndex - 1);
 
-    reloadStageList();
-    selectStage(selIndex - 1);
+	reloadStageList();
+	selectStage(selIndex - 1);
 }
 
 void ParticleEditor::_onMoveDownStage(wxCommandEvent& ev)
 {
-    if (!_currentDef) return;
+	if (!_currentDef) return;
 
-    std::size_t selIndex = getSelectedStageIndex();
-    assert(_currentDef->getNumStages() > 0 && selIndex < _currentDef->getNumStages() - 1);
+	std::size_t selIndex = getSelectedStageIndex();
+	assert(_currentDef->getNumStages() > 0 && selIndex < _currentDef->getNumStages() - 1);
 
-    _currentDef->swapParticleStages(selIndex, selIndex + 1);
+	_currentDef->swapParticleStages(selIndex, selIndex + 1);
 
-    reloadStageList();
-    selectStage(selIndex + 1);
+	reloadStageList();
+	selectStage(selIndex + 1);
 }
 
 void ParticleEditor::_onDuplicateStage(wxCommandEvent& ev)
 {
-    if (!_currentDef) return;
+	if (!_currentDef) return;
 
-    std::size_t srcStageIndex = getSelectedStageIndex();
-    std::size_t newStageIndex = _currentDef->addParticleStage();
+	std::size_t srcStageIndex = getSelectedStageIndex();
+	std::size_t newStageIndex = _currentDef->addParticleStage();
 
-    const auto& srcStage = _currentDef->getStage(srcStageIndex);
-    const auto& newStage = _currentDef->getStage(newStageIndex);
+	const auto& srcStage = _currentDef->getStage(srcStageIndex);
+	const auto& newStage = _currentDef->getStage(newStageIndex);
 
-    newStage->copyFrom(srcStage);
+	newStage->copyFrom(srcStage);
 
-    reloadStageList();
+	reloadStageList();
 
-    selectStage(newStageIndex);
+	selectStage(newStageIndex);
 }
 
 void ParticleEditor::updateWidgetsFromParticle()
 {
-    if (!_currentDef)
-    {
+	if (!_currentDef)
+	{
 		findNamedObject<wxStaticText>(this, "ParticleEditorSaveNote")->SetLabel("");
-        return;
-    }
+		return;
+	}
 
-    // Load stages
-    reloadStageList();
+	// Load stages
+	reloadStageList();
 
-    _callbacksDisabled = true;
+	_callbacksDisabled = true;
 
-    // Update depth hack
+	// Update depth hack
 	findNamedObject<wxSpinCtrlDouble>(this, "ParticleEditorDepthHack")->SetValue(_currentDef->getDepthHack());
 
-    _callbacksDisabled = false;
+	_callbacksDisabled = false;
 
-    // Load stage data into controls
-    updateWidgetsFromStage();
+	// Load stage data into controls
+	updateWidgetsFromStage();
 
-    // Update outfile label
-    std::string origName = getParticleNameFromIter(_selectedDefIter);
-    auto origDef = GlobalParticlesManager().getDefByName(origName);
+	// Update outfile label
+	std::string origName = getParticleNameFromIter(_selectedDefIter);
+	auto origDef = GlobalParticlesManager().getDefByName(origName);
 
-    fs::path outFile = GlobalGameManager().getModPath();
-    outFile /= origDef->getBlockSyntax().fileInfo.fullPath();
+	fs::path outFile = GlobalGameManager().getModPath();
+	outFile /= origDef->getBlockSyntax().fileInfo.fullPath();
 
 	findNamedObject<wxStaticText>(this, "ParticleEditorSaveNote")->SetLabelMarkup(
 		fmt::format(_("Note: changes will be written to the file <i>{0}</i>"), outFile.string()));
@@ -1024,27 +1024,27 @@ void ParticleEditor::updateWidgetsFromParticle()
 
 void ParticleEditor::reloadStageList()
 {
-    if (!_currentDef) return;
+	if (!_currentDef) return;
 
-    // Load stages
+	// Load stages
 	_stageView->UnselectAll();
-    _stageList->Clear();
-    _selectedStageIter = wxDataViewItem();
+	_stageList->Clear();
+	_selectedStageIter = wxDataViewItem();
 
-    for (std::size_t i = 0; i < _currentDef->getNumStages(); ++i)
-    {
-        const auto& stage = _currentDef->getStage(i);
+	for (std::size_t i = 0; i < _currentDef->getNumStages(); ++i)
+	{
+		const auto& stage = _currentDef->getStage(i);
 
-        wxutil::TreeModel::Row row = _stageList->AddItem();
+		wxutil::TreeModel::Row row = _stageList->AddItem();
 
 		wxDataViewItemAttr colour;
 		colour.SetColour(stage->isVisible() ? wxColour(0, 0, 0) : wxColour(127, 127, 127));
 
-        row[STAGE_COLS().name] = fmt::format("Stage {0}", static_cast<int>(i));
+		row[STAGE_COLS().name] = fmt::format("Stage {0}", static_cast<int>(i));
 		row[STAGE_COLS().name].setAttr(colour);
 
-        row[STAGE_COLS().index] = static_cast<int>(i);
-        row[STAGE_COLS().visible] = true;
+		row[STAGE_COLS().index] = static_cast<int>(i);
+		row[STAGE_COLS().visible] = true;
 
 		row.SendItemAdded();
 
@@ -1054,7 +1054,7 @@ void ParticleEditor::reloadStageList()
 			_stageView->Select(row.getItem());
 			handleStageSelChanged();
 		}
-    }
+	}
 }
 
 void ParticleEditor::setSpinCtrlValue(const std::string& name, double value)
@@ -1088,21 +1088,21 @@ void ParticleEditor::setSpinCtrlValue(const std::string& name, double value)
 
 void ParticleEditor::updateWidgetsFromStage()
 {
-    if (!_currentDef || !_selectedStageIter.IsOk()) return;
+	if (!_currentDef || !_selectedStageIter.IsOk()) return;
 
-    _callbacksDisabled = true;
+	_callbacksDisabled = true;
 
-    const auto& stage = _currentDef->getStage(getSelectedStageIndex());
+	const auto& stage = _currentDef->getStage(getSelectedStageIndex());
 
 	findNamedObject<wxTextCtrl>(this, "ParticleEditorStageShader")->SetValue(stage->getMaterialName());
 
-    const Vector4& colour = stage->getColour();
+	const Vector4& colour = stage->getColour();
 	findNamedObject<wxTextCtrl>(this, "ParticleEditorStageColour")->SetValue(
-        fmt::format("{:.3f} {:.3f} {:.3f} {:.3f}", colour.x(), colour.y(), colour.z(), colour.w()));
+		fmt::format("{:.3f} {:.3f} {:.3f} {:.3f}", colour.x(), colour.y(), colour.z(), colour.w()));
 
 	findNamedObject<wxCheckBox>(this, "ParticleEditorStageUseEntityColour")->SetValue(stage->getUseEntityColour());
 
-    const Vector4& fadeColour = stage->getFadeColour();
+	const Vector4& fadeColour = stage->getFadeColour();
 
 	findNamedObject<wxTextCtrl>(this, "ParticleEditorStageFadeColour")->SetValue(
 		fmt::format("{:.3f} {:.3f} {:.3f} {:.3f}", fadeColour.x(), fadeColour.y(), fadeColour.z(), fadeColour.w()));
@@ -1120,28 +1120,28 @@ void ParticleEditor::updateWidgetsFromStage()
 	setSpinCtrlValue("ParticleEditorStageTimeOffset", stage->getTimeOffset());
 	setSpinCtrlValue("ParticleEditorStageDeadTime", stage->getDeadTime());
 
-    // DISTRIBUTION
+	// DISTRIBUTION
 
-    bool useRingSize = false;
+	bool useRingSize = false;
 
-    switch (stage->getDistributionType())
-    {
-    case IStageDef::DISTRIBUTION_RECT:
-        findNamedObject<wxRadioButton>(this, "ParticleEditorStageShapeRect")->SetValue(true);
-        break;
-    case IStageDef::DISTRIBUTION_CYLINDER:
+	switch (stage->getDistributionType())
+	{
+	case IStageDef::DISTRIBUTION_RECT:
+		findNamedObject<wxRadioButton>(this, "ParticleEditorStageShapeRect")->SetValue(true);
+		break;
+	case IStageDef::DISTRIBUTION_CYLINDER:
 		findNamedObject<wxRadioButton>(this, "ParticleEditorStageShapeCyl")->SetValue(true);
-        useRingSize = true;
-        break;
-    case IStageDef::DISTRIBUTION_SPHERE:
+		useRingSize = true;
+		break;
+	case IStageDef::DISTRIBUTION_SPHERE:
 		findNamedObject<wxRadioButton>(this, "ParticleEditorStageSpherical")->SetValue(true);
-        useRingSize = true;
-        break;
-    };
+		useRingSize = true;
+		break;
+	};
 
-    findNamedObject<wxWindow>(this, "ParticleEditorStageRingSize")->Enable(useRingSize);
+	findNamedObject<wxWindow>(this, "ParticleEditorStageRingSize")->Enable(useRingSize);
 	findNamedObject<wxWindow>(this, "ParticleEditorStageRingSizeSlider")->Enable(useRingSize);
-    findNamedObject<wxWindow>(this, "ParticleEditorStageRingSizeLabel")->Enable(useRingSize);
+	findNamedObject<wxWindow>(this, "ParticleEditorStageRingSizeLabel")->Enable(useRingSize);
 
 	setSpinCtrlValue("ParticleEditorStageXSize", stage->getDistributionParm(0));
 	setSpinCtrlValue("ParticleEditorStageYSize", stage->getDistributionParm(1));
@@ -1151,49 +1151,49 @@ void ParticleEditor::updateWidgetsFromStage()
 	findNamedObject<wxTextCtrl>(this, "ParticleEditorStageOffset")->SetValue(string::to_string(stage->getOffset()));
 	findNamedObject<wxCheckBox>(this, "ParticleEditorStageRandomDist")->SetValue(stage->getRandomDistribution());
 
-    // DIRECTION / ORIENTATION
+	// DIRECTION / ORIENTATION
 
-    switch (stage->getDirectionType())
-    {
-    case IStageDef::DIRECTION_CONE:
+	switch (stage->getDirectionType())
+	{
+	case IStageDef::DIRECTION_CONE:
 		findNamedObject<wxRadioButton>(this, "ParticleEditorStageCone")->SetValue(true);
 		setSpinCtrlValue("ParticleEditorStageConeAngle", stage->getDirectionParm(0));
-        break;
-    case IStageDef::DIRECTION_OUTWARD:
-        findNamedObject<wxRadioButton>(this, "ParticleEditorStageOutward")->SetValue(true);
+		break;
+	case IStageDef::DIRECTION_OUTWARD:
+		findNamedObject<wxRadioButton>(this, "ParticleEditorStageOutward")->SetValue(true);
 		setSpinCtrlValue("ParticleEditorStageUpwardBias", stage->getDirectionParm(0));
-        break;
-    };
+		break;
+	};
 
 	findNamedObject<wxWindow>(this, "ParticleEditorStageConeAngle")->Enable(stage->getDirectionType() == IStageDef::DIRECTION_CONE);
 	findNamedObject<wxWindow>(this, "ParticleEditorStageConeAngleSlider")->Enable(stage->getDirectionType() == IStageDef::DIRECTION_CONE);
 	findNamedObject<wxWindow>(this, "ParticleEditorStageConeAngleLabel")->Enable(stage->getDirectionType() == IStageDef::DIRECTION_CONE);
 
 	findNamedObject<wxWindow>(this, "ParticleEditorStageUpwardBias")->Enable(stage->getDirectionType() == IStageDef::DIRECTION_OUTWARD);
-    findNamedObject<wxWindow>(this, "ParticleEditorStageUpwardBiasSlider")->Enable(stage->getDirectionType() == IStageDef::DIRECTION_OUTWARD);
+	findNamedObject<wxWindow>(this, "ParticleEditorStageUpwardBiasSlider")->Enable(stage->getDirectionType() == IStageDef::DIRECTION_OUTWARD);
 	findNamedObject<wxWindow>(this, "ParticleEditorStageUpwardBiasLabel")->Enable(stage->getDirectionType() == IStageDef::DIRECTION_OUTWARD);
 	
-    // Orientation Type
-    switch (stage->getOrientationType())
-    {
-    case IStageDef::ORIENTATION_VIEW:
+	// Orientation Type
+	switch (stage->getOrientationType())
+	{
+	case IStageDef::ORIENTATION_VIEW:
 		findNamedObject<wxRadioButton>(this, "ParticleEditorStageOrientView")->SetValue(true);
-        break;
-    case IStageDef::ORIENTATION_AIMED:
+		break;
+	case IStageDef::ORIENTATION_AIMED:
 		findNamedObject<wxRadioButton>(this, "ParticleEditorStageOrientAimed")->SetValue(true);
 		setSpinCtrlValue("ParticleEditorStageTrails", stage->getOrientationParm(0));
 		setSpinCtrlValue("ParticleEditorStageAimedTime", stage->getOrientationParm(1));
-        break;
-    case IStageDef::ORIENTATION_X:
+		break;
+	case IStageDef::ORIENTATION_X:
 		findNamedObject<wxRadioButton>(this, "ParticleEditorStageOrientX")->SetValue(true);
-        break;
-    case IStageDef::ORIENTATION_Y:
+		break;
+	case IStageDef::ORIENTATION_Y:
 		findNamedObject<wxRadioButton>(this, "ParticleEditorStageOrientY")->SetValue(true);
-        break;
-    case IStageDef::ORIENTATION_Z:
+		break;
+	case IStageDef::ORIENTATION_Z:
 		findNamedObject<wxRadioButton>(this, "ParticleEditorStageOrientZ")->SetValue(true);
-        break;
-    };
+		break;
+	};
 
 	findNamedObject<wxWindow>(this, "ParticleEditorStageTrails")->Enable(
 		stage->getOrientationType() == IStageDef::ORIENTATION_AIMED);
@@ -1211,7 +1211,7 @@ void ParticleEditor::updateWidgetsFromStage()
 
 	setSpinCtrlValue("ParticleEditorStageInitialAngle", stage->getInitialAngle());
 
-    // SIZE / SPEED / ASPECT
+	// SIZE / SPEED / ASPECT
 
 	setSpinCtrlValue("ParticleEditorStageSizeFrom", stage->getSize().getFrom());
 	setSpinCtrlValue("ParticleEditorStageSizeTo", stage->getSize().getTo());
@@ -1230,21 +1230,21 @@ void ParticleEditor::updateWidgetsFromStage()
 
 	setSpinCtrlValue("ParticleEditorStageBoundsExpansion", stage->getBoundsExpansion());
 
-    // PATH
+	// PATH
 
-    switch (stage->getCustomPathType())
-    {
-    case IStageDef::PATH_STANDARD:
+	switch (stage->getCustomPathType())
+	{
+	case IStageDef::PATH_STANDARD:
 		findNamedObject<wxRadioButton>(this, "ParticleEditorStagePathStandard")->SetValue(true);
-        break;
-    case IStageDef::PATH_FLIES:
+		break;
+	case IStageDef::PATH_FLIES:
 		findNamedObject<wxRadioButton>(this, "ParticleEditorStagePathFlies")->SetValue(true);
 
 		setSpinCtrlValue("ParticleEditorStageRadialSpeed", stage->getCustomPathParm(0));
 		setSpinCtrlValue("ParticleEditorStageAxialSpeed", stage->getCustomPathParm(1));
 		setSpinCtrlValue("ParticleEditorStageSphereRadius", stage->getCustomPathParm(2));
-        break;
-    case IStageDef::PATH_HELIX:
+		break;
+	case IStageDef::PATH_HELIX:
 		findNamedObject<wxRadioButton>(this, "ParticleEditorStagePathHelix")->SetValue(true);
 
 		setSpinCtrlValue("ParticleEditorStageRadialSpeed", stage->getCustomPathParm(3));
@@ -1253,85 +1253,85 @@ void ParticleEditor::updateWidgetsFromStage()
 		setSpinCtrlValue("ParticleEditorStageCylSizeX", stage->getCustomPathParm(0));
 		setSpinCtrlValue("ParticleEditorStageCylSizeY", stage->getCustomPathParm(1));
 		setSpinCtrlValue("ParticleEditorStageCylSizeZ", stage->getCustomPathParm(2));
-        break;
-    default:
-        rWarning() << "This custom particle path type is not supported." << std::endl;
-        break;
-    };
+		break;
+	default:
+		rWarning() << "This custom particle path type is not supported." << std::endl;
+		break;
+	};
 
-    updatePathWidgetSensitivity();
+	updatePathWidgetSensitivity();
 
-    _callbacksDisabled = false;
+	_callbacksDisabled = false;
 }
 
 void ParticleEditor::setupEditParticle()
 {
-    wxDataViewItem item = _defView->GetSelection();
-    if (!item.IsOk()) return;
+	wxDataViewItem item = _defView->GetSelection();
+	if (!item.IsOk()) return;
 
-    // Get the def for the selected particle system if it exists
-    std::string selectedName = getParticleNameFromIter(item);
-    IParticleDef::Ptr def = GlobalParticlesManager().getDefByName(selectedName);
-    if (!def)
-    {
-        _preview->ClearPreview();
-        return;
-    }
+	// Get the def for the selected particle system if it exists
+	std::string selectedName = getParticleNameFromIter(item);
+	IParticleDef::Ptr def = GlobalParticlesManager().getDefByName(selectedName);
+	if (!def)
+	{
+		_preview->ClearPreview();
+		return;
+	}
 
-    // Generate a temporary name for this particle, and instantiate a copy
-    std::string temporaryParticleName = selectedName + EDIT_SUFFIX;
+	// Generate a temporary name for this particle, and instantiate a copy
+	std::string temporaryParticleName = selectedName + EDIT_SUFFIX;
 
-    _currentDef = GlobalParticlesManager().findOrInsertParticleDef(temporaryParticleName);
-    // Set the edit particle to an empty file info, it will be filled on saving
-    _currentDef->setFileInfo(vfs::FileInfo());
+	_currentDef = GlobalParticlesManager().findOrInsertParticleDef(temporaryParticleName);
+	// Set the edit particle to an empty file info, it will be filled on saving
+	_currentDef->setFileInfo(vfs::FileInfo());
 
-    _currentDef->copyFrom(def);
+	_currentDef->copyFrom(def);
 
-    // Point the preview to this temporary particle def
-    _preview->SetPreviewDeclName(_currentDef->getDeclName());
+	// Point the preview to this temporary particle def
+	_preview->SetPreviewDeclName(_currentDef->getDeclName());
 }
 
 void ParticleEditor::releaseEditParticle()
 {
-    if (_currentDef && string::ends_with(_currentDef->getDeclName(), EDIT_SUFFIX))
-    {
-        GlobalParticlesManager().removeParticleDef(_currentDef->getDeclName());
-    }
+	if (_currentDef && string::ends_with(_currentDef->getDeclName(), EDIT_SUFFIX))
+	{
+		GlobalParticlesManager().removeParticleDef(_currentDef->getDeclName());
+	}
 
-    _currentDef.reset();
+	_currentDef.reset();
 }
 
 bool ParticleEditor::particleHasUnsavedChanges()
 {
-    if (_selectedDefIter && _currentDef)
-    {
-        // Particle selection changed, check if we have any unsaved changes
-        std::string origName = getParticleNameFromIter(_selectedDefIter);
+	if (_selectedDefIter && _currentDef)
+	{
+		// Particle selection changed, check if we have any unsaved changes
+		std::string origName = getParticleNameFromIter(_selectedDefIter);
 
-        IParticleDef::Ptr origDef = GlobalParticlesManager().getDefByName(origName);
+		IParticleDef::Ptr origDef = GlobalParticlesManager().getDefByName(origName);
 
-        if (!origDef || !_currentDef->isEqualTo(origDef))
-        {
-            return true;
-        }
-    }
-    return false;
+		if (!origDef || !_currentDef->isEqualTo(origDef))
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 IDialog::Result ParticleEditor::askForSave()
 {
-    // Get the original particle name
-    std::string origName = getParticleNameFromIter(_selectedDefIter);
+	// Get the original particle name
+	std::string origName = getParticleNameFromIter(_selectedDefIter);
 
-    // Does not make sense to save a null particle
-    assert(!origName.empty());
+	// Does not make sense to save a null particle
+	assert(!origName.empty());
 
-    // The particle we're editing has been changed from the saved one
-    wxutil::Messagebox box(_("Save Changes"),
-        fmt::format(_("Do you want to save the changes\nyou made to the particle {0}?"), origName),
-        IDialog::MESSAGE_SAVECONFIRMATION);
+	// The particle we're editing has been changed from the saved one
+	wxutil::Messagebox box(_("Save Changes"),
+		fmt::format(_("Do you want to save the changes\nyou made to the particle {0}?"), origName),
+		IDialog::MESSAGE_SAVECONFIRMATION);
 
-    return box.run();
+	return box.run();
 }
 
 void ParticleEditor::_onSaveParticle(wxCommandEvent& ev)
@@ -1341,272 +1341,272 @@ void ParticleEditor::_onSaveParticle(wxCommandEvent& ev)
 
 bool ParticleEditor::saveCurrentParticle()
 {
-    // Get the original particle name
-    std::string origName = getParticleNameFromIter(_selectedDefIter);
+	// Get the original particle name
+	std::string origName = getParticleNameFromIter(_selectedDefIter);
 
-    IParticleDef::Ptr origDef = GlobalParticlesManager().getDefByName(origName);
+	IParticleDef::Ptr origDef = GlobalParticlesManager().getDefByName(origName);
 
-    // This should really succeed, we can't have non-existing particles selected
-    // in the treeview
-    assert(origDef);
+	// This should really succeed, we can't have non-existing particles selected
+	// in the treeview
+	assert(origDef);
 
-    // Write the changes from the working copy into the actual instance
-    origDef->copyFrom(_currentDef);
+	// Write the changes from the working copy into the actual instance
+	origDef->copyFrom(_currentDef);
 
-    // Write changes to disk, and return the result
-    try
-    {
-        GlobalParticlesManager().saveParticleDef(origDef->getDeclName());
-        return true;
-    }
-    catch (std::runtime_error& err)
-    {
-        std::string errMsg = fmt::format(_("Error saving particle definition:\n{0}"), err.what());
+	// Write changes to disk, and return the result
+	try
+	{
+		GlobalParticlesManager().saveParticleDef(origDef->getDeclName());
+		return true;
+	}
+	catch (std::runtime_error& err)
+	{
+		std::string errMsg = fmt::format(_("Error saving particle definition:\n{0}"), err.what());
 
-        rError() << errMsg << std::endl;
+		rError() << errMsg << std::endl;
 
-        wxutil::Messagebox::ShowError(errMsg, this);
+		wxutil::Messagebox::ShowError(errMsg, this);
 
-        return false;
-    }
+		return false;
+	}
 }
 
 int ParticleEditor::ShowModal()
 {
 	// Restore the position
-    _windowPosition.applyPosition();
+	_windowPosition.applyPosition();
 
 	int returnCode = DialogBase::ShowModal();
 
 	// Tell the position tracker to save the information
-    _windowPosition.saveToPath(RKEY_WINDOW_STATE);
+	_windowPosition.saveToPath(RKEY_WINDOW_STATE);
 
-    // Free the edit particle before hiding this dialog
-    releaseEditParticle();
+	// Free the edit particle before hiding this dialog
+	releaseEditParticle();
 
 	return returnCode;
 }
 
 void ParticleEditor::_onClose(wxCommandEvent& ev)
 {
-    if (!promptUserToSaveChanges(false)) return; // action not allowed or cancelled
+	if (!promptUserToSaveChanges(false)) return; // action not allowed or cancelled
 
-    // Close the window
-    EndModal(wxID_CLOSE);
+	// Close the window
+	EndModal(wxID_CLOSE);
 }
 
 bool ParticleEditor::defSelectionHasChanged()
 {
-    // Check if the selection has changed
-    wxDataViewItem item = _defView->GetSelection();
+	// Check if the selection has changed
+	wxDataViewItem item = _defView->GetSelection();
 
-    bool changed;
-    if (!_selectedDefIter.IsOk())
-    {
-        changed = item.IsOk();
-    }
-    else if (!item.IsOk()) // _selectedDefIter is valid
-    {
-        changed = true;
-    }
-    else // both iter and _selectedDefIter are valid
-    {
-        changed = (_selectedDefIter != item);
-    }
+	bool changed;
+	if (!_selectedDefIter.IsOk())
+	{
+		changed = item.IsOk();
+	}
+	else if (!item.IsOk()) // _selectedDefIter is valid
+	{
+		changed = true;
+	}
+	else // both iter and _selectedDefIter are valid
+	{
+		changed = (_selectedDefIter != item);
+	}
 
-    return changed;
+	return changed;
 }
 
 bool ParticleEditor::promptUserToSaveChanges(bool requireSelectionChange)
 {
-    // Do not prompt if we are already in the middle of a save operation (which
-    // currently results in several selection changes that will trigger this
-    // method).
-    if (_saveInProgress) return true;
+	// Do not prompt if we are already in the middle of a save operation (which
+	// currently results in several selection changes that will trigger this
+	// method).
+	if (_saveInProgress) return true;
 
-    // On close requests we don't require the selection to have changed
-    if ((!requireSelectionChange || defSelectionHasChanged()) && particleHasUnsavedChanges())
-    {
-        IDialog::Result result = askForSave();
+	// On close requests we don't require the selection to have changed
+	if ((!requireSelectionChange || defSelectionHasChanged()) && particleHasUnsavedChanges())
+	{
+		IDialog::Result result = askForSave();
 
-        if (result == IDialog::RESULT_YES)
-        {
-            // User wants to save
-            if (!saveCurrentParticle())
-            {
-                return false; // save attempt failed
-            }
+		if (result == IDialog::RESULT_YES)
+		{
+			// User wants to save
+			if (!saveCurrentParticle())
+			{
+				return false; // save attempt failed
+			}
 
-            // Save successful, go ahead
-        }
-        else if (result == IDialog::RESULT_CANCELLED)
-        {
-            return false; // user cancelled
-        }
+			// Save successful, go ahead
+		}
+		else if (result == IDialog::RESULT_CANCELLED)
+		{
+			return false; // user cancelled
+		}
 
-        // User doesn't want to save
-    }
+		// User doesn't want to save
+	}
 
-    return true;
+	return true;
 }
 
 void ParticleEditor::_onNewParticle(wxCommandEvent& ev)
 {
-    // Check for unsaved changes, don't require a selection change
-    if (!promptUserToSaveChanges(false)) return; // action not allowed or cancelled
+	// Check for unsaved changes, don't require a selection change
+	if (!promptUserToSaveChanges(false)) return; // action not allowed or cancelled
 
-    createAndSelectNewParticle();
+	createAndSelectNewParticle();
 }
 
 IParticleDef::Ptr ParticleEditor::createAndSelectNewParticle()
 {
-    std::string particleName = queryNewParticleName();
+	std::string particleName = queryNewParticleName();
 
-    if (particleName.empty())
-    {
-        return IParticleDef::Ptr(); // no valid name, abort
-    }
+	if (particleName.empty())
+	{
+		return IParticleDef::Ptr(); // no valid name, abort
+	}
 
-    std::string destFile = queryParticleFile();
+	std::string destFile = queryParticleFile();
 
-    if (destFile.empty())
-    {
-        return IParticleDef::Ptr(); // no valid destination file
-    }
+	if (destFile.empty())
+	{
+		return IParticleDef::Ptr(); // no valid destination file
+	}
 
-    // Good filename, good destination file, we're set to go
-    auto particle = GlobalParticlesManager().findOrInsertParticleDef(particleName);
+	// Good filename, good destination file, we're set to go
+	auto particle = GlobalParticlesManager().findOrInsertParticleDef(particleName);
 
-    particle->setFilename("particles/" + destFile);
+	particle->setFilename("particles/" + destFile);
 
-    // Re-load the particles list
-    populateParticleDefList();
+	// Re-load the particles list
+	populateParticleDefList();
 
-    // Highlight our new particle
-    selectParticleDef(particle->getDeclName());
+	// Highlight our new particle
+	selectParticleDef(particle->getDeclName());
 
-    return particle;
+	return particle;
 }
 
 std::string ParticleEditor::queryParticleFile()
 {
-    // Get the filename we should save this particle into
-    wxutil::FileChooser chooser(this, _("Select .prt file"), false, "particle", ".prt");
+	// Get the filename we should save this particle into
+	wxutil::FileChooser chooser(this, _("Select .prt file"), false, "particle", ".prt");
 
-    fs::path modParticlesPath = GlobalGameManager().getModPath();
-    modParticlesPath /= "particles";
+	fs::path modParticlesPath = GlobalGameManager().getModPath();
+	modParticlesPath /= "particles";
 
-    if (!os::fileOrDirExists(modParticlesPath.string()))
-    {
-        rMessage() << "Ensuring mod particles path: " << modParticlesPath << std::endl;
-        fs::create_directories(modParticlesPath);
-    }
+	if (!os::fileOrDirExists(modParticlesPath.string()))
+	{
+		rMessage() << "Ensuring mod particles path: " << modParticlesPath << std::endl;
+		fs::create_directories(modParticlesPath);
+	}
 
-    // Point the file chooser to that new file
-    chooser.setCurrentPath(GlobalGameManager().getModPath() + "/particles");
-    chooser.askForOverwrite(false);
+	// Point the file chooser to that new file
+	chooser.setCurrentPath(GlobalGameManager().getModPath() + "/particles");
+	chooser.askForOverwrite(false);
 
-    std::string result = chooser.display();
+	std::string result = chooser.display();
 
-    return !result.empty() ? os::getFilename(os::standardPath(result)) : "";
+	return !result.empty() ? os::getFilename(os::standardPath(result)) : "";
 }
 
 std::string ParticleEditor::queryNewParticleName()
 {
-    // It's ok after this point to create a new particle
-    while (true)
-    {
-        // Query the name of the new particle from the user
-        std::string particleName;
+	// It's ok after this point to create a new particle
+	while (true)
+	{
+		// Query the name of the new particle from the user
+		std::string particleName;
 
-        if (particleName.empty())
-        {
-            try
-            {
-                particleName = wxutil::Dialog::TextEntryDialog(
-                    _("Enter Name"),
-                    _("Enter Particle Name"),
-                    "",
-                    this
-                );
-            }
-            catch (wxutil::EntryAbortedException&)
-            {
-                break;
-            }
-        }
+		if (particleName.empty())
+		{
+			try
+			{
+				particleName = wxutil::Dialog::TextEntryDialog(
+					_("Enter Name"),
+					_("Enter Particle Name"),
+					"",
+					this
+				);
+			}
+			catch (wxutil::EntryAbortedException&)
+			{
+				break;
+			}
+		}
 
-        if (particleName.empty())
-        {
-            // Wrong name, let the user try again
-            wxutil::Messagebox::ShowError(_("Cannot create particle with an empty name."));
-            continue;
-        }
+		if (particleName.empty())
+		{
+			// Wrong name, let the user try again
+			wxutil::Messagebox::ShowError(_("Cannot create particle with an empty name."));
+			continue;
+		}
 
-        // Check if this particle already exists
-        IParticleDef::Ptr existing = GlobalParticlesManager().getDefByName(particleName);
+		// Check if this particle already exists
+		IParticleDef::Ptr existing = GlobalParticlesManager().getDefByName(particleName);
 
-        if (existing == NULL)
-        {
-            // Success, return that name
-            return particleName;
-        }
-        else
-        {
-            // Wrong name, let the user try again
-            wxutil::Messagebox::ShowError(_("This name is already in use."));
-            continue;
-        }
-    }
+		if (existing == NULL)
+		{
+			// Success, return that name
+			return particleName;
+		}
+		else
+		{
+			// Wrong name, let the user try again
+			wxutil::Messagebox::ShowError(_("This name is already in use."));
+			continue;
+		}
+	}
 
-    return ""; // no successful entry
+	return ""; // no successful entry
 }
 
 void ParticleEditor::_onCloneCurrentParticle(wxCommandEvent& ev)
 {
-    util::ScopedBoolLock lock(_saveInProgress);
+	util::ScopedBoolLock lock(_saveInProgress);
 
-    // Get the original particle name
-    std::string origName = getParticleNameFromIter(_selectedDefIter);
+	// Get the original particle name
+	std::string origName = getParticleNameFromIter(_selectedDefIter);
 
-    if (origName.empty())
-    {
-        return;
-    }
+	if (origName.empty())
+	{
+		return;
+	}
 
-    // Look up the original particle def
-    IParticleDef::Ptr original = GlobalParticlesManager().getDefByName(origName);
+	// Look up the original particle def
+	IParticleDef::Ptr original = GlobalParticlesManager().getDefByName(origName);
 
-    // Create a new particle (this will already set up an edit particle, which is empty)
-    auto newParticle = createAndSelectNewParticle();
+	// Create a new particle (this will already set up an edit particle, which is empty)
+	auto newParticle = createAndSelectNewParticle();
 
-    if (!newParticle)
-    {
-        return;
-    }
+	if (!newParticle)
+	{
+		return;
+	}
 
-    // Copy stuff from original particle
-    newParticle->copyFrom(original);
+	// Copy stuff from original particle
+	newParticle->copyFrom(original);
 
-    // Clear selection and re-select the particle to set up the working copy
-    _defView->UnselectAll();
-    _selectedDefIter = wxDataViewItem(); // to force re-setup of the selected edit particle
-    _preview->ClearPreview(); // Preview might hold old data as well
+	// Clear selection and re-select the particle to set up the working copy
+	_defView->UnselectAll();
+	_selectedDefIter = wxDataViewItem(); // to force re-setup of the selected edit particle
+	_preview->ClearPreview(); // Preview might hold old data as well
 
-    selectParticleDef(newParticle->getDeclName());
+	selectParticleDef(newParticle->getDeclName());
 
-    // Save the new particle declaration to the file immediately
-    saveCurrentParticle();
+	// Save the new particle declaration to the file immediately
+	saveCurrentParticle();
 
-    // Reload controls
-    updateWidgetsFromParticle();
+	// Reload controls
+	updateWidgetsFromParticle();
 }
 
 void ParticleEditor::DisplayDialog(const cmd::ArgumentList& args)
 {
-    ParticleEditor* editor = new ParticleEditor;
+	ParticleEditor* editor = new ParticleEditor;
 
-    editor->ShowModal();
+	editor->ShowModal();
 	editor->Destroy();
 }
 

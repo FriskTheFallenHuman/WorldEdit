@@ -26,9 +26,9 @@ public:
 		GlobalCommandSystem().execute(_string);
 	}
 
-    bool canExecute() const override {
-        return GlobalCommandSystem().canExecute(_string);
-    }
+	bool canExecute() const override {
+		return GlobalCommandSystem().canExecute(_string);
+	}
 
 	Signature getSignature() override {
 		return Signature(); // signature is always empty

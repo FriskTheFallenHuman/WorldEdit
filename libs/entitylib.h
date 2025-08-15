@@ -19,12 +19,12 @@ class SelectionIntersection;
 inline void aabb_testselect(const AABB& aabb, SelectionTest& test, SelectionIntersection& best)
 {
   const IndexPointer::index_type indices[24] = {
-    2, 1, 5, 6,
-    1, 0, 4, 5,
-    0, 1, 2, 3,
-    3, 7, 4, 0,
-    3, 2, 6, 7,
-    7, 6, 5, 4,
+	2, 1, 5, 6,
+	1, 0, 4, 5,
+	0, 1, 2, 3,
+	3, 7, 4, 0,
+	3, 2, 6, 7,
+	7, 6, 5, 4,
   };
 
   Vector3 points[8];
@@ -54,7 +54,7 @@ inline bool Node_isWorldspawn(const scene::INodePtr& node)
 }
 
 /**
- * greebo: Changing the entity classname is a non-trivial operation in DarkRadiant, as
+ * greebo: Changing the entity classname is a non-trivial operation in WorldEdit, as
  * the actual c++ class of an entity is depending on it. Changing the classname
  * therefore means 1) to recreate a new entity 2) to copy all spawnargs over from the old one
  * and 3) re-parent any child nodes to the new entity.
@@ -65,7 +65,7 @@ inline bool Node_isWorldspawn(const scene::INodePtr& node)
  * @returns: The new entity node.
  */
 inline scene::INodePtr changeEntityClassname(const scene::INodePtr& node,
-                                             const std::string& classname)
+											 const std::string& classname)
 {
 	// Make a copy of this node first
 	scene::INodePtr oldNode(node);
@@ -87,14 +87,14 @@ inline scene::INodePtr changeEntityClassname(const scene::INodePtr& node,
 	// Traverse the old entity with a walker
 	Entity& newEntity = newNode->getEntity();
 
-    // Copy all keyvalues except classname
-    oldEntity->forEachKeyValue([&](const std::string& key, const std::string& value)
-    {
-        if (key != "classname")
-        {
-            newEntity.setKeyValue(key, value);
-        }
-    });
+	// Copy all keyvalues except classname
+	oldEntity->forEachKeyValue([&](const std::string& key, const std::string& value)
+	{
+		if (key != "classname")
+		{
+			newEntity.setKeyValue(key, value);
+		}
+	});
 
 	// Remember the oldNode's parent before removing it
 	scene::INodePtr parent = oldNode->getParent();
@@ -111,9 +111,9 @@ inline scene::INodePtr changeEntityClassname(const scene::INodePtr& node,
 	scene::removeNodeFromParent(oldNode);
 
 	// Let the new node keep its layer information (#4710)
-    // Apply the layers to the whole subgraph (#5214)
-    scene::AssignNodeToLayersWalker layerWalker(oldNode->getLayers());
-    newNode->traverse(layerWalker);
+	// Apply the layers to the whole subgraph (#5214)
+	scene::AssignNodeToLayersWalker layerWalker(oldNode->getLayers());
+	newNode->traverse(layerWalker);
 
 	// Insert the new entity to the parent
 	parent->addChildNode(newNode);
@@ -128,43 +128,43 @@ inline scene::INodePtr changeEntityClassname(const scene::INodePtr& node,
  * in the constructor.
  */
 class WorldspawnArgFinder :
-    public scene::NodeVisitor
+	public scene::NodeVisitor
 {
-    std::string _key;
-    std::string _value;
+	std::string _key;
+	std::string _value;
 
 public:
-    WorldspawnArgFinder(const std::string& keyName) :
-        _key(keyName)
-    {}
+	WorldspawnArgFinder(const std::string& keyName) :
+		_key(keyName)
+	{}
 
-    bool pre(const scene::INodePtr& node) override
-    {
-        // Try to cast this node onto an entity
-        auto* ent = Node_getEntity(node);
+	bool pre(const scene::INodePtr& node) override
+	{
+		// Try to cast this node onto an entity
+		auto* ent = Node_getEntity(node);
 
-        if (ent != nullptr)
-        {
-            if (ent->isWorldspawn())
-            {
-                // Load the description spawnarg
-                _value = ent->getKeyValue(_key);
-            }
+		if (ent != nullptr)
+		{
+			if (ent->isWorldspawn())
+			{
+				// Load the description spawnarg
+				_value = ent->getKeyValue(_key);
+			}
 
-            return false; // don't traverse entities
-        }
+			return false; // don't traverse entities
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    /**
-     * Returns the found value for the desired spawnarg. If not found,
-     * this function will return an empty string "".
-     */
-    const std::string& getFoundValue() const
-    {
-        return _value;
-    }
+	/**
+	 * Returns the found value for the desired spawnarg. If not found,
+	 * this function will return an empty string "".
+	 */
+	const std::string& getFoundValue() const
+	{
+		return _value;
+	}
 };
 
 namespace scene
@@ -175,37 +175,37 @@ namespace scene
  */
 inline void applyIdlePose(const INodePtr& node, const IModelDef::Ptr& modelDef)
 {
-    auto modelNode = Node_getModel(node);
+	auto modelNode = Node_getModel(node);
 
-    if (!modelNode) return;
+	if (!modelNode) return;
 
-    // Set the animation to play
-    auto md5model = dynamic_cast<md5::IMD5Model*>(&(modelNode->getIModel()));
+	// Set the animation to play
+	auto md5model = dynamic_cast<md5::IMD5Model*>(&(modelNode->getIModel()));
 
-    if (!md5model) return;
+	if (!md5model) return;
 
-    // Look up the "idle" anim if there is one
-    auto found = modelDef->getAnim("idle");
+	// Look up the "idle" anim if there is one
+	auto found = modelDef->getAnim("idle");
 
-    if (found.empty()) return;
+	if (found.empty()) return;
 
-    // Load the anim
-    if (auto anim = GlobalAnimationCache().getAnim(found))
-    {
-        md5model->setAnim(anim);
-        md5model->updateAnim(0);
-    }
+	// Load the anim
+	if (auto anim = GlobalAnimationCache().getAnim(found))
+	{
+		md5model->setAnim(anim);
+		md5model->updateAnim(0);
+	}
 }
 
 inline void foreachSelectedEntity(const std::function<void(Entity&)>& functor)
 {
-    GlobalSelectionSystem().foreachSelected([&](const INodePtr& node)
-    {
-        if (Node_isEntity(node))
-        {
-            functor(*Node_getEntity(node));
-        }
-    });
+	GlobalSelectionSystem().foreachSelected([&](const INodePtr& node)
+	{
+		if (Node_isEntity(node))
+		{
+			functor(*Node_getEntity(node));
+		}
+	});
 }
 
 }

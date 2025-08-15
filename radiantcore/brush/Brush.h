@@ -61,7 +61,7 @@ struct EdgeFaces {
 
 class BrushObserver {
 public:
-    virtual ~BrushObserver() {}
+	virtual ~BrushObserver() {}
 	virtual void reserve(std::size_t size) = 0;
 	virtual void clear() = 0;
 	virtual void push_back(Face& face) = 0;
@@ -101,9 +101,9 @@ private:
 	// ----
 
 	// cached data compiled from state
-    std::vector<Vector3> _faceCentroidPoints;
-    std::vector<Vector3> _uniqueVertexPoints;
-    std::vector<Vector3> _uniqueEdgePoints;
+	std::vector<Vector3> _faceCentroidPoints;
+	std::vector<Vector3> _uniqueVertexPoints;
+	std::vector<Vector3> _uniqueEdgePoints;
 
 	typedef std::vector<SelectableVertex> SelectableVertices;
 	SelectableVertices m_select_vertices;
@@ -111,19 +111,19 @@ private:
 	typedef std::vector<SelectableEdge> SelectableEdges;
 	SelectableEdges m_select_edges;
 
-    struct EdgeRenderIndices
-    {
-        RenderIndex first;
-        RenderIndex second;
+	struct EdgeRenderIndices
+	{
+		RenderIndex first;
+		RenderIndex second;
 
-        EdgeRenderIndices()
-            : first(0), second(0)
-        {}
+		EdgeRenderIndices()
+			: first(0), second(0)
+		{}
 
-        EdgeRenderIndices(const RenderIndex _first, const RenderIndex _second)
-            : first(_first), second(_second)
-        {}
-    };
+		EdgeRenderIndices(const RenderIndex _first, const RenderIndex _second)
+			: first(_first), second(_second)
+		{}
+	};
 
 	// A list of all edge render indices, one for each unique edge
 	std::vector<EdgeRenderIndices> _edgeIndices;
@@ -175,7 +175,7 @@ public:
 	IFace& addFace(const Plane3& plane) override;
 	IFace& addFace(const Plane3& plane, const Matrix3& textureProjection, const std::string& material) override;
 
-    // Translatable implementation
+	// Translatable implementation
 	void translate(const Vector3& translation) override;
 
 	void attach(BrushObserver& observer);
@@ -183,9 +183,9 @@ public:
 
 	void forEachFace(const std::function<void(Face&)>& functor) const;
 
-    // Call the functor for each visible face (including those faces that are filtered out
-    // but are forcedly visible due to the brush being selected)
-    void forEachVisibleFace(const std::function<void(Face&)>& functor) const;
+	// Call the functor for each visible face (including those faces that are filtered out
+	// but are forcedly visible due to the brush being selected)
+	void forEachVisibleFace(const std::function<void(Face&)>& functor) const;
 
 	void connectUndoSystem(IUndoSystem& undoSystem);
 	void disconnectUndoSystem(IUndoSystem& undoSystem);
@@ -193,9 +193,9 @@ public:
 	// Face observer callbacks
 	void onFacePlaneChanged();
 	void onFaceShaderChanged();
-    void onFaceConnectivityChanged();
-    void onFaceEvaluateTransform();
-    void onFaceNeedsRenderableUpdate();
+	void onFaceConnectivityChanged();
+	void onFaceEvaluateTransform();
+	void onFaceNeedsRenderableUpdate();
 
 	// Sets the shader of all faces to the given name
 	void setShader(const std::string& newShader) override;
@@ -216,8 +216,8 @@ public:
 
 	void evaluateBRep() const override;
 
-    void transformChanged();
-    void evaluateTransform();
+	void transformChanged();
+	void evaluateTransform();
 
 	void aabbChanged();
 
@@ -277,7 +277,7 @@ public:
 	/// Note: removal of empty faces is not performed during direct brush manipulations, because it would make a manipulation irreversible if it created an empty face.
 	void removeEmptyFaces() override;
 
-    // See IBrush::removeRedundantFaces
+	// See IBrush::removeRedundantFaces
 	void removeRedundantFaces() override;
 
 	/// \brief Constructs \p winding from the intersection of \p plane with the other planes of the brush.
@@ -304,7 +304,7 @@ public:
 	// Signal for external code to get notified each time any face of any brush changes
 	static sigc::signal<void>& signal_faceShaderChanged();
 
-    const std::vector<Vector3>& getVertices(selection::ComponentSelectionMode mode) const;
+	const std::vector<Vector3>& getVertices(selection::ComponentSelectionMode mode) const;
 
 private:
 	void edge_push_back(FaceVertexId faceVertex);
@@ -318,7 +318,7 @@ private:
 	/// \brief Returns true if the face identified by \p index is preceded by another plane that takes priority over it.
 	bool plane_unique(std::size_t index) const;
 
-    // Returns true if the plane with the given index has already been defined. Only faces in the range [0..i-1) will be checked
+	// Returns true if the plane with the given index has already been defined. Only faces in the range [0..i-1) will be checked
 	bool planeAlreadyDefined(std::size_t index) const;
 
 	/// \brief Removes edges that are smaller than the tolerance used when generating brush windings.
@@ -350,6 +350,6 @@ typedef std::vector<Brush*> BrushVector;
  */
 inline std::ostream& operator<< (std::ostream& os, const Brush& b) {
 	os << "Brush { size = " << b.getNumFaces() << ", localAABB = " << b.localAABB()
-       << " }";
-    return os;
+	   << " }";
+	return os;
 }

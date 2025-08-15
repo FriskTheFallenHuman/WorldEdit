@@ -26,29 +26,29 @@ DialogManager::~DialogManager()
 
 const std::string& DialogManager::getName() const
 {
-    static std::string _name(MODULE_DIALOGMANAGER);
-    return _name;
+	static std::string _name(MODULE_DIALOGMANAGER);
+	return _name;
 }
 
 const StringSet& DialogManager::getDependencies() const
 {
-    static StringSet _dependencies
-    {
-        MODULE_MAINFRAME
-    };
+	static StringSet _dependencies
+	{
+		MODULE_MAINFRAME
+	};
 
-    return _dependencies;
+	return _dependencies;
 }
 
 void DialogManager::initialiseModule(const IApplicationContext& ctx)
 {
-    GlobalMainFrame().signal_MainFrameShuttingDown().connect(
-        sigc::mem_fun(this, &DialogManager::clear));
+	GlobalMainFrame().signal_MainFrameShuttingDown().connect(
+		sigc::mem_fun(this, &DialogManager::clear));
 }
 
 void DialogManager::clear()
 {
-    _dialogs.clear();
+	_dialogs.clear();
 }
 
 IDialogPtr DialogManager::createDialog(const std::string& title, wxWindow* parent)

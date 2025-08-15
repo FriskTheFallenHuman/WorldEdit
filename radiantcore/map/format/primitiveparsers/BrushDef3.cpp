@@ -26,19 +26,19 @@ const std::string& BrushDef3Parser::getKeyword() const
 {
 brushDef3
 {
-( 0 0 1 -604 ) ( ( 0.015625 0 255.9375 ) ( 0 0.015625 0 ) ) "textures/darkmod/stone/brick/blocks_brown" 0 0 0
-( 0 1 0 -1528 ) ( ( 0.015625 0 0 ) ( 0 0.015625 1 ) ) "textures/darkmod/stone/brick/blocks_brown" 0 0 0
-( 1 0 0 -1312 ) ( ( 0.015625 0 255.9375 ) ( 0 0.015625 1 ) ) "textures/darkmod/stone/brick/blocks_brown" 0 0 0
-( 0 0 -1 -0 ) ( ( 0.015625 0 255.9375 ) ( 0 0.015625 0 ) ) "textures/darkmod/stone/brick/blocks_brown" 0 0 0
-( -1 0 0 -1264 ) ( ( 0.015625 0 0.0625 ) ( 0 0.015625 1 ) ) "textures/darkmod/stone/brick/blocks_brown" 0 0 0
-( -0 -1 -0 1524 ) ( ( 0.015625 0 0 ) ( 0 0.015625 1 ) ) "textures/darkmod/stone/brick/blocks_brown" 0 0 0
+( 0 0 1 -604 ) ( ( 0.015625 0 255.9375 ) ( 0 0.015625 0 ) ) "textures/base_wall/lfwall13f3" 0 0 0
+( 0 1 0 -1528 ) ( ( 0.015625 0 0 ) ( 0 0.015625 1 ) ) "textures/base_wall/lfwall13f3" 0 0 0
+( 1 0 0 -1312 ) ( ( 0.015625 0 255.9375 ) ( 0 0.015625 1 ) ) "textures/base_wall/lfwall13f3" 0 0 0
+( 0 0 -1 -0 ) ( ( 0.015625 0 255.9375 ) ( 0 0.015625 0 ) ) "textures/base_wall/lfwall13f3" 0 0 0
+( -1 0 0 -1264 ) ( ( 0.015625 0 0.0625 ) ( 0 0.015625 1 ) ) "textures/base_wall/lfwall13f3" 0 0 0
+( -0 -1 -0 1524 ) ( ( 0.015625 0 0 ) ( 0 0.015625 1 ) ) "textures/base_wall/lfwall13f3" 0 0 0
 }
 }
 */
 
 // greebo: switch off optimisations for this section - the symptom is that brushes don't get a 
 // valid d value assigned after the first call to addFace() - the callback triggers a series
-// of calls in the DarkRadiant main module (up to the Texture Tool), and after return the plane
+// of calls in the WorldEdit main module (up to the Texture Tool), and after return the plane
 // gets wrong values assigned
 #if _MSC_VER >= 1600
 #pragma optimize( "", off )
@@ -120,8 +120,8 @@ scene::INodePtr BrushDef3Parser::parse(parser::DefTokeniser& tok) const
 	// Final outer "}"
 	tok.assertNextToken("}");
 
-    // Cleanup redundant face planes
-    brush.removeRedundantFaces();
+	// Cleanup redundant face planes
+	brush.removeRedundantFaces();
 
 	return node;
 }
@@ -194,8 +194,8 @@ scene::INodePtr BrushDef3ParserQuake4::parse(parser::DefTokeniser& tok) const
 	// Final outer "}"
 	tok.assertNextToken("}");
 
-    // Cleanup redundant face planes
-    brush.removeRedundantFaces();
+	// Cleanup redundant face planes
+	brush.removeRedundantFaces();
 
 	return node;
 }

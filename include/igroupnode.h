@@ -14,7 +14,7 @@ namespace scene
 class GroupNode
 {
 public:
-    virtual ~GroupNode() {}
+	virtual ~GroupNode() {}
 
 	/** greebo: This is called right before saving
 	 * to move the child brushes of the Doom3Group

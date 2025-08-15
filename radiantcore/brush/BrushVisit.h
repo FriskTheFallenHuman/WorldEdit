@@ -11,7 +11,7 @@ typedef std::function<void(Brush&)> BrushVisitFunc;
 typedef std::function<void(FaceInstance&)> FaceInstanceVisitFunc;
 
 class BrushVisitor :
-    public scene::NodeVisitor
+	public scene::NodeVisitor
 {
 	const BrushVisitFunc _functor;
 public:
@@ -19,7 +19,7 @@ public:
 		_functor(functor)
 	{}
 
-    bool pre(const INodePtr& node)
+	bool pre(const INodePtr& node)
 	{
 		if (!node->visible())
 		{
@@ -34,8 +34,8 @@ public:
 			return false;
 		}
 
-        return true;
-    }
+		return true;
+	}
 };
 
 inline void foreachVisibleBrush(const BrushVisitFunc& functor)

@@ -31,19 +31,19 @@ private:
 	// Locks down the callbacks during widget update
 	bool _updateActive;
 
-    // The AAS file this control is referring to
-    map::AasFileInfo _info;
+	// The AAS file this control is referring to
+	map::AasFileInfo _info;
 
-    // The AAS file reference (can be empty)
-    map::IAasFilePtr _aasFile;
+	// The AAS file reference (can be empty)
+	map::IAasFilePtr _aasFile;
 
-    // The renderable that is attached to the rendersystem when active
-    map::RenderableAasFile _renderable;
+	// The renderable that is attached to the rendersystem when active
+	map::RenderableAasFile _renderable;
 
 public:
 	AasFileControl(wxWindow* parent, const map::AasFileInfo& info);
 
-    virtual ~AasFileControl();
+	virtual ~AasFileControl();
 
 	// Returns the widgets for packing this object into a container/table
 	wxSizer* getButtons();
@@ -53,7 +53,7 @@ public:
 	void update();
 
 private:
-    void ensureAasFileLoaded();
+	void ensureAasFileLoaded();
 
 	void onToggle(wxCommandEvent& ev);
 	void onRefresh(wxCommandEvent& ev);

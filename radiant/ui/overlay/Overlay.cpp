@@ -46,9 +46,9 @@ Overlay::Overlay()
 
 void Overlay::observeKey(const std::string& key)
 {
-    GlobalRegistry().signalForKey(key).connect(
-        sigc::mem_fun(this, &Overlay::keyChanged)
-    );
+	GlobalRegistry().signalForKey(key).connect(
+		sigc::mem_fun(this, &Overlay::keyChanged)
+	);
 }
 
 void Overlay::onMainFrameShuttingDown()
@@ -71,8 +71,8 @@ OverlayPtr& Overlay::InstancePtr()
 
 		// Pre-destruction cleanup
 		GlobalMainFrame().signal_MainFrameShuttingDown().connect(
-            sigc::mem_fun(*_instancePtr, &Overlay::onMainFrameShuttingDown)
-        );
+			sigc::mem_fun(*_instancePtr, &Overlay::onMainFrameShuttingDown)
+		);
 	}
 
 	return _instancePtr;

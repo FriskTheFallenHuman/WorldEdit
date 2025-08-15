@@ -20,7 +20,7 @@ private:
 	wxSpinCtrlDouble* _spinCtrl;
 
 	// The target key
-    ITargetKey::Ptr _key;
+	ITargetKey::Ptr _key;
 
 private:
 
@@ -35,10 +35,10 @@ public:
 
 	void updateFromEntity();
 
-    static Ptr CreateNew(wxWindow* parent, IEntitySelection& entities, const ITargetKey::Ptr& key)
-    {
-        return std::make_shared<FloatPropertyEditor>(parent, entities, key);
-    }
+	static Ptr CreateNew(wxWindow* parent, IEntitySelection& entities, const ITargetKey::Ptr& key)
+	{
+		return std::make_shared<FloatPropertyEditor>(parent, entities, key);
+	}
 
 };
 

@@ -13,17 +13,17 @@ class ClearConsoleMessage :
 	public IMessage
 {
 public:
-    std::size_t getId() const override
-    {
-        return Type::ClearConsole;
-    }
+	std::size_t getId() const override
+	{
+		return Type::ClearConsole;
+	}
 
-    // Convenience method
-    static void Send()
-    {
-        ClearConsoleMessage msg;
-        GlobalRadiantCore().getMessageBus().sendMessage(msg);
-    }
+	// Convenience method
+	static void Send()
+	{
+		ClearConsoleMessage msg;
+		GlobalRadiantCore().getMessageBus().sendMessage(msg);
+	}
 };
 
 }

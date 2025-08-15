@@ -44,47 +44,47 @@ namespace ui
 {
 
 inline float Betwixt(float f1, float f2) {
-    return (f1 + f2) * 0.5f;
+	return (f1 + f2) * 0.5f;
 }
 
 double two_to_the_power(int power) {
-    return pow(2.0f, power);
+	return pow(2.0f, power);
 }
 
 // Converts a pixel dimensions into device coords, maps [0..size] to [-1..+1]
 inline float screen_normalised(int pos, unsigned int size)
 {
-    return ((2.0f * pos) / size) - 1.0f;
+	return ((2.0f * pos) / size) - 1.0f;
 }
 
 inline float normalised_to_world(float normalised, float world_origin, float normalised2world_scale) {
-    return world_origin + normalised * normalised2world_scale;
+	return world_origin + normalised * normalised2world_scale;
 }
 
 namespace
 {
-    constexpr const char* const RKEY_XYVIEW_ROOT = "user/ui/xyview";
-    constexpr const char* const RKEY_RECENT_ORIGIN = "user/ui/xyview/recent/origin";
-    constexpr const char* const RKEY_RECENT_SCALE = "user/ui/xyview/recent/scale";
-    constexpr const char* const RKEY_SELECT_EPSILON = "user/ui/selectionEpsilon";
+	constexpr const char* const RKEY_XYVIEW_ROOT = "user/ui/xyview";
+	constexpr const char* const RKEY_RECENT_ORIGIN = "user/ui/xyview/recent/origin";
+	constexpr const char* const RKEY_RECENT_SCALE = "user/ui/xyview/recent/scale";
+	constexpr const char* const RKEY_SELECT_EPSILON = "user/ui/selectionEpsilon";
 
-    const std::string RKEY_STATE_ROOT = std::string(RKEY_XYVIEW_ROOT) + "/state";
+	const std::string RKEY_STATE_ROOT = std::string(RKEY_XYVIEW_ROOT) + "/state";
 
-    // User-visible titles for view directions
-    static const std::map<OrthoOrientation, std::string> ORIENTATION_TITLES {
-        {OrthoOrientation::XY, _("XY Top")},
-        {OrthoOrientation::XZ, _("XZ Front")},
-        {OrthoOrientation::YZ, _("YZ Side")},
-    };
+	// User-visible titles for view directions
+	static const std::map<OrthoOrientation, std::string> ORIENTATION_TITLES {
+		{OrthoOrientation::XY, _("XY Top")},
+		{OrthoOrientation::XZ, _("XZ Front")},
+		{OrthoOrientation::YZ, _("YZ Side")},
+	};
 
-    // Map orientations to the Vector3 indices corresponding to the two axes (X = 0, Y = 1,
-    // Z = 2)
-    using Axes = std::pair<std::size_t, std::size_t>;
-    static const std::map<OrthoOrientation, Axes> ORIENTATION_AXES {
-        {OrthoOrientation::XY, {0, 1}},
-        {OrthoOrientation::YZ, {1, 2}},
-        {OrthoOrientation::XZ, {0, 2}}
-    };
+	// Map orientations to the Vector3 indices corresponding to the two axes (X = 0, Y = 1,
+	// Z = 2)
+	using Axes = std::pair<std::size_t, std::size_t>;
+	static const std::map<OrthoOrientation, Axes> ORIENTATION_AXES {
+		{OrthoOrientation::XY, {0, 1}},
+		{OrthoOrientation::YZ, {1, 2}},
+		{OrthoOrientation::XZ, {0, 2}}
+	};
 }
 
 int OrthoView::_nextId = 1;
@@ -98,229 +98,229 @@ OrthoView::OrthoView(wxWindow* parent, XYWndManager& owner)
   _minWorldCoord(game::current::getValue<float>("/defaults/minWorldCoord")),
   _maxWorldCoord(game::current::getValue<float>("/defaults/maxWorldCoord"))
 {
-    _owner.registerXYWnd(this);
+	_owner.registerXYWnd(this);
 
-    SetSizer(new wxBoxSizer(wxVERTICAL));
-    GetSizer()->Add(_wxGLWidget, 1, wxEXPAND);
+	SetSizer(new wxBoxSizer(wxVERTICAL));
+	GetSizer()->Add(_wxGLWidget, 1, wxEXPAND);
 
-    // Try to retrieve a recently used origin and scale from the registry
-    _origin = registry::getValue<Vector3>(RKEY_RECENT_ORIGIN);
-    _scale = registry::getValue<double>(RKEY_RECENT_SCALE, 1.0);
+	// Try to retrieve a recently used origin and scale from the registry
+	_origin = registry::getValue<Vector3>(RKEY_RECENT_ORIGIN);
+	_scale = registry::getValue<double>(RKEY_RECENT_SCALE, 1.0);
 
-    // Try to retrieve orientation from the registry
-    _orientation = static_cast<OrthoOrientation>(
-        registry::getValue<int>(rkeyForOrientation(), static_cast<int>(OrthoOrientation::XY))
-    );
+	// Try to retrieve orientation from the registry
+	_orientation = static_cast<OrthoOrientation>(
+		registry::getValue<int>(rkeyForOrientation(), static_cast<int>(OrthoOrientation::XY))
+	);
 
-    _wxGLWidget->SetCanFocus(false);
+	_wxGLWidget->SetCanFocus(false);
 
-    // wxGLWidget wireup
-    _wxGLWidget->Bind(wxEVT_SIZE, &OrthoView::onGLResize, this);
+	// wxGLWidget wireup
+	_wxGLWidget->Bind(wxEVT_SIZE, &OrthoView::onGLResize, this);
 
-    _wxGLWidget->Bind(wxEVT_MOUSEWHEEL, &OrthoView::onGLWindowScroll, this);
-    _wxGLWidget->Bind(wxEVT_MOTION, &OrthoView::onGLMouseMove, this);
+	_wxGLWidget->Bind(wxEVT_MOUSEWHEEL, &OrthoView::onGLWindowScroll, this);
+	_wxGLWidget->Bind(wxEVT_MOTION, &OrthoView::onGLMouseMove, this);
 
-    _wxGLWidget->Bind(wxEVT_LEFT_DOWN, &OrthoView::onGLMouseButtonPress, this);
-    _wxGLWidget->Bind(wxEVT_LEFT_DCLICK, &OrthoView::onGLMouseButtonPress, this);
-    _wxGLWidget->Bind(wxEVT_LEFT_UP, &OrthoView::onGLMouseButtonRelease, this);
-    _wxGLWidget->Bind(wxEVT_RIGHT_DOWN, &OrthoView::onGLMouseButtonPress, this);
-    _wxGLWidget->Bind(wxEVT_RIGHT_DCLICK, &OrthoView::onGLMouseButtonPress, this);
-    _wxGLWidget->Bind(wxEVT_RIGHT_UP, &OrthoView::onGLMouseButtonRelease, this);
-    _wxGLWidget->Bind(wxEVT_MIDDLE_DOWN, &OrthoView::onGLMouseButtonPress, this);
-    _wxGLWidget->Bind(wxEVT_MIDDLE_DCLICK, &OrthoView::onGLMouseButtonPress, this);
-    _wxGLWidget->Bind(wxEVT_MIDDLE_UP, &OrthoView::onGLMouseButtonRelease, this);
-    _wxGLWidget->Bind(wxEVT_AUX1_DOWN, &OrthoView::onGLMouseButtonPress, this);
-    _wxGLWidget->Bind(wxEVT_AUX1_DCLICK, &OrthoView::onGLMouseButtonPress, this);
-    _wxGLWidget->Bind(wxEVT_AUX1_UP, &OrthoView::onGLMouseButtonRelease, this);
-    _wxGLWidget->Bind(wxEVT_AUX2_DOWN, &OrthoView::onGLMouseButtonPress, this);
-    _wxGLWidget->Bind(wxEVT_AUX2_DCLICK, &OrthoView::onGLMouseButtonPress, this);
-    _wxGLWidget->Bind(wxEVT_AUX2_UP, &OrthoView::onGLMouseButtonRelease, this);
+	_wxGLWidget->Bind(wxEVT_LEFT_DOWN, &OrthoView::onGLMouseButtonPress, this);
+	_wxGLWidget->Bind(wxEVT_LEFT_DCLICK, &OrthoView::onGLMouseButtonPress, this);
+	_wxGLWidget->Bind(wxEVT_LEFT_UP, &OrthoView::onGLMouseButtonRelease, this);
+	_wxGLWidget->Bind(wxEVT_RIGHT_DOWN, &OrthoView::onGLMouseButtonPress, this);
+	_wxGLWidget->Bind(wxEVT_RIGHT_DCLICK, &OrthoView::onGLMouseButtonPress, this);
+	_wxGLWidget->Bind(wxEVT_RIGHT_UP, &OrthoView::onGLMouseButtonRelease, this);
+	_wxGLWidget->Bind(wxEVT_MIDDLE_DOWN, &OrthoView::onGLMouseButtonPress, this);
+	_wxGLWidget->Bind(wxEVT_MIDDLE_DCLICK, &OrthoView::onGLMouseButtonPress, this);
+	_wxGLWidget->Bind(wxEVT_MIDDLE_UP, &OrthoView::onGLMouseButtonRelease, this);
+	_wxGLWidget->Bind(wxEVT_AUX1_DOWN, &OrthoView::onGLMouseButtonPress, this);
+	_wxGLWidget->Bind(wxEVT_AUX1_DCLICK, &OrthoView::onGLMouseButtonPress, this);
+	_wxGLWidget->Bind(wxEVT_AUX1_UP, &OrthoView::onGLMouseButtonRelease, this);
+	_wxGLWidget->Bind(wxEVT_AUX2_DOWN, &OrthoView::onGLMouseButtonPress, this);
+	_wxGLWidget->Bind(wxEVT_AUX2_DCLICK, &OrthoView::onGLMouseButtonPress, this);
+	_wxGLWidget->Bind(wxEVT_AUX2_UP, &OrthoView::onGLMouseButtonRelease, this);
 
-    _wxGLWidget->Bind(wxEVT_IDLE, &OrthoView::onIdle, this);
+	_wxGLWidget->Bind(wxEVT_IDLE, &OrthoView::onIdle, this);
 
-    _freezePointer.connectMouseEvents(
-        std::bind(&OrthoView::onGLMouseButtonPress, this, std::placeholders::_1),
-        std::bind(&OrthoView::onGLMouseButtonRelease, this, std::placeholders::_1));
+	_freezePointer.connectMouseEvents(
+		std::bind(&OrthoView::onGLMouseButtonPress, this, std::placeholders::_1),
+		std::bind(&OrthoView::onGLMouseButtonRelease, this, std::placeholders::_1));
 
-    updateProjection();
-    updateModelview();
+	updateProjection();
+	updateModelview();
 
-    // Add self to the scenechange callbacks
-    GlobalSceneGraph().addSceneObserver(this);
+	// Add self to the scenechange callbacks
+	GlobalSceneGraph().addSceneObserver(this);
 
-    // greebo: Connect <self> as CameraObserver to the CamWindow. This way this class gets notified on camera change
-    _sigCameraChanged = GlobalCameraManager().signal_cameraChanged().connect(
-        sigc::mem_fun(this, &OrthoView::onCameraMoved));
+	// greebo: Connect <self> as CameraObserver to the CamWindow. This way this class gets notified on camera change
+	_sigCameraChanged = GlobalCameraManager().signal_cameraChanged().connect(
+		sigc::mem_fun(this, &OrthoView::onCameraMoved));
 }
 
 int OrthoView::getId() const
 {
-    return _id;
+	return _id;
 }
 
 OrthoView::~OrthoView()
 {
-    _owner.unregisterXYWnd(this);
+	_owner.unregisterXYWnd(this);
 
-    _font.reset();
+	_font.reset();
 
-    destroyXYView();
+	destroyXYView();
 
-    // Store the current position and scale to the registry, so that it may be
-    // picked up again when creating XYViews after switching layouts
-    registry::setValue(RKEY_RECENT_ORIGIN, _origin);
-    registry::setValue(RKEY_RECENT_SCALE, _scale);
+	// Store the current position and scale to the registry, so that it may be
+	// picked up again when creating XYViews after switching layouts
+	registry::setValue(RKEY_RECENT_ORIGIN, _origin);
+	registry::setValue(RKEY_RECENT_SCALE, _scale);
 }
 
 void OrthoView::destroyXYView()
 {
-    // Remove <self> from the scene change callback list
-    GlobalSceneGraph().removeSceneObserver(this);
+	// Remove <self> from the scene change callback list
+	GlobalSceneGraph().removeSceneObserver(this);
 
-    _sigCameraChanged.disconnect();
-    _wxGLWidget = nullptr;
+	_sigCameraChanged.disconnect();
+	_wxGLWidget = nullptr;
 }
 
 void OrthoView::setScale(float f)
 {
-    _scale = f;
-    updateProjection();
-    updateModelview();
-    queueDraw();
+	_scale = f;
+	updateProjection();
+	updateModelview();
+	queueDraw();
 }
 
 float OrthoView::getScale() const {
-    return _scale;
+	return _scale;
 }
 
 int OrthoView::getWidth() const {
-    return _width;
+	return _width;
 }
 
 int OrthoView::getHeight() const {
-    return _height;
+	return _height;
 }
 
 SelectionTestPtr OrthoView::createSelectionTestForPoint(const Vector2& point)
 {
-    float selectEpsilon = registry::getValue<float>(RKEY_SELECT_EPSILON);
+	float selectEpsilon = registry::getValue<float>(RKEY_SELECT_EPSILON);
 
-    // Generate the epsilon
-    Vector2 deviceEpsilon(selectEpsilon / getWidth(), selectEpsilon / getHeight());
+	// Generate the epsilon
+	Vector2 deviceEpsilon(selectEpsilon / getWidth(), selectEpsilon / getHeight());
 
-    // Copy the current view and constrain it to a small rectangle
-    render::View scissored(_view);
-    ConstructSelectionTest(scissored, selection::Rectangle::ConstructFromPoint(point, deviceEpsilon));
+	// Copy the current view and constrain it to a small rectangle
+	render::View scissored(_view);
+	ConstructSelectionTest(scissored, selection::Rectangle::ConstructFromPoint(point, deviceEpsilon));
 
-    return SelectionTestPtr(new SelectionVolume(scissored));
+	return SelectionTestPtr(new SelectionVolume(scissored));
 }
 
 const VolumeTest& OrthoView::getVolumeTest() const
 {
-    return _view;
+	return _view;
 }
 
 bool OrthoView::supportsDragSelections()
 {
-    return true;
+	return true;
 }
 
 int OrthoView::getDeviceWidth() const
 {
-    return getWidth();
+	return getWidth();
 }
 
 int OrthoView::getDeviceHeight() const
 {
-    return getHeight();
+	return getHeight();
 }
 
 void OrthoView::captureStates()
 {
-    _highlightShaders.selectedShader = GlobalRenderSystem().capture(BuiltInShaderType::WireframeSelectionOverlay);
-    _highlightShaders.selectedShaderGroup = GlobalRenderSystem().capture(BuiltInShaderType::WireframeSelectionOverlayOfGroups);
-    _highlightShaders.mergeActionShaderAdd = GlobalRenderSystem().capture(BuiltInShaderType::OrthoMergeActionOverlayAdd);
-    _highlightShaders.mergeActionShaderChange = GlobalRenderSystem().capture(BuiltInShaderType::OrthoMergeActionOverlayChange);
-    _highlightShaders.mergeActionShaderRemove = GlobalRenderSystem().capture(BuiltInShaderType::OrthoMergeActionOverlayRemove);
-    _highlightShaders.mergeActionShaderConflict = GlobalRenderSystem().capture(BuiltInShaderType::OrthoMergeActionOverlayConflict);
+	_highlightShaders.selectedShader = GlobalRenderSystem().capture(BuiltInShaderType::WireframeSelectionOverlay);
+	_highlightShaders.selectedShaderGroup = GlobalRenderSystem().capture(BuiltInShaderType::WireframeSelectionOverlayOfGroups);
+	_highlightShaders.mergeActionShaderAdd = GlobalRenderSystem().capture(BuiltInShaderType::OrthoMergeActionOverlayAdd);
+	_highlightShaders.mergeActionShaderChange = GlobalRenderSystem().capture(BuiltInShaderType::OrthoMergeActionOverlayChange);
+	_highlightShaders.mergeActionShaderRemove = GlobalRenderSystem().capture(BuiltInShaderType::OrthoMergeActionOverlayRemove);
+	_highlightShaders.mergeActionShaderConflict = GlobalRenderSystem().capture(BuiltInShaderType::OrthoMergeActionOverlayConflict);
 }
 
 void OrthoView::releaseStates()
 {
 	_highlightShaders.selectedShader.reset();
 	_highlightShaders.selectedShaderGroup.reset();
-    _highlightShaders.mergeActionShaderAdd.reset();
-    _highlightShaders.mergeActionShaderChange.reset();
-    _highlightShaders.mergeActionShaderRemove.reset();
-    _highlightShaders.mergeActionShaderConflict.reset();
+	_highlightShaders.mergeActionShaderAdd.reset();
+	_highlightShaders.mergeActionShaderChange.reset();
+	_highlightShaders.mergeActionShaderRemove.reset();
+	_highlightShaders.mergeActionShaderConflict.reset();
 }
 
 void OrthoView::ensureFont()
 {
-    if (_font)
-    {
-        return;
-    }
+	if (_font)
+	{
+		return;
+	}
 
-    const auto& manager = GlobalXYWnd();
-    _font = GlobalOpenGL().getFont(manager.fontStyle(), manager.fontSize());
+	const auto& manager = GlobalXYWnd();
+	_font = GlobalOpenGL().getFont(manager.fontStyle(), manager.fontSize());
 }
 
 void OrthoView::forceRedraw()
 {
-    if (_drawing)
-    {
-        return;
-    }
+	if (_drawing)
+	{
+		return;
+	}
 
 	_wxGLWidget->Refresh(false);
-    _wxGLWidget->Update();
+	_wxGLWidget->Update();
 }
 
 void OrthoView::queueDraw()
 {
-    _updateRequested = true;
+	_updateRequested = true;
 }
 
 void OrthoView::onSceneGraphChange()
 {
-    // Pass the call to queueDraw.
-    queueDraw();
+	// Pass the call to queueDraw.
+	queueDraw();
 }
 
 void OrthoView::updateFont()
 {
-    // Clear out the font reference, it will be re-acquired
-    // during the next draw call
-    _font.reset();
+	// Clear out the font reference, it will be re-acquired
+	// during the next draw call
+	_font.reset();
 }
 
 void OrthoView::setActive(bool b) {
-    _isActive = b;
+	_isActive = b;
 };
 
 bool OrthoView::isActive() const {
-    return _isActive;
+	return _isActive;
 };
 
 const Vector3& OrthoView::getOrigin() const
 {
-    return _origin;
+	return _origin;
 }
 
 void OrthoView::setOrigin(const Vector3& origin) {
-    _origin = origin;
-    updateModelview();
-    queueDraw();
+	_origin = origin;
+	updateModelview();
+	queueDraw();
 }
 
 void OrthoView::scrollByPixels(int x, int y)
 {
-    const auto [nDim1, nDim2] = ORIENTATION_AXES.at(_orientation);
-    _origin[nDim1] -= x / _scale;
-    _origin[nDim2] += y / _scale;
-    updateModelview();
-    queueDraw();
+	const auto [nDim1, nDim2] = ORIENTATION_AXES.at(_orientation);
+	_origin[nDim1] -= x / _scale;
+	_origin[nDim2] += y / _scale;
+	updateModelview();
+	queueDraw();
 }
 
 /* greebo: This gets repeatedly called during a mouse chase operation.
@@ -330,16 +330,16 @@ void OrthoView::scrollByPixels(int x, int y)
 void OrthoView::performChaseMouse()
 {
 	float multiplier = _chaseMouseTimer.Time() / 10.0f;
-    scrollByPixels(float_to_integer(-multiplier * _chasemouseDeltaX), float_to_integer(multiplier * -_chasemouseDeltaY));
+	scrollByPixels(float_to_integer(-multiplier * _chasemouseDeltaX), float_to_integer(multiplier * -_chasemouseDeltaY));
 
 	handleGLMouseMotion(_chasemouseCurrentX, _chasemouseCurrentY, _eventState, false);
 
-    // Check if we should still be in chase mouse mode
-    if (_chasingMouse && checkChaseMouse(_eventState))
-    {
-        // greebo: Restart the timer
-        _chaseMouseTimer.Start();
-    }
+	// Check if we should still be in chase mouse mode
+	if (_chasingMouse && checkChaseMouse(_eventState))
+	{
+		// greebo: Restart the timer
+		_chaseMouseTimer.Start();
+	}
 }
 
 /* greebo: This handles the "chase mouse" behaviour, if the user drags something
@@ -350,169 +350,169 @@ void OrthoView::performChaseMouse()
  */
 bool OrthoView::checkChaseMouse(unsigned int state)
 {
-    wxPoint windowMousePos = _wxGLWidget->ScreenToClient(wxGetMousePosition());
+	wxPoint windowMousePos = _wxGLWidget->ScreenToClient(wxGetMousePosition());
 
-    int x = windowMousePos.x;
-    int y = windowMousePos.y;
+	int x = windowMousePos.x;
+	int y = windowMousePos.y;
 
-    _chasemouseDeltaX = 0;
-    _chasemouseDeltaY = 0;
-    _eventState = state;
+	_chasemouseDeltaX = 0;
+	_chasemouseDeltaY = 0;
+	_eventState = state;
 
-    // greebo: The mouse chase is only active when the corresponding setting is active
-    if (GlobalXYWnd().chaseMouse())
-    {
-        // If the cursor moves close enough to the window borders, chase mouse will kick in
-        // The chase mouse delta is capped between 0 and a value that depends on how much
-        // the mouse cursor exceeds that imaginary border.
-        const int epsilon = 16;
+	// greebo: The mouse chase is only active when the corresponding setting is active
+	if (GlobalXYWnd().chaseMouse())
+	{
+		// If the cursor moves close enough to the window borders, chase mouse will kick in
+		// The chase mouse delta is capped between 0 and a value that depends on how much
+		// the mouse cursor exceeds that imaginary border.
+		const int epsilon = 16;
 
-        // Calculate the X delta
-        if (x < epsilon)
-            _chasemouseDeltaX = std::max(x - epsilon, -GlobalXYWnd().chaseMouseCap());
-        else if (x > _width - epsilon)
-            _chasemouseDeltaX = std::min(x - _width + epsilon, GlobalXYWnd().chaseMouseCap());
+		// Calculate the X delta
+		if (x < epsilon)
+			_chasemouseDeltaX = std::max(x - epsilon, -GlobalXYWnd().chaseMouseCap());
+		else if (x > _width - epsilon)
+			_chasemouseDeltaX = std::min(x - _width + epsilon, GlobalXYWnd().chaseMouseCap());
 
-        // Calculate the Y delta
-        if (y < epsilon)
-            _chasemouseDeltaY = std::max(y - epsilon, -GlobalXYWnd().chaseMouseCap());
-        else if (y > _height - epsilon)
-            _chasemouseDeltaY = std::min(y - _height + epsilon, GlobalXYWnd().chaseMouseCap());
+		// Calculate the Y delta
+		if (y < epsilon)
+			_chasemouseDeltaY = std::max(y - epsilon, -GlobalXYWnd().chaseMouseCap());
+		else if (y > _height - epsilon)
+			_chasemouseDeltaY = std::min(y - _height + epsilon, GlobalXYWnd().chaseMouseCap());
 
-        // If any of the deltas is uneqal to zero the mouse chase is to be performed
-        if (_chasemouseDeltaY != 0 || _chasemouseDeltaX != 0)
-        {
-            _chasemouseCurrentX = x;
-            _chasemouseCurrentY = y;
+		// If any of the deltas is uneqal to zero the mouse chase is to be performed
+		if (_chasemouseDeltaY != 0 || _chasemouseDeltaX != 0)
+		{
+			_chasemouseCurrentX = x;
+			_chasemouseCurrentY = y;
 
-            // Start the timer, if there isn't one already connected
-            if (!_chasingMouse)
-            {
-                _chaseMouseTimer.Start();
+			// Start the timer, if there isn't one already connected
+			if (!_chasingMouse)
+			{
+				_chaseMouseTimer.Start();
 
-                // Enable chase mouse handling in  the idle callbacks, so it gets called as
-                // soon as there is nothing more important to do. The callback queries the timer
-                // and takes the according window movement actions
-                _chasingMouse = true;
-            }
+				// Enable chase mouse handling in  the idle callbacks, so it gets called as
+				// soon as there is nothing more important to do. The callback queries the timer
+				// and takes the according window movement actions
+				_chasingMouse = true;
+			}
 
-            // Return true to signal that there are no other mouseMotion handlers to be performed
-            return true;
-        }
-        else
-        {
-            if (_chasingMouse)
-            {
-                // All deltas are zero, so there is no more mouse chasing necessary, remove the handlers
-                _chasingMouse = false;
-            }
-        }
-    }
-    else
-    {
-        if (_chasingMouse)
-        {
-            // Remove the handlers, the user has probably released the mouse button during chase
-            _chasingMouse = false;
-        }
-    }
+			// Return true to signal that there are no other mouseMotion handlers to be performed
+			return true;
+		}
+		else
+		{
+			if (_chasingMouse)
+			{
+				// All deltas are zero, so there is no more mouse chasing necessary, remove the handlers
+				_chasingMouse = false;
+			}
+		}
+	}
+	else
+	{
+		if (_chasingMouse)
+		{
+			// Remove the handlers, the user has probably released the mouse button during chase
+			_chasingMouse = false;
+		}
+	}
 
-    // No mouse chasing has been performed, return false
-    return false;
+	// No mouse chasing has been performed, return false
+	return false;
 }
 
 void OrthoView::setCursorType(CursorType type)
 {
-    if (_freezePointer.isCapturing(_wxGLWidget))
-        return;
+	if (_freezePointer.isCapturing(_wxGLWidget))
+		return;
 
-    switch (type)
+	switch (type)
 	{
-    case CursorType::Pointer:
-        _wxGLWidget->SetCursor(_defaultCursor);
-        break;
-    case CursorType::Crosshair:
+	case CursorType::Pointer:
+		_wxGLWidget->SetCursor(_defaultCursor);
+		break;
+	case CursorType::Crosshair:
 		_wxGLWidget->SetCursor(_crossHairCursor);
-        break;
-    };
+		break;
+	};
 }
 
 void OrthoView::onCameraMoved()
 {
-    if (GlobalXYWnd().camXYUpdate())
-    {
-        queueDraw();
-    }
+	if (GlobalXYWnd().camXYUpdate())
+	{
+		queueDraw();
+	}
 }
 
 void OrthoView::onContextMenu()
 {
-    // Get the click point in 3D space
-    Vector3 point = mouseToPoint(_rightClickPos->initial);
+	// Get the click point in 3D space
+	Vector3 point = mouseToPoint(_rightClickPos->initial);
 
-    // Display the menu, passing the coordinates for creation
-    OrthoContextMenu::Instance().Show(_wxGLWidget, point);
+	// Display the menu, passing the coordinates for creation
+	OrthoContextMenu::Instance().Show(_wxGLWidget, point);
 }
 
 // makes sure the selected brush or camera is in view
 void OrthoView::positionView(const Vector3& position)
 {
-    const auto [nDim1, nDim2] = ORIENTATION_AXES.at(_orientation);
-    _origin[nDim1] = position[nDim1];
-    _origin[nDim2] = position[nDim2];
+	const auto [nDim1, nDim2] = ORIENTATION_AXES.at(_orientation);
+	_origin[nDim1] = position[nDim1];
+	_origin[nDim2] = position[nDim2];
 
-    updateModelview();
+	updateModelview();
 
-    queueDraw();
+	queueDraw();
 }
 
 void OrthoView::setOrientation(OrthoOrientation viewType)
 {
-    _orientation = viewType;
-    updateModelview();
+	_orientation = viewType;
+	updateModelview();
 
-    // Persist orientation into the registry
-    registry::setValue(rkeyForOrientation(), static_cast<int>(_orientation));
+	// Persist orientation into the registry
+	registry::setValue(rkeyForOrientation(), static_cast<int>(_orientation));
 }
 
 OrthoOrientation OrthoView::getOrientation() const {
-    return _orientation;
+	return _orientation;
 }
 
 // This gets called by the wx mousemoved callback or the periodical mousechase event
 void OrthoView::handleGLMouseMotion(int x, int y, unsigned int state, bool isDelta)
 {
-    // Context menu handling
-    if (state == wxutil::MouseButton::RIGHT && _rightClickPos) // Only RMB, nothing else
-    {
-        if (isDelta)
-            _rightClickPos->current += Vector2i{x, y};
-        else
-            _rightClickPos->current = {x, y};
+	// Context menu handling
+	if (state == wxutil::MouseButton::RIGHT && _rightClickPos) // Only RMB, nothing else
+	{
+		if (isDelta)
+			_rightClickPos->current += Vector2i{x, y};
+		else
+			_rightClickPos->current = {x, y};
 
-        // If the user moved the pointer away from the point the RMB was pressed, this is a drag
-        // not a context menu event
-        static const std::string RKEY_THRESHOLD = std::string(RKEY_XYVIEW_ROOT)
-                                                + "/contextMenuThreshold";
-        static const int DIST_THRESHOLD_SQ = std::pow(
-            registry::getValue<int>(RKEY_THRESHOLD, 15), 2
-        );
-        auto distanceVec = _rightClickPos->current - _rightClickPos->initial;
-        if (distanceVec.getLengthSquared() > DIST_THRESHOLD_SQ)
-            _rightClickPos.reset();
-    }
+		// If the user moved the pointer away from the point the RMB was pressed, this is a drag
+		// not a context menu event
+		static const std::string RKEY_THRESHOLD = std::string(RKEY_XYVIEW_ROOT)
+												+ "/contextMenuThreshold";
+		static const int DIST_THRESHOLD_SQ = std::pow(
+			registry::getValue<int>(RKEY_THRESHOLD, 15), 2
+		);
+		auto distanceVec = _rightClickPos->current - _rightClickPos->initial;
+		if (distanceVec.getLengthSquared() > DIST_THRESHOLD_SQ)
+			_rightClickPos.reset();
+	}
 
-    _mousePosition = convertXYToWorld(x, y);
-    snapToGrid(_mousePosition);
+	_mousePosition = convertXYToWorld(x, y);
+	snapToGrid(_mousePosition);
 
-    GlobalStatusBarManager().setText(
-        "XYZPos",
-        fmt::format(_("x: {0:6.1f} y: {1:6.1f} z: {2:6.1f}"),
-            _mousePosition[0],
-            _mousePosition[1],
-            _mousePosition[2]),
-        true // force UI update
-    );
+	GlobalStatusBarManager().setText(
+		"XYZPos",
+		fmt::format(_("x: {0:6.1f} y: {1:6.1f} z: {2:6.1f}"),
+			_mousePosition[0],
+			_mousePosition[1],
+			_mousePosition[2]),
+		true // force UI update
+	);
 
 	if (GlobalXYWnd().showCrossHairs())
 	{
@@ -522,66 +522,66 @@ void OrthoView::handleGLMouseMotion(int x, int y, unsigned int state, bool isDel
 
 void OrthoView::handleGLCapturedMouseMotion(const MouseToolPtr& tool, int x, int y, unsigned int mouseState)
 {
-    if (!tool) return;
+	if (!tool) return;
 
-    bool mouseToolReceivesDeltas = (tool->getPointerMode() & MouseTool::PointerMode::MotionDeltas) != 0;
-    bool pointerFrozen = (tool->getPointerMode() & MouseTool::PointerMode::Freeze) != 0;
+	bool mouseToolReceivesDeltas = (tool->getPointerMode() & MouseTool::PointerMode::MotionDeltas) != 0;
+	bool pointerFrozen = (tool->getPointerMode() & MouseTool::PointerMode::Freeze) != 0;
 
-    // Check if the mouse has reached exceeded the window borders for chase mouse behaviour
-    // In FreezePointer mode there's no need to check for chase since the cursor is fixed anyway
-    if (tool->allowChaseMouse() && !pointerFrozen && checkChaseMouse(mouseState))
-    {
-        // Chase mouse activated, an idle callback will kick in soon
-        return;
-    }
+	// Check if the mouse has reached exceeded the window borders for chase mouse behaviour
+	// In FreezePointer mode there's no need to check for chase since the cursor is fixed anyway
+	if (tool->allowChaseMouse() && !pointerFrozen && checkChaseMouse(mouseState))
+	{
+		// Chase mouse activated, an idle callback will kick in soon
+		return;
+	}
 
-    // Send mouse move events to the active tool and all inactive tools that want them
-    MouseToolHandler::onGLCapturedMouseMove(x, y, mouseState);
+	// Send mouse move events to the active tool and all inactive tools that want them
+	MouseToolHandler::onGLCapturedMouseMove(x, y, mouseState);
 
-    handleGLMouseMotion(x, y, mouseState, mouseToolReceivesDeltas);
+	handleGLMouseMotion(x, y, mouseState, mouseToolReceivesDeltas);
 }
 
 XYMouseToolEvent OrthoView::createMouseEvent(const Vector2& point, const Vector2& delta)
 {
-    Vector2 normalisedDeviceCoords = device_constrained(
-        window_to_normalised_device(point, _width, _height));
+	Vector2 normalisedDeviceCoords = device_constrained(
+		window_to_normalised_device(point, _width, _height));
 
-    return XYMouseToolEvent(*this, convertXYToWorld(point.x(), point.y()), normalisedDeviceCoords, delta);
+	return XYMouseToolEvent(*this, convertXYToWorld(point.x(), point.y()), normalisedDeviceCoords, delta);
 }
 
 Vector3 OrthoView::convertXYToWorld(int x, int y) const
 {
-    float normalised2world_scale_x = _width / 2.0 / _scale;
-    float normalised2world_scale_y = _height / 2.0 / _scale;
+	float normalised2world_scale_x = _width / 2.0 / _scale;
+	float normalised2world_scale_y = _height / 2.0 / _scale;
 
-    if (_orientation == OrthoOrientation::XY)
-    {
-        return Vector3(
-            normalised_to_world(screen_normalised(x, _width), _origin[0], normalised2world_scale_x),
-            normalised_to_world(-screen_normalised(y, _height), _origin[1], normalised2world_scale_y),
-            0);
-    }
-    else if (_orientation == OrthoOrientation::YZ)
-    {
-        return Vector3(
-            0,
-            normalised_to_world(screen_normalised(x, _width), _origin[1], normalised2world_scale_x),
-            normalised_to_world(-screen_normalised(y, _height), _origin[2], normalised2world_scale_y));
-    }
-    else // OrthoOrientation::XZ
-    {
-        return Vector3(
-            normalised_to_world(screen_normalised(x, _width), _origin[0], normalised2world_scale_x),
-            0,
-            normalised_to_world(-screen_normalised(y, _height), _origin[2], normalised2world_scale_y));
-    }
+	if (_orientation == OrthoOrientation::XY)
+	{
+		return Vector3(
+			normalised_to_world(screen_normalised(x, _width), _origin[0], normalised2world_scale_x),
+			normalised_to_world(-screen_normalised(y, _height), _origin[1], normalised2world_scale_y),
+			0);
+	}
+	else if (_orientation == OrthoOrientation::YZ)
+	{
+		return Vector3(
+			0,
+			normalised_to_world(screen_normalised(x, _width), _origin[1], normalised2world_scale_x),
+			normalised_to_world(-screen_normalised(y, _height), _origin[2], normalised2world_scale_y));
+	}
+	else // OrthoOrientation::XZ
+	{
+		return Vector3(
+			normalised_to_world(screen_normalised(x, _width), _origin[0], normalised2world_scale_x),
+			0,
+			normalised_to_world(-screen_normalised(y, _height), _origin[2], normalised2world_scale_y));
+	}
 }
 
 void OrthoView::snapToGrid(Vector3& point) const
 {
-    const auto [axis1, axis2] = ORIENTATION_AXES.at(_orientation);
-    point[axis1] = float_snapped(point[axis1], GlobalGrid().getGridSize());
-    point[axis2] = float_snapped(point[axis2], GlobalGrid().getGridSize());
+	const auto [axis1, axis2] = ORIENTATION_AXES.at(_orientation);
+	point[axis1] = float_snapped(point[axis1], GlobalGrid().getGridSize());
+	point[axis2] = float_snapped(point[axis2], GlobalGrid().getGridSize());
 }
 
 /* greebo: This calculates the coordinates of the xy view window corners.
@@ -590,572 +590,572 @@ void OrthoView::snapToGrid(Vector3& point) const
  */
 Vector4 OrthoView::getWindowCoordinates()
 {
-    const auto [nDim1, nDim2] = ORIENTATION_AXES.at(_orientation);
+	const auto [nDim1, nDim2] = ORIENTATION_AXES.at(_orientation);
 
-    double w = (_width / 2.0 / _scale);
-    double h = (_height / 2.0 / _scale);
+	double w = (_width / 2.0 / _scale);
+	double h = (_height / 2.0 / _scale);
 
-    // Query the region minimum/maximum vectors
-    auto regionBounds = GlobalRegionManager().getRegionBounds();
+	// Query the region minimum/maximum vectors
+	auto regionBounds = GlobalRegionManager().getRegionBounds();
 
-    Vector3 regionMin = regionBounds.origin - regionBounds.extents;
-    Vector3 regionMax = regionBounds.origin + regionBounds.extents;
+	Vector3 regionMin = regionBounds.origin - regionBounds.extents;
+	Vector3 regionMax = regionBounds.origin + regionBounds.extents;
 
-    double xb = _origin[nDim1] - w;
-    // Constrain this value to the region minimum
-    if (xb < regionMin[nDim1])
-        xb = regionMin[nDim1];
+	double xb = _origin[nDim1] - w;
+	// Constrain this value to the region minimum
+	if (xb < regionMin[nDim1])
+		xb = regionMin[nDim1];
 
-    double xe = _origin[nDim1] + w;
-    // Constrain this value to the region maximum
-    if (xe > regionMax[nDim1])
-        xe = regionMax[nDim1];
+	double xe = _origin[nDim1] + w;
+	// Constrain this value to the region maximum
+	if (xe > regionMax[nDim1])
+		xe = regionMax[nDim1];
 
-    double yb = _origin[nDim2] - h;
-    // Constrain this value to the region minimum
-    if (yb < regionMin[nDim2])
-        yb = regionMin[nDim2];
+	double yb = _origin[nDim2] - h;
+	// Constrain this value to the region minimum
+	if (yb < regionMin[nDim2])
+		yb = regionMin[nDim2];
 
-    double ye = _origin[nDim2] + h;
-    // Constrain this value to the region maximum
-    if (ye > regionMax[nDim2])
-        ye = regionMax[nDim2];
+	double ye = _origin[nDim2] + h;
+	// Constrain this value to the region maximum
+	if (ye > regionMax[nDim2])
+		ye = regionMax[nDim2];
 
-    return Vector4(xb, xe, yb, ye);
+	return Vector4(xb, xe, yb, ye);
 }
 
 void OrthoView::drawGrid()
 {
-    double step, minor_step, stepx, stepy;
-    step = minor_step = stepx = stepy = GlobalGrid().getGridSize();
+	double step, minor_step, stepx, stepy;
+	step = minor_step = stepx = stepy = GlobalGrid().getGridSize();
 
-    int minor_power = GlobalGrid().getGridPower();
+	int minor_power = GlobalGrid().getGridPower();
 
-    while (minor_step * _scale <= 4.0f) // make sure minor grid spacing is at least 4 pixels on the screen
-    {
-        ++minor_power;
-        minor_step *= 2;
-    }
+	while (minor_step * _scale <= 4.0f) // make sure minor grid spacing is at least 4 pixels on the screen
+	{
+		++minor_power;
+		minor_step *= 2;
+	}
 
-    int power = minor_power;
+	int power = minor_power;
 
-    while (power % 3 != 0 || step * _scale <= 32.0f) // make sure major grid spacing is at least 32 pixels on the screen
-    {
-        ++power;
-        step = double(two_to_the_power(power));
-    }
+	while (power % 3 != 0 || step * _scale <= 32.0f) // make sure major grid spacing is at least 32 pixels on the screen
+	{
+		++power;
+		step = double(two_to_the_power(power));
+	}
 
-    int mask = (1 << (power - minor_power)) - 1;
+	int mask = (1 << (power - minor_power)) - 1;
 
-    while (stepx * _scale <= 32.0f) // text step x must be at least 32
-    {
-        stepx *= 2;
-    }
+	while (stepx * _scale <= 32.0f) // text step x must be at least 32
+	{
+		stepx *= 2;
+	}
 
-    while (stepy * _scale <= 32.0f) // text step y must be at least 32
-    {
-        stepy *= 2;
-    }
+	while (stepy * _scale <= 32.0f) // text step y must be at least 32
+	{
+		stepy *= 2;
+	}
 
-    glDisable(GL_TEXTURE_2D);
-    glDisable(GL_TEXTURE_1D);
-    glDisable(GL_DEPTH_TEST);
-    glDisable(GL_BLEND);
-    glLineWidth(1);
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_TEXTURE_1D);
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
+	glLineWidth(1);
 
-    double w = _width / 2.0 / _scale;
-    double h = _height / 2.0 / _scale;
+	double w = _width / 2.0 / _scale;
+	double h = _height / 2.0 / _scale;
 
-    Vector4 windowCoords = getWindowCoordinates();
+	Vector4 windowCoords = getWindowCoordinates();
 
-    double xb = step * floor(windowCoords[0]/step);
-    double xe = step * ceil(windowCoords[1]/step);
-    double yb = step * floor(windowCoords[2]/step);
-    double ye = step * ceil(windowCoords[3]/step);
+	double xb = step * floor(windowCoords[0]/step);
+	double xe = step * ceil(windowCoords[1]/step);
+	double yb = step * floor(windowCoords[2]/step);
+	double ye = step * ceil(windowCoords[3]/step);
 
-    if (GlobalXYWnd().showGrid())
-    {
-        Vector3 colourGridBack = GlobalColourSchemeManager().getColour("grid_background");
-        Vector3 colourGridMinor = GlobalColourSchemeManager().getColour("grid_minor");
-        Vector3 colourGridMajor = GlobalColourSchemeManager().getColour("grid_major");
+	if (GlobalXYWnd().showGrid())
+	{
+		Vector3 colourGridBack = GlobalColourSchemeManager().getColour("grid_background");
+		Vector3 colourGridMinor = GlobalColourSchemeManager().getColour("grid_minor");
+		Vector3 colourGridMajor = GlobalColourSchemeManager().getColour("grid_major");
 
-        // run grid rendering twice, first run is minor grid, then major
-        // NOTE: with a bit more work, we can have variable number of grids
-        for (int gf = 0 ; gf < 2 ; ++gf)
-        {
-            double cur_step, density, sizeFactor;
-            GridLook look;
+		// run grid rendering twice, first run is minor grid, then major
+		// NOTE: with a bit more work, we can have variable number of grids
+		for (int gf = 0 ; gf < 2 ; ++gf)
+		{
+			double cur_step, density, sizeFactor;
+			GridLook look;
 
-            if (gf)
-            {
-                // major grid
-                if (colourGridMajor == colourGridBack)
-                {
-                    continue;
-                }
+			if (gf)
+			{
+				// major grid
+				if (colourGridMajor == colourGridBack)
+				{
+					continue;
+				}
 
-                glColor3dv(colourGridMajor);
-                look = GlobalGrid().getMajorLook();
-                cur_step = step;
-                density = 4;
-                // slightly bigger crosses
-                sizeFactor = 1.95;
-            }
-            else
-            {
-                // minor grid (rendered first)
-                if (colourGridMinor == colourGridBack)
-                {
-                    continue;
-                }
+				glColor3dv(colourGridMajor);
+				look = GlobalGrid().getMajorLook();
+				cur_step = step;
+				density = 4;
+				// slightly bigger crosses
+				sizeFactor = 1.95;
+			}
+			else
+			{
+				// minor grid (rendered first)
+				if (colourGridMinor == colourGridBack)
+				{
+					continue;
+				}
 
-                glColor3dv(colourGridMinor);
-                look = GlobalGrid().getMinorLook();
-                cur_step = minor_step;
-                density = 4;
-                sizeFactor = 0.95;
-            }
+				glColor3dv(colourGridMinor);
+				look = GlobalGrid().getMinorLook();
+				cur_step = minor_step;
+				density = 4;
+				sizeFactor = 0.95;
+			}
 
-            switch (look)
-            {
-                case GRIDLOOK_DOTS:
-                    glBegin (GL_POINTS);
-                    for (double x = xb ; x < xe ; x += cur_step)
-                    {
-                        for (double y = yb ; y < ye ; y += cur_step)
-                        {
-                            glVertex2d (x, y);
-                        }
-                    }
-                    glEnd();
-                    break;
+			switch (look)
+			{
+				case GRIDLOOK_DOTS:
+					glBegin (GL_POINTS);
+					for (double x = xb ; x < xe ; x += cur_step)
+					{
+						for (double y = yb ; y < ye ; y += cur_step)
+						{
+							glVertex2d (x, y);
+						}
+					}
+					glEnd();
+					break;
 
-                case GRIDLOOK_BIGDOTS:
-                    glPointSize(3);
-                    glEnable(GL_POINT_SMOOTH);
-                    glBegin (GL_POINTS);
-                    for (double x = xb ; x < xe ; x += cur_step)
-                    {
-                        for (double y = yb ; y < ye ; y += cur_step)
-                        {
-                            glVertex2d (x, y);
-                        }
-                    }
-                    glEnd();
-                    glDisable(GL_POINT_SMOOTH);
-                    glPointSize(1);
-                    break;
+				case GRIDLOOK_BIGDOTS:
+					glPointSize(3);
+					glEnable(GL_POINT_SMOOTH);
+					glBegin (GL_POINTS);
+					for (double x = xb ; x < xe ; x += cur_step)
+					{
+						for (double y = yb ; y < ye ; y += cur_step)
+						{
+							glVertex2d (x, y);
+						}
+					}
+					glEnd();
+					glDisable(GL_POINT_SMOOTH);
+					glPointSize(1);
+					break;
 
-                case GRIDLOOK_SQUARES:
-                    glPointSize(3);
-                    glBegin (GL_POINTS);
-                    for (double x = xb ; x < xe ; x += cur_step)
-                    {
-                        for (double y = yb ; y < ye ; y += cur_step)
-                        {
-                            glVertex2d (x, y);
-                        }
-                    }
-                    glEnd();
-                    glPointSize(1);
-                    break;
+				case GRIDLOOK_SQUARES:
+					glPointSize(3);
+					glBegin (GL_POINTS);
+					for (double x = xb ; x < xe ; x += cur_step)
+					{
+						for (double y = yb ; y < ye ; y += cur_step)
+						{
+							glVertex2d (x, y);
+						}
+					}
+					glEnd();
+					glPointSize(1);
+					break;
 
-                case GRIDLOOK_MOREDOTLINES:
-                    density = 8;
+				case GRIDLOOK_MOREDOTLINES:
+					density = 8;
 
-                case GRIDLOOK_DOTLINES:
-                    glBegin (GL_POINTS);
-                    for (double x = xb ; x < xe ; x += cur_step)
-                    {
-                        for (double y = yb ; y < ye ; y += minor_step / density)
-                        {
-                            glVertex2d (x, y);
-                        }
-                    }
+				case GRIDLOOK_DOTLINES:
+					glBegin (GL_POINTS);
+					for (double x = xb ; x < xe ; x += cur_step)
+					{
+						for (double y = yb ; y < ye ; y += minor_step / density)
+						{
+							glVertex2d (x, y);
+						}
+					}
 
-                    for (double y = yb ; y < ye ; y += cur_step)
-                    {
-                        for (double x = xb ; x < xe ; x += minor_step / density)
-                        {
-                            glVertex2d (x, y);
-                        }
-                    }
-                    glEnd();
-                    break;
+					for (double y = yb ; y < ye ; y += cur_step)
+					{
+						for (double x = xb ; x < xe ; x += minor_step / density)
+						{
+							glVertex2d (x, y);
+						}
+					}
+					glEnd();
+					break;
 
-                case GRIDLOOK_CROSSES:
-                    glBegin (GL_LINES);
-                    for (double x = xb ; x <= xe ; x += cur_step)
-                    {
-                        for (double y = yb ; y <= ye ; y += cur_step)
-                        {
-                            glVertex2d (x - sizeFactor / _scale, y);
-                            glVertex2d (x + sizeFactor / _scale, y);
-                            glVertex2d (x, y - sizeFactor / _scale);
-                            glVertex2d (x, y + sizeFactor / _scale);
-                        }
-                    }
-                    glEnd();
-                    break;
+				case GRIDLOOK_CROSSES:
+					glBegin (GL_LINES);
+					for (double x = xb ; x <= xe ; x += cur_step)
+					{
+						for (double y = yb ; y <= ye ; y += cur_step)
+						{
+							glVertex2d (x - sizeFactor / _scale, y);
+							glVertex2d (x + sizeFactor / _scale, y);
+							glVertex2d (x, y - sizeFactor / _scale);
+							glVertex2d (x, y + sizeFactor / _scale);
+						}
+					}
+					glEnd();
+					break;
 
-                case GRIDLOOK_LINES:
-                default:
-                    glBegin (GL_LINES);
-                    int i = 0;
-                    for (double x = xb ; x < xe ; x += cur_step, ++i)
-                    {
-                        if (gf == 1 || (i & mask) != 0) // greebo: No mask check for major grid
-                        {
-                            glVertex2d (x, yb);
-                            glVertex2d (x, ye);
-                        }
-                    }
+				case GRIDLOOK_LINES:
+				default:
+					glBegin (GL_LINES);
+					int i = 0;
+					for (double x = xb ; x < xe ; x += cur_step, ++i)
+					{
+						if (gf == 1 || (i & mask) != 0) // greebo: No mask check for major grid
+						{
+							glVertex2d (x, yb);
+							glVertex2d (x, ye);
+						}
+					}
 
-                    i = 0;
+					i = 0;
 
-                    for (double y = yb ; y < ye ; y += cur_step, ++i)
-                    {
-                        if (gf == 1 || (i & mask) != 0) // greebo: No mask check for major grid
-                        {
-                            glVertex2d (xb, y);
-                            glVertex2d (xe, y);
-                        }
-                    }
+					for (double y = yb ; y < ye ; y += cur_step, ++i)
+					{
+						if (gf == 1 || (i & mask) != 0) // greebo: No mask check for major grid
+						{
+							glVertex2d (xb, y);
+							glVertex2d (xe, y);
+						}
+					}
 
-                    glEnd();
-                    break;
-            }
-        }
-    }
+					glEnd();
+					break;
+			}
+		}
+	}
 
-    const auto [nDim1, nDim2] = ORIENTATION_AXES.at(_orientation);
+	const auto [nDim1, nDim2] = ORIENTATION_AXES.at(_orientation);
 
-    // draw coordinate text if needed
-    if (GlobalXYWnd().showCoordinates())
-    {
-        char text[32];
+	// draw coordinate text if needed
+	if (GlobalXYWnd().showCoordinates())
+	{
+		char text[32];
 
-        glColor3dv(GlobalColourSchemeManager().getColour("grid_text"));
+		glColor3dv(GlobalColourSchemeManager().getColour("grid_text"));
 
-        double offx = _origin[nDim2] + h - 12 / _scale;
-        double offy = _origin[nDim1] - w + 1 / _scale;
+		double offx = _origin[nDim2] + h - 12 / _scale;
+		double offy = _origin[nDim1] - w + 1 / _scale;
 
-        for (double x = xb - fmod(xb, stepx); x <= xe ; x += stepx)
-        {
-            glRasterPos2d (x, offx);
-            sprintf(text, "%g", x);
-            _font->drawString(text);
-        }
+		for (double x = xb - fmod(xb, stepx); x <= xe ; x += stepx)
+		{
+			glRasterPos2d (x, offx);
+			sprintf(text, "%g", x);
+			_font->drawString(text);
+		}
 
-        for (double y = yb - fmod(yb, stepy); y <= ye ; y += stepy)
-        {
-            glRasterPos2f (offy, y);
-            sprintf (text, "%g", y);
-            _font->drawString(text);
-        }
+		for (double y = yb - fmod(yb, stepy); y <= ye ; y += stepy)
+		{
+			glRasterPos2f (offy, y);
+			sprintf (text, "%g", y);
+			_font->drawString(text);
+		}
 
-        if (isActive())
-        {
-            glColor3dv(GlobalColourSchemeManager().getColour("active_view_name"));
-        }
+		if (isActive())
+		{
+			glColor3dv(GlobalColourSchemeManager().getColour("active_view_name"));
+		}
 
-        // we do this part (the old way) only if show_axis is disabled
-        if (!GlobalXYWnd().showAxes()) {
-            glRasterPos2d( _origin[nDim1] - w + 35 / _scale, _origin[nDim2] + h - 20 / _scale );
-            _font->drawString(ORIENTATION_TITLES.at(_orientation));
-        }
-    }
+		// we do this part (the old way) only if show_axis is disabled
+		if (!GlobalXYWnd().showAxes()) {
+			glRasterPos2d( _origin[nDim1] - w + 35 / _scale, _origin[nDim2] + h - 20 / _scale );
+			_font->drawString(ORIENTATION_TITLES.at(_orientation));
+		}
+	}
 
-    if (GlobalMapModule().getEditMode() == IMap::EditMode::Merge)
-    {
-        glColor3d(0.9, 0, 0);
-        glRasterPos2d(_origin[nDim1] - 50 / _scale, _origin[nDim2] + h - 30 / _scale);
-        _font->drawString("Merge Mode");
-    }
+	if (GlobalMapModule().getEditMode() == IMap::EditMode::Merge)
+	{
+		glColor3d(0.9, 0, 0);
+		glRasterPos2d(_origin[nDim1] - 50 / _scale, _origin[nDim2] + h - 30 / _scale);
+		_font->drawString("Merge Mode");
+	}
 
-    if (GlobalXYWnd().showAxes())
-    {
-        const char* g_AxisName[3] = { "X", "Y", "Z" };
+	if (GlobalXYWnd().showAxes())
+	{
+		const char* g_AxisName[3] = { "X", "Y", "Z" };
 
-        const std::string colourNameX = (_orientation == OrthoOrientation::YZ) ? "axis_y" : "axis_x";
-        const std::string colourNameY = (_orientation == OrthoOrientation::XY) ? "axis_y" : "axis_z";
-        const Vector3& colourX = GlobalColourSchemeManager().getColour(colourNameX);
-        const Vector3& colourY = GlobalColourSchemeManager().getColour(colourNameY);
+		const std::string colourNameX = (_orientation == OrthoOrientation::YZ) ? "axis_y" : "axis_x";
+		const std::string colourNameY = (_orientation == OrthoOrientation::XY) ? "axis_y" : "axis_z";
+		const Vector3& colourX = GlobalColourSchemeManager().getColour(colourNameX);
+		const Vector3& colourY = GlobalColourSchemeManager().getColour(colourNameY);
 
-        // draw two lines with corresponding axis colors to highlight current view
-        // horizontal line: nDim1 color
-        glLineWidth(2);
-        glBegin( GL_LINES );
-        glColor3dv (colourX);
-        glVertex2f( _origin[nDim1] - w + 40 / _scale, _origin[nDim2] + h - 45 / _scale );
-        glVertex2f( _origin[nDim1] - w + 65 / _scale, _origin[nDim2] + h - 45 / _scale );
-        glVertex2f( 0, 0 );
-        glVertex2f( 32 / _scale, 0 );
-        glColor3dv (colourY);
-        glVertex2f( _origin[nDim1] - w + 40 / _scale, _origin[nDim2] + h - 45 / _scale );
-        glVertex2f( _origin[nDim1] - w + 40 / _scale, _origin[nDim2] + h - 20 / _scale );
-        glVertex2f( 0, 0 );
-        glVertex2f( 0, 32 / _scale );
-        glEnd();
-        glLineWidth(1);
-        // now print axis symbols
-        glColor3dv (colourX);
-        glRasterPos2f ( _origin[nDim1] - w + 55 / _scale, _origin[nDim2] + h - 55 / _scale );
-        _font->drawString(g_AxisName[nDim1]);
-        glRasterPos2f (28 / _scale, -10 / _scale );
-        _font->drawString(g_AxisName[nDim1]);
-        glColor3dv (colourY);
-        glRasterPos2f ( _origin[nDim1] - w + 25 / _scale, _origin[nDim2] + h - 30 / _scale );
-        _font->drawString(g_AxisName[nDim2]);
-        glRasterPos2f ( -10 / _scale, 28 / _scale );
-        _font->drawString(g_AxisName[nDim2]);
+		// draw two lines with corresponding axis colors to highlight current view
+		// horizontal line: nDim1 color
+		glLineWidth(2);
+		glBegin( GL_LINES );
+		glColor3dv (colourX);
+		glVertex2f( _origin[nDim1] - w + 40 / _scale, _origin[nDim2] + h - 45 / _scale );
+		glVertex2f( _origin[nDim1] - w + 65 / _scale, _origin[nDim2] + h - 45 / _scale );
+		glVertex2f( 0, 0 );
+		glVertex2f( 32 / _scale, 0 );
+		glColor3dv (colourY);
+		glVertex2f( _origin[nDim1] - w + 40 / _scale, _origin[nDim2] + h - 45 / _scale );
+		glVertex2f( _origin[nDim1] - w + 40 / _scale, _origin[nDim2] + h - 20 / _scale );
+		glVertex2f( 0, 0 );
+		glVertex2f( 0, 32 / _scale );
+		glEnd();
+		glLineWidth(1);
+		// now print axis symbols
+		glColor3dv (colourX);
+		glRasterPos2f ( _origin[nDim1] - w + 55 / _scale, _origin[nDim2] + h - 55 / _scale );
+		_font->drawString(g_AxisName[nDim1]);
+		glRasterPos2f (28 / _scale, -10 / _scale );
+		_font->drawString(g_AxisName[nDim1]);
+		glColor3dv (colourY);
+		glRasterPos2f ( _origin[nDim1] - w + 25 / _scale, _origin[nDim2] + h - 30 / _scale );
+		_font->drawString(g_AxisName[nDim2]);
+		glRasterPos2f ( -10 / _scale, 28 / _scale );
+		_font->drawString(g_AxisName[nDim2]);
 
-    }
+	}
 
-    // show current work zone?
-    // the work zone is used to place dropped points and brushes
-    if (GlobalXYWnd().showWorkzone())
-    {
-        const selection::WorkZone& wz = GlobalSelectionSystem().getWorkZone();
+	// show current work zone?
+	// the work zone is used to place dropped points and brushes
+	if (GlobalXYWnd().showWorkzone())
+	{
+		const selection::WorkZone& wz = GlobalSelectionSystem().getWorkZone();
 
-        if (wz.bounds.isValid())
-        {
-            glColor3dv(GlobalColourSchemeManager().getColour("workzone"));
-            glBegin( GL_LINES );
+		if (wz.bounds.isValid())
+		{
+			glColor3dv(GlobalColourSchemeManager().getColour("workzone"));
+			glBegin( GL_LINES );
 
-            glVertex2f( xb, wz.min[nDim2] );
-            glVertex2f( xe, wz.min[nDim2] );
-            glVertex2f( xb, wz.max[nDim2] );
-            glVertex2f( xe, wz.max[nDim2] );
-            glVertex2f( wz.min[nDim1], yb );
-            glVertex2f( wz.min[nDim1], ye );
-            glVertex2f( wz.max[nDim1], yb );
-            glVertex2f( wz.max[nDim1], ye );
-            glEnd();
-        }
-    }
+			glVertex2f( xb, wz.min[nDim2] );
+			glVertex2f( xe, wz.min[nDim2] );
+			glVertex2f( xb, wz.max[nDim2] );
+			glVertex2f( xe, wz.max[nDim2] );
+			glVertex2f( wz.min[nDim1], yb );
+			glVertex2f( wz.min[nDim1], ye );
+			glVertex2f( wz.max[nDim1], yb );
+			glVertex2f( wz.max[nDim1], ye );
+			glEnd();
+		}
+	}
 
-    drawSelectionFocusArea(nDim1, nDim2, xb, xe, yb, ye);
+	drawSelectionFocusArea(nDim1, nDim2, xb, xe, yb, ye);
 }
 
 void OrthoView::drawSelectionFocusArea(int nDim1, int nDim2, float xMin, float xMax, float yMin, float yMax)
 {
-    if (!GlobalSelectionSystem().selectionFocusIsActive()) return;
+	if (!GlobalSelectionSystem().selectionFocusIsActive()) return;
 
-    auto bounds = GlobalSelectionSystem().getSelectionFocusBounds();
+	auto bounds = GlobalSelectionSystem().getSelectionFocusBounds();
 
-    if (!bounds.isValid()) return;
+	if (!bounds.isValid()) return;
 
-    Vector3f focusMin = bounds.getOrigin() - bounds.getExtents();
-    Vector3f focusMax = bounds.getOrigin() + bounds.getExtents();
+	Vector3f focusMin = bounds.getOrigin() - bounds.getExtents();
+	Vector3f focusMax = bounds.getOrigin() + bounds.getExtents();
 
-    auto toggleAccel = GlobalEventManager().findAcceleratorForEvent("ToggleSelectionFocus");
-    auto unselectAccel = GlobalEventManager().findAcceleratorForEvent("UnSelectSelection");
+	auto toggleAccel = GlobalEventManager().findAcceleratorForEvent("ToggleSelectionFocus");
+	auto unselectAccel = GlobalEventManager().findAcceleratorForEvent("UnSelectSelection");
 
-    std::string accelInfo;
+	std::string accelInfo;
 
-    if (unselectAccel)
-    {
-        accelInfo += unselectAccel->getString(false);
-    }
+	if (unselectAccel)
+	{
+		accelInfo += unselectAccel->getString(false);
+	}
 
-    if (toggleAccel)
-    {
-        accelInfo += accelInfo.empty() ? "" : _(" or ");
-        accelInfo += toggleAccel->getString(false);
-    }
+	if (toggleAccel)
+	{
+		accelInfo += accelInfo.empty() ? "" : _(" or ");
+		accelInfo += toggleAccel->getString(false);
+	}
 
-    std::string focusHint = _("Selection Focus Active");
+	std::string focusHint = _("Selection Focus Active");
 
-    if (!accelInfo.empty())
-    {
-        focusHint += fmt::format(_(" (press {0} to exit)"), accelInfo);
-    }
+	if (!accelInfo.empty())
+	{
+		focusHint += fmt::format(_(" (press {0} to exit)"), accelInfo);
+	}
 
-    glColor3d(0.3, 0.3, 0.3);
-    glRasterPos2d((focusMax[nDim1] + focusMin[nDim1])*0.5 - focusHint.length()*3.2/_scale, focusMax[nDim2] + 10 / _scale);
-    _font->drawString(focusHint);
+	glColor3d(0.3, 0.3, 0.3);
+	glRasterPos2d((focusMax[nDim1] + focusMin[nDim1])*0.5 - focusHint.length()*3.2/_scale, focusMax[nDim2] + 10 / _scale);
+	_font->drawString(focusHint);
 
-    // Define the blend function for transparency
-    glEnable(GL_BLEND);
-    glBlendColor(0, 0, 0, 0.15f);
-    glBlendFunc(GL_CONSTANT_ALPHA_EXT, GL_ONE_MINUS_CONSTANT_ALPHA_EXT);
+	// Define the blend function for transparency
+	glEnable(GL_BLEND);
+	glBlendColor(0, 0, 0, 0.15f);
+	glBlendFunc(GL_CONSTANT_ALPHA_EXT, GL_ONE_MINUS_CONSTANT_ALPHA_EXT);
 
-    Vector3 dragBoxColour(0, 0, 0);
-    glColor3dv(dragBoxColour);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	Vector3 dragBoxColour(0, 0, 0);
+	glColor3dv(dragBoxColour);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    // Flood everything outside the bounds with an overlay
-    glBegin(GL_QUADS);
+	// Flood everything outside the bounds with an overlay
+	glBegin(GL_QUADS);
 
-    glVertex2f(xMin, yMin);
-    glVertex2f(xMin, focusMin[nDim2]);
-    glVertex2f(xMax, focusMin[nDim2]);
-    glVertex2f(xMax, yMin);
+	glVertex2f(xMin, yMin);
+	glVertex2f(xMin, focusMin[nDim2]);
+	glVertex2f(xMax, focusMin[nDim2]);
+	glVertex2f(xMax, yMin);
 
-    glVertex2f(xMin, yMax);
-    glVertex2f(xMax, yMax);
-    glVertex2f(xMax, focusMax[nDim2]);
-    glVertex2f(xMin, focusMax[nDim2]);
+	glVertex2f(xMin, yMax);
+	glVertex2f(xMax, yMax);
+	glVertex2f(xMax, focusMax[nDim2]);
+	glVertex2f(xMin, focusMax[nDim2]);
 
-    glVertex2f(xMin, focusMax[nDim2]);
-    glVertex2f(focusMin[nDim1], focusMax[nDim2]);
-    glVertex2f(focusMin[nDim1], focusMin[nDim2]);
-    glVertex2f(xMin, focusMin[nDim2]);
+	glVertex2f(xMin, focusMax[nDim2]);
+	glVertex2f(focusMin[nDim1], focusMax[nDim2]);
+	glVertex2f(focusMin[nDim1], focusMin[nDim2]);
+	glVertex2f(xMin, focusMin[nDim2]);
 
-    glVertex2f(focusMax[nDim1], focusMax[nDim2]);
-    glVertex2f(xMax, focusMax[nDim2]);
-    glVertex2f(xMax, focusMin[nDim2]);
-    glVertex2f(focusMax[nDim1], focusMin[nDim2]);
+	glVertex2f(focusMax[nDim1], focusMax[nDim2]);
+	glVertex2f(xMax, focusMax[nDim2]);
+	glVertex2f(xMax, focusMin[nDim2]);
+	glVertex2f(focusMax[nDim1], focusMin[nDim2]);
 
-    glEnd();
+	glEnd();
 #if 0
-    // The solid borders
-    glBlendColor(0, 0, 0, 0.4f);
-    glBegin(GL_LINE_LOOP);
-    glVertex2f(focusMax[nDim1] + 2, focusMax[nDim2] + 2);
-    glVertex2f(focusMax[nDim1] + 2, focusMin[nDim2] - 2);
-    glVertex2f(focusMin[nDim1] - 2, focusMin[nDim2] - 2);
-    glVertex2f(focusMin[nDim1] - 2, focusMax[nDim2] + 2);
-    glEnd();
+	// The solid borders
+	glBlendColor(0, 0, 0, 0.4f);
+	glBegin(GL_LINE_LOOP);
+	glVertex2f(focusMax[nDim1] + 2, focusMax[nDim2] + 2);
+	glVertex2f(focusMax[nDim1] + 2, focusMin[nDim2] - 2);
+	glVertex2f(focusMin[nDim1] - 2, focusMin[nDim2] - 2);
+	glVertex2f(focusMin[nDim1] - 2, focusMax[nDim2] + 2);
+	glEnd();
 #endif
-    glDisable(GL_BLEND);
+	glDisable(GL_BLEND);
 }
 
 void OrthoView::drawBlockGrid()
 {
-    // Do nothing if there is no worldspawn yet
-    Entity* worldSpawn = map::current::getWorldspawn();
-    if (!worldSpawn)
-        return;
+	// Do nothing if there is no worldspawn yet
+	Entity* worldSpawn = map::current::getWorldspawn();
+	if (!worldSpawn)
+		return;
 
-    // Set a default blocksize of 1024
-    int blockSize = GlobalXYWnd().defaultBlockSize();
+	// Set a default blocksize of 1024
+	int blockSize = GlobalXYWnd().defaultBlockSize();
 
-    // Check the worldspawn for a custom blocksize
-    assert(worldSpawn);
-    std::string sizeVal = worldSpawn->getKeyValue("_blocksize");
+	// Check the worldspawn for a custom blocksize
+	assert(worldSpawn);
+	std::string sizeVal = worldSpawn->getKeyValue("_blocksize");
 
-    // Parse and set the custom blocksize if found
-    if (!sizeVal.empty()) {
-        blockSize = string::convert<int>(sizeVal);
-    }
+	// Parse and set the custom blocksize if found
+	if (!sizeVal.empty()) {
+		blockSize = string::convert<int>(sizeVal);
+	}
 
-    float   x, y, xb, xe, yb, ye;
-    char    text[32];
+	float   x, y, xb, xe, yb, ye;
+	char    text[32];
 
-    glDisable(GL_TEXTURE_2D);
-    glDisable(GL_TEXTURE_1D);
-    glDisable(GL_DEPTH_TEST);
-    glDisable(GL_BLEND);
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_TEXTURE_1D);
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
 
-    Vector4 windowCoords = getWindowCoordinates();
+	Vector4 windowCoords = getWindowCoordinates();
 
-    xb = static_cast<float>(blockSize * floor (windowCoords[0]/blockSize));
-    xe = static_cast<float>(blockSize * ceil (windowCoords[1]/blockSize));
-    yb = static_cast<float>(blockSize * floor (windowCoords[2]/blockSize));
-    ye = static_cast<float>(blockSize * ceil (windowCoords[3]/blockSize));
+	xb = static_cast<float>(blockSize * floor (windowCoords[0]/blockSize));
+	xe = static_cast<float>(blockSize * ceil (windowCoords[1]/blockSize));
+	yb = static_cast<float>(blockSize * floor (windowCoords[2]/blockSize));
+	ye = static_cast<float>(blockSize * ceil (windowCoords[3]/blockSize));
 
-    // draw major blocks
+	// draw major blocks
 
-    glColor3dv(GlobalColourSchemeManager().getColour("grid_block"));
-    glLineWidth (2);
+	glColor3dv(GlobalColourSchemeManager().getColour("grid_block"));
+	glLineWidth (2);
 
-    glBegin (GL_LINES);
+	glBegin (GL_LINES);
 
-    for (x=xb ; x<=xe ; x+=blockSize) {
-        glVertex2f (x, yb);
-        glVertex2f (x, ye);
-    }
+	for (x=xb ; x<=xe ; x+=blockSize) {
+		glVertex2f (x, yb);
+		glVertex2f (x, ye);
+	}
 
-    if (_orientation == OrthoOrientation::XY) {
-        for (y=yb ; y<=ye ; y+=blockSize) {
-            glVertex2f (xb, y);
-            glVertex2f (xe, y);
-        }
-    }
+	if (_orientation == OrthoOrientation::XY) {
+		for (y=yb ; y<=ye ; y+=blockSize) {
+			glVertex2f (xb, y);
+			glVertex2f (xe, y);
+		}
+	}
 
-    glEnd();
-    glLineWidth (1);
+	glEnd();
+	glLineWidth (1);
 
-    // draw coordinate text if needed
+	// draw coordinate text if needed
 
-    if (_orientation == OrthoOrientation::XY && _scale > .1) {
-        for (x=xb ; x<xe ; x+=blockSize)
-            for (y=yb ; y<ye ; y+=blockSize) {
-                glRasterPos2f (x+(blockSize/2.0), y+(blockSize/2.0));
-                sprintf (text, "%i,%i",(int)floor(x/blockSize), (int)floor(y/blockSize) );
-                _font->drawString(text);
-            }
-    }
+	if (_orientation == OrthoOrientation::XY && _scale > .1) {
+		for (x=xb ; x<xe ; x+=blockSize)
+			for (y=yb ; y<ye ; y+=blockSize) {
+				glRasterPos2f (x+(blockSize/2.0), y+(blockSize/2.0));
+				sprintf (text, "%i,%i",(int)floor(x/blockSize), (int)floor(y/blockSize) );
+				_font->drawString(text);
+			}
+	}
 
-    glColor4f(0, 0, 0, 0);
+	glColor4f(0, 0, 0, 0);
 }
 
 void OrthoView::drawCameraIcon()
 {
-    try
-    {
-        auto& camera = GlobalCameraManager().getActiveView();
+	try
+	{
+		auto& camera = GlobalCameraManager().getActiveView();
 
-        const auto& origin = camera.getCameraOrigin();
-        const auto& angles = camera.getCameraAngles();
+		const auto& origin = camera.getCameraOrigin();
+		const auto& angles = camera.getCameraAngles();
 
-        float x, y, fov, box;
-        float a;
+		float x, y, fov, box;
+		float a;
 
-        fov = 48 / _scale;
-        box = 16 / _scale;
+		fov = 48 / _scale;
+		box = 16 / _scale;
 
-        if (_orientation == OrthoOrientation::XY) {
-            x = origin[0];
-            y = origin[1];
-            a = degrees_to_radians(angles[camera::CAMERA_YAW]);
-        }
-        else if (_orientation == OrthoOrientation::YZ) {
-            x = origin[1];
-            y = origin[2];
-            a = degrees_to_radians(angles[camera::CAMERA_PITCH]);
-        }
-        else {
-            x = origin[0];
-            y = origin[2];
-            a = degrees_to_radians(angles[camera::CAMERA_PITCH]);
-        }
+		if (_orientation == OrthoOrientation::XY) {
+			x = origin[0];
+			y = origin[1];
+			a = degrees_to_radians(angles[camera::CAMERA_YAW]);
+		}
+		else if (_orientation == OrthoOrientation::YZ) {
+			x = origin[1];
+			y = origin[2];
+			a = degrees_to_radians(angles[camera::CAMERA_PITCH]);
+		}
+		else {
+			x = origin[0];
+			y = origin[2];
+			a = degrees_to_radians(angles[camera::CAMERA_PITCH]);
+		}
 
-        glColor3dv(GlobalColourSchemeManager().getColour("camera_icon"));
-        glBegin(GL_LINE_STRIP);
-        glVertex3f(x - box, y, 0);
-        glVertex3f(x, y + (box / 2), 0);
-        glVertex3f(x + box, y, 0);
-        glVertex3f(x, y - (box / 2), 0);
-        glVertex3f(x - box, y, 0);
-        glVertex3f(x + box, y, 0);
-        glEnd();
+		glColor3dv(GlobalColourSchemeManager().getColour("camera_icon"));
+		glBegin(GL_LINE_STRIP);
+		glVertex3f(x - box, y, 0);
+		glVertex3f(x, y + (box / 2), 0);
+		glVertex3f(x + box, y, 0);
+		glVertex3f(x, y - (box / 2), 0);
+		glVertex3f(x - box, y, 0);
+		glVertex3f(x + box, y, 0);
+		glEnd();
 
-        glBegin(GL_LINE_STRIP);
-        glVertex3f(x + static_cast<float>(fov * cos(a + math::PI / 4)), y + static_cast<float>(fov * sin(a + math::PI / 4)), 0);
-        glVertex3f(x, y, 0);
-        glVertex3f(x + static_cast<float>(fov * cos(a - math::PI / 4)), y + static_cast<float>(fov * sin(a - math::PI / 4)), 0);
-        glEnd();
-    }
-    catch (const std::runtime_error&)
-    {
-        return; // no camera present
-    }
+		glBegin(GL_LINE_STRIP);
+		glVertex3f(x + static_cast<float>(fov * cos(a + math::PI / 4)), y + static_cast<float>(fov * sin(a + math::PI / 4)), 0);
+		glVertex3f(x, y, 0);
+		glVertex3f(x + static_cast<float>(fov * cos(a - math::PI / 4)), y + static_cast<float>(fov * sin(a - math::PI / 4)), 0);
+		glEnd();
+	}
+	catch (const std::runtime_error&)
+	{
+		return; // no camera present
+	}
 }
 
 // can be greatly simplified but per usual i am in a hurry
 // which is not an excuse, just a fact
 void OrthoView::drawSizeInfo(int nDim1, int nDim2, const Vector3& vMinBounds, const Vector3& vMaxBounds)
 {
-    if (GlobalMapModule().getEditMode() == IMap::EditMode::Merge)
-    {
-        return;
-    }
+	if (GlobalMapModule().getEditMode() == IMap::EditMode::Merge)
+	{
+		return;
+	}
 
   if (vMinBounds == vMaxBounds) {
-    return;
+	return;
   }
   const char* g_pDimStrings[] = {"x:", "y:", "z:"};
   typedef const char* OrgStrings[2];
@@ -1169,262 +1169,262 @@ void OrthoView::drawSizeInfo(int nDim1, int nDim2, const Vector3& vMinBounds, co
 
   if (_orientation == OrthoOrientation::XY)
   {
-    glBegin (GL_LINES);
+	glBegin (GL_LINES);
 
-    glVertex3d(vMinBounds[nDim1], vMinBounds[nDim2] - 6.0f  / _scale, 0.0f);
-    glVertex3d(vMinBounds[nDim1], vMinBounds[nDim2] - 10.0f / _scale, 0.0f);
+	glVertex3d(vMinBounds[nDim1], vMinBounds[nDim2] - 6.0f  / _scale, 0.0f);
+	glVertex3d(vMinBounds[nDim1], vMinBounds[nDim2] - 10.0f / _scale, 0.0f);
 
-    glVertex3d(vMinBounds[nDim1], vMinBounds[nDim2] - 10.0f  / _scale, 0.0f);
-    glVertex3d(vMaxBounds[nDim1], vMinBounds[nDim2] - 10.0f  / _scale, 0.0f);
+	glVertex3d(vMinBounds[nDim1], vMinBounds[nDim2] - 10.0f  / _scale, 0.0f);
+	glVertex3d(vMaxBounds[nDim1], vMinBounds[nDim2] - 10.0f  / _scale, 0.0f);
 
-    glVertex3d(vMaxBounds[nDim1], vMinBounds[nDim2] - 6.0f  / _scale, 0.0f);
-    glVertex3d(vMaxBounds[nDim1], vMinBounds[nDim2] - 10.0f / _scale, 0.0f);
+	glVertex3d(vMaxBounds[nDim1], vMinBounds[nDim2] - 6.0f  / _scale, 0.0f);
+	glVertex3d(vMaxBounds[nDim1], vMinBounds[nDim2] - 10.0f / _scale, 0.0f);
 
 
-    glVertex3d(vMaxBounds[nDim1] + 6.0f  / _scale, vMinBounds[nDim2], 0.0f);
-    glVertex3d(vMaxBounds[nDim1] + 10.0f  / _scale, vMinBounds[nDim2], 0.0f);
+	glVertex3d(vMaxBounds[nDim1] + 6.0f  / _scale, vMinBounds[nDim2], 0.0f);
+	glVertex3d(vMaxBounds[nDim1] + 10.0f  / _scale, vMinBounds[nDim2], 0.0f);
 
-    glVertex3d(vMaxBounds[nDim1] + 10.0f  / _scale, vMinBounds[nDim2], 0.0f);
-    glVertex3d(vMaxBounds[nDim1] + 10.0f  / _scale, vMaxBounds[nDim2], 0.0f);
+	glVertex3d(vMaxBounds[nDim1] + 10.0f  / _scale, vMinBounds[nDim2], 0.0f);
+	glVertex3d(vMaxBounds[nDim1] + 10.0f  / _scale, vMaxBounds[nDim2], 0.0f);
 
-    glVertex3d(vMaxBounds[nDim1] + 6.0f  / _scale, vMaxBounds[nDim2], 0.0f);
-    glVertex3d(vMaxBounds[nDim1] + 10.0f  / _scale, vMaxBounds[nDim2], 0.0f);
+	glVertex3d(vMaxBounds[nDim1] + 6.0f  / _scale, vMaxBounds[nDim2], 0.0f);
+	glVertex3d(vMaxBounds[nDim1] + 10.0f  / _scale, vMaxBounds[nDim2], 0.0f);
 
-    glEnd();
+	glEnd();
 
-    glRasterPos3f (Betwixt(vMinBounds[nDim1], vMaxBounds[nDim1]),  vMinBounds[nDim2] - 20.0f  / _scale, 0.0f);
-    dimensions << g_pDimStrings[nDim1] << vSize[nDim1];
-    _font->drawString(dimensions.str());
-    dimensions.str("");
+	glRasterPos3f (Betwixt(vMinBounds[nDim1], vMaxBounds[nDim1]),  vMinBounds[nDim2] - 20.0f  / _scale, 0.0f);
+	dimensions << g_pDimStrings[nDim1] << vSize[nDim1];
+	_font->drawString(dimensions.str());
+	dimensions.str("");
 
-    glRasterPos3f (vMaxBounds[nDim1] + 16.0f  / _scale, Betwixt(vMinBounds[nDim2], vMaxBounds[nDim2]), 0.0f);
-    dimensions << g_pDimStrings[nDim2] << vSize[nDim2];
-    _font->drawString(dimensions.str());
-    dimensions.str("");
+	glRasterPos3f (vMaxBounds[nDim1] + 16.0f  / _scale, Betwixt(vMinBounds[nDim2], vMaxBounds[nDim2]), 0.0f);
+	dimensions << g_pDimStrings[nDim2] << vSize[nDim2];
+	_font->drawString(dimensions.str());
+	dimensions.str("");
 
-    glRasterPos3f (vMinBounds[nDim1] + 4, vMaxBounds[nDim2] + 8 / _scale, 0.0f);
-    dimensions << "(" << g_pOrgStrings[0][0] << vMinBounds[nDim1] << "  " << g_pOrgStrings[0][1] << vMaxBounds[nDim2] << ")";
-    _font->drawString(dimensions.str());
+	glRasterPos3f (vMinBounds[nDim1] + 4, vMaxBounds[nDim2] + 8 / _scale, 0.0f);
+	dimensions << "(" << g_pOrgStrings[0][0] << vMinBounds[nDim1] << "  " << g_pOrgStrings[0][1] << vMaxBounds[nDim2] << ")";
+	_font->drawString(dimensions.str());
   }
   else if (_orientation == OrthoOrientation::XZ)
   {
-    glBegin (GL_LINES);
+	glBegin (GL_LINES);
 
-    glVertex3f(vMinBounds[nDim1], 0, vMinBounds[nDim2] - 6.0f  / _scale);
-    glVertex3f(vMinBounds[nDim1], 0, vMinBounds[nDim2] - 10.0f / _scale);
+	glVertex3f(vMinBounds[nDim1], 0, vMinBounds[nDim2] - 6.0f  / _scale);
+	glVertex3f(vMinBounds[nDim1], 0, vMinBounds[nDim2] - 10.0f / _scale);
 
-    glVertex3f(vMinBounds[nDim1], 0,vMinBounds[nDim2] - 10.0f  / _scale);
-    glVertex3f(vMaxBounds[nDim1], 0,vMinBounds[nDim2] - 10.0f  / _scale);
+	glVertex3f(vMinBounds[nDim1], 0,vMinBounds[nDim2] - 10.0f  / _scale);
+	glVertex3f(vMaxBounds[nDim1], 0,vMinBounds[nDim2] - 10.0f  / _scale);
 
-    glVertex3f(vMaxBounds[nDim1], 0,vMinBounds[nDim2] - 6.0f  / _scale);
-    glVertex3f(vMaxBounds[nDim1], 0,vMinBounds[nDim2] - 10.0f / _scale);
+	glVertex3f(vMaxBounds[nDim1], 0,vMinBounds[nDim2] - 6.0f  / _scale);
+	glVertex3f(vMaxBounds[nDim1], 0,vMinBounds[nDim2] - 10.0f / _scale);
 
 
-    glVertex3f(vMaxBounds[nDim1] + 6.0f  / _scale, 0,vMinBounds[nDim2]);
-    glVertex3f(vMaxBounds[nDim1] + 10.0f  / _scale, 0,vMinBounds[nDim2]);
+	glVertex3f(vMaxBounds[nDim1] + 6.0f  / _scale, 0,vMinBounds[nDim2]);
+	glVertex3f(vMaxBounds[nDim1] + 10.0f  / _scale, 0,vMinBounds[nDim2]);
 
-    glVertex3f(vMaxBounds[nDim1] + 10.0f  / _scale, 0,vMinBounds[nDim2]);
-    glVertex3f(vMaxBounds[nDim1] + 10.0f  / _scale, 0,vMaxBounds[nDim2]);
+	glVertex3f(vMaxBounds[nDim1] + 10.0f  / _scale, 0,vMinBounds[nDim2]);
+	glVertex3f(vMaxBounds[nDim1] + 10.0f  / _scale, 0,vMaxBounds[nDim2]);
 
-    glVertex3f(vMaxBounds[nDim1] + 6.0f  / _scale, 0,vMaxBounds[nDim2]);
-    glVertex3f(vMaxBounds[nDim1] + 10.0f  / _scale, 0,vMaxBounds[nDim2]);
+	glVertex3f(vMaxBounds[nDim1] + 6.0f  / _scale, 0,vMaxBounds[nDim2]);
+	glVertex3f(vMaxBounds[nDim1] + 10.0f  / _scale, 0,vMaxBounds[nDim2]);
 
-    glEnd();
+	glEnd();
 
-    glRasterPos3f (Betwixt(vMinBounds[nDim1], vMaxBounds[nDim1]), 0, vMinBounds[nDim2] - 20.0f  / _scale);
-    dimensions << g_pDimStrings[nDim1] << vSize[nDim1];
-    _font->drawString(dimensions.str());
-    dimensions.str("");
+	glRasterPos3f (Betwixt(vMinBounds[nDim1], vMaxBounds[nDim1]), 0, vMinBounds[nDim2] - 20.0f  / _scale);
+	dimensions << g_pDimStrings[nDim1] << vSize[nDim1];
+	_font->drawString(dimensions.str());
+	dimensions.str("");
 
-    glRasterPos3f (vMaxBounds[nDim1] + 16.0f  / _scale, 0, Betwixt(vMinBounds[nDim2], vMaxBounds[nDim2]));
-    dimensions << g_pDimStrings[nDim2] << vSize[nDim2];
-    _font->drawString(dimensions.str());
-    dimensions.str("");
+	glRasterPos3f (vMaxBounds[nDim1] + 16.0f  / _scale, 0, Betwixt(vMinBounds[nDim2], vMaxBounds[nDim2]));
+	dimensions << g_pDimStrings[nDim2] << vSize[nDim2];
+	_font->drawString(dimensions.str());
+	dimensions.str("");
 
-    glRasterPos3f (vMinBounds[nDim1] + 4, 0, vMaxBounds[nDim2] + 8 / _scale);
-    dimensions << "(" << g_pOrgStrings[1][0] << vMinBounds[nDim1] << "  " << g_pOrgStrings[1][1] << vMaxBounds[nDim2] << ")";
-    _font->drawString(dimensions.str());
+	glRasterPos3f (vMinBounds[nDim1] + 4, 0, vMaxBounds[nDim2] + 8 / _scale);
+	dimensions << "(" << g_pOrgStrings[1][0] << vMinBounds[nDim1] << "  " << g_pOrgStrings[1][1] << vMaxBounds[nDim2] << ")";
+	_font->drawString(dimensions.str());
   }
   else
   {
-    glBegin (GL_LINES);
+	glBegin (GL_LINES);
 
-    glVertex3f(0, vMinBounds[nDim1], vMinBounds[nDim2] - 6.0f  / _scale);
-    glVertex3f(0, vMinBounds[nDim1], vMinBounds[nDim2] - 10.0f / _scale);
+	glVertex3f(0, vMinBounds[nDim1], vMinBounds[nDim2] - 6.0f  / _scale);
+	glVertex3f(0, vMinBounds[nDim1], vMinBounds[nDim2] - 10.0f / _scale);
 
-    glVertex3f(0, vMinBounds[nDim1], vMinBounds[nDim2] - 10.0f  / _scale);
-    glVertex3f(0, vMaxBounds[nDim1], vMinBounds[nDim2] - 10.0f  / _scale);
+	glVertex3f(0, vMinBounds[nDim1], vMinBounds[nDim2] - 10.0f  / _scale);
+	glVertex3f(0, vMaxBounds[nDim1], vMinBounds[nDim2] - 10.0f  / _scale);
 
-    glVertex3f(0, vMaxBounds[nDim1], vMinBounds[nDim2] - 6.0f  / _scale);
-    glVertex3f(0, vMaxBounds[nDim1], vMinBounds[nDim2] - 10.0f / _scale);
+	glVertex3f(0, vMaxBounds[nDim1], vMinBounds[nDim2] - 6.0f  / _scale);
+	glVertex3f(0, vMaxBounds[nDim1], vMinBounds[nDim2] - 10.0f / _scale);
 
 
-    glVertex3f(0, vMaxBounds[nDim1] + 6.0f  / _scale, vMinBounds[nDim2]);
-    glVertex3f(0, vMaxBounds[nDim1] + 10.0f  / _scale, vMinBounds[nDim2]);
+	glVertex3f(0, vMaxBounds[nDim1] + 6.0f  / _scale, vMinBounds[nDim2]);
+	glVertex3f(0, vMaxBounds[nDim1] + 10.0f  / _scale, vMinBounds[nDim2]);
 
-    glVertex3f(0, vMaxBounds[nDim1] + 10.0f  / _scale, vMinBounds[nDim2]);
-    glVertex3f(0, vMaxBounds[nDim1] + 10.0f  / _scale, vMaxBounds[nDim2]);
+	glVertex3f(0, vMaxBounds[nDim1] + 10.0f  / _scale, vMinBounds[nDim2]);
+	glVertex3f(0, vMaxBounds[nDim1] + 10.0f  / _scale, vMaxBounds[nDim2]);
 
-    glVertex3f(0, vMaxBounds[nDim1] + 6.0f  / _scale, vMaxBounds[nDim2]);
-    glVertex3f(0, vMaxBounds[nDim1] + 10.0f  / _scale, vMaxBounds[nDim2]);
+	glVertex3f(0, vMaxBounds[nDim1] + 6.0f  / _scale, vMaxBounds[nDim2]);
+	glVertex3f(0, vMaxBounds[nDim1] + 10.0f  / _scale, vMaxBounds[nDim2]);
 
-    glEnd();
+	glEnd();
 
-    glRasterPos3f (0, Betwixt(vMinBounds[nDim1], vMaxBounds[nDim1]),  vMinBounds[nDim2] - 20.0f  / _scale);
-    dimensions << g_pDimStrings[nDim1] << vSize[nDim1];
-    _font->drawString(dimensions.str());
-    dimensions.str("");
+	glRasterPos3f (0, Betwixt(vMinBounds[nDim1], vMaxBounds[nDim1]),  vMinBounds[nDim2] - 20.0f  / _scale);
+	dimensions << g_pDimStrings[nDim1] << vSize[nDim1];
+	_font->drawString(dimensions.str());
+	dimensions.str("");
 
-    glRasterPos3f (0, vMaxBounds[nDim1] + 16.0f  / _scale, Betwixt(vMinBounds[nDim2], vMaxBounds[nDim2]));
-    dimensions << g_pDimStrings[nDim2] << vSize[nDim2];
-    _font->drawString(dimensions.str());
-    dimensions.str("");
+	glRasterPos3f (0, vMaxBounds[nDim1] + 16.0f  / _scale, Betwixt(vMinBounds[nDim2], vMaxBounds[nDim2]));
+	dimensions << g_pDimStrings[nDim2] << vSize[nDim2];
+	_font->drawString(dimensions.str());
+	dimensions.str("");
 
-    glRasterPos3f (0, vMinBounds[nDim1] + 4.0f, vMaxBounds[nDim2] + 8 / _scale);
-    dimensions << "(" << g_pOrgStrings[2][0] << vMinBounds[nDim1] << "  " << g_pOrgStrings[2][1] << vMaxBounds[nDim2] << ")";
-    _font->drawString(dimensions.str());
+	glRasterPos3f (0, vMinBounds[nDim1] + 4.0f, vMaxBounds[nDim2] + 8 / _scale);
+	dimensions << "(" << g_pOrgStrings[2][0] << vMinBounds[nDim1] << "  " << g_pOrgStrings[2][1] << vMaxBounds[nDim2] << ")";
+	_font->drawString(dimensions.str());
   }
 }
 
 void OrthoView::updateProjection() {
-    _projection[0] = 1.0f / static_cast<float>(_width / 2.0);
-    _projection[5] = 1.0f / static_cast<float>(_height / 2.0);
-    _projection[10] = 1.0f / (_maxWorldCoord * _scale);
+	_projection[0] = 1.0f / static_cast<float>(_width / 2.0);
+	_projection[5] = 1.0f / static_cast<float>(_height / 2.0);
+	_projection[10] = 1.0f / (_maxWorldCoord * _scale);
 
-    _projection[12] = 0.0f;
-    _projection[13] = 0.0f;
-    _projection[14] = -1.0f;
+	_projection[12] = 0.0f;
+	_projection[13] = 0.0f;
+	_projection[14] = -1.0f;
 
-    _projection[1] = _projection[2] = _projection[3] =
-    _projection[4] = _projection[6] = _projection[7] =
-    _projection[8] = _projection[9] = _projection[11] = 0.0f;
+	_projection[1] = _projection[2] = _projection[3] =
+	_projection[4] = _projection[6] = _projection[7] =
+	_projection[8] = _projection[9] = _projection[11] = 0.0f;
 
-    _projection[15] = 1.0f;
+	_projection[15] = 1.0f;
 
-    _view.construct(_projection, _modelView, _width, _height);
+	_view.construct(_projection, _modelView, _width, _height);
 }
 
 // note: modelview matrix must have a uniform scale, otherwise strange things happen when rendering the rotation manipulator.
 void OrthoView::updateModelview()
 {
-    const auto [nDim1, nDim2] = ORIENTATION_AXES.at(_orientation);
+	const auto [nDim1, nDim2] = ORIENTATION_AXES.at(_orientation);
 
-    // translation
-    _modelView[12] = -_origin[nDim1] * _scale;
-    _modelView[13] = -_origin[nDim2] * _scale;
-    _modelView[14] = _maxWorldCoord * _scale;
+	// translation
+	_modelView[12] = -_origin[nDim1] * _scale;
+	_modelView[13] = -_origin[nDim2] * _scale;
+	_modelView[14] = _maxWorldCoord * _scale;
 
-    // axis base
-    switch (_orientation) {
-        case OrthoOrientation::XY:
-            _modelView[0]  =  _scale;
-            _modelView[1]  =  0;
-            _modelView[2]  =  0;
+	// axis base
+	switch (_orientation) {
+		case OrthoOrientation::XY:
+			_modelView[0]  =  _scale;
+			_modelView[1]  =  0;
+			_modelView[2]  =  0;
 
-            _modelView[4]  =  0;
-            _modelView[5]  =  _scale;
-            _modelView[6]  =  0;
+			_modelView[4]  =  0;
+			_modelView[5]  =  _scale;
+			_modelView[6]  =  0;
 
-            _modelView[8]  =  0;
-            _modelView[9]  =  0;
-            _modelView[10] = -_scale;
-            break;
-        case OrthoOrientation::XZ:
-            _modelView[0]  =  _scale;
-            _modelView[1]  =  0;
-            _modelView[2]  =  0;
+			_modelView[8]  =  0;
+			_modelView[9]  =  0;
+			_modelView[10] = -_scale;
+			break;
+		case OrthoOrientation::XZ:
+			_modelView[0]  =  _scale;
+			_modelView[1]  =  0;
+			_modelView[2]  =  0;
 
-            _modelView[4]  =  0;
-            _modelView[5]  =  0;
-            _modelView[6]  =  _scale;
+			_modelView[4]  =  0;
+			_modelView[5]  =  0;
+			_modelView[6]  =  _scale;
 
-            _modelView[8]  =  0;
-            _modelView[9]  =  _scale;
-            _modelView[10] =  0;
-            break;
-        case OrthoOrientation::YZ:
-            _modelView[0]  =  0;
-            _modelView[1]  =  0;
-            _modelView[2]  = -_scale;
+			_modelView[8]  =  0;
+			_modelView[9]  =  _scale;
+			_modelView[10] =  0;
+			break;
+		case OrthoOrientation::YZ:
+			_modelView[0]  =  0;
+			_modelView[1]  =  0;
+			_modelView[2]  = -_scale;
 
-            _modelView[4]  =  _scale;
-            _modelView[5]  =  0;
-            _modelView[6]  =  0;
+			_modelView[4]  =  _scale;
+			_modelView[5]  =  0;
+			_modelView[6]  =  0;
 
-            _modelView[8]  =  0;
-            _modelView[9]  =  _scale;
-            _modelView[10] =  0;
-            break;
-    }
+			_modelView[8]  =  0;
+			_modelView[9]  =  _scale;
+			_modelView[10] =  0;
+			break;
+	}
 
-    _modelView[3] = _modelView[7] = _modelView[11] = 0;
-    _modelView[15] = 1;
+	_modelView[3] = _modelView[7] = _modelView[11] = 0;
+	_modelView[15] = 1;
 
-    _view.construct(_projection, _modelView, _width, _height);
+	_view.construct(_projection, _modelView, _width, _height);
 }
 
 void OrthoView::draw()
 {
-    ensureFont();
+	ensureFont();
 
-    // clear
-    glViewport(0, 0, _width, _height);
-    Vector3 colourGridBack = GlobalColourSchemeManager().getColour("grid_background");
-    glClearColor (colourGridBack[0], colourGridBack[1], colourGridBack[2], 0);
+	// clear
+	glViewport(0, 0, _width, _height);
+	Vector3 colourGridBack = GlobalColourSchemeManager().getColour("grid_background");
+	glClearColor (colourGridBack[0], colourGridBack[1], colourGridBack[2], 0);
 
-    glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT);
 
-    // set up viewpoint
-    glMatrixMode(GL_PROJECTION);
-    glLoadMatrixd(_projection);
+	// set up viewpoint
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixd(_projection);
 
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glScalef(_scale, _scale, 1);
-    int nDim1 = (_orientation == OrthoOrientation::YZ) ? 1 : 0;
-    int nDim2 = (_orientation == OrthoOrientation::XY) ? 1 : 2;
-    glTranslatef(-_origin[nDim1], -_origin[nDim2], 0);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glScalef(_scale, _scale, 1);
+	int nDim1 = (_orientation == OrthoOrientation::YZ) ? 1 : 0;
+	int nDim2 = (_orientation == OrthoOrientation::XY) ? 1 : 2;
+	glTranslatef(-_origin[nDim1], -_origin[nDim2], 0);
 
-    // Call the image overlay draw method with the window coordinates
-    Vector4 windowCoords = getWindowCoordinates();
-    Overlay::Instance().draw(
-        windowCoords[0], windowCoords[1], windowCoords[2], windowCoords[3],
-        _scale);
+	// Call the image overlay draw method with the window coordinates
+	Vector4 windowCoords = getWindowCoordinates();
+	Overlay::Instance().draw(
+		windowCoords[0], windowCoords[1], windowCoords[2], windowCoords[3],
+		_scale);
 
-    glDisable (GL_LINE_STIPPLE);
-    glLineWidth(1);
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    glDisableClientState(GL_NORMAL_ARRAY);
-    glDisableClientState(GL_COLOR_ARRAY);
-    glDisable(GL_TEXTURE_2D);
-    glDisable(GL_LIGHTING);
-    glDisable(GL_COLOR_MATERIAL);
-    glDisable(GL_DEPTH_TEST);
+	glDisable (GL_LINE_STIPPLE);
+	glLineWidth(1);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_LIGHTING);
+	glDisable(GL_COLOR_MATERIAL);
+	glDisable(GL_DEPTH_TEST);
 
-    XYWndManager& xyWndManager = GlobalXYWnd();
+	XYWndManager& xyWndManager = GlobalXYWnd();
 
-    drawGrid();
-    if (xyWndManager.showBlocks())
-        drawBlockGrid();
+	drawGrid();
+	if (xyWndManager.showBlocks())
+		drawBlockGrid();
 
-    glLoadMatrixd(_modelView);
+	glLoadMatrixd(_modelView);
 
-    unsigned int flagsMask = RENDER_VERTEX_COLOUR | RENDER_BLEND;
+	unsigned int flagsMask = RENDER_VERTEX_COLOUR | RENDER_BLEND;
 
-    if (!getCameraSettings()->solidSelectionBoxes())
-    {
-        flagsMask |= RENDER_LINESTIPPLE;
-    }
+	if (!getCameraSettings()->solidSelectionBoxes())
+	{
+		flagsMask |= RENDER_LINESTIPPLE;
+	}
 
-    {
-        GlobalRenderSystem().startFrame();
+	{
+		GlobalRenderSystem().startFrame();
 
-        // Construct the renderer and render the scene
-        XYRenderer renderer(flagsMask, _highlightShaders);
+		// Construct the renderer and render the scene
+		XYRenderer renderer(flagsMask, _highlightShaders);
 
-        // First pass (scenegraph traversal)
-        render::RenderableCollectionWalker::CollectRenderablesInScene(renderer,
-                                                                      _view);
+		// First pass (scenegraph traversal)
+		render::RenderableCollectionWalker::CollectRenderablesInScene(renderer,
+																	  _view);
 
 
 		// Render any active mousetools
@@ -1433,160 +1433,160 @@ void OrthoView::draw()
 			i.second->render(GlobalRenderSystem(), renderer, _view);
 		}
 
-        // Second pass (GL calls)
-        renderer.render(_modelView, _projection, _view);
+		// Second pass (GL calls)
+		renderer.render(_modelView, _projection, _view);
 
-        GlobalRenderSystem().endFrame();
-    }
+		GlobalRenderSystem().endFrame();
+	}
 
-    glDepthMask(GL_FALSE);
+	glDepthMask(GL_FALSE);
 
-    debug::assertNoGlErrors();
+	debug::assertNoGlErrors();
 
-    glLoadMatrixd(_modelView);
+	glLoadMatrixd(_modelView);
 
-    debug::assertNoGlErrors();
-    glDisable(GL_LINE_STIPPLE);
-    debug::assertNoGlErrors();
-    glLineWidth(1);
-    debug::assertNoGlErrors();
-    if (GLEW_VERSION_1_3) {
-        glActiveTexture(GL_TEXTURE0);
-        glClientActiveTexture(GL_TEXTURE0);
-    }
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    debug::assertNoGlErrors();
-    glDisableClientState(GL_NORMAL_ARRAY);
-    debug::assertNoGlErrors();
-    glDisableClientState(GL_COLOR_ARRAY);
-    debug::assertNoGlErrors();
-    glDisable(GL_TEXTURE_2D);
-    debug::assertNoGlErrors();
-    glDisable(GL_LIGHTING);
-    debug::assertNoGlErrors();
-    glDisable(GL_COLOR_MATERIAL);
-    debug::assertNoGlErrors();
+	debug::assertNoGlErrors();
+	glDisable(GL_LINE_STIPPLE);
+	debug::assertNoGlErrors();
+	glLineWidth(1);
+	debug::assertNoGlErrors();
+	if (GLEW_VERSION_1_3) {
+		glActiveTexture(GL_TEXTURE0);
+		glClientActiveTexture(GL_TEXTURE0);
+	}
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	debug::assertNoGlErrors();
+	glDisableClientState(GL_NORMAL_ARRAY);
+	debug::assertNoGlErrors();
+	glDisableClientState(GL_COLOR_ARRAY);
+	debug::assertNoGlErrors();
+	glDisable(GL_TEXTURE_2D);
+	debug::assertNoGlErrors();
+	glDisable(GL_LIGHTING);
+	debug::assertNoGlErrors();
+	glDisable(GL_COLOR_MATERIAL);
+	debug::assertNoGlErrors();
 
-    // greebo: Check, if the size info should be displayed (if there are any items selected)
-    if (xyWndManager.showSizeInfo() && GlobalSelectionSystem().countSelected() != 0)
-    {
-        const selection::WorkZone& wz = GlobalSelectionSystem().getWorkZone();
+	// greebo: Check, if the size info should be displayed (if there are any items selected)
+	if (xyWndManager.showSizeInfo() && GlobalSelectionSystem().countSelected() != 0)
+	{
+		const selection::WorkZone& wz = GlobalSelectionSystem().getWorkZone();
 
-        if (wz.bounds.isValid())
-        {
-            drawSizeInfo(nDim1, nDim2, wz.min, wz.max);
-        }
-    }
+		if (wz.bounds.isValid())
+		{
+			drawSizeInfo(nDim1, nDim2, wz.min, wz.max);
+		}
+	}
 
-    if (xyWndManager.showCrossHairs()) {
-        Vector3 colour = GlobalColourSchemeManager().getColour("xyview_crosshairs");
-        glColor4d(colour[0], colour[1], colour[2], 0.8f);
-        glBegin (GL_LINES);
-        if (_orientation == OrthoOrientation::XY) {
-            glVertex2f(2.0f * _minWorldCoord, _mousePosition[1]);
-            glVertex2f(2.0f * _maxWorldCoord, _mousePosition[1]);
-            glVertex2f(_mousePosition[0], 2.0f * _minWorldCoord);
-            glVertex2f(_mousePosition[0], 2.0f * _maxWorldCoord);
-        }
-        else if (_orientation == OrthoOrientation::YZ) {
-            glVertex3f(_mousePosition[0], 2.0f * _minWorldCoord, _mousePosition[2]);
-            glVertex3f(_mousePosition[0], 2.0f * _maxWorldCoord, _mousePosition[2]);
-            glVertex3f(_mousePosition[0], _mousePosition[1], 2.0f * _minWorldCoord);
-            glVertex3f(_mousePosition[0], _mousePosition[1], 2.0f * _maxWorldCoord);
-        }
-        else {
-            glVertex3f (2.0f * _minWorldCoord, _mousePosition[1], _mousePosition[2]);
-            glVertex3f (2.0f * _maxWorldCoord, _mousePosition[1], _mousePosition[2]);
-            glVertex3f(_mousePosition[0], _mousePosition[1], 2.0f * _minWorldCoord);
-            glVertex3f(_mousePosition[0], _mousePosition[1], 2.0f * _maxWorldCoord);
-        }
-        glEnd();
-    }
+	if (xyWndManager.showCrossHairs()) {
+		Vector3 colour = GlobalColourSchemeManager().getColour("xyview_crosshairs");
+		glColor4d(colour[0], colour[1], colour[2], 0.8f);
+		glBegin (GL_LINES);
+		if (_orientation == OrthoOrientation::XY) {
+			glVertex2f(2.0f * _minWorldCoord, _mousePosition[1]);
+			glVertex2f(2.0f * _maxWorldCoord, _mousePosition[1]);
+			glVertex2f(_mousePosition[0], 2.0f * _minWorldCoord);
+			glVertex2f(_mousePosition[0], 2.0f * _maxWorldCoord);
+		}
+		else if (_orientation == OrthoOrientation::YZ) {
+			glVertex3f(_mousePosition[0], 2.0f * _minWorldCoord, _mousePosition[2]);
+			glVertex3f(_mousePosition[0], 2.0f * _maxWorldCoord, _mousePosition[2]);
+			glVertex3f(_mousePosition[0], _mousePosition[1], 2.0f * _minWorldCoord);
+			glVertex3f(_mousePosition[0], _mousePosition[1], 2.0f * _maxWorldCoord);
+		}
+		else {
+			glVertex3f (2.0f * _minWorldCoord, _mousePosition[1], _mousePosition[2]);
+			glVertex3f (2.0f * _maxWorldCoord, _mousePosition[1], _mousePosition[2]);
+			glVertex3f(_mousePosition[0], _mousePosition[1], 2.0f * _minWorldCoord);
+			glVertex3f(_mousePosition[0], _mousePosition[1], 2.0f * _maxWorldCoord);
+		}
+		glEnd();
+	}
 
-    // greebo: Draw the clipper's control points
-    {
-        glColor3dv(GlobalColourSchemeManager().getColour("clipper"));
-        glPointSize(4);
+	// greebo: Draw the clipper's control points
+	{
+		glColor3dv(GlobalColourSchemeManager().getColour("clipper"));
+		glPointSize(4);
 
-        if (GlobalClipper().clipMode()) {
-            GlobalClipper().draw(_scale);
-        }
+		if (GlobalClipper().clipMode()) {
+			GlobalClipper().draw(_scale);
+		}
 
-        glPointSize(1);
-    }
+		glPointSize(1);
+	}
 
-    debug::assertNoGlErrors();
+	debug::assertNoGlErrors();
 
-    // reset modelview
-    glLoadIdentity();
-    glScalef(_scale, _scale, 1);
-    glTranslatef(-_origin[nDim1], -_origin[nDim2], 0);
+	// reset modelview
+	glLoadIdentity();
+	glScalef(_scale, _scale, 1);
+	glTranslatef(-_origin[nDim1], -_origin[nDim2], 0);
 
-    drawCameraIcon();
+	drawCameraIcon();
 
-    if (!_activeMouseTools.empty())
-    {
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        glOrtho(0, _width, 0, _height, 0, 1);
+	if (!_activeMouseTools.empty())
+	{
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		glOrtho(0, _width, 0, _height, 0, 1);
 
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
 
-        for (const ActiveMouseTools::value_type& i : _activeMouseTools)
-        {
-            i.second->renderOverlay();
-        }
-    }
+		for (const ActiveMouseTools::value_type& i : _activeMouseTools)
+		{
+			i.second->renderOverlay();
+		}
+	}
 
-    if (xyWndManager.showOutline()) {
-        if (isActive()) {
-            glMatrixMode (GL_PROJECTION);
-            glLoadIdentity();
-            glOrtho (0, _width, 0, _height, 0, 1);
+	if (xyWndManager.showOutline()) {
+		if (isActive()) {
+			glMatrixMode (GL_PROJECTION);
+			glLoadIdentity();
+			glOrtho (0, _width, 0, _height, 0, 1);
 
-            glMatrixMode (GL_MODELVIEW);
-            glLoadIdentity();
+			glMatrixMode (GL_MODELVIEW);
+			glLoadIdentity();
 
-            switch (_orientation) {
-                case OrthoOrientation::YZ:
-                    glColor3dv(GlobalColourSchemeManager().getColour("axis_x"));
-                    break;
-                case OrthoOrientation::XZ:
-                    glColor3dv(GlobalColourSchemeManager().getColour("axis_y"));
-                    break;
-                case OrthoOrientation::XY:
-                    glColor3dv(GlobalColourSchemeManager().getColour("axis_z"));
-                    break;
-            }
+			switch (_orientation) {
+				case OrthoOrientation::YZ:
+					glColor3dv(GlobalColourSchemeManager().getColour("axis_x"));
+					break;
+				case OrthoOrientation::XZ:
+					glColor3dv(GlobalColourSchemeManager().getColour("axis_y"));
+					break;
+				case OrthoOrientation::XY:
+					glColor3dv(GlobalColourSchemeManager().getColour("axis_z"));
+					break;
+			}
 
-            glBegin (GL_LINE_LOOP);
-            glVertex2i (0, 0);
-            glVertex2i (_width-1, 0);
-            glVertex2i (_width-1, _height-1);
-            glVertex2i (0, _height-1);
-            glEnd();
-        }
-    }
+			glBegin (GL_LINE_LOOP);
+			glVertex2i (0, 0);
+			glVertex2i (_width-1, 0);
+			glVertex2i (_width-1, _height-1);
+			glVertex2i (0, _height-1);
+			glEnd();
+		}
+	}
 
-    debug::assertNoGlErrors();
+	debug::assertNoGlErrors();
 
-    // Reset the depth mask to its initial value (enabled)
-    glDepthMask(GL_TRUE);
-    debug::assertNoGlErrors();
+	// Reset the depth mask to its initial value (enabled)
+	glDepthMask(GL_TRUE);
+	debug::assertNoGlErrors();
 }
 
 Vector3 OrthoView::mouseToPoint(const Vector2i& vec) const
 {
-    Vector3 point = convertXYToWorld(vec.x(), vec.y());
-    snapToGrid(point);
+	Vector3 point = convertXYToWorld(vec.x(), vec.y());
+	snapToGrid(point);
 
-    int nDim = (getOrientation() == OrthoOrientation::XY) ? 2 : (getOrientation() == OrthoOrientation::YZ) ? 0 : 1;
+	int nDim = (getOrientation() == OrthoOrientation::XY) ? 2 : (getOrientation() == OrthoOrientation::YZ) ? 0 : 1;
 
-    const selection::WorkZone& wz = GlobalSelectionSystem().getWorkZone();
+	const selection::WorkZone& wz = GlobalSelectionSystem().getWorkZone();
 
-    point[nDim] = float_snapped(wz.bounds.getOrigin()[nDim], GlobalGrid().getGridSize());
-    return point;
+	point[nDim] = float_snapped(wz.bounds.getOrigin()[nDim], GlobalGrid().getGridSize());
+	return point;
 }
 
 // NOTE: the zoom out factor is 4/5, we could think about customizing it
@@ -1594,48 +1594,48 @@ Vector3 OrthoView::mouseToPoint(const Vector2i& vec) const
 //  (this has to be computed against the window size)
 float OrthoView::getZoomedScale(int steps)
 {
-    const float min_scale = std::min(getWidth(), getHeight()) / (1.1f * (_maxWorldCoord - _minWorldCoord));
-    const float max_scale = GlobalXYWnd().maxZoomFactor();
-    const float fZoom = pow(5.0f / 4.0f, steps);
-    const float scale = getScale() * fZoom;
+	const float min_scale = std::min(getWidth(), getHeight()) / (1.1f * (_maxWorldCoord - _minWorldCoord));
+	const float max_scale = GlobalXYWnd().maxZoomFactor();
+	const float fZoom = pow(5.0f / 4.0f, steps);
+	const float scale = getScale() * fZoom;
 
-    if (scale > max_scale)
-    {
-        return max_scale;
-    }
+	if (scale > max_scale)
+	{
+		return max_scale;
+	}
 
-    if (scale < min_scale)
-    {
-        return min_scale;
-    }
+	if (scale < min_scale)
+	{
+		return min_scale;
+	}
 
-    return scale;
+	return scale;
 }
 
 void OrthoView::zoomOut()
 {
-    setScale( getZoomedScale( -1 ) );
+	setScale( getZoomedScale( -1 ) );
 }
 
 void OrthoView::zoomIn()
 {
-    setScale( getZoomedScale( 1 ) );
+	setScale( getZoomedScale( 1 ) );
 }
 
 void OrthoView::zoomInOn(wxPoint cursor, int zoom)
 {
-    const float newScale = getZoomedScale(zoom);
+	const float newScale = getZoomedScale(zoom);
 
-    // worldPos = origin + devicePos * device2WorldScale
-    // devicePos and worldPos should remain constant. device2WorldScale is known before
-    // and after zooming, so the origin delta can be calculated from what we have
-    auto scaleAdjustment = (1 / _scale - 1 / newScale);
+	// worldPos = origin + devicePos * device2WorldScale
+	// devicePos and worldPos should remain constant. device2WorldScale is known before
+	// and after zooming, so the origin delta can be calculated from what we have
+	auto scaleAdjustment = (1 / _scale - 1 / newScale);
 
-    const auto [dim1, dim2] = ORIENTATION_AXES.at(_orientation);
-    _origin[dim1] += screen_normalised(cursor.x, _width) * _width / 2 * scaleAdjustment;
-    _origin[dim2] -= screen_normalised(cursor.y, _height) * _height / 2 * scaleAdjustment;
+	const auto [dim1, dim2] = ORIENTATION_AXES.at(_orientation);
+	_origin[dim1] += screen_normalised(cursor.x, _width) * _width / 2 * scaleAdjustment;
+	_origin[dim2] -= screen_normalised(cursor.y, _height) * _height / 2 * scaleAdjustment;
 
-    setScale(newScale);
+	setScale(newScale);
 }
 
 // ================ CALLBACKS ======================================
@@ -1649,11 +1649,11 @@ void OrthoView::onIdle(wxIdleEvent& ev)
 		performChaseMouse();
 	}
 
-    if (_updateRequested)
-    {
-        _updateRequested = false;
-        _wxGLWidget->Refresh(false);
-    }
+	if (_updateRequested)
+	{
+		_updateRequested = false;
+		_wxGLWidget->Refresh(false);
+	}
 }
 
 void OrthoView::onGLResize(wxSizeEvent& ev)
@@ -1672,29 +1672,29 @@ bool OrthoView::onRender()
 {
 	if (GlobalMainFrame().screenUpdatesEnabled())
 	{
-        util::ScopedBoolLock drawLock(_drawing);
+		util::ScopedBoolLock drawLock(_drawing);
 
 		draw();
 
-        return true;
+		return true;
 	}
 
 
-    return false; // nothing rendered
+	return false; // nothing rendered
 }
 
 void OrthoView::onGLWindowScroll(wxMouseEvent& ev)
 {
-    if (!ev.ShiftDown() && GlobalXYWnd().zoomCenteredOnMouseCursor())
-    {
-        // The mouse position passed in the scroll event is not accurate on some systems,
-        // it fails to send widget-relative coordinates (even got negative numbers, see #5792)
-        // Translate the mouse coordinates on our own
-        auto clientPos = _wxGLWidget->ScreenToClient(wxGetMousePosition());
+	if (!ev.ShiftDown() && GlobalXYWnd().zoomCenteredOnMouseCursor())
+	{
+		// The mouse position passed in the scroll event is not accurate on some systems,
+		// it fails to send widget-relative coordinates (even got negative numbers, see #5792)
+		// Translate the mouse coordinates on our own
+		auto clientPos = _wxGLWidget->ScreenToClient(wxGetMousePosition());
 
-        zoomInOn(clientPos, ev.GetWheelRotation() > 0 ? 1 : -1);
-        return;
-    }
+		zoomInOn(clientPos, ev.GetWheelRotation() > 0 ? 1 : -1);
+		return;
+	}
 
 	if (ev.GetWheelRotation() > 0)
 	{
@@ -1717,15 +1717,15 @@ void OrthoView::onGLMouseButtonPress(wxMouseEvent& ev)
 	GlobalXYWnd().setActiveXY(_id);
 
 	// Context menu handling
-    if (ev.RightDown() && !ev.HasAnyModifiers())
-    {
-        // Remember the RMB coordinates for use in the mouseup event
-        Vector2i clickPos{ev.GetX(), ev.GetY()};
-        _rightClickPos = { clickPos, clickPos };
-    }
+	if (ev.RightDown() && !ev.HasAnyModifiers())
+	{
+		// Remember the RMB coordinates for use in the mouseup event
+		Vector2i clickPos{ev.GetX(), ev.GetY()};
+		_rightClickPos = { clickPos, clickPos };
+	}
 
-    // Send the event to the mouse tool handler
-    MouseToolHandler::onGLMouseButtonPress(ev);
+	// Send the event to the mouse tool handler
+	MouseToolHandler::onGLMouseButtonPress(ev);
 
 	queueDraw();
 }
@@ -1733,90 +1733,90 @@ void OrthoView::onGLMouseButtonPress(wxMouseEvent& ev)
 void OrthoView::onGLMouseButtonRelease(wxMouseEvent& ev)
 {
 	// Do the context menu handling first
-    if (ev.RightUp() && !ev.HasAnyModifiers() && _rightClickPos)
-    {
-        // The user just pressed and released the RMB in the same place
-        onContextMenu();
+	if (ev.RightUp() && !ev.HasAnyModifiers() && _rightClickPos)
+	{
+		// The user just pressed and released the RMB in the same place
+		onContextMenu();
 	}
 
-    // Regular mouse tool processing
-    MouseToolHandler::onGLMouseButtonRelease(ev);
+	// Regular mouse tool processing
+	MouseToolHandler::onGLMouseButtonRelease(ev);
 
 	queueDraw();
 }
 
 void OrthoView::onGLMouseMove(wxMouseEvent& ev)
 {
-    MouseToolHandler::onGLMouseMove(ev);
+	MouseToolHandler::onGLMouseMove(ev);
 
-    handleGLMouseMotion(ev.GetX(), ev.GetY(), wxutil::MouseButton::GetStateForMouseEvent(ev), false);
+	handleGLMouseMotion(ev.GetX(), ev.GetY(), wxutil::MouseButton::GetStateForMouseEvent(ev), false);
 }
 
 MouseTool::Result OrthoView::processMouseDownEvent(const MouseToolPtr& tool, const Vector2& point)
 {
-    XYMouseToolEvent ev = createMouseEvent(point);
-    return tool->onMouseDown(ev);
+	XYMouseToolEvent ev = createMouseEvent(point);
+	return tool->onMouseDown(ev);
 }
 
 MouseTool::Result OrthoView::processMouseUpEvent(const MouseToolPtr& tool, const Vector2& point)
 {
-    XYMouseToolEvent ev = createMouseEvent(point);
-    return tool->onMouseUp(ev);
+	XYMouseToolEvent ev = createMouseEvent(point);
+	return tool->onMouseUp(ev);
 }
 
 MouseTool::Result OrthoView::processMouseMoveEvent(const MouseToolPtr& tool, int x, int y)
 {
-    bool mouseToolReceivesDeltas = (tool->getPointerMode() & MouseTool::PointerMode::MotionDeltas) != 0;
+	bool mouseToolReceivesDeltas = (tool->getPointerMode() & MouseTool::PointerMode::MotionDeltas) != 0;
 
-    // New MouseTool event, optionally passing the delta only
-    XYMouseToolEvent ev = mouseToolReceivesDeltas ?
-        createMouseEvent(Vector2(0, 0), Vector2(x, y)) :
-        createMouseEvent(Vector2(x, y));
+	// New MouseTool event, optionally passing the delta only
+	XYMouseToolEvent ev = mouseToolReceivesDeltas ?
+		createMouseEvent(Vector2(0, 0), Vector2(x, y)) :
+		createMouseEvent(Vector2(x, y));
 
-    return tool->onMouseMove(ev);
+	return tool->onMouseMove(ev);
 }
 
 void OrthoView::startCapture(const MouseToolPtr& tool)
 {
-    if (_freezePointer.isCapturing(_wxGLWidget))
-    {
-        return;
-    }
+	if (_freezePointer.isCapturing(_wxGLWidget))
+	{
+		return;
+	}
 
-    unsigned int pointerMode = tool->getPointerMode();
+	unsigned int pointerMode = tool->getPointerMode();
 
-     _freezePointer.startCapture(_wxGLWidget,
-        [&, tool](int x, int y, unsigned int state) { handleGLCapturedMouseMotion(tool, x, y, state); }, // Motion Functor
-        [&, tool]() { MouseToolHandler::handleCaptureLost(tool); }, // called when the capture is lost.
-        (pointerMode & MouseTool::PointerMode::Freeze) != 0,
-        (pointerMode & MouseTool::PointerMode::Hidden) != 0,
-        (pointerMode & MouseTool::PointerMode::MotionDeltas) != 0
-    );
+	 _freezePointer.startCapture(_wxGLWidget,
+		[&, tool](int x, int y, unsigned int state) { handleGLCapturedMouseMotion(tool, x, y, state); }, // Motion Functor
+		[&, tool]() { MouseToolHandler::handleCaptureLost(tool); }, // called when the capture is lost.
+		(pointerMode & MouseTool::PointerMode::Freeze) != 0,
+		(pointerMode & MouseTool::PointerMode::Hidden) != 0,
+		(pointerMode & MouseTool::PointerMode::MotionDeltas) != 0
+	);
 }
 
 void OrthoView::endCapture()
 {
-    if (!_freezePointer.isCapturing(_wxGLWidget))
-    {
-        return;
-    }
+	if (!_freezePointer.isCapturing(_wxGLWidget))
+	{
+		return;
+	}
 
-    _freezePointer.endCapture();
+	_freezePointer.endCapture();
 }
 
 IInteractiveView& OrthoView::getInteractiveView()
 {
-    return *this;
+	return *this;
 }
 
 std::string OrthoView::rkeyForViewState() const
 {
-    return RKEY_STATE_ROOT + "/view" + std::to_string(_id);
+	return RKEY_STATE_ROOT + "/view" + std::to_string(_id);
 }
 
 std::string OrthoView::rkeyForOrientation() const
 {
-    return rkeyForViewState() + "/orientation";
+	return rkeyForViewState() + "/orientation";
 }
 
 /* STATICS */

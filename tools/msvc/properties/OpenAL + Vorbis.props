@@ -5,11 +5,11 @@
   <PropertyGroup />
   <ItemDefinitionGroup>
     <Link>
-      <AdditionalLibraryDirectories>$(PlatformDepsDir)\openal\lib;$(PlatformDepsDir)\libvorbis\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libvorbis$(LibSuffix)-vc$(PlatformToolsetVersion).lib;OpenAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(PlatformDepsDir)\openal\lib;$(PlatformDepsDir)libogg\lib;$(PlatformDepsDir)\libvorbis\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libogg$(LibSuffix)-vc$(PlatformToolsetVersion).lib;libvorbis$(LibSuffix)-vc$(PlatformToolsetVersion).lib;OpenAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(WinDepsDir)openal\include;$(WinDepsDir)openal\include\AL;$(WinDepsDir)libvorbis\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(WinIncludesDir)openal\include;$(WinIncludesDir)openal\include\AL;$(WinIncludesDir)libogg\include;$(WinIncludesDir)libvorbis\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup />

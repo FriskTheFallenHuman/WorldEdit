@@ -30,8 +30,8 @@ inline void replace_all(std::string& subject, const std::string& search, const s
  */
 inline std::string replace_all_copy(std::string subject, const std::string& search, const std::string& replacement)
 {
-    replace_all(subject, search, replacement);
-    return subject;
+	replace_all(subject, search, replacement);
+	return subject;
 }
 
 /**

@@ -48,12 +48,12 @@ public:
 			GlobalCommandSystem().executeCommand("ToggleGroupPartSelectionMode");
 		});
 
-        GlobalEventManager().addAdvancedToggle("SelectionModeMergeActions", [this](bool)
-        {
-            GlobalCommandSystem().executeCommand("ToggleMergeActionSelectionMode");
+		GlobalEventManager().addAdvancedToggle("SelectionModeMergeActions", [this](bool)
+		{
+			GlobalCommandSystem().executeCommand("ToggleMergeActionSelectionMode");
 
-            return GlobalSelectionSystem().getSelectionMode() == selection::SelectionMode::MergeAction;
-        });
+			return GlobalSelectionSystem().getSelectionMode() == selection::SelectionMode::MergeAction;
+		});
 
 		onSelectionModeChanged(GlobalSelectionSystem().getSelectionMode());
 		onComponentModeChanged(GlobalSelectionSystem().ComponentMode());
@@ -97,8 +97,8 @@ private:
 		GlobalEventManager().setToggled("SelectionModeGroupPart",
 			selectionMode == selection::SelectionMode::GroupPart && componentMode == selection::ComponentSelectionMode::Default);
 
-        GlobalEventManager().setToggled("SelectionModeMergeActions",
-            selectionMode == selection::SelectionMode::MergeAction && componentMode == selection::ComponentSelectionMode::Default);
+		GlobalEventManager().setToggled("SelectionModeMergeActions",
+			selectionMode == selection::SelectionMode::MergeAction && componentMode == selection::ComponentSelectionMode::Default);
 	}
 };
 

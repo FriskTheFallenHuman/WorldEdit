@@ -56,22 +56,22 @@ public:
 		return _selected;
 	}
 
-    ISelectable* getSelectable() const
-    {
-        return _selectable;
-    }
-
-    bool empty() const override
-    {
-        return !hasValidSelectable();
-    }
-
-    void foreachSelectable(const std::function<void(ISelectable*)>& functor) override
+	ISelectable* getSelectable() const
 	{
-        if (!empty())
-        {
-            functor(_selectable);
-        }
+		return _selectable;
+	}
+
+	bool empty() const override
+	{
+		return !hasValidSelectable();
+	}
+
+	void foreachSelectable(const std::function<void(ISelectable*)>& functor) override
+	{
+		if (!empty())
+		{
+			functor(_selectable);
+		}
 	}
 };
 

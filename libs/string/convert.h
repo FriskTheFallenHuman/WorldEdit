@@ -18,21 +18,21 @@ namespace string
  */
 template<typename T> T convert(const std::string& str, T defaultVal = {}) noexcept
 {
-    std::stringstream stream(str);
-    T result;
+	std::stringstream stream(str);
+	T result;
 
-    stream >> result;
-    if (stream.fail())
-        return defaultVal;
-    else
-        return result;
+	stream >> result;
+	if (stream.fail())
+		return defaultVal;
+	else
+		return result;
 }
 
 // Template specialisation to convert std::string => bool
 // Returns the default value if the string is empty, everything else except "0" returns true
 template<> inline bool convert<bool>(const std::string& str, bool defaultVal) noexcept
 {
-    return str.empty() ? defaultVal : (str != "0");
+	return str.empty() ? defaultVal : (str != "0");
 }
 
 /**
@@ -43,9 +43,9 @@ template<> inline bool convert<bool>(const std::string& str, bool defaultVal) no
  * construct a stringstream.
  */
 template<> inline std::string convert<std::string>(const std::string& str,
-                                                    std::string defaultVal) noexcept
+													std::string defaultVal) noexcept
 {
-    return str;
+	return str;
 }
 
 #ifdef SPECIALISE_STR_TO_FLOAT
@@ -66,12 +66,12 @@ template<> inline std::string convert<std::string>(const std::string& str,
  */
 template<typename Src> double to_float(const Src& str)
 {
-    return std::atof(str.c_str());
+	return std::atof(str.c_str());
 }
 #else
 template<typename Src> float to_float(const Src& src)
 {
-    return convert<float>(src, 0.0f);
+	return convert<float>(src, 0.0f);
 }
 #endif
 
@@ -82,11 +82,11 @@ template<typename Src> float to_float(const Src& src)
 // over the string::convert<float> method (in certain hot code paths).
 inline bool tryConvertToFloat(const std::string& src, float& value)
 {
-    char* lastChar;
-    auto* firstChar = src.c_str();
-    value = std::strtof(firstChar, &lastChar);
+	char* lastChar;
+	auto* firstChar = src.c_str();
+	value = std::strtof(firstChar, &lastChar);
 
-    return lastChar != firstChar;
+	return lastChar != firstChar;
 }
 
 // Attempts to convert the given source string to an int value,
@@ -96,18 +96,18 @@ inline bool tryConvertToFloat(const std::string& src, float& value)
 // over the string::convert<int> method (in certain hot code paths).
 inline bool tryConvertToInt(const std::string& src, int& value)
 {
-    char* lastChar;
-    auto* firstChar = src.c_str();
-    value = static_cast<int>(std::strtol(firstChar, &lastChar, 10));
+	char* lastChar;
+	auto* firstChar = src.c_str();
+	value = static_cast<int>(std::strtol(firstChar, &lastChar, 10));
 
-    return lastChar != firstChar;
+	return lastChar != firstChar;
 }
 
 // Convert the given type to a std::string
 template<typename Src>
 inline std::string to_string(const Src& value)
 {
-    return std::to_string(value);
+	return std::to_string(value);
 }
 
 // Specialisation for Vector3

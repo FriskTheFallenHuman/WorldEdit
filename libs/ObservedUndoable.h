@@ -16,21 +16,21 @@ class ObservedUndoable :
 
 	Copyable& _object;
 	ImportCallback _importCallback;
-    RestoreFinishedCallback _finishedCallback;
+	RestoreFinishedCallback _finishedCallback;
 	IUndoStateSaver* _undoStateSaver;
 
 	std::string _debugName;
 
 public:
-    ObservedUndoable<Copyable>(Copyable& object, const ImportCallback& importCallback) :
-        ObservedUndoable(object, importCallback, RestoreFinishedCallback(), "")
+	ObservedUndoable<Copyable>(Copyable& object, const ImportCallback& importCallback) :
+		ObservedUndoable(object, importCallback, RestoreFinishedCallback(), "")
 	{}
 
-    ObservedUndoable<Copyable>(Copyable& object, const ImportCallback& importCallback, 
-                               const RestoreFinishedCallback& finishedCallback, const std::string& debugName) :
+	ObservedUndoable<Copyable>(Copyable& object, const ImportCallback& importCallback, 
+							   const RestoreFinishedCallback& finishedCallback, const std::string& debugName) :
 		_object(object),
 		_importCallback(importCallback),
-        _finishedCallback(finishedCallback),
+		_finishedCallback(finishedCallback),
 		_undoStateSaver(nullptr),
 		_debugName(debugName)
 	{}
@@ -40,24 +40,24 @@ public:
 		_undoStateSaver = undoSystem.getStateSaver(*this);
 	}
 
-    void disconnectUndoSystem(IUndoSystem& undoSystem)
+	void disconnectUndoSystem(IUndoSystem& undoSystem)
 	{
-        _undoStateSaver = nullptr;
+		_undoStateSaver = nullptr;
 		undoSystem.releaseStateSaver(*this);
 	}
 
-    // Returns true if this Undoable is connected to an UndoSystem
-    bool isConnected() const
-    {
-        return _undoStateSaver != nullptr;
-    }
+	// Returns true if this Undoable is connected to an UndoSystem
+	bool isConnected() const
+	{
+		return _undoStateSaver != nullptr;
+	}
 
-    IUndoSystem& getUndoSystem()
-    {
-        if (!_undoStateSaver) throw std::logic_error("ObservedUndoable node connected to any UndoSystem");
+	IUndoSystem& getUndoSystem()
+	{
+		if (!_undoStateSaver) throw std::logic_error("ObservedUndoable node connected to any UndoSystem");
 
-        return _undoStateSaver->getUndoSystem();
-    }
+		return _undoStateSaver->getUndoSystem();
+	}
 
 	void save()
 	{
@@ -79,13 +79,13 @@ public:
 		_importCallback(std::static_pointer_cast<BasicUndoMemento<Copyable> >(state)->data());
 	}
 
-    void onOperationRestored() override
-    {
-        if (_finishedCallback)
-        {
-            _finishedCallback();
-        }
-    }
+	void onOperationRestored() override
+	{
+		if (_finishedCallback)
+		{
+			_finishedCallback();
+		}
+	}
 };
 
 } // namespace

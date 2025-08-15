@@ -9,21 +9,21 @@ namespace ui
 {
 
 MaterialChooser::MaterialChooser(wxWindow* parent, MaterialSelector::TextureFilter filter,
-                                 wxTextCtrl* targetEntry)
+								 wxTextCtrl* targetEntry)
 : wxutil::DeclarationSelectorDialog(decl::Type::Material, _("Choose Material"), "MaterialChooser",
-                                    parent),
+									parent),
   _targetEntry(targetEntry)
 {
-    auto* selector = new MaterialSelector(this, filter);
-    selector->signal_selectionChanged().connect(
-        sigc::mem_fun(this, &MaterialChooser::shaderSelectionChanged)
-    );
-    SetSelector(selector);
+	auto* selector = new MaterialSelector(this, filter);
+	selector->signal_selectionChanged().connect(
+		sigc::mem_fun(this, &MaterialChooser::shaderSelectionChanged)
+	);
+	SetSelector(selector);
 }
 
 sigc::signal<void>& MaterialChooser::signal_shaderChanged()
 {
-    return _shaderChangedSignal;
+	return _shaderChangedSignal;
 }
 
 void MaterialChooser::shaderSelectionChanged()
@@ -34,30 +34,30 @@ void MaterialChooser::shaderSelectionChanged()
 	}
 
 	// Propagate the call up to the client (e.g. SurfaceInspector)
-    _shaderChangedSignal.emit();
+	_shaderChangedSignal.emit();
 }
 
 int MaterialChooser::ShowModal()
 {
-    std::string initialShader;
+	std::string initialShader;
 
-    if (_targetEntry != nullptr)
-    {
-        initialShader = _targetEntry->GetValue();
+	if (_targetEntry != nullptr)
+	{
+		initialShader = _targetEntry->GetValue();
 
-        // Set the cursor of the tree view to the currently selected shader
-        SetSelectedDeclName(initialShader);
-    }
+		// Set the cursor of the tree view to the currently selected shader
+		SetSelectedDeclName(initialShader);
+	}
 
-    auto result = DeclarationSelectorDialog::ShowModal();
+	auto result = DeclarationSelectorDialog::ShowModal();
 
-    if (_targetEntry)
-    {
-        _targetEntry->SetValue(result == wxID_OK ? GetSelectedDeclName() : initialShader);
-        _shaderChangedSignal.emit();
-    }
+	if (_targetEntry)
+	{
+		_targetEntry->SetValue(result == wxID_OK ? GetSelectedDeclName() : initialShader);
+		_shaderChangedSignal.emit();
+	}
 
-    return result;
+	return result;
 }
 
 } // namespace

@@ -126,12 +126,12 @@ public:
 		return _pool.empty();
 	}
 
-    void foreachSelectable(const std::function<void(ISelectable*)>& functor) override
+	void foreachSelectable(const std::function<void(ISelectable*)>& functor) override
 	{
-        for (const auto& [_, selectable] : _pool)
-        {
-            functor(selectable);
-        }
+		for (const auto& [_, selectable] : _pool)
+		{
+			functor(selectable);
+		}
 	}
 };
 

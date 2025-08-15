@@ -12,7 +12,7 @@
 
 namespace wxutil
 {
-    class TreeView;
+	class TreeView;
 }
 
 class wxButton;
@@ -25,32 +25,32 @@ namespace ui
 
 class LayerControlPanel :
 	public wxutil::DockablePanel,
-    public wxutil::SingleIdleCallback
+	public wxutil::SingleIdleCallback
 {
 private:
-    struct TreeColumns :
-        public wxutil::TreeModel::ColumnRecord
-    {
-        TreeColumns() :
-            id(add(wxutil::TreeModel::Column::Integer)),
-            visible(add(wxutil::TreeModel::Column::Boolean)),
-            name(add(wxutil::TreeModel::Column::String)),
-            selectionIsPartOfLayer(add(wxutil::TreeModel::Column::Boolean))
-        {}
+	struct TreeColumns :
+		public wxutil::TreeModel::ColumnRecord
+	{
+		TreeColumns() :
+			id(add(wxutil::TreeModel::Column::Integer)),
+			visible(add(wxutil::TreeModel::Column::Boolean)),
+			name(add(wxutil::TreeModel::Column::String)),
+			selectionIsPartOfLayer(add(wxutil::TreeModel::Column::Boolean))
+		{}
 
-        wxutil::TreeModel::Column id;
-        wxutil::TreeModel::Column visible;
-        wxutil::TreeModel::Column name;
-        wxutil::TreeModel::Column selectionIsPartOfLayer;
-    };
+		wxutil::TreeModel::Column id;
+		wxutil::TreeModel::Column visible;
+		wxutil::TreeModel::Column name;
+		wxutil::TreeModel::Column selectionIsPartOfLayer;
+	};
 
-    class TreePopulator;
+	class TreePopulator;
 
-    wxutil::TreeView* _layersView;
-    TreeColumns _columns;
-    wxutil::TreeModel::Ptr _layerStore;
+	wxutil::TreeView* _layersView;
+	TreeColumns _columns;
+	wxutil::TreeModel::Ptr _layerStore;
 
-    std::map<int, wxDataViewItem> _layerItemMap;
+	std::map<int, wxDataViewItem> _layerItemMap;
 
 	wxButton* _showAllLayers;
 	wxButton* _hideAllLayers;
@@ -68,33 +68,33 @@ private:
 	sigc::connection _layerHierarchyChangedSignal;
 	sigc::connection _mapEventSignal;
 
-    wxutil::PopupMenuPtr _popupMenu;
+	wxutil::PopupMenuPtr _popupMenu;
 
 public:
-    LayerControlPanel(wxWindow* parent);
-    ~LayerControlPanel() override;
+	LayerControlPanel(wxWindow* parent);
+	~LayerControlPanel() override;
 
 protected:
-    void onIdle() override;
+	void onIdle() override;
 
-    void onPanelActivated() override;
-    void onPanelDeactivated() override;
+	void onPanelActivated() override;
+	void onPanelDeactivated() override;
 
 private:
-    void connectListeners();
-    void disconnectListeners();
+	void connectListeners();
+	void disconnectListeners();
 
-    // Calls refresh() on the next idle event
-    void queueRefresh();
+	// Calls refresh() on the next idle event
+	void queueRefresh();
 
-    // Calls update() on the next idle event
-    void queueUpdate();
+	// Calls update() on the next idle event
+	void queueUpdate();
 
-    // Rebuilds the whole data view
-    void refresh();
+	// Rebuilds the whole data view
+	void refresh();
 
-    // Updates the state of all tree items, doesn't clear the tree
-    void update();
+	// Updates the state of all tree items, doesn't clear the tree
+	void update();
 
 	void populateWindow();
 	void clearControls();
@@ -115,16 +115,16 @@ private:
 	void connectToMapRoot();
 	void disconnectFromMapRoot();
 
-    void onItemActivated(wxDataViewEvent& ev);
-    void onItemValueChanged(wxDataViewEvent& ev);
-    void onItemSelected(wxDataViewEvent& ev);
-    void onBeginDrag(wxDataViewEvent& ev);
-    void onDropPossible(wxDataViewEvent& ev);
-    void onDrop(wxDataViewEvent& ev);
-    int getSelectedLayerId();
+	void onItemActivated(wxDataViewEvent& ev);
+	void onItemValueChanged(wxDataViewEvent& ev);
+	void onItemSelected(wxDataViewEvent& ev);
+	void onBeginDrag(wxDataViewEvent& ev);
+	void onDropPossible(wxDataViewEvent& ev);
+	void onDrop(wxDataViewEvent& ev);
+	int getSelectedLayerId();
 
-    void renameSelectedLayer();
-    void deleteSelectedLayer();
+	void renameSelectedLayer();
+	void deleteSelectedLayer();
 };
 
 } // namespace ui

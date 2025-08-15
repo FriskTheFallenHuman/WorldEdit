@@ -11,15 +11,15 @@ BrushNode::BrushNode() :
 	scene::SelectableNode(),
 	_brush(*this),
 	_renderableComponentsNeedUpdate(true),
-    _numSelectedComponents(0),
-    _untransformedOriginChanged(true),
-    _renderableVertices(_brush, _selectedPoints),
-    _facesNeedRenderableUpdate(true)
+	_numSelectedComponents(0),
+	_untransformedOriginChanged(true),
+	_renderableVertices(_brush, _selectedPoints),
+	_facesNeedRenderableUpdate(true)
 {
 	_brush.attach(*this); // BrushObserver
 
-    // Try to anticipate a few face additions to avoid reallocations during map parsing
-    reserve(6);
+	// Try to anticipate a few face additions to avoid reallocations during map parsing
+	reserve(6);
 }
 
 // Copy Constructor
@@ -37,10 +37,10 @@ BrushNode::BrushNode(const BrushNode& other) :
 	Transformable(other),
 	_brush(*this, other._brush),
 	_renderableComponentsNeedUpdate(true),
-    _numSelectedComponents(0),
-    _untransformedOriginChanged(true),
-    _renderableVertices(_brush, _selectedPoints),
-    _facesNeedRenderableUpdate(true)
+	_numSelectedComponents(0),
+	_untransformedOriginChanged(true),
+	_renderableVertices(_brush, _selectedPoints),
+	_facesNeedRenderableUpdate(true)
 {
 	_brush.attach(*this); // BrushObserver
 }
@@ -61,40 +61,40 @@ const AABB& BrushNode::localAABB() const {
 
 std::string BrushNode::getFingerprint()
 {
-    constexpr std::size_t SignificantDigits = scene::SignificantFingerprintDoubleDigits;
+	constexpr std::size_t SignificantDigits = scene::SignificantFingerprintDoubleDigits;
 
-    if (_brush.getNumFaces() == 0)
-    {
-        return std::string(); // empty brushes produce an empty fingerprint
-    }
+	if (_brush.getNumFaces() == 0)
+	{
+		return std::string(); // empty brushes produce an empty fingerprint
+	}
 
-    math::Hash hash;
+	math::Hash hash;
 
-    hash.addSizet(static_cast<std::size_t>(_brush.getDetailFlag() + 1));
+	hash.addSizet(static_cast<std::size_t>(_brush.getDetailFlag() + 1));
 
-    hash.addSizet(_brush.getNumFaces());
+	hash.addSizet(_brush.getNumFaces());
 
-    // Combine all face plane equations
-    for (const auto& face : _brush)
-    {
-        // Plane equation
-        hash.addVector3(face->getPlane3().normal(), SignificantDigits);
-        hash.addDouble(face->getPlane3().dist(), SignificantDigits);
+	// Combine all face plane equations
+	for (const auto& face : _brush)
+	{
+		// Plane equation
+		hash.addVector3(face->getPlane3().normal(), SignificantDigits);
+		hash.addDouble(face->getPlane3().dist(), SignificantDigits);
 
-        // Material Name
-        hash.addString(face->getShader());
+		// Material Name
+		hash.addString(face->getShader());
 
-        // Texture Matrix
-        auto texdef = face->getProjectionMatrix();
-        hash.addDouble(texdef.xx(), SignificantDigits);
-        hash.addDouble(texdef.yx(), SignificantDigits);
-        hash.addDouble(texdef.zx(), SignificantDigits);
-        hash.addDouble(texdef.xy(), SignificantDigits);
-        hash.addDouble(texdef.yy(), SignificantDigits);
-        hash.addDouble(texdef.zy(), SignificantDigits);
-    }
+		// Texture Matrix
+		auto texdef = face->getProjectionMatrix();
+		hash.addDouble(texdef.xx(), SignificantDigits);
+		hash.addDouble(texdef.yx(), SignificantDigits);
+		hash.addDouble(texdef.zx(), SignificantDigits);
+		hash.addDouble(texdef.xy(), SignificantDigits);
+		hash.addDouble(texdef.yy(), SignificantDigits);
+		hash.addDouble(texdef.zy(), SignificantDigits);
+	}
 
-    return hash;
+	return hash;
 }
 
 // Snappable implementation
@@ -110,7 +110,7 @@ void BrushNode::snapComponents(float snap) {
 
 void BrushNode::testSelect(Selector& selector, SelectionTest& test)
 {
-    // BeginMesh(true): Always treat brush faces twosided when in orthoview
+	// BeginMesh(true): Always treat brush faces twosided when in orthoview
 	test.BeginMesh(localToWorld(), !test.getVolume().fill());
 
 	SelectionIntersection best;
@@ -129,24 +129,24 @@ void BrushNode::testSelect(Selector& selector, SelectionTest& test)
 
 inline bool checkFaceInstancesForSelectedComponents(const FaceInstances& instances)
 {
-    for (const auto& face :  instances)
-    {
-        if (face.selectedComponents())
-        {
-            return true;
-        }
-    }
+	for (const auto& face :  instances)
+	{
+		if (face.selectedComponents())
+		{
+			return true;
+		}
+	}
 
-    return false;
+	return false;
 }
 
 bool BrushNode::isSelectedComponents() const
 {
-    // Debug builds check whether the _numSelectedComponents counter is providing the
-    // same result as the old code it replaced below.
-    assert(_numSelectedComponents > 0 == checkFaceInstancesForSelectedComponents(_faceInstances));
+	// Debug builds check whether the _numSelectedComponents counter is providing the
+	// same result as the old code it replaced below.
+	assert(_numSelectedComponents > 0 == checkFaceInstancesForSelectedComponents(_faceInstances));
 
-    return _numSelectedComponents > 0;
+	return _numSelectedComponents > 0;
 #if 0
 	for (FaceInstances::const_iterator i = m_faceInstances.begin(); i != m_faceInstances.end(); ++i) {
 		if (i->selectedComponents()) {
@@ -196,40 +196,40 @@ void BrushNode::testSelectComponents(Selector& selector, SelectionTest& test, se
 {
 	test.BeginMesh(localToWorld());
 
-    switch (mode)
-    {
-    case selection::ComponentSelectionMode::Vertex:
-        for (auto& vertex : _vertexInstances)
-        {
-            vertex.testSelect(selector, test);
-        }
-        break;
+	switch (mode)
+	{
+	case selection::ComponentSelectionMode::Vertex:
+		for (auto& vertex : _vertexInstances)
+		{
+			vertex.testSelect(selector, test);
+		}
+		break;
 
-    case selection::ComponentSelectionMode::Edge:
-        for (auto& edge : _edgeInstances)
-        {
-            edge.testSelect(selector, test);
-        }
-        break;
+	case selection::ComponentSelectionMode::Edge:
+		for (auto& edge : _edgeInstances)
+		{
+			edge.testSelect(selector, test);
+		}
+		break;
 
-    case selection::ComponentSelectionMode::Face:
-        if (test.getVolume().fill())
-        {
-            for (FaceInstances::iterator i = _faceInstances.begin(); i != _faceInstances.end(); ++i)
-            {
-                i->testSelect(selector, test);
-            }
-        }
-        else
-        {
-            for (FaceInstances::iterator i = _faceInstances.begin(); i != _faceInstances.end(); ++i)
-            {
-                i->testSelect_centroid(selector, test);
-            }
-        }
-    break;
-    default: break;
-    }
+	case selection::ComponentSelectionMode::Face:
+		if (test.getVolume().fill())
+		{
+			for (FaceInstances::iterator i = _faceInstances.begin(); i != _faceInstances.end(); ++i)
+			{
+				i->testSelect(selector, test);
+			}
+		}
+		else
+		{
+			for (FaceInstances::iterator i = _faceInstances.begin(); i != _faceInstances.end(); ++i)
+			{
+				i->testSelect_centroid(selector, test);
+			}
+		}
+	break;
+	default: break;
+	}
 }
 
 const AABB& BrushNode::getSelectedComponentsBounds() const {
@@ -267,15 +267,15 @@ void BrushNode::selectedChangedComponent(const ISelectable& selectable)
 {
 	_renderableComponentsNeedUpdate = true;
 
-    if (selectable.isSelected())
-    {
-        ++_numSelectedComponents;
-    }
-    else
-    {
-        assert(_numSelectedComponents > 0);
-        --_numSelectedComponents;
-    }
+	if (selectable.isSelected())
+	{
+		++_numSelectedComponents;
+	}
+	else
+	{
+		assert(_numSelectedComponents > 0);
+		--_numSelectedComponents;
+	}
 
 	GlobalSelectionSystem().onComponentSelection(SelectableNode::getSelf(), selectable);
 }
@@ -300,12 +300,12 @@ scene::INodePtr BrushNode::clone() const {
 
 void BrushNode::onInsertIntoScene(scene::IMapRootNode& root)
 {
-    _brush.connectUndoSystem(root.getUndoSystem());
+	_brush.connectUndoSystem(root.getUndoSystem());
 	GlobalCounters().getCounter(counterBrushes).increment();
 
-    // Update the origin information needed for transformations
-    _untransformedOriginChanged = true;
-    _renderableVertices.queueUpdate();
+	// Update the origin information needed for transformations
+	_untransformedOriginChanged = true;
+	_renderableVertices.queueUpdate();
 
 	SelectableNode::onInsertIntoScene(root);
 }
@@ -321,8 +321,8 @@ void BrushNode::onRemoveFromScene(scene::IMapRootNode& root)
 	setSelectedComponents(false, selection::ComponentSelectionMode::Face);
 
 	GlobalCounters().getCounter(counterBrushes).decrement();
-    _brush.disconnectUndoSystem(root.getUndoSystem());
-    _renderableVertices.clear();
+	_brush.disconnectUndoSystem(root.getUndoSystem());
+	_renderableVertices.clear();
 
 	SelectableNode::onRemoveFromScene(root);
 }
@@ -338,13 +338,13 @@ void BrushNode::reserve(std::size_t size) {
 void BrushNode::push_back(Face& face)
 {
 	_faceInstances.emplace_back(face, std::bind(&BrushNode::selectedChangedComponent, this, std::placeholders::_1));
-    _untransformedOriginChanged = true;
+	_untransformedOriginChanged = true;
 }
 
 void BrushNode::pop_back() {
 	ASSERT_MESSAGE(!_faceInstances.empty(), "erasing invalid element");
 	_faceInstances.pop_back();
-    _untransformedOriginChanged = true;
+	_untransformedOriginChanged = true;
 }
 
 void BrushNode::erase(std::size_t index) {
@@ -377,91 +377,91 @@ void BrushNode::DEBUG_verify() {
 
 void BrushNode::onFaceNeedsRenderableUpdate()
 {
-    _facesNeedRenderableUpdate = true;
+	_facesNeedRenderableUpdate = true;
 }
 
 void BrushNode::onPreRender(const VolumeTest& volume)
 {
-    _brush.evaluateBRep();
+	_brush.evaluateBRep();
 
-    assert(_renderEntity);
+	assert(_renderEntity);
 
-    // Run the face updates only if requested
-    if (_facesNeedRenderableUpdate)
-    {
-        _facesNeedRenderableUpdate = false;
+	// Run the face updates only if requested
+	if (_facesNeedRenderableUpdate)
+	{
+		_facesNeedRenderableUpdate = false;
 
-        const auto& wireShader = getRenderState() == RenderState::Active ?
-            _renderEntity->getWireShader() : _inactiveWireShader;
+		const auto& wireShader = getRenderState() == RenderState::Active ?
+			_renderEntity->getWireShader() : _inactiveWireShader;
 
-        // Every face is asked to run the rendering preparations
-        // to link/unlink their geometry to/from the active shader
-        for (auto& faceInstance : _faceInstances)
-        {
-            auto& face = faceInstance.getFace();
+		// Every face is asked to run the rendering preparations
+		// to link/unlink their geometry to/from the active shader
+		for (auto& faceInstance : _faceInstances)
+		{
+			auto& face = faceInstance.getFace();
 
-            face.getWindingSurfaceSolid().update(face.getFaceShader().getGLShader(), *_renderEntity);
-            face.getWindingSurfaceWireframe().update(wireShader, *_renderEntity);
-        }
-    }
+			face.getWindingSurfaceSolid().update(face.getFaceShader().getGLShader(), *_renderEntity);
+			face.getWindingSurfaceWireframe().update(wireShader, *_renderEntity);
+		}
+	}
 
-    if (isSelected() && GlobalSelectionSystem().getSelectionMode() == selection::SelectionMode::Component ||
-        _numSelectedComponents > 0) // could be a single selected face without the brush being selected
-    {
-        updateSelectedPointsArray();
+	if (isSelected() && GlobalSelectionSystem().getSelectionMode() == selection::SelectionMode::Component ||
+		_numSelectedComponents > 0) // could be a single selected face without the brush being selected
+	{
+		updateSelectedPointsArray();
 
-        _renderableVertices.setComponentMode(GlobalSelectionSystem().ComponentMode());
-        _renderableVertices.update(_pointShader);
-    }
-    else
-    {
-        _renderableVertices.clear();
-        _renderableVertices.queueUpdate();
-    }
+		_renderableVertices.setComponentMode(GlobalSelectionSystem().ComponentMode());
+		_renderableVertices.update(_pointShader);
+	}
+	else
+	{
+		_renderableVertices.clear();
+		_renderableVertices.queueUpdate();
+	}
 }
 
 void BrushNode::renderHighlights(IRenderableCollector& collector, const VolumeTest& volume)
 {
-    // Check for the override status of this brush
-    bool isInMergeMode = collector.hasHighlightFlag(IRenderableCollector::Highlight::MergeAction);
-    bool forceVisible = isForcedVisible() || isInMergeMode;
-    bool wholeBrushSelected = isSelected() || Node_isSelected(getParent());
+	// Check for the override status of this brush
+	bool isInMergeMode = collector.hasHighlightFlag(IRenderableCollector::Highlight::MergeAction);
+	bool forceVisible = isForcedVisible() || isInMergeMode;
+	bool wholeBrushSelected = isSelected() || Node_isSelected(getParent());
 
-    // Don't touch the primitive highlight flag in merge mode
-    if (!isInMergeMode)
-    {
-        collector.setHighlightFlag(IRenderableCollector::Highlight::Primitives, wholeBrushSelected);
-    }
+	// Don't touch the primitive highlight flag in merge mode
+	if (!isInMergeMode)
+	{
+		collector.setHighlightFlag(IRenderableCollector::Highlight::Primitives, wholeBrushSelected);
+	}
 
-    // Submit the renderable geometry for each face
-    for (auto& faceInstance : _faceInstances)
-    {
-        // Skip invisible faces before traversing further
-        if (!forceVisible && !faceInstance.faceIsVisible()) continue;
+	// Submit the renderable geometry for each face
+	for (auto& faceInstance : _faceInstances)
+	{
+		// Skip invisible faces before traversing further
+		if (!forceVisible && !faceInstance.faceIsVisible()) continue;
 
-        Face& face = faceInstance.getFace();
-        if (face.intersectVolume(volume))
-        {
-            bool highlight = wholeBrushSelected || forceVisible || faceInstance.selectedComponents();
+		Face& face = faceInstance.getFace();
+		if (face.intersectVolume(volume))
+		{
+			bool highlight = wholeBrushSelected || forceVisible || faceInstance.selectedComponents();
 
-            if (!highlight) continue;
+			if (!highlight) continue;
 
-            collector.setHighlightFlag(IRenderableCollector::Highlight::Faces, true);
+			collector.setHighlightFlag(IRenderableCollector::Highlight::Faces, true);
 
-            // Submit the RenderableWinding as reference, it will render the winding in polygon mode
-            collector.addHighlightRenderable(volume.fill() ? 
-                face.getWindingSurfaceSolid() : face.getWindingSurfaceWireframe(), Matrix4::getIdentity());
+			// Submit the RenderableWinding as reference, it will render the winding in polygon mode
+			collector.addHighlightRenderable(volume.fill() ? 
+				face.getWindingSurfaceSolid() : face.getWindingSurfaceWireframe(), Matrix4::getIdentity());
 
-            collector.setHighlightFlag(IRenderableCollector::Highlight::Faces, false);
-        }
-    }
+			collector.setHighlightFlag(IRenderableCollector::Highlight::Faces, false);
+		}
+	}
 
-    if (wholeBrushSelected && GlobalClipper().clipMode())
-    {
-        collector.addHighlightRenderable(_clipPlane, Matrix4::getIdentity());
-    }
+	if (wholeBrushSelected && GlobalClipper().clipMode())
+	{
+		collector.addHighlightRenderable(_clipPlane, Matrix4::getIdentity());
+	}
 
-    collector.setHighlightFlag(IRenderableCollector::Highlight::Primitives, false);
+	collector.setHighlightFlag(IRenderableCollector::Highlight::Primitives, false);
 }
 
 void BrushNode::setRenderSystem(const RenderSystemPtr& renderSystem)
@@ -470,15 +470,15 @@ void BrushNode::setRenderSystem(const RenderSystemPtr& renderSystem)
 
 	if (renderSystem)
 	{
-        _pointShader = renderSystem->capture(BuiltInShaderType::BigPoint);
-        _inactiveWireShader = renderSystem->capture(BuiltInShaderType::WireframeInactive);
-        _renderableVertices.queueUpdate();
+		_pointShader = renderSystem->capture(BuiltInShaderType::BigPoint);
+		_inactiveWireShader = renderSystem->capture(BuiltInShaderType::WireframeInactive);
+		_renderableVertices.queueUpdate();
 	}
 	else
 	{
-        _inactiveWireShader.reset();
-        _pointShader.reset();
-        _renderableVertices.clear();
+		_inactiveWireShader.reset();
+		_pointShader.reset();
+		_renderableVertices.clear();
 	}
 
 	_brush.setRenderSystem(renderSystem);
@@ -494,55 +494,55 @@ std::size_t BrushNode::getHighlightFlags()
 
 void BrushNode::updateSelectedPointsArray()
 {
-    if (!_renderableComponentsNeedUpdate) return;
+	if (!_renderableComponentsNeedUpdate) return;
 
-    _renderableComponentsNeedUpdate = false;
+	_renderableComponentsNeedUpdate = false;
 
-    _selectedPoints.clear();
+	_selectedPoints.clear();
 
-    for (const auto& faceInstance : _faceInstances)
-    {
-        if (faceInstance.getFace().contributes())
-        {
-            faceInstance.SelectedComponents_foreach([&](const Vector3& vertex)
-            {
-                _selectedPoints.push_back(vertex);
-            });
-        }
-    }
+	for (const auto& faceInstance : _faceInstances)
+	{
+		if (faceInstance.getFace().contributes())
+		{
+			faceInstance.SelectedComponents_foreach([&](const Vector3& vertex)
+			{
+				_selectedPoints.push_back(vertex);
+			});
+		}
+	}
 
-    _renderableVertices.queueUpdate();
+	_renderableVertices.queueUpdate();
 }
 
 void BrushNode::evaluateTransform()
 {
-    if (getTransformationType() == NoTransform)
-    {
-        return;
-    }
+	if (getTransformationType() == NoTransform)
+	{
+		return;
+	}
 
 	if (getType() == TRANSFORM_PRIMITIVE)
-    {
-        // If this is a pure translation (no other bits set), call the specialised method
-        if (getTransformationType() == Translation)
-        {
-            for (auto face : _brush)
-            {
-                face->translate(getTranslation());
-            }
-        }
-        else
-        {
-            auto transform = calculateTransform();
+	{
+		// If this is a pure translation (no other bits set), call the specialised method
+		if (getTransformationType() == Translation)
+		{
+			for (auto face : _brush)
+			{
+				face->translate(getTranslation());
+			}
+		}
+		else
+		{
+			auto transform = calculateTransform();
 
-            if (transform != Matrix4::getIdentity())
-            {
-                _brush.transform(transform);
-            }
-        }
+			if (transform != Matrix4::getIdentity())
+			{
+				_brush.transform(transform);
+			}
+		}
 	}
 	else
-    {
+	{
 		transformComponents(calculateTransform());
 	}
 }
@@ -571,10 +571,10 @@ void BrushNode::transformComponents(const Matrix4& matrix) {
 
 void BrushNode::setClipPlane(const Plane3& plane)
 {
-    if (_renderEntity)
-    {
-        _clipPlane.setPlane(_brush, plane, *_renderEntity);
-    }
+	if (_renderEntity)
+	{
+		_clipPlane.setPlane(_brush, plane, *_renderEntity);
+	}
 }
 
 void BrushNode::forEachFaceInstance(const std::function<void(FaceInstance&)>& functor)
@@ -584,39 +584,39 @@ void BrushNode::forEachFaceInstance(const std::function<void(FaceInstance&)>& fu
 
 const Vector3& BrushNode::getUntransformedOrigin()
 {
-    if (_untransformedOriginChanged)
-    {
-        _untransformedOriginChanged = false;
-        _untransformedOrigin = worldAABB().getOrigin();
-    }
+	if (_untransformedOriginChanged)
+	{
+		_untransformedOriginChanged = false;
+		_untransformedOrigin = worldAABB().getOrigin();
+	}
 
-    return _untransformedOrigin;
+	return _untransformedOrigin;
 }
 
 bool BrushNode::facesAreForcedVisible()
 {
-    return isForcedVisible();
+	return isForcedVisible();
 }
 
 void BrushNode::onPostUndo()
 {
-    // The windings are usually lazy-evaluated when some code
-    // is calling localAABB() during rendering.
-    // To avoid the texture tool from rendering old texture coords
-    // We evaluate the windings right after undo
-    _brush.evaluateBRep();
+	// The windings are usually lazy-evaluated when some code
+	// is calling localAABB() during rendering.
+	// To avoid the texture tool from rendering old texture coords
+	// We evaluate the windings right after undo
+	_brush.evaluateBRep();
 }
 
 void BrushNode::onPostRedo()
 {
-    _brush.evaluateBRep();
+	_brush.evaluateBRep();
 }
 
 void BrushNode::_onTransformationChanged()
 {
-    _brush.transformChanged();
+	_brush.transformChanged();
 
-    _renderableVertices.queueUpdate();
+	_renderableVertices.queueUpdate();
 	_renderableComponentsNeedUpdate = true;
 }
 
@@ -626,46 +626,46 @@ void BrushNode::_applyTransformation()
 	evaluateTransform();
 	_brush.freezeTransform();
 
-    _untransformedOriginChanged = true;
+	_untransformedOriginChanged = true;
 }
 
 void BrushNode::onVisibilityChanged(bool isVisibleNow)
 {
-    SelectableNode::onVisibilityChanged(isVisibleNow);
+	SelectableNode::onVisibilityChanged(isVisibleNow);
 
-    // Let each face know about the change
-    forEachFaceInstance([=](FaceInstance& face)
-    {
-        face.getFace().onBrushVisibilityChanged(isVisibleNow);
-    });
+	// Let each face know about the change
+	forEachFaceInstance([=](FaceInstance& face)
+	{
+		face.getFace().onBrushVisibilityChanged(isVisibleNow);
+	});
 
-    _clipPlane.clear();
-    _renderableVertices.clear();
+	_clipPlane.clear();
+	_renderableVertices.clear();
 }
 
 void BrushNode::onSelectionStatusChange(bool changeGroupStatus)
 {
-    SelectableNode::onSelectionStatusChange(changeGroupStatus);
+	SelectableNode::onSelectionStatusChange(changeGroupStatus);
 
-    // In clip mode we need to check if there's an active clip plane defined in the scene
-    if (isSelected() && GlobalClipper().clipMode())
-    {
-        setClipPlane(GlobalClipper().getClipPlane());
-    }
-    else
-    {
-        _clipPlane.clear();
-    }
+	// In clip mode we need to check if there's an active clip plane defined in the scene
+	if (isSelected() && GlobalClipper().clipMode())
+	{
+		setClipPlane(GlobalClipper().getClipPlane());
+	}
+	else
+	{
+		_clipPlane.clear();
+	}
 }
 
 void BrushNode::onRenderStateChanged()
 {
-    SelectableNode::onRenderStateChanged();
+	SelectableNode::onRenderStateChanged();
 
-    _facesNeedRenderableUpdate = true;
+	_facesNeedRenderableUpdate = true;
 
-    forEachFaceInstance([](FaceInstance& face)
-    {
-        face.getFace().onBrushRenderStateChanged();
-    });
+	forEachFaceInstance([](FaceInstance& face)
+	{
+		face.getFace().onBrushRenderStateChanged();
+	});
 }

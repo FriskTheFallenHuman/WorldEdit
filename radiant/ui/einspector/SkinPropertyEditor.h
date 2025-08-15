@@ -16,7 +16,7 @@ class SkinPropertyEditor :
 {
 private:
 	// Keyvalue to set
-    ITargetKey::Ptr _key;
+	ITargetKey::Ptr _key;
 
 private:
 
@@ -25,19 +25,19 @@ private:
 public:
 
 	// Main constructor
-    SkinPropertyEditor(wxWindow* parent, IEntitySelection& entities, const ITargetKey::Ptr& key);
+	SkinPropertyEditor(wxWindow* parent, IEntitySelection& entities, const ITargetKey::Ptr& key);
 
-    static Ptr CreateNew(wxWindow* parent, IEntitySelection& entities, const ITargetKey::Ptr& key)
-    {
-        return std::make_shared<SkinPropertyEditor>(parent, entities, key);
-    }
+	static Ptr CreateNew(wxWindow* parent, IEntitySelection& entities, const ITargetKey::Ptr& key)
+	{
+		return std::make_shared<SkinPropertyEditor>(parent, entities, key);
+	}
 };
 
 class SkinChooserDialogWrapper :
-    public IPropertyEditorDialog
+	public IPropertyEditorDialog
 {
 public:
-    std::string runDialog(Entity* entity, const std::string& key) override;
+	std::string runDialog(Entity* entity, const std::string& key) override;
 };
 
 } // namespace

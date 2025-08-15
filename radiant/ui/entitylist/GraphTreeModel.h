@@ -35,12 +35,12 @@ public:
 
 private:
 	// This maps scene::Nodes to TreeNode structures to allow fast lookups in the tree
-    std::map<scene::INodeWeakPtr, GraphTreeNode::Ptr, std::owner_less<scene::INodeWeakPtr>> _nodemap;
+	std::map<scene::INodeWeakPtr, GraphTreeNode::Ptr, std::owner_less<scene::INodeWeakPtr>> _nodemap;
 
 	// The NULL treenode, must always be empty
 	const GraphTreeNode::Ptr _nullTreeNode;
 
-    GraphTreeNode::Ptr _mapRootNode;
+	GraphTreeNode::Ptr _mapRootNode;
 
 	// The actual model
 	TreeColumns _columns;
@@ -68,8 +68,8 @@ public:
 	void setConsiderVisibleNodesOnly(bool visibleOnly);
 
 	// Rebuilds the entire tree using a scene::Graph::Walker
-    // This will clear the internal wxutil::TreeModel and create a new one, so be 
-    // sure to associate the TreeView with the new model by calling getModel()
+	// This will clear the internal wxutil::TreeModel and create a new one, so be 
+	// sure to associate the TreeView with the new model by calling getModel()
 	void refresh();
 
 	typedef std::function<void (const wxDataViewItem&, bool)> NotifySelectionUpdateFunc;
@@ -95,11 +95,11 @@ public:
 	// Gets called when <node> is removed from the scenegraph
 	void onSceneNodeErase(const scene::INodePtr& node) override;
 
-    static bool NodeIsRelevant(const scene::INodePtr& node)
-    {
-        auto nodeType = node->getNodeType();
-        return nodeType == scene::INode::Type::Entity || nodeType == scene::INode::Type::MapRoot;
-    }
+	static bool NodeIsRelevant(const scene::INodePtr& node)
+	{
+		auto nodeType = node->getNodeType();
+		return nodeType == scene::INode::Type::Entity || nodeType == scene::INode::Type::MapRoot;
+	}
 
 private:
 	// Tries to lookup the insert position for the given node

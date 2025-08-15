@@ -26,7 +26,7 @@ namespace
 	// CONSTANTS
 	const char* const ADDPROPERTY_TITLE = N_("Add property");
 	const char* const PROPERTIES_XPATH = "/entityInspector//property";
-	const char* const FOLDER_ICON = "folder16.png";
+	const char* const FOLDER_ICON = "icon_folder.png";
 
 	const char* const CUSTOM_PROPERTY_TEXT = N_("Custom properties defined for this "
 												"entity class, if any");
@@ -37,7 +37,7 @@ namespace
 
 AddPropertyDialog::AddPropertyDialog(Entity* entity) :
 	wxutil::DialogBase(_(ADDPROPERTY_TITLE)),
-    _entity(entity)
+	_entity(entity)
 {
 	Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(AddPropertyDialog::_onDeleteEvent), NULL, this);
 
@@ -54,9 +54,9 @@ AddPropertyDialog::AddPropertyDialog(Entity* entity) :
 
 	FitToScreen(0.5f, 0.6f);
 
-    // Populate the tree view with properties
-    setupTreeView();
-    populateTreeView();
+	// Populate the tree view with properties
+	setupTreeView();
+	populateTreeView();
 
 	updateUsagePanel();
 }
@@ -131,7 +131,7 @@ public:
 
 		wxutil::TreeModel::Row row = _store->AddItemUnderParent(_parent);
 
-        wxutil::Icon icon(PropertyEditorFactory::getBitmapFor(attr.getType()));
+		wxutil::Icon icon(PropertyEditorFactory::getBitmapFor(attr.getType()));
 
 		row[_columns.displayName] = wxVariant(wxDataViewIconText(attr.getName(), icon));
 		row[_columns.propertyName] = attr.getName();
@@ -146,7 +146,7 @@ public:
 // Populate tree view
 void AddPropertyDialog::populateTreeView()
 {
-    wxutil::Icon folderIcon(wxutil::GetLocalBitmap(FOLDER_ICON));
+	wxutil::Icon folderIcon(wxutil::GetLocalBitmap(FOLDER_ICON));
 
 	// DEF-DEFINED PROPERTIES
 	{
@@ -176,8 +176,8 @@ void AddPropertyDialog::populateTreeView()
 	// REGISTRY (GAME FILE) DEFINED PROPERTIES
 
 	// Ask the XML registry for the list of properties
-    game::IGamePtr currentGame = GlobalGameManager().currentGame();
-    xml::NodeList propNodes = currentGame->getLocalXPath(PROPERTIES_XPATH);
+	game::IGamePtr currentGame = GlobalGameManager().currentGame();
+	xml::NodeList propNodes = currentGame->getLocalXPath(PROPERTIES_XPATH);
 
 	// Cache of property categories to GtkTreeIters, to allow properties
 	// to be parented to top-level categories
@@ -240,7 +240,7 @@ void AddPropertyDialog::populateTreeView()
 
 		wxutil::TreeModel::Row row(item, *_treeStore);
 
-        wxutil::Icon icon(PropertyEditorFactory::getBitmapFor(type));
+		wxutil::Icon icon(PropertyEditorFactory::getBitmapFor(type));
 
 		row[_columns.displayName] = wxVariant(wxDataViewIconText(name, icon));
 		row[_columns.propertyName] = name;

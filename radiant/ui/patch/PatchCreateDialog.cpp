@@ -27,7 +27,7 @@ PatchCreateDialog::PatchCreateDialog() :
 {
 	_dialog->GetSizer()->Add(loadNamedPanel(_dialog, "PatchCreatePanel"), 1, wxEXPAND | wxALL, 12);
 
-    // Create the title label (bold font)
+	// Create the title label (bold font)
 	makeLabelBold(_dialog, "PatchCreateTopLabel");
 
 	wxChoice* comboWidth = findNamedObject<wxChoice>(_dialog, "PatchCreateWidthChoice");

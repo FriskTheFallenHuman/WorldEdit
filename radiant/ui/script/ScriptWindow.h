@@ -18,22 +18,22 @@ class ScriptWindow :
 private:
 	// Use a standard console window for the script output
 	wxutil::ConsoleView* _outView;
-    wxSplitterWindow* _paned;
+	wxSplitterWindow* _paned;
 
 	wxutil::PythonSourceViewCtrl* _view;
 
-    wxutil::PanedPosition _panedPosition;
+	wxutil::PanedPosition _panedPosition;
 
 public:
 	ScriptWindow(wxWindow* parent);
-    ~ScriptWindow() override;
+	~ScriptWindow() override;
 
-    void onPanelActivated() override;
-    void onPanelDeactivated() override;
+	void onPanelActivated() override;
+	void onPanelDeactivated() override;
 
 private:
 	void onRunScript(wxCommandEvent& ev);
-    void restoreSettings();
+	void restoreSettings();
 };
 
 } // namespace

@@ -5,17 +5,17 @@
 #include "irenderable.h"
 
 inline void billboard_viewplaneOriented(Matrix4& rotation,
-                                        const Matrix4& world2screen)
+										const Matrix4& world2screen)
 {
-    rotation = Matrix4::getIdentity();
-    Vector3 x(world2screen.xCol3().getNormalised());
-    Vector3 y(world2screen.yCol3().getNormalised());
-    Vector3 z(world2screen.zCol3().getNormalised());
+	rotation = Matrix4::getIdentity();
+	Vector3 x(world2screen.xCol3().getNormalised());
+	Vector3 y(world2screen.yCol3().getNormalised());
+	Vector3 z(world2screen.zCol3().getNormalised());
 
-    Vector3 yCol{x.y(), y.y(), z.y()};
-    Vector3 zCol{-x.z(), -y.z(), -z.z()};
-    rotation.setXCol(yCol.cross(zCol).getNormalised());
-    rotation.setYCol(zCol.cross(rotation.xCol3()));
+	Vector3 yCol{x.y(), y.y(), z.y()};
+	Vector3 zCol{-x.z(), -y.z(), -z.z()};
+	rotation.setXCol(yCol.cross(zCol).getNormalised());
+	rotation.setYCol(zCol.cross(rotation.xCol3()));
 }
 
 inline void billboard_viewpointOriented(Matrix4& rotation, const Matrix4& world2screen)

@@ -55,7 +55,7 @@ ScriptMenu::ScriptMenu()
 		menuManager.add(
 			SCRIPT_MENU_PATH,
 			"noscriptsavailable",
-            menu::ItemType::Item,
+			menu::ItemType::Item,
 			_("No scripts available"),
 			"",
 			""

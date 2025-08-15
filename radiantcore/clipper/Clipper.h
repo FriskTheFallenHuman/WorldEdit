@@ -32,8 +32,8 @@ private:
 	// The shader name used for new faces when _useCaulk is true
 	std::string _caulkShader;
 
-    // The plane defined by the clip points (might be invalid)
-    Plane3 _clipPlane;
+	// The plane defined by the clip points (might be invalid)
+	Plane3 _clipPlane;
 
 private:
 	// Update the internally stored variables on registry key change
@@ -63,7 +63,7 @@ public:
 	void draw(float scale) override;
 	void getPlanePoints(Vector3 planepts[3], const AABB& bounds) const;
 
-    const Plane3& getClipPlane() override;
+	const Plane3& getClipPlane() override;
 	void setClipPlane(const Plane3& plane);
 
 	void update() override;

@@ -109,7 +109,7 @@ void RenderPreview::setupToolbars(bool enableAnimation)
     wxToolBar* filterToolbar = findNamedObject<wxToolBar>(_mainPanel, "RenderPreviewFilterToolbar");
 
     wxToolBarToolBase* filterTool = filterToolbar->AddTool(wxID_ANY, _("Filters"),
-                                                           wxutil::GetLocalBitmap("iconFilter16.png"),
+                                                           wxutil::GetLocalBitmap("icon_filter.png"),
                                                            _("Filters"), wxITEM_DROPDOWN);
 
 	// By setting a drodown menu the toolitem will take ownership and delete the menu on destruction

@@ -25,8 +25,8 @@ public:
 	{
 		GlobalStatusBarManager().addTextElement(
 			STATUS_BAR_ELEMENT,
-			"icon_texture.png",
-            StandardPosition::ShaderClipboard,
+			"paste_shader.png",
+			StandardPosition::ShaderClipboard,
 			_("The name of the shader in the clipboard")
 		);
 

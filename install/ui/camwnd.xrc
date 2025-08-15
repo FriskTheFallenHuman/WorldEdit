@@ -25,21 +25,21 @@
 								<label>wireframeBtn</label>
 								<tooltip>Render in wireframe mode</tooltip>
 								<longhelp></longhelp>
-								<bitmap stock_id="darkradiant:wireframeMode16.png" stock_client="wxART_TOOLBAR">undefined.png</bitmap>
+								<bitmap stock_id="darkradiant:render_wireframe.png" stock_client="wxART_TOOLBAR">undefined.png</bitmap>
 								<radio>1</radio>
 							</object>
 							<object class="tool" name="flatShadeBtn">
 								<label>flatShadeBtn</label>
 								<tooltip>Render in flat shaded mode</tooltip>
 								<longhelp></longhelp>
-								<bitmap stock_id="darkradiant:solidMode16.png" stock_client="wxART_TOOLBAR">undefined.png</bitmap>
+								<bitmap stock_id="darkradiant:render_solid.png" stock_client="wxART_TOOLBAR">undefined.png</bitmap>
 								<radio>1</radio>
 							</object>
 							<object class="tool" name="texturedBtn">
 								<label>texturedBtn</label>
 								<tooltip>Render in fullbright textured mode</tooltip>
 								<longhelp></longhelp>
-								<bitmap stock_id="darkradiant:textureMode16.png" stock_client="wxART_TOOLBAR">undefined.png</bitmap>
+								<bitmap stock_id="darkradiant:render_texture.png" stock_client="wxART_TOOLBAR">undefined.png</bitmap>
 								<radio>1</radio>
 							</object>
 							<object class="tool" name="lightingBtn">

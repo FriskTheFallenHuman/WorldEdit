@@ -19,18 +19,18 @@ struct FileTypePattern
 	// The mask pattern ("*.map")
 	std::string pattern;
 
-    // Optional icon string, referring to an image in the bitmaps folder
-    std::string icon;
+	// Optional icon string, referring to an image in the bitmaps folder
+	std::string icon;
 
 	// Constructor with optional initialisation parameters
 	FileTypePattern(const std::string& name_ = "", 
 					const std::string& extension_ = "", 
 					const std::string& pattern_ = "",
-                    const std::string& icon_ = "") :
+					const std::string& icon_ = "") :
 		name(name_),
 		extension(extension_),
 		pattern(pattern_),
-        icon(icon_)
+		icon(icon_)
 	{}
 };
 typedef std::list<FileTypePattern> FileTypePatterns;
@@ -71,11 +71,11 @@ public:
 	 */
 	virtual FileTypePatterns getPatternsForType(const std::string& fileType) = 0;
 
-    /**
-     * Tries to find an icon file for the given extension. If not empty,
-     * the returned string refers to a filename in the bitmaps/ folder.
-     */
-    virtual std::string getIconForExtension(const std::string& extension) = 0;
+	/**
+	 * Tries to find an icon file for the given extension. If not empty,
+	 * the returned string refers to a filename in the bitmaps/ folder.
+	 */
+	virtual std::string getIconForExtension(const std::string& extension) = 0;
 };
 
 namespace filetype

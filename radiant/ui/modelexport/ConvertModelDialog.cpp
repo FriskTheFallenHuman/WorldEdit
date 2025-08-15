@@ -104,30 +104,30 @@ void ConvertModelDialog::populateWindow()
 		wxutil::ChoiceHelper::SelectItemByStoredString(formatChoice, recentFormat);
 	}
 
-    auto* existing = findNamedObject<wxWindow>(this, "InputPathFilePicker");
-    auto* pathEntry = new wxutil::PathEntry(existing->GetParent(), false);
-    replaceControl(existing, pathEntry);
+	auto* existing = findNamedObject<wxWindow>(this, "InputPathFilePicker");
+	auto* pathEntry = new wxutil::PathEntry(existing->GetParent(), false);
+	replaceControl(existing, pathEntry);
 
-    pathEntry->setValue(recentInputPath);
-    pathEntry->Bind(wxutil::EV_PATH_ENTRY_CHANGED, &ConvertModelDialog::onInputPathChanged, this);
+	pathEntry->setValue(recentInputPath);
+	pathEntry->Bind(wxutil::EV_PATH_ENTRY_CHANGED, &ConvertModelDialog::onInputPathChanged, this);
 
 	// Replace the filepicker control with our own PathEntry
-    existing = findNamedObject<wxWindow>(this, "OutputPathFilePicker");
+	existing = findNamedObject<wxWindow>(this, "OutputPathFilePicker");
 	pathEntry = new wxutil::PathEntry(existing->GetParent(), filetype::TYPE_MODEL_EXPORT, false, recentFormat);
-    replaceControl(existing, pathEntry);
+	replaceControl(existing, pathEntry);
 
-    pathEntry->setValue(recentOutputPath);
+	pathEntry->setValue(recentOutputPath);
 
 	// We don't want the FileChooser to ask for permission overwriting an existing file,
 	// we do this ourselves in this class when the user hits OK
 	pathEntry->setAskForOverwrite(false);
 
-    auto* infoPanel = findNamedObject<wxPanel>(this, "InfoPanel");
+	auto* infoPanel = findNamedObject<wxPanel>(this, "InfoPanel");
 
-    // Create info panel
-    _infoTable = new wxutil::KeyValueTable(infoPanel);
-    _infoTable->SetMinClientSize(wxSize(-1, 90));
-    infoPanel->GetSizer()->Add(_infoTable, 0, wxEXPAND | wxLEFT, 12);
+	// Create info panel
+	_infoTable = new wxutil::KeyValueTable(infoPanel);
+	_infoTable->SetMinClientSize(wxSize(-1, 90));
+	infoPanel->GetSizer()->Add(_infoTable, 0, wxEXPAND | wxLEFT, 12);
 
 	handleFormatSelectionChange();
 	handleInputPathChanged();
@@ -149,11 +149,11 @@ void ConvertModelDialog::onConvert(wxCommandEvent& ev)
 		return;
 	}
 
-    if (outputFilename.empty() || os::getExtension(outputFilename).empty())
-    {
-        wxutil::Messagebox::Show(_("Empty Filename"), _("No valid output filename specified, cannot run converter"), IDialog::MessageType::MESSAGE_ERROR);
-        return;
-    }
+	if (outputFilename.empty() || os::getExtension(outputFilename).empty())
+	{
+		wxutil::Messagebox::Show(_("Empty Filename"), _("No valid output filename specified, cannot run converter"), IDialog::MessageType::MESSAGE_ERROR);
+		return;
+	}
 
 	// Check if the target file already exists
 	if (os::fileOrDirExists(outputFilename) &&
@@ -197,43 +197,43 @@ void ConvertModelDialog::onCancel(wxCommandEvent& ev)
 
 void ConvertModelDialog::onInputPathChanged(wxCommandEvent& ev)
 {
-    handleInputPathChanged();
+	handleInputPathChanged();
 }
 
 void ConvertModelDialog::handleInputPathChanged()
 {
-    _infoTable->Clear();
+	_infoTable->Clear();
 
-    // Try to load the model and display some stats
-    std::string inputFilename = findNamedObject<wxutil::PathEntry>(this, "InputPathFilePicker")->getValue();
+	// Try to load the model and display some stats
+	std::string inputFilename = findNamedObject<wxutil::PathEntry>(this, "InputPathFilePicker")->getValue();
 
-    if (inputFilename.empty())
-    {
-        // Clear model info
-        findNamedObject<wxPanel>(this, "InfoPanel")->Enable(false);
-        return;
-    }
+	if (inputFilename.empty())
+	{
+		// Clear model info
+		findNamedObject<wxPanel>(this, "InfoPanel")->Enable(false);
+		return;
+	}
 
-    auto modelExtension = string::to_upper_copy(os::getExtension(inputFilename));
-    model::IModelPtr model;
+	auto modelExtension = string::to_upper_copy(os::getExtension(inputFilename));
+	model::IModelPtr model;
 
-    GlobalModelFormatManager().foreachImporter([&](const model::IModelImporterPtr& importer)
-    {
-        if (!model && importer->getExtension() == modelExtension)
-        {
-            model = importer->loadModelFromPath(inputFilename);
-        }
-    });
+	GlobalModelFormatManager().foreachImporter([&](const model::IModelImporterPtr& importer)
+	{
+		if (!model && importer->getExtension() == modelExtension)
+		{
+			model = importer->loadModelFromPath(inputFilename);
+		}
+	});
 
-    findNamedObject<wxPanel>(this, "InfoPanel")->Enable(model != nullptr);
-    
-    if (model)
-    {
-        // Update model info
-        _infoTable->Append(_("Total vertices"), string::to_string(model->getVertexCount()));
-        _infoTable->Append(_("Total polys"), string::to_string(model->getPolyCount()));
-        _infoTable->Append(_("Material surfaces"), string::to_string(model->getSurfaceCount()));
-    }
+	findNamedObject<wxPanel>(this, "InfoPanel")->Enable(model != nullptr);
+	
+	if (model)
+	{
+		// Update model info
+		_infoTable->Append(_("Total vertices"), string::to_string(model->getVertexCount()));
+		_infoTable->Append(_("Total polys"), string::to_string(model->getPolyCount()));
+		_infoTable->Append(_("Material surfaces"), string::to_string(model->getSurfaceCount()));
+	}
 }
 
 void ConvertModelDialog::handleFormatSelectionChange()
@@ -277,8 +277,8 @@ void ConvertModelDialog::saveOptionsToRegistry()
 
 	registry::setValue(RKEY_MODEL_CONVERSION_OUTPUT_PATH,
 		findNamedObject<wxutil::PathEntry>(this, "OutputPathFilePicker")->getValue());
-    registry::setValue(RKEY_MODEL_CONVERSION_INPUT_PATH,
-        findNamedObject<wxutil::PathEntry>(this, "InputPathFilePicker")->getValue());
+	registry::setValue(RKEY_MODEL_CONVERSION_INPUT_PATH,
+		findNamedObject<wxutil::PathEntry>(this, "InputPathFilePicker")->getValue());
 }
 
 void ConvertModelDialog::ShowDialog(const cmd::ArgumentList& args)

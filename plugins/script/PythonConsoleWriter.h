@@ -10,7 +10,7 @@ namespace script
 
 /**
  * greebo: A small helper class for redirecting Python's StdIo output
- * to DarkRadiant's global*() streams.
+ * to WorldEdit's global*() streams.
  *
  * The output is duplicated to a given string.
  */
@@ -30,7 +30,7 @@ public:
 	{}
 
 	// StdOut redirector
-    void write(const std::string& msg)
+	void write(const std::string& msg)
 	{
 		_outputBuffer.append(msg);
 
@@ -44,7 +44,7 @@ public:
 		{
 			rMessage() << msg;
 		}
-    }
+	}
 
 	// Since this class serves as "stdout" it should implement flush()
 	void flush()

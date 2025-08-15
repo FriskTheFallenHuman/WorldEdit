@@ -19,12 +19,12 @@ private:
 	// The iterator pointing to the row in a wxutil::TreeModel
 	wxDataViewItem _iter;
 public:
-    using Ptr = std::shared_ptr<GraphTreeNode>;
+	using Ptr = std::shared_ptr<GraphTreeNode>;
 
-    GraphTreeNode(const scene::INodePtr& node, const wxDataViewItem& iter) :
-        _node(node),
-        _iter(iter)
-    {}
+	GraphTreeNode(const scene::INodePtr& node, const wxDataViewItem& iter) :
+		_node(node),
+		_iter(iter)
+	{}
 
 	// Convenience accessor for methods
 	wxDataViewItem& getIter()

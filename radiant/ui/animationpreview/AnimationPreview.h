@@ -16,8 +16,8 @@ class AnimationPreview :
 	public wxutil::RenderPreview
 {
 private:
-    // The scene root
-    scene::IMapRootNodePtr _root;
+	// The scene root
+	scene::IMapRootNodePtr _root;
 
 	// Current MD5 model node to display
 	scene::INodePtr _model;
@@ -46,20 +46,20 @@ public:
 		return _anim;
 	}
 
-    AABB getSceneBounds() override;
+	AABB getSceneBounds() override;
 
 protected:
 	// Creates parent entity etc.
-    void setupSceneGraph() override;
+	void setupSceneGraph() override;
 
-    bool onPreRender() override;
-    std::string getInfoText() override;
+	bool onPreRender() override;
+	std::string getInfoText() override;
 
 	void clearModel();
 
-    RenderStateFlags getRenderFlagsFill() override;
+	RenderStateFlags getRenderFlagsFill() override;
 
-    void onModelRotationChanged() override;
+	void onModelRotationChanged() override;
 };
 typedef std::shared_ptr<AnimationPreview> AnimationPreviewPtr;
 

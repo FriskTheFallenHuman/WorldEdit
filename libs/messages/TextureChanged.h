@@ -18,17 +18,17 @@ public:
 	TextureChangedMessage()
 	{}
 
-    std::size_t getId() const override
-    {
-        return Type::TextureChanged;
-    }
+	std::size_t getId() const override
+	{
+		return Type::TextureChanged;
+	}
 
-    // Convenience method
-    static void Send()
-    {
-        TextureChangedMessage msg;
-        GlobalRadiantCore().getMessageBus().sendMessage(msg);
-    }
+	// Convenience method
+	static void Send()
+	{
+		TextureChangedMessage msg;
+		GlobalRadiantCore().getMessageBus().sendMessage(msg);
+	}
 };
 
 }

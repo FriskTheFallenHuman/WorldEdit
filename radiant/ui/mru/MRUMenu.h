@@ -66,7 +66,7 @@ private:
 		});
 
 		// Get the menumanager
-        menu::IMenuManager& menuManager = GlobalMenuManager();
+		menu::IMenuManager& menuManager = GlobalMenuManager();
 
 		if (filenames.empty())
 		{
@@ -97,7 +97,7 @@ private:
 			menuManager.insert(
 				"main/file/mruseparator",
 				"MRU" + string::to_string(index + 1),
-                ui::menu::ItemType::Item,
+				ui::menu::ItemType::Item,
 				label,
 				"", // empty icon
 				statement

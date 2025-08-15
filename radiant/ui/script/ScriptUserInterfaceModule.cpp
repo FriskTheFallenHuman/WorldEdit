@@ -32,14 +32,14 @@ public:
 
 	const StringSet& getDependencies() const override
 	{
-        static StringSet _dependencies
-        {
-            MODULE_SCRIPTING_SYSTEM,
-            MODULE_MENUMANAGER,
-            MODULE_MAINFRAME,
-            MODULE_USERINTERFACE,
-            MODULE_COMMANDSYSTEM,
-        };
+		static StringSet _dependencies
+		{
+			MODULE_SCRIPTING_SYSTEM,
+			MODULE_MENUMANAGER,
+			MODULE_MAINFRAME,
+			MODULE_USERINTERFACE,
+			MODULE_COMMANDSYSTEM,
+		};
 
 		return _dependencies;
 	}
@@ -47,7 +47,7 @@ public:
 	void initialiseModule(const IApplicationContext& ctx) override
 	{
 		// Bind the reloadscripts command to the menu
-        GlobalMenuManager().insert("main/file/reloadDecls", 	// menu location path
+		GlobalMenuManager().insert("main/file/reloadDecls", 	// menu location path
 			"ReloadScripts", // name
 			menu::ItemType::Item,	// type
 			_("Reload Scripts"),	// caption
@@ -62,12 +62,12 @@ public:
 		_scriptsReloadedConn = GlobalScriptingSystem().signal_onScriptsReloaded()
 			.connect(sigc::mem_fun(this, &ScriptUserInterfaceModule::onScriptsReloaded));
 
-        GlobalUserInterface().registerControl(std::make_shared<ScriptPanel>());
+		GlobalUserInterface().registerControl(std::make_shared<ScriptPanel>());
 	}
 
 	void shutdownModule() override
 	{
-        GlobalUserInterface().unregisterControl(ScriptPanel::Name);
+		GlobalUserInterface().unregisterControl(ScriptPanel::Name);
 
 		_scriptsReloadedConn.disconnect();
 		_scriptMenu.reset();
@@ -84,11 +84,11 @@ private:
 	{
 		_scriptMenu = std::make_shared<ScriptMenu>();
 
-        GlobalMainFrame().addControl(ScriptPanel::Name, IMainFrame::ControlSettings
-        {
-            IMainFrame::Location::PropertyPanel,
-            true
-        });
+		GlobalMainFrame().addControl(ScriptPanel::Name, IMainFrame::ControlSettings
+		{
+			IMainFrame::Location::PropertyPanel,
+			true
+		});
 	}
 };
 

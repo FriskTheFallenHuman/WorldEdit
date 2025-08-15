@@ -24,23 +24,23 @@ public:
 	/// Possible message types (used for IDialogManager::createMessageBox())
 	enum MessageType
 	{
-        /// Just a plain message with an OK button
+		/// Just a plain message with an OK button
 		MESSAGE_CONFIRM,
 
-        // Queries Yes//No from the user
+		// Queries Yes//No from the user
 		MESSAGE_ASK,
 
-        /// Displays a warning message
+		/// Displays a warning message
 		MESSAGE_WARNING,
 
-        /// Displays an error message
+		/// Displays an error message
 		MESSAGE_ERROR,
 
-        /// Has three options: Yes, No or Cancel
+		/// Has three options: Yes, No or Cancel
 		MESSAGE_YESNOCANCEL,
 
-        /// Save confirmation as per HIG 2.32/3.4.6.1
-        MESSAGE_SAVECONFIRMATION
+		/// Save confirmation as per HIG 2.32/3.4.6.1
+		MESSAGE_SAVECONFIRMATION
 	};
 
 	// Sets the dialog title
@@ -93,7 +93,7 @@ class IResourceChooser;  // defined in iresourcechooser.h
 class IAnimationChooser; // defined in ianimationchooser.h
 
 class IDialogManager :
-    public RegisterableModule
+	public RegisterableModule
 {
 public:
 	// Virtual destructor
@@ -126,7 +126,7 @@ public:
 	 *			GlobalMainFrame().getMainWindow().
 	 */
 	virtual IDialogPtr createMessageBox(const std::string& title,
-                                        const std::string& text,
+										const std::string& text,
 										IDialog::MessageType type,
 										wxWindow* parent = nullptr) = 0;
 
@@ -138,7 +138,7 @@ public:
 	 * @pattern: the type "map", "prefab", this determines the file extensions.
 	 * @defaultExt: The default extension appended when the user enters
 	 *              filenames without extension.
- 	 */
+	 */
 	virtual IFileChooserPtr createFileChooser(const std::string& title,
 												bool open, 
 												const std::string& pattern = "",
@@ -148,7 +148,7 @@ public:
 	 * Acquire a new folder chooser instance with the given parameters.
 	 *
 	 * @title: The dialog title.
- 	 */
+	 */
 	virtual IDirChooserPtr createDirChooser(const std::string& title) = 0;
 
 	// Creates and returns a new Dialog class for selecting a sound shader.
@@ -169,6 +169,6 @@ constexpr const char* const MODULE_DIALOGMANAGER = "DialogManager";
 
 inline ui::IDialogManager& GlobalDialogManager()
 {
-    static module::InstanceReference<ui::IDialogManager> _reference(MODULE_DIALOGMANAGER);
-    return _reference;
+	static module::InstanceReference<ui::IDialogManager> _reference(MODULE_DIALOGMANAGER);
+	return _reference;
 }

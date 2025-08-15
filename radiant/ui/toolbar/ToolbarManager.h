@@ -25,7 +25,7 @@ class ToolbarManager final :
 {
 private:
 	// This is where the available Toolbar names are stored after parsing the XML file
-    std::set<std::string> _toolbars;
+	std::set<std::string> _toolbars;
 
 	int _nextToolItemId;
 
@@ -33,10 +33,10 @@ public:
 	// Returns the toolbar that is named toolbarName
 	wxToolBar* createToolbar(const std::string& name, wxWindow* parent) override;
 
-    // RegisterableModule
-    const std::string& getName() const override;
-    const StringSet& getDependencies() const override;
-    void initialiseModule(const IApplicationContext& ctx) override;
+	// RegisterableModule
+	const std::string& getName() const override;
+	const StringSet& getDependencies() const override;
+	void initialiseModule(const IApplicationContext& ctx) override;
 
 private:
 	/**
@@ -45,7 +45,7 @@ private:
 	 */
 	void loadToolbars();
 
-    // Construct toolbar widget from XML node
+	// Construct toolbar widget from XML node
 	wxToolBar* createToolbarFromNode(xml::Node& node, wxWindow* parent);
 
 	/**

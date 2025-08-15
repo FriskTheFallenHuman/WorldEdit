@@ -5,12 +5,12 @@
 namespace registry
 {
 
-const char* const TOPLEVEL_NODE_NAME = "darkradiant";
+const char* const TOPLEVEL_NODE_NAME = "worldedit";
 
 class RegistryTree
 {
 private:
-	// The top level node name ("darkradiant")
+	// The top level node name ("worldedit")
 	std::string _topLevelNode;
 	std::string _defaultImportNode;
 
@@ -32,7 +32,7 @@ public:
 
 	/* Deletes this key and all its children,
 	 * this includes multiple instances nodes matching this key */
-    std::size_t deleteXPath(const std::string& path);
+	std::size_t deleteXPath(const std::string& path);
 
 	/*	Adds a key to the XMLRegistry (without value, just the node)
 	 *  All required parent nodes are created automatically, if they don't exist */
@@ -42,7 +42,7 @@ public:
 	xml::Node createKeyWithName(const std::string& path, const std::string& key, const std::string& name);
 
 	// Sets the value of a key from the registry,
-	// "/darkradiant" is automatically added if relative paths are used
+	// "/worldedit" is automatically added if relative paths are used
 	// Note that the given key is NOT processed in terms of UTF-8 <-> locale conversion.
 	void set(const std::string& key, const std::string& value);
 
@@ -51,7 +51,7 @@ public:
 		const std::string& attrName, const std::string& attrValue);
 
 	/* Appends a whole (external) XML file to the XMLRegistry. The toplevel nodes of this file
-	 * are appended to _topLevelNode (e.g. <darkradiant>) if parentKey is set to the empty string "",
+	 * are appended to _topLevelNode (e.g. <worldedit>) if parentKey is set to the empty string "",
 	 * otherwise they are imported as a child of the specified parentKey
 	 */
 	void importFromFile(const std::string& importFilePath, const std::string& parentKey);
@@ -65,7 +65,7 @@ public:
 private:
 	/* Checks whether the key is an absolute or a relative path
 	 * Absolute paths are returned unchanged, a prefix with the
-	 * toplevel node (e.g. "/darkradiant") is appended to the relative ones.
+	 * toplevel node (e.g. "/worldedit") is appended to the relative ones.
 	 */
 	std::string prepareKey(const std::string& key);
 };

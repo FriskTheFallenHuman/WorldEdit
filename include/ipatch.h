@@ -38,7 +38,7 @@ struct PatchMesh
 	std::size_t width;	// width of this mesh
 	std::size_t height; // height of this mesh
 
-    /// Geometry with normals and texture coordinates
+	/// Geometry with normals and texture coordinates
 	std::vector<VertexNT> vertices;
 };
 
@@ -106,26 +106,26 @@ public:
 
 	/**
 	 * greebo: Inserts two columns before and after the column with index <colIndex>.
- 	 * Throws an GenericPatchException if an error occurs.
- 	 */
- 	virtual void insertColumns(std::size_t colIndex) = 0;
+	 * Throws an GenericPatchException if an error occurs.
+	 */
+	virtual void insertColumns(std::size_t colIndex) = 0;
 
- 	/**
+	/**
 	 * greebo: Inserts two rows before and after the row with index <rowIndex>.
- 	 * Throws an GenericPatchException if an error occurs.
- 	 */
- 	virtual void insertRows(std::size_t rowIndex) = 0;
+	 * Throws an GenericPatchException if an error occurs.
+	 */
+	virtual void insertRows(std::size_t rowIndex) = 0;
 
 	/**
 	 * greebo: Removes columns or rows right before and after the col/row
- 	 * with the given index, reducing the according dimension by 2.
- 	 */
- 	virtual void removePoints(bool columns, std::size_t index) = 0;
+	 * with the given index, reducing the according dimension by 2.
+	 */
+	virtual void removePoints(bool columns, std::size_t index) = 0;
 
- 	/**
+	/**
 	 * greebo: Appends two rows or columns at the beginning or the end.
- 	 */
- 	virtual void appendPoints(bool columns, bool beginning) = 0;
+	 */
+	virtual void appendPoints(bool columns, bool beginning) = 0;
 
 	// Updates the patch tesselation matrix, call this everytime you're done with your PatchControl changes
 	virtual void controlPointsChanged() = 0;
@@ -143,8 +143,8 @@ public:
 	// greebo: returns true if the patch's shader is visible, false otherwise
 	virtual bool hasVisibleMaterial() const = 0;
 
-    // Returns the texture aspect ratio width/height
-    virtual float getTextureAspectRatio() const = 0;
+	// Returns the texture aspect ratio width/height
+	virtual float getTextureAspectRatio() const = 0;
 
 	/**
 	 * greebo: Sets/gets whether this patch is a patchDef3 (fixed tesselation)
@@ -215,21 +215,21 @@ public:
 	// Alligns the assigned texture at the given edge (if possible)
 	virtual void alignTexture(AlignEdge type) = 0;
 
-    // Reverts any transform that has been applied since the last time freezeTransform() was called
-    virtual void revertTransform() = 0;
+	// Reverts any transform that has been applied since the last time freezeTransform() was called
+	virtual void revertTransform() = 0;
 
-    // Returns the transformable control point (not the one returned by ctrlAt) - this one is
-    // part of the "transformed" working set of the patch which will either be saved on freezeTransform()
-    // or discarded on revertTransform().
-    virtual PatchControl& getTransformedCtrlAt(std::size_t row, std::size_t col) = 0;
+	// Returns the transformable control point (not the one returned by ctrlAt) - this one is
+	// part of the "transformed" working set of the patch which will either be saved on freezeTransform()
+	// or discarded on revertTransform().
+	virtual PatchControl& getTransformedCtrlAt(std::size_t row, std::size_t col) = 0;
 
-    // Promotes the current transformed state to the new base state
-    virtual void freezeTransform() = 0;
+	// Promotes the current transformed state to the new base state
+	virtual void freezeTransform() = 0;
 
-    // Updates the patch tesselation based on the transformed set of control vertices
-    // Setting force to true will update the tesselation even if controlPointsChanged() 
-    // hasn't been called in the meantime.
-    virtual void updateTesselation(bool force = false) = 0;
+	// Updates the patch tesselation based on the transformed set of control vertices
+	// Setting force to true will update the tesselation even if controlPointsChanged() 
+	// hasn't been called in the meantime.
+	virtual void updateTesselation(bool force = false) = 0;
 };
 
 namespace patch
@@ -291,7 +291,7 @@ class Patch;
 class IPatchNode
 {
 public:
-    virtual ~IPatchNode() {}
+	virtual ~IPatchNode() {}
 
 	/**
 	 * greebo: Retrieves the actual patch from a PatchNode, only works from within the main module.
@@ -305,7 +305,7 @@ typedef std::shared_ptr<IPatchNode> IPatchNodePtr;
 
 inline bool Node_isPatch(const scene::INodePtr& node)
 {
-    return node->getNodeType() == scene::INode::Type::Patch;
+	return node->getNodeType() == scene::INode::Type::Patch;
 	//return std::dynamic_pointer_cast<IPatchNode>(node) != NULL;
 }
 

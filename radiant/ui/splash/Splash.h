@@ -14,14 +14,14 @@ class wxImagePanel;
 
 class Splash :
 	public wxFrame,
-    public sigc::trackable
+	public sigc::trackable
 {
 private:
 	wxGauge* _progressBar;
 	wxImagePanel* _imagePanel;
 
-    // Private constructor, creates all the widgets
-    Splash();
+	// Private constructor, creates all the widgets
+	Splash();
 
 public:
 	/** greebo: Sets the text and/or progress of the progress bar.

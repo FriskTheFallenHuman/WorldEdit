@@ -1,0 +1,10 @@
+usr/bin
+usr/lib/*/worldedit/lib*
+usr/lib/*/worldedit/modules
+usr/lib/*/worldedit/plugins
+usr/share/worldedit/scripts
+usr/share/worldedit
+usr/share/doc/worldedit
+usr/share/applications
+usr/share/icons
+usr/share/metainfo

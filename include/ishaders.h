@@ -59,19 +59,19 @@ public:
 		FLAG_HAS_SORT_DEFINED		= 1 << 13,		// whether a sort value has been defined
 	};
 
-    // Parser flags, used to give some hints to the material editor GUI
-    // about what the material sources looked like
-    enum ParseFlags
-    {
-        PF_HasSortDefined           = 1 << 0, // has a "sort" keyword in its definition
-        PF_HasAmbientRimColour      = 1 << 1, // has an "ambientRimColor" keyword in its definition
-        PF_HasSpectrum              = 1 << 2, // has a "spectrum" keyword in its definition
-        PF_HasDecalInfo             = 1 << 3, // has a "decalinfo" keyword in its definition
-        PF_HasDecalMacro            = 1 << 4, // has a "DECAL_MACRO" keyword in its definition
-        PF_HasTwoSidedDecalMacro    = 1 << 5, // has a "TWOSIDED_DECAL_MACRO" keyword in its definition
-        PF_HasParticleMacro         = 1 << 6, // has a "PARTICLE_MACRO" keyword in its definition
-        PF_HasGlassMacro            = 1 << 7, // has a "GLASS_MACRO" keyword in its definition
-    };
+	// Parser flags, used to give some hints to the material editor GUI
+	// about what the material sources looked like
+	enum ParseFlags
+	{
+		PF_HasSortDefined           = 1 << 0, // has a "sort" keyword in its definition
+		PF_HasAmbientRimColour      = 1 << 1, // has an "ambientRimColor" keyword in its definition
+		PF_HasSpectrum              = 1 << 2, // has a "spectrum" keyword in its definition
+		PF_HasDecalInfo             = 1 << 3, // has a "decalinfo" keyword in its definition
+		PF_HasDecalMacro            = 1 << 4, // has a "DECAL_MACRO" keyword in its definition
+		PF_HasTwoSidedDecalMacro    = 1 << 5, // has a "TWOSIDED_DECAL_MACRO" keyword in its definition
+		PF_HasParticleMacro         = 1 << 6, // has a "PARTICLE_MACRO" keyword in its definition
+		PF_HasGlassMacro            = 1 << 7, // has a "GLASS_MACRO" keyword in its definition
+	};
 
 	// Surface Flags
 	enum SurfaceFlags
@@ -128,15 +128,15 @@ public:
 		SURFTYPE_15
 	};
 
-    /**
-     * \brief
-     * Requested sort position from material declaration (e.g. "sort decal").
+	/**
+	 * \brief
+	 * Requested sort position from material declaration (e.g. "sort decal").
 	 * The actual sort order of a material is stored as a floating point number,
 	 * these enumerations represent some regularly used shortcuts in material decls.
 	 * The values of this enum have been modeled after the ones found in the D3 SDK.
-     */
-    enum SortRequest
-    {
+	 */
+	enum SortRequest
+	{
 		SORT_SUBVIEW = -3,		// mirrors, viewscreens, etc
 		SORT_GUI = -2,			// guis
 		SORT_BAD = -1,
@@ -148,9 +148,9 @@ public:
 		SORT_CLOSE,
 		SORT_ALMOST_NEAREST,	// gun smoke puffs
 		SORT_NEAREST,			// screen blood blobs
-        SORT_AFTER_FOG    = 90, // TDM-specific
+		SORT_AFTER_FOG    = 90, // TDM-specific
 		SORT_POST_PROCESS = 100	// after a screen copy to texture
-    };
+	};
 
 	// Deform Type
 	enum DeformType
@@ -174,12 +174,12 @@ public:
 		Vector4	startColour;
 		Vector4	endColour;
 
-        DecalInfo() :
-            stayMilliSeconds(0),
-            fadeMilliSeconds(0),
-            startColour(0,0,0,0),
-            endColour(0,0,0,0)
-        {}
+		DecalInfo() :
+			stayMilliSeconds(0),
+			fadeMilliSeconds(0),
+			startColour(0,0,0,0),
+			endColour(0,0,0,0)
+		{}
 	};
 
 	enum Coverage
@@ -190,125 +190,125 @@ public:
 		MC_TRANSLUCENT		// blended with background
 	};
 
-    // TDM 2.11 frob stage keyword
-    enum class FrobStageType
-    {
-        Default,     // no frobstage keyword in this material
-        Diffuse,     // frobstage_diffuse has been declared: frobstage_diffuse 0.25 0.50
-        Texture,     // frobstage_texture textures/some/thing 0.15 0.40
-        NoFrobStage, // frobstage_none
-    };
+	// TDM 2.11 frob stage keyword
+	enum class FrobStageType
+	{
+		Default,     // no frobstage keyword in this material
+		Diffuse,     // frobstage_diffuse has been declared: frobstage_diffuse 0.25 0.50
+		Texture,     // frobstage_texture textures/some/thing 0.15 0.40
+		NoFrobStage, // frobstage_none
+	};
 
 	virtual ~Material() {}
 
-    /// Return the editor image texture for this shader.
-    virtual TexturePtr getEditorImage() = 0;
+	/// Return the editor image texture for this shader.
+	virtual TexturePtr getEditorImage() = 0;
 
-    /// Return true if the editor image is no tex for this shader.
-    virtual bool isEditorImageNoTex() = 0;
+	/// Return true if the editor image is no tex for this shader.
+	virtual bool isEditorImageNoTex() = 0;
 
-    // Returns the expression defining the editor image of this material, as passed to qer_editorimage statement,
-    // or an empty string if this keyword was not used at all in this declaration.
-    virtual shaders::IMapExpression::Ptr getEditorImageExpression() = 0;
+	// Returns the expression defining the editor image of this material, as passed to qer_editorimage statement,
+	// or an empty string if this keyword was not used at all in this declaration.
+	virtual shaders::IMapExpression::Ptr getEditorImageExpression() = 0;
 
-    // Set the editor image path of this material
-    virtual void setEditorImageExpressionFromString(const std::string& editorImagePath) = 0;
+	// Set the editor image path of this material
+	virtual void setEditorImageExpressionFromString(const std::string& editorImagePath) = 0;
 
-    /// Get the string name of this material
-    virtual std::string getName() const = 0;
+	/// Get the string name of this material
+	virtual std::string getName() const = 0;
 
-    virtual bool IsInUse() const = 0;
-    virtual void SetInUse(bool bInUse) = 0;
+	virtual bool IsInUse() const = 0;
+	virtual void SetInUse(bool bInUse) = 0;
 
-    /// Return true if this is an internal material not corresponding to a .mtr
-    virtual bool IsDefault() const = 0;
+	/// Return true if this is an internal material not corresponding to a .mtr
+	virtual bool IsDefault() const = 0;
 
-    /// get shader file name (ie the file where this one is defined)
-    virtual const char* getShaderFileName() const = 0;
+	/// get shader file name (ie the file where this one is defined)
+	virtual const char* getShaderFileName() const = 0;
 
-    // Set the mtr file name to define where this material should be saved to
-    // This will throw an exception if the given path (absolute or relative) 
-    // is not located within the current mod file tree (VFS)
-    virtual void setShaderFileName(const std::string& fullPath) = 0;
+	// Set the mtr file name to define where this material should be saved to
+	// This will throw an exception if the given path (absolute or relative) 
+	// is not located within the current mod file tree (VFS)
+	virtual void setShaderFileName(const std::string& fullPath) = 0;
 
-    // Returns the VFS info structure of the file this shader is defined in
-    virtual const vfs::FileInfo& getShaderFileInfo() const = 0;
+	// Returns the VFS info structure of the file this shader is defined in
+	virtual const vfs::FileInfo& getShaderFileInfo() const = 0;
 
-    /**
-     * \brief Return the requested sort position of this material.
-     */
-    virtual float getSortRequest() const = 0;
+	/**
+	 * \brief Return the requested sort position of this material.
+	 */
+	virtual float getSortRequest() const = 0;
 
-    // Set the sort value for this material, see the SortRequest enum for predefined values
-    virtual void setSortRequest(float sortRequest) = 0;
+	// Set the sort value for this material, see the SortRequest enum for predefined values
+	virtual void setSortRequest(float sortRequest) = 0;
 
-    // Resets the sort request to the default value
-    virtual void resetSortRequest() = 0;
+	// Resets the sort request to the default value
+	virtual void resetSortRequest() = 0;
 
-    /// Return a polygon offset if one is defined. The default is 0.
-    virtual float getPolygonOffset() const = 0;
+	/// Return a polygon offset if one is defined. The default is 0.
+	virtual float getPolygonOffset() const = 0;
 
-    // Set the polygon offset of this material. Clear the FLAG_POLYGONOFFSET to disable the offset altogether.
-    virtual void setPolygonOffset(float offset) = 0;
+	// Set the polygon offset of this material. Clear the FLAG_POLYGONOFFSET to disable the offset altogether.
+	virtual void setPolygonOffset(float offset) = 0;
 
 	/// Get the desired texture repeat behaviour.
 	virtual ClampType getClampType() const = 0;
 
-    // Set the clamp type for this material
-    virtual void setClampType(ClampType type) = 0;
+	// Set the clamp type for this material
+	virtual void setClampType(ClampType type) = 0;
 
 	/// Get the cull type (none, back, front)
 	virtual CullType getCullType() const = 0;
 
-    // Set the cull type
-    virtual void setCullType(CullType type) = 0;
+	// Set the cull type
+	virtual void setCullType(CullType type) = 0;
 
 	/// Get the global material flags (translucent, noshadows, etc.)
 	virtual int getMaterialFlags() const = 0;
 
-    // Set the given material flag
+	// Set the given material flag
 	virtual void setMaterialFlag(Flags flag) = 0;
 
-    // Clear the given material flags
+	// Clear the given material flags
 	virtual void clearMaterialFlag(Flags flag) = 0;
 
 	/// Surface flags (areaportal, nonsolid, etc.)
 	virtual int getSurfaceFlags() const = 0;
 
-    // Set the given surface flag
-    virtual void setSurfaceFlag(Material::SurfaceFlags flag) = 0;
+	// Set the given surface flag
+	virtual void setSurfaceFlag(Material::SurfaceFlags flag) = 0;
 
-    // Clear the given surface flag
-    virtual void clearSurfaceFlag(Material::SurfaceFlags flag) = 0;
+	// Clear the given surface flag
+	virtual void clearSurfaceFlag(Material::SurfaceFlags flag) = 0;
 
 	/// Surface Type (wood, stone, surfType15, ...)
 	virtual SurfaceType getSurfaceType() const = 0;
 
-    // Set the surface type of this material
-    virtual void setSurfaceType(SurfaceType type) = 0;
+	// Set the surface type of this material
+	virtual void setSurfaceType(SurfaceType type) = 0;
 
 	/// Get the deform type of this material
 	virtual DeformType getDeformType() const = 0;
 
-    // Returns the shader expression used to define the deform parameters (valid indices in [0..2])
-    virtual shaders::IShaderExpression::Ptr getDeformExpression(std::size_t index) = 0;
+	// Returns the shader expression used to define the deform parameters (valid indices in [0..2])
+	virtual shaders::IShaderExpression::Ptr getDeformExpression(std::size_t index) = 0;
 
-    // Used for Deform_Particle/Particle2 defines the name of the particle def
-    virtual std::string getDeformDeclName() = 0;
+	// Used for Deform_Particle/Particle2 defines the name of the particle def
+	virtual std::string getDeformDeclName() = 0;
 
 	/// Returns the spectrum of this shader, 0 is the default value (even without keyword in the material)
 	virtual int getSpectrum() const = 0;
 
-    // Sets the spectrum of this material.
-    virtual void setSpectrum(int spectrum) = 0;
+	// Sets the spectrum of this material.
+	virtual void setSpectrum(int spectrum) = 0;
 
 	/// Retrieves the decal info structure of this material.
 	virtual DecalInfo getDecalInfo() const = 0;
 
-    // Sets the decal info structure on this material.
-    // If the structure is not empty, it will enable the ParseFlag PF_HasDecalInfo,
-    // an empty/defaulted decalInfo structure will clear the flag
-    virtual void setDecalInfo(const DecalInfo& info) = 0;
+	// Sets the decal info structure on this material.
+	// If the structure is not empty, it will enable the ParseFlag PF_HasDecalInfo,
+	// an empty/defaulted decalInfo structure will clear the flag
+	virtual void setDecalInfo(const DecalInfo& info) = 0;
 
 	/// Returns the coverage type of this material, also needed by the map compiler.
 	virtual Coverage getCoverage() const = 0;
@@ -334,15 +334,15 @@ public:
 	 */
 	virtual bool isFogLight() const = 0;
 
-    /** Determine whether this is a cubic light shader, i.e. the
-     * material def contains the global "cubicLight" keyword.
-     */
-    virtual bool isCubicLight() const = 0;
+	/** Determine whether this is a cubic light shader, i.e. the
+	 * material def contains the global "cubicLight" keyword.
+	 */
+	virtual bool isCubicLight() const = 0;
 
-    virtual void setIsAmbientLight(bool newValue) = 0;
-    virtual void setIsBlendLight(bool newValue) = 0;
-    virtual void setIsFogLight(bool newValue) = 0;
-    virtual void setIsCubicLight(bool newValue) = 0;
+	virtual void setIsAmbientLight(bool newValue) = 0;
+	virtual void setIsBlendLight(bool newValue) = 0;
+	virtual void setIsFogLight(bool newValue) = 0;
+	virtual void setIsCubicLight(bool newValue) = 0;
 
 	/**
 	 * For light shaders: implicitly no-shadows lights (ambients, fogs, etc)
@@ -369,82 +369,82 @@ public:
 	 */
 	virtual bool isDiscrete() const = 0;
 
-    // Returns the number of layers in this material
-    virtual std::size_t getNumLayers() = 0;
+	// Returns the number of layers in this material
+	virtual std::size_t getNumLayers() = 0;
 
-    // Returns the n-th layer of this material (0-based index)
-    virtual IShaderLayer::Ptr getLayer(std::size_t index) = 0;
+	// Returns the n-th layer of this material (0-based index)
+	virtual IShaderLayer::Ptr getLayer(std::size_t index) = 0;
 
-    /// Return the first material layer, if any
+	/// Return the first material layer, if any
 	virtual IShaderLayer* firstLayer() = 0;
 
-    /**
-     * \brief Visit all layers in this material using the given functor.
-     * The functor can return false to abort the traversal, true will continue.
-     * This includes all diffuse, bump, specular or blend layers.
-     */
-    virtual void foreachLayer(const std::function<bool(const IShaderLayer::Ptr&)>& functor) = 0;
+	/**
+	 * \brief Visit all layers in this material using the given functor.
+	 * The functor can return false to abort the traversal, true will continue.
+	 * This includes all diffuse, bump, specular or blend layers.
+	 */
+	virtual void foreachLayer(const std::function<bool(const IShaderLayer::Ptr&)>& functor) = 0;
 
-    // Add a new (typed) layer to this material, returning the index of the new layer
-    virtual std::size_t addLayer(IShaderLayer::Type type) = 0;
+	// Add a new (typed) layer to this material, returning the index of the new layer
+	virtual std::size_t addLayer(IShaderLayer::Type type) = 0;
 
-    // Removes the indexed layer from this material
-    virtual void removeLayer(std::size_t index) = 0;
+	// Removes the indexed layer from this material
+	virtual void removeLayer(std::size_t index) = 0;
 
-    // Duplicates the given layer and returns the index to the copied one
-    virtual std::size_t duplicateLayer(std::size_t index) = 0;
+	// Duplicates the given layer and returns the index to the copied one
+	virtual std::size_t duplicateLayer(std::size_t index) = 0;
 
-    // Swaps the position of the two layers
-    virtual void swapLayerPosition(std::size_t first, std::size_t second) = 0;
+	// Swaps the position of the two layers
+	virtual void swapLayerPosition(std::size_t first, std::size_t second) = 0;
 
-    // Returns the edit interface for the given shader layer. Calling this method
-    // will immediately mark this Material as modified.
-    virtual IEditableShaderLayer::Ptr getEditableLayer(std::size_t index) = 0;
+	// Returns the edit interface for the given shader layer. Calling this method
+	// will immediately mark this Material as modified.
+	virtual IEditableShaderLayer::Ptr getEditableLayer(std::size_t index) = 0;
 
-    /// Return the light falloff texture, if this is a light shader
-    virtual TexturePtr lightFalloffImage() = 0;
+	/// Return the light falloff texture, if this is a light shader
+	virtual TexturePtr lightFalloffImage() = 0;
 
-    // Return the expression of the light falloff map for use with this shader.
-    virtual shaders::IMapExpression::Ptr getLightFalloffExpression() = 0;
+	// Return the expression of the light falloff map for use with this shader.
+	virtual shaders::IMapExpression::Ptr getLightFalloffExpression() = 0;
 
-    // Set the lightFallOff expression to define the image/cubemap to use
-    virtual void setLightFalloffExpressionFromString(const std::string& expressionString) = 0;
+	// Set the lightFallOff expression to define the image/cubemap to use
+	virtual void setLightFalloffExpressionFromString(const std::string& expressionString) = 0;
 
-    // Return the type of the light fall off image 
-    // (can be MapType::Map (lightFalloffImage or MapType::CameraCubeMap for lightFalloffCubeMap)
-    virtual IShaderLayer::MapType getLightFalloffCubeMapType() = 0;
+	// Return the type of the light fall off image 
+	// (can be MapType::Map (lightFalloffImage or MapType::CameraCubeMap for lightFalloffCubeMap)
+	virtual IShaderLayer::MapType getLightFalloffCubeMapType() = 0;
 
-    // Set the type of the light fall off image 
-    // (can be MapType::Map (lightFalloffImage or MapType::CameraCubeMap for lightFalloffCubeMap)
-    virtual void setLightFalloffCubeMapType(IShaderLayer::MapType type) = 0;
+	// Set the type of the light fall off image 
+	// (can be MapType::Map (lightFalloffImage or MapType::CameraCubeMap for lightFalloffCubeMap)
+	virtual void setLightFalloffCubeMapType(IShaderLayer::MapType type) = 0;
 
 	// greebo: Returns the description as defined in the material
 	virtual std::string getDescription() const = 0;
 
-    // Set the description text of this material
+	// Set the description text of this material
 	virtual void setDescription(const std::string& description) = 0;
 
-    // Returns the frob stage type this material is using (defaults to FrobStageType::Default)
-    virtual FrobStageType getFrobStageType() = 0;
+	// Returns the frob stage type this material is using (defaults to FrobStageType::Default)
+	virtual FrobStageType getFrobStageType() = 0;
 
-    // Sets the frob stage type. Might assign a _white frob stage map expression (if empty).
-    virtual void setFrobStageType(FrobStageType type) = 0;
+	// Sets the frob stage type. Might assign a _white frob stage map expression (if empty).
+	virtual void setFrobStageType(FrobStageType type) = 0;
 
-    // When FrobStageType::Texture: defines the texture that has been declared using frobstage_texture
-    virtual shaders::IMapExpression::Ptr getFrobStageMapExpression() = 0;
+	// When FrobStageType::Texture: defines the texture that has been declared using frobstage_texture
+	virtual shaders::IMapExpression::Ptr getFrobStageMapExpression() = 0;
 
-    // Sets the frob stage map expression (applicable to FrobStageType::Texture)
-    virtual void setFrobStageMapExpressionFromString(const std::string& expr) = 0;
+	// Sets the frob stage map expression (applicable to FrobStageType::Texture)
+	virtual void setFrobStageMapExpressionFromString(const std::string& expr) = 0;
 
-    // frobstage_diffuse and frobstage_texture accept two (r g b) or float expressions
-    // Index is [0..1]. The first parameter is additive, second is multiplicative
-    virtual Vector3 getFrobStageRgbParameter(std::size_t index) = 0;
+	// frobstage_diffuse and frobstage_texture accept two (r g b) or float expressions
+	// Index is [0..1]. The first parameter is additive, second is multiplicative
+	virtual Vector3 getFrobStageRgbParameter(std::size_t index) = 0;
 
-    // Assigns the RGB components to the frob stage parameter with the given index => "(x y z)"
-    virtual void setFrobStageRgbParameter(std::size_t index, const Vector3& value) = 0;
+	// Assigns the RGB components to the frob stage parameter with the given index => "(x y z)"
+	virtual void setFrobStageRgbParameter(std::size_t index, const Vector3& value) = 0;
 
-    // Assigns a single uniform value to the frob stage parameter with the given index => "x"
-    virtual void setFrobStageParameter(std::size_t index, double value) = 0;
+	// Assigns a single uniform value to the frob stage parameter with the given index => "x"
+	virtual void setFrobStageParameter(std::size_t index, double value) = 0;
 
 	 /// Return TRUE if the shader is visible, FALSE if it is filtered or
 	 /// disabled in any other way.
@@ -453,42 +453,42 @@ public:
 	/// Sets the visibility of this shader.
 	virtual void setVisible(bool visible) = 0;
 
-    // Returns the flags set by the material parser
-    virtual int getParseFlags() const = 0;
+	// Returns the flags set by the material parser
+	virtual int getParseFlags() const = 0;
 
-    // Returns the argument string after the renderbump keyword, or an empty string if no statement is present
-    virtual std::string getRenderBumpArguments() = 0;
+	// Returns the argument string after the renderbump keyword, or an empty string if no statement is present
+	virtual std::string getRenderBumpArguments() = 0;
 
-    // Returns the argument string after the renderbumpflat keyword, or an empty string if no statement is present
-    virtual std::string getRenderBumpFlatArguments() = 0;
+	// Returns the argument string after the renderbumpflat keyword, or an empty string if no statement is present
+	virtual std::string getRenderBumpFlatArguments() = 0;
 
-    // The argument to the "guisurf" keyword, if not entity[2]3]. 
-    // In case entity[2]3] is set, the corresponding surface flags are enabled
-    virtual const std::string& getGuiSurfArgument() = 0;
+	// The argument to the "guisurf" keyword, if not entity[2]3]. 
+	// In case entity[2]3] is set, the corresponding surface flags are enabled
+	virtual const std::string& getGuiSurfArgument() = 0;
 
-    // True if this mateiral has been altered from its original definition
-    virtual bool isModified() = 0;
+	// True if this mateiral has been altered from its original definition
+	virtual bool isModified() = 0;
 
-    // Roll back the changes made to this material
-    virtual void revertModifications() = 0;
+	// Roll back the changes made to this material
+	virtual void revertModifications() = 0;
 
-    // Reloads the textures used by this material from disk
-    virtual void refreshImageMaps() = 0;
+	// Reloads the textures used by this material from disk
+	virtual void refreshImageMaps() = 0;
 
-    struct ParseResult
-    {
-        bool success;           // whether the update was successful
-        std::string parseError; // if success == false, this contains the error message
-    };
+	struct ParseResult
+	{
+		bool success;           // whether the update was successful
+		std::string parseError; // if success == false, this contains the error message
+	};
 
-    // Attempts to redefine this material from the given source text, which is
-    // just the block contents, exlcuding the outermost curly braces of the decl.
-    // Returns true on success, returns false if the source text could not
-    // be successfully parsed (e.g. due to malformed syntax).
-    virtual ParseResult updateFromSourceText(const std::string& sourceText) = 0;
+	// Attempts to redefine this material from the given source text, which is
+	// just the block contents, exlcuding the outermost curly braces of the decl.
+	// Returns true on success, returns false if the source text could not
+	// be successfully parsed (e.g. due to malformed syntax).
+	virtual ParseResult updateFromSourceText(const std::string& sourceText) = 0;
 
-    // Signal emitted when this material is modified
-    virtual sigc::signal<void>& sig_materialChanged() = 0;
+	// Signal emitted when this material is modified
+	virtual sigc::signal<void>& sig_materialChanged() = 0;
 };
 
 typedef std::shared_ptr<Material> MaterialPtr;
@@ -506,25 +506,25 @@ std::ostream& operator<< (std::ostream& os, const Material& shader)
 /// Debug stream insertion of possibly null material pointer
 inline std::ostream& operator<< (std::ostream& os, const Material* m)
 {
-    if (m)
-        return os << *m;
-    else
-        return os << "[no material]";
+	if (m)
+		return os << *m;
+	else
+		return os << "[no material]";
 }
 
 typedef std::function<void(const std::string&)> ShaderNameCallback;
 
 // Represents a table declaration in the .mtr files
 class ITableDefinition :
-    public decl::IDeclaration
+	public decl::IDeclaration
 {
 public:
-    using Ptr = std::shared_ptr<ITableDefinition>;
+	using Ptr = std::shared_ptr<ITableDefinition>;
 
-    virtual ~ITableDefinition() {}
+	virtual ~ITableDefinition() {}
 
-    // Retrieve a value from this table, respecting the clamp and snap flags
-    virtual float getValue(float index) = 0;
+	// Retrieve a value from this table, respecting the clamp and snap flags
+	virtual float getValue(float index) = 0;
 };
 
 constexpr const char* const MODULE_SHADERSYSTEM = "MaterialManager";
@@ -544,8 +544,8 @@ public:
   // Shaders usable as textures have prefix equal to getTexturePrefix()
 
 	/**
-     * \brief Return the shader with the given name. The default shader will be
-     * returned if name is not found.
+	 * \brief Return the shader with the given name. The default shader will be
+	 * returned if name is not found.
 	 *
 	 * \param name
 	 * The text name of the shader to load.
@@ -561,47 +561,47 @@ public:
 	 */
 	virtual bool materialExists(const std::string& name) = 0;
 
-    /**
-     * A material can be modified if it has been declared in a physical file,
-     * i.e. outside a PAK file.
-     */
-    virtual bool materialCanBeModified(const std::string& name) = 0;
+	/**
+	 * A material can be modified if it has been declared in a physical file,
+	 * i.e. outside a PAK file.
+	 */
+	virtual bool materialCanBeModified(const std::string& name) = 0;
 
 	virtual void foreachShaderName(const ShaderNameCallback& callback) = 0;
 
-    /**
-     * Visit each material with the given function object. Replaces the legacy foreachShader().
-     */
-    virtual void foreachMaterial(const std::function<void(const MaterialPtr&)>& func) = 0;
+	/**
+	 * Visit each material with the given function object. Replaces the legacy foreachShader().
+	 */
+	virtual void foreachMaterial(const std::function<void(const MaterialPtr&)>& func) = 0;
 
-    // Set the callback to be invoked when the active shaders list has changed
+	// Set the callback to be invoked when the active shaders list has changed
 	virtual sigc::signal<void> signal_activeShadersChanged() const = 0;
 
-    // Is invoked when a new material is inserted into the resource tree, passing the name as argument
-    virtual sigc::signal<void, const std::string&>& signal_materialCreated() = 0;
+	// Is invoked when a new material is inserted into the resource tree, passing the name as argument
+	virtual sigc::signal<void, const std::string&>& signal_materialCreated() = 0;
 
-    // Is called when a material name is changed, passing the old and the new name as arguments
-    virtual sigc::signal<void, const std::string&, const std::string&>& signal_materialRenamed() = 0;
+	// Is called when a material name is changed, passing the old and the new name as arguments
+	virtual sigc::signal<void, const std::string&, const std::string&>& signal_materialRenamed() = 0;
 
-    // Is emitted when a named material is removed from the library
-    virtual sigc::signal<void, const std::string&>& signal_materialRemoved() = 0;
+	// Is emitted when a named material is removed from the library
+	virtual sigc::signal<void, const std::string&>& signal_materialRemoved() = 0;
 
-    /**
-     * Enable or disable active shaders updates (for performance).
-     */
-    virtual void setActiveShaderUpdates(bool val) = 0;
+	/**
+	 * Enable or disable active shaders updates (for performance).
+	 */
+	virtual void setActiveShaderUpdates(bool val) = 0;
 
   virtual const char* getTexturePrefix() const = 0;
 
-    /**
-     * \brief
-     * Return the default texture to be used for lighting mode rendering if it
-     * is not defined for a shader.
-     *
-     * \param type
-     * The type of interaction layer whose default texture is required.
-     */
-    virtual TexturePtr getDefaultInteractionTexture(IShaderLayer::Type type) = 0;
+	/**
+	 * \brief
+	 * Return the default texture to be used for lighting mode rendering if it
+	 * is not defined for a shader.
+	 *
+	 * \param type
+	 * The type of interaction layer whose default texture is required.
+	 */
+	virtual TexturePtr getDefaultInteractionTexture(IShaderLayer::Type type) = 0;
 
 	/**
 	 * greebo: This is a substitution for the "old" TexturesCache method
@@ -622,29 +622,29 @@ public:
 	 */
 	virtual shaders::IShaderExpression::Ptr createShaderExpressionFromString(const std::string& exprStr) = 0;
 
-    // Creates a new material using the given name. In case the name is already in use,
-    // a generated one will be assigned to the created material
-    virtual MaterialPtr createEmptyMaterial(const std::string& name) = 0;
+	// Creates a new material using the given name. In case the name is already in use,
+	// a generated one will be assigned to the created material
+	virtual MaterialPtr createEmptyMaterial(const std::string& name) = 0;
 
-    // Creates a copy of the given material and returns the reference to it
-    virtual MaterialPtr copyMaterial(const std::string& nameOfOriginal, const std::string& nameOfCopy) = 0;
+	// Creates a copy of the given material and returns the reference to it
+	virtual MaterialPtr copyMaterial(const std::string& nameOfOriginal, const std::string& nameOfCopy) = 0;
 
-    // Renames the material named oldName to newName, and returns true if the operation was successful. 
-    // If the new name is already in use, this returns false too.
-    virtual bool renameMaterial(const std::string& oldName, const std::string& newName) = 0;
+	// Renames the material named oldName to newName, and returns true if the operation was successful. 
+	// If the new name is already in use, this returns false too.
+	virtual bool renameMaterial(const std::string& oldName, const std::string& newName) = 0;
 
-    // Removes the named material
-    virtual void removeMaterial(const std::string& name) = 0;
+	// Removes the named material
+	virtual void removeMaterial(const std::string& name) = 0;
 
-    // Saves the named material to the file location as specified in its shaderfile info.
-    // If the path is not writable or the material is not suitable for saving, this will throw an exception
-    virtual void saveMaterial(const std::string& name) = 0;
+	// Saves the named material to the file location as specified in its shaderfile info.
+	// If the path is not writable or the material is not suitable for saving, this will throw an exception
+	virtual void saveMaterial(const std::string& name) = 0;
 
-    // Tries to find the named table, returns an empty reference if nothing found
-    virtual ITableDefinition::Ptr getTable(const std::string& name) = 0;
+	// Tries to find the named table, returns an empty reference if nothing found
+	virtual ITableDefinition::Ptr getTable(const std::string& name) = 0;
 
-    // Reload the textures used by the active shaders
-    virtual void reloadImages() = 0;
+	// Reload the textures used by the active shaders
+	virtual void reloadImages() = 0;
 };
 
 inline IMaterialManager& GlobalMaterialManager()

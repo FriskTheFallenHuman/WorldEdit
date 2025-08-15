@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <WorldEditRoot>$(SolutionDir)</WorldEditRoot>
+    <W32DepsDir>$(WorldEditRoot)w32deps\</W32DepsDir>
+    <W64DepsDir>$(WorldEditRoot)w64deps\</W64DepsDir>
+    <WinIncludesDir>$(WorldEditRoot)winincludes\</WinIncludesDir>
+  </PropertyGroup>
+  <PropertyGroup>
+    <IntDir>$(WorldEditRoot)build\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(WorldEditRoot)\include;$(WorldEditRoot)\libs;$(WinIncludesDir)libsigc++\include;$(WinIncludesDir)fmt\include;$(WorldEditRoot)\libs\pugixml;$(WinIncludesDir)libeigen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_DEPRECATE;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;FMT_USE_WINDOWS_H=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalOptions>/utf-8 /Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
+      <WarningLevel>Level4</WarningLevel>
+      <StringPooling>true</StringPooling>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <ObjectFileName>$(IntDir)%(Directory)</ObjectFileName>
+      <DisableSpecificWarnings>4250;4100</DisableSpecificWarnings>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(WorldEditRoot)\build\libs\$(Platform);$(WorldEditRoot)\build\libs\$(Platform)\$(Configuration);$(PlatformDepsDir)\libsigc++\lib;$(PlatformDepsDir)\fmt\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fmt$(LibSuffix)-vc$(PlatformToolsetVersion).lib;libsigc++$(LibSuffix)-vc$(PlatformToolsetVersion).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>$(WorldEditRoot)build\libs\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <BuildMacro Include="WorldEditRoot">
+      <Value>$(WorldEditRoot)</Value>
+    </BuildMacro>
+    <BuildMacro Include="W32DepsDir">
+      <Value>$(W32DepsDir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="W64DepsDir">
+      <Value>$(W64DepsDir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="WinIncludesDir">
+      <Value>$(WinIncludesDir)</Value>
+    </BuildMacro>
+  </ItemGroup>
+</Project>

@@ -38,17 +38,17 @@
 GLogWriterOutput
 log_black_hole(GLogLevelFlags, const GLogField*, gsize, gpointer)
 {
-    return G_LOG_WRITER_HANDLED;
+	return G_LOG_WRITER_HANDLED;
 }
 
 // wxWidgets assertion handler
 void assertToConsole(
-    const wxString& file, int line, const wxString& func, const wxString& cond,
-    const wxString& msg
+	const wxString& file, int line, const wxString& func, const wxString& cond,
+	const wxString& msg
 )
 {
-    std::cerr << "wxASSERT: " << file << ":" << line << ":" << func << ": [" << cond
-              << "]: " << msg << std::endl;
+	std::cerr << "wxASSERT: " << file << ":" << line << ":" << func << ": [" << cond
+			  << "]: " << msg << std::endl;
 }
 #endif
 
@@ -63,49 +63,49 @@ wxDEFINE_EVENT(EV_RadiantStartup, wxCommandEvent);
  */
 class RadiantApp::ArtProvider final: public wxArtProvider
 {
-    std::string _searchPath;
+	std::string _searchPath;
 
 public:
-    // Use an absolute file path to the list of search paths this provider is covering
-    ArtProvider(const std::string& searchPath) :
-        _searchPath(searchPath)
-    {
-        wxArtProvider::Push(this);
-    }
+	// Use an absolute file path to the list of search paths this provider is covering
+	ArtProvider(const std::string& searchPath) :
+		_searchPath(searchPath)
+	{
+		wxArtProvider::Push(this);
+	}
 
-    wxBitmap CreateBitmap(const wxArtID& id, const wxArtClient& client, const wxSize& size) override
-    {
-        auto filename = id.ToStdString();
-        const auto& prefix = ArtIdPrefix();
+	wxBitmap CreateBitmap(const wxArtID& id, const wxArtClient& client, const wxSize& size) override
+	{
+		auto filename = id.ToStdString();
+		const auto& prefix = ArtIdPrefix();
 
-        // We listen only to "darkradiant" art IDs
-        if (string::starts_with(filename, prefix))
-        {
-            auto filePath = _searchPath + filename.substr(prefix.length());
+		// We listen only to "darkradiant" art IDs
+		if (string::starts_with(filename, prefix))
+		{
+			auto filePath = _searchPath + filename.substr(prefix.length());
 
-            if (os::fileOrDirExists(filePath)) {
-                return wxBitmap(wxImage(filePath));
-            }
-        }
+			if (os::fileOrDirExists(filePath)) {
+				return wxBitmap(wxImage(filePath));
+			}
+		}
 
-        return wxNullBitmap;
-    }
+		return wxNullBitmap;
+	}
 
-    static const std::string& ArtIdPrefix()
-    {
-        static std::string _artIdPrefix = "darkradiant:";
-        return _artIdPrefix;
-    }
+	static const std::string& ArtIdPrefix()
+	{
+		static std::string _artIdPrefix = "darkradiant:";
+		return _artIdPrefix;
+	}
 };
 
 RadiantApp::RadiantApp()
 {
 #if defined(__linux__)
-    // The native Wayland backend for GTK does not implement the mouse pointer
-    // warping functions used in the FreezePointer class.  Forcing the backend
-    // to X11 will let us run using XWayland which does provide emulation of
-    // this functionality.
-    setenv("GDK_BACKEND", "x11", 0);
+	// The native Wayland backend for GTK does not implement the mouse pointer
+	// warping functions used in the FreezePointer class.  Forcing the backend
+	// to X11 will let us run using XWayland which does provide emulation of
+	// this functionality.
+	setenv("GDK_BACKEND", "x11", 0);
 #endif
 }
 
@@ -122,15 +122,15 @@ bool RadiantApp::OnInit()
 #endif
 
 #if defined(__linux__)
-    // Intercept and discard Gtk log messages emitted from wxGTK, which we
-    // cannot control or fix, and which obliterate any attempt to use console
-    // output for debugging (due to fresh Gtk-CRITICAL messages being emitted
-    // several times per second)
-    g_log_set_writer_func(log_black_hole, nullptr, nullptr);
+	// Intercept and discard Gtk log messages emitted from wxGTK, which we
+	// cannot control or fix, and which obliterate any attempt to use console
+	// output for debugging (due to fresh Gtk-CRITICAL messages being emitted
+	// several times per second)
+	g_log_set_writer_func(log_black_hole, nullptr, nullptr);
 
-    // Avoid assertions from wxWidgets itself (particularly stuff to do with art provider
-    // destruction, which we have no control over).
-    wxSetAssertHandler(assertToConsole);
+	// Avoid assertions from wxWidgets itself (particularly stuff to do with art provider
+	// destruction, which we have no control over).
+	wxSetAssertHandler(assertToConsole);
 #endif
 
 	// Initialise the context (application path / settings path, is
@@ -171,8 +171,8 @@ bool RadiantApp::OnInit()
 	setlocale(LC_NUMERIC, "C");
 	setlocale(LC_TIME, "C");
 
-    // Set up art provider, logging, XRC file handlers
-    initWxWidgets();
+	// Set up art provider, logging, XRC file handlers
+	initWxWidgets();
 
 	// Register to the start up signal
 	Bind(EV_RadiantStartup, &RadiantApp::onStartupEvent, this);
@@ -184,42 +184,42 @@ bool RadiantApp::OnInit()
 
 void RadiantApp::initWxWidgets()
 {
-    // Stop wx's unhelpful debug messages about missing keyboard accel
-    // strings from cluttering up the console
-    wxLog::SetLogLevel(wxLOG_Warning);
+	// Stop wx's unhelpful debug messages about missing keyboard accel
+	// strings from cluttering up the console
+	wxLog::SetLogLevel(wxLOG_Warning);
 
-    // On Linux, display wxWidgets log messages on stderr rather than popping up largely
-    // useless (modal and often repeated) dialog boxes. TODO: find a better solution for
-    // Windows as well (probably redirecting them to the in-application Console would be
-    // best since stderr is not easily accessible).
+	// On Linux, display wxWidgets log messages on stderr rather than popping up largely
+	// useless (modal and often repeated) dialog boxes. TODO: find a better solution for
+	// Windows as well (probably redirecting them to the in-application Console would be
+	// best since stderr is not easily accessible).
 #if defined(__linux__)
-    wxLog::SetActiveTarget(new wxLogStderr() /* lifetime managed by wxWidgets */);
+	wxLog::SetActiveTarget(new wxLogStderr() /* lifetime managed by wxWidgets */);
 #endif
 
-    wxFileSystem::AddHandler(new wxLocalFSHandler);
-    wxXmlResource::Get()->InitAllHandlers();
+	wxFileSystem::AddHandler(new wxLocalFSHandler);
+	wxXmlResource::Get()->InitAllHandlers();
 
-    // Our XRC resource files are stored in the ui/ folder.
-    wxXmlResource::Get()->Load(_context.getRuntimeDataPath() + "ui/*.xrc");
+	// Our XRC resource files are stored in the ui/ folder.
+	wxXmlResource::Get()->Load(_context.getRuntimeDataPath() + "ui/*.xrc");
 
-    // We only need PNG and JPEG for our local images. BMP is enabled by default.
+	// We only need PNG and JPEG for our local images. BMP is enabled by default.
 #if wxUSE_LIBPNG
-    wxImage::AddHandler(new wxPNGHandler);
+	wxImage::AddHandler(new wxPNGHandler);
 #endif
 #if wxUSE_LIBJPEG
-    wxImage::AddHandler(new wxJPEGHandler);
+	wxImage::AddHandler(new wxJPEGHandler);
 #endif
 
-    // Register the local art provider
-    _bitmapArtProvider = std::make_unique<ArtProvider>(_context.getBitmapsPath());
+	// Register the local art provider
+	_bitmapArtProvider = std::make_unique<ArtProvider>(_context.getBitmapsPath());
 }
 
 void RadiantApp::cleanupWxWidgets()
 {
-    _bitmapArtProvider.reset();
-    wxImage::CleanUpHandlers();
-    wxXmlResource::Get()->ClearHandlers();
-    wxFileSystem::CleanUpHandlers();
+	_bitmapArtProvider.reset();
+	wxImage::CleanUpHandlers();
+	wxXmlResource::Get()->ClearHandlers();
+	wxFileSystem::CleanUpHandlers();
 }
 
 int RadiantApp::OnExit()
@@ -235,7 +235,7 @@ int RadiantApp::OnExit()
 
 	_coreModule.reset();
 
-    cleanupWxWidgets();
+	cleanupWxWidgets();
 
 	return wxApp::OnExit();
 }
@@ -255,28 +255,28 @@ void RadiantApp::OnInitCmdLine(wxCmdLineParser& parser)
 
 bool RadiantApp::OnExceptionInMainLoop()
 {
-    // This method is called by the main loop controlling code, from within the catch(...)
-    // block. Let's re-throw the current exception and catch it to print the error message
-    // at the very least.
+	// This method is called by the main loop controlling code, from within the catch(...)
+	// block. Let's re-throw the current exception and catch it to print the error message
+	// at the very least.
 #if defined(__linux__)
-    try {
-        throw;
-    }
-    catch (const std::exception& e) {
-        std::cerr << "Fatal exception in main loop:\n" << e.what() << std::endl;
-    }
+	try {
+		throw;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Fatal exception in main loop:\n" << e.what() << std::endl;
+	}
 
-    abort();
+	abort();
 #else
-    try {
-        throw;
-    }
-    catch (const std::exception& ex) {
-        rError() << "Unhandled Exception: " << ex.what() << std::endl;
-        radiant::PopupErrorHandler::HandleError(_("Real Hard DarkRadiant Failure"),
-            std::string(ex.what()) + "\n\n" + _("Break into the debugger?"));
-    }
-    return wxApp::OnExceptionInMainLoop();
+	try {
+		throw;
+	}
+	catch (const std::exception& ex) {
+		rError() << "Unhandled Exception: " << ex.what() << std::endl;
+		radiant::PopupErrorHandler::HandleError(_("Real Hard WorldEdit Failure"),
+			std::string(ex.what()) + "\n\n" + _("Break into the debugger?"));
+	}
+	return wxApp::OnExceptionInMainLoop();
 #endif
 }
 
@@ -296,7 +296,7 @@ void RadiantApp::onStartupEvent(wxCommandEvent& ev)
 	// in which case the GameManager will dispatch a message asking
 	// for showing a dialog or similar. Connect the listener.
 	_coreModule->get()->getMessageBus().addListener(radiant::IMessage::Type::GameConfigNeeded,
-        radiant::TypeListener<game::ConfigurationNeeded>(ui::GameSetupDialog::HandleGameConfigMessage));
+		radiant::TypeListener<game::ConfigurationNeeded>(ui::GameSetupDialog::HandleGameConfigMessage));
 
 	// Pick up all the statically defined modules and register them
 	module::internal::StaticModuleList::RegisterModules();
@@ -328,7 +328,7 @@ void RadiantApp::onModulesUnloading()
 	if (wxTheApp != nullptr)
 	{
 		wxTheApp->ProcessIdle();
-        wxTheApp->DeletePendingEvents();
+		wxTheApp->DeletePendingEvents();
 	}
 
 	_modulesUnloadingHandler.disconnect();

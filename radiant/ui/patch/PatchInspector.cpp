@@ -35,7 +35,7 @@ namespace
 }
 
 PatchInspector::PatchInspector(wxWindow* parent) :
-    DockablePanel(parent),
+	DockablePanel(parent),
 	_rowCombo(nullptr),
 	_colCombo(nullptr),
 	_selectionInfo(GlobalSelectionSystem().getSelectionInfo()),
@@ -50,45 +50,45 @@ PatchInspector::PatchInspector(wxWindow* parent) :
 
 PatchInspector::~PatchInspector()
 {
-    if (panelIsActive())
-    {
-        disconnectEventHandlers();
-    }
+	if (panelIsActive())
+	{
+		disconnectEventHandlers();
+	}
 }
 
 void PatchInspector::onPanelActivated()
 {
-    connectEventHandlers();
-    // Check for selection changes
-    rescanSelection();
+	connectEventHandlers();
+	// Check for selection changes
+	rescanSelection();
 }
 
 void PatchInspector::onPanelDeactivated()
 {
-    disconnectEventHandlers();
+	disconnectEventHandlers();
 }
 
 void PatchInspector::connectEventHandlers()
 {
-    // Register self to the SelSystem to get notified upon selection changes.
-    GlobalSelectionSystem().addObserver(this);
+	// Register self to the SelSystem to get notified upon selection changes.
+	GlobalSelectionSystem().addObserver(this);
 
-    _undoHandler = GlobalMapModule().signal_postUndo().connect(
-        sigc::mem_fun(this, &PatchInspector::queueUpdate));
-    _redoHandler = GlobalMapModule().signal_postRedo().connect(
-        sigc::mem_fun(this, &PatchInspector::queueUpdate));
+	_undoHandler = GlobalMapModule().signal_postUndo().connect(
+		sigc::mem_fun(this, &PatchInspector::queueUpdate));
+	_redoHandler = GlobalMapModule().signal_postRedo().connect(
+		sigc::mem_fun(this, &PatchInspector::queueUpdate));
 }
 
 void PatchInspector::disconnectEventHandlers()
 {
-    // Clear the patch, we don't need to observe it while hidden
-    setPatch({});
+	// Clear the patch, we don't need to observe it while hidden
+	setPatch({});
 
-    // A hidden PatchInspector doesn't need to listen for events
-    _undoHandler.disconnect();
-    _redoHandler.disconnect();
+	// A hidden PatchInspector doesn't need to listen for events
+	_undoHandler.disconnect();
+	_redoHandler.disconnect();
 
-    GlobalSelectionSystem().removeObserver(this);
+	GlobalSelectionSystem().removeObserver(this);
 }
 
 void PatchInspector::populateWindow()
@@ -110,26 +110,26 @@ void PatchInspector::populateWindow()
 
 	coordPanel->GetSizer()->Add(table, 1, wxEXPAND);
 
-    _coords["x"] = createCoordRow("X:", coordPanel, table);
-    _coords["y"] = createCoordRow("Y:", coordPanel, table);
-    _coords["z"] = createCoordRow("Z:", coordPanel, table);
-    _coords["s"] = createCoordRow("S:", coordPanel, table);
-    _coords["t"] = createCoordRow("T:", coordPanel, table);
+	_coords["x"] = createCoordRow("X:", coordPanel, table);
+	_coords["y"] = createCoordRow("Y:", coordPanel, table);
+	_coords["z"] = createCoordRow("Z:", coordPanel, table);
+	_coords["s"] = createCoordRow("S:", coordPanel, table);
+	_coords["t"] = createCoordRow("T:", coordPanel, table);
 
-    // Connect the step values to the according registry values
+	// Connect the step values to the according registry values
 	registry::bindWidget(_coords["x"].stepEntry, RKEY_X_STEP);
-    registry::bindWidget(_coords["y"].stepEntry, RKEY_Y_STEP);
-    registry::bindWidget(_coords["z"].stepEntry, RKEY_Z_STEP);
-    registry::bindWidget(_coords["s"].stepEntry, RKEY_S_STEP);
-    registry::bindWidget(_coords["t"].stepEntry, RKEY_T_STEP);
+	registry::bindWidget(_coords["y"].stepEntry, RKEY_Y_STEP);
+	registry::bindWidget(_coords["z"].stepEntry, RKEY_Z_STEP);
+	registry::bindWidget(_coords["s"].stepEntry, RKEY_S_STEP);
+	registry::bindWidget(_coords["t"].stepEntry, RKEY_T_STEP);
 
-    // Connect all the arrow buttons
-    for (const auto& [_, row] : _coords)
+	// Connect all the arrow buttons
+	for (const auto& [_, row] : _coords)
 	{
-    	// Pass a CoordRow ref to the callback, that's all it will need to update
+		// Pass a CoordRow ref to the callback, that's all it will need to update
 		row.smaller->Bind(wxEVT_BUTTON, std::bind(&PatchInspector::onClickSmaller, this, row));
 		row.larger->Bind(wxEVT_BUTTON, std::bind(&PatchInspector::onClickLarger, this, row));
-    }
+	}
 
 	// Tesselation checkbox
 	findNamedObject<wxCheckBox>(this, "PatchInspectorFixedSubdivisions")->Bind(
@@ -188,7 +188,7 @@ PatchInspector::CoordRow PatchInspector::createCoordRow(
 void PatchInspector::queueUpdate()
 {
 	_updateNeeded = true;
-    requestIdleCallback();
+	requestIdleCallback();
 }
 
 void PatchInspector::update()

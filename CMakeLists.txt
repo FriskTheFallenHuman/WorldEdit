@@ -1,7 +1,7 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.15)
 
 # Project name and version
-project(darkradiant VERSION 3.9.2)
+project(WorldEdit VERSION 4.0.0)
 
 # C++ standard
 set(CMAKE_CXX_STANDARD 17)
@@ -13,7 +13,6 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_
 endif()
 
 # Expose some build options
-option(ENABLE_DM_PLUGINS "Build Dark Mod specific plugins" ON)
 option(ENABLE_RELOCATION
        "Avoid hard-coded absolute paths to libraries or resources"
        ON)
@@ -22,13 +21,13 @@ option(ENABLE_RELOCATION
 include(GNUInstallDirs)
 
 # Set up core build paths
-set(CORE_MODULE_LIBRARY "libradiantcore")
-set(PKGDATADIR "${CMAKE_INSTALL_FULL_DATADIR}/darkradiant")
-set(PKGLIBDIR "${CMAKE_INSTALL_FULL_LIBDIR}/darkradiant")
+set(CORE_MODULE_LIBRARY "libcore")
+set(PKGDATADIR "${CMAKE_INSTALL_FULL_DATADIR}/worldedit")
+set(PKGLIBDIR "${CMAKE_INSTALL_FULL_LIBDIR}/worldedit")
 if (${ENABLE_RELOCATION})
-    set(RELATIVE_LIBDIR "../${CMAKE_INSTALL_LIBDIR}/darkradiant")
+    set(RELATIVE_LIBDIR "../${CMAKE_INSTALL_LIBDIR}/worldedit")
 else()
-    set(HTMLDIR "${CMAKE_INSTALL_FULL_DATADIR}/doc/darkradiant")
+    set(HTMLDIR "${CMAKE_INSTALL_FULL_DATADIR}/doc/worldedit")
 endif()
 
 # Build shared libraries by default
@@ -82,7 +81,7 @@ include(${wxWidgets_USE_FILE})
 find_package(Python REQUIRED COMPONENTS Development)
 
 # Global includes and flags
-include_directories(libs libs/libfmt include)
+include_directories(libs include)
 add_compile_options(${SIGC_CFLAGS})
 add_compile_definitions(POSIX
                         WXINTL_NO_GETTEXT_MACRO
@@ -111,17 +110,6 @@ if (${LIBGIT_FOUND})
     add_subdirectory(plugins/vcs)
 endif()
 
-# Dark Mod plugins
-if (${ENABLE_DM_PLUGINS})
-    add_subdirectory(plugins/dm.conversation)
-    add_subdirectory(plugins/dm.stimresponse)
-    add_subdirectory(plugins/dm.objectives)
-    add_subdirectory(plugins/dm.difficulty)
-    add_subdirectory(plugins/dm.editing)
-    add_subdirectory(plugins/dm.gui)
-    add_subdirectory(plugins/dm.gameconnection)
-endif()
-
 # Main radiant components
 add_subdirectory(radiantcore)
 add_subdirectory(radiant)
@@ -143,18 +131,11 @@ else()
 endif()
 
 # Install main targets
-install(TARGETS darkradiant math xmlutil scene wxutil
+install(TARGETS worldedit math xmlutil scene wxutil
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION ${PKGLIBDIR})
 install(TARGETS radiantcore script sound
         LIBRARY DESTINATION ${PKGLIBDIR}/modules)
-
-# Install Dark Mod plugins
-if (${ENABLE_DM_PLUGINS})
-    install(TARGETS dm_stimresponse dm_objectives dm_difficulty dm_editing
-                    dm_gui dm_gameconnection dm_conversation
-            LIBRARY DESTINATION ${PKGLIBDIR}/plugins)
-endif()
 
 if (${LIBGIT_FOUND})
     install(TARGETS vcs
@@ -162,8 +143,8 @@ if (${LIBGIT_FOUND})
 endif()
 
 # Generate and install the .desktop file
-configure_file(install/darkradiant.desktop.in install/darkradiant.desktop)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/install/darkradiant.desktop
+configure_file(install/worldedit.desktop.in install/worldedit.desktop)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/install/worldedit.desktop
         DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
 
 # Install resources
@@ -177,13 +158,13 @@ install(DIRECTORY install/ui DESTINATION ${PKGDATADIR}
         FILES_MATCHING PATTERN "*.ttf" PATTERN "*.xrc")
 install(DIRECTORY install/resources DESTINATION ${PKGDATADIR})
 
-install(FILES ${PROJECT_SOURCE_DIR}/install/bitmaps/darkradiant_icon_64x64.png
+install(FILES ${PROJECT_SOURCE_DIR}/install/bitmaps/worldedit_icon_64x64.png
         DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/64x64/apps
-        RENAME net.darkradiant.DarkRadiant.png)
-install(FILES ${PROJECT_SOURCE_DIR}/install/bitmaps/darkradiant_icon_128x128.png
+        RENAME net.worldedit.WorldEdit.png)
+install(FILES ${PROJECT_SOURCE_DIR}/install/bitmaps/worldedit_icon_128x128.png
         DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/128x128/apps
-        RENAME net.darkradiant.DarkRadiant.png)
-install(FILES ${PROJECT_SOURCE_DIR}/install/net.darkradiant.DarkRadiant.metainfo.xml
+        RENAME net.worldedit.WorldEdit.png)
+install(FILES ${PROJECT_SOURCE_DIR}/install/net.worldedit.WorldEdit.metainfo.xml
         DESTINATION ${CMAKE_INSTALL_DATADIR}/metainfo)
 
 # Install locale data

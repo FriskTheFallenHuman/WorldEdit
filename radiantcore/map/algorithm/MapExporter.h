@@ -42,8 +42,8 @@ private:
 	// The root node of the subgraph to be exported
 	scene::IMapRootNodePtr _root;
 
-    // Event rate limiter for the progress dialog
-    EventRateLimiter _dialogEventLimiter;
+	// Event rate limiter for the progress dialog
+	EventRateLimiter _dialogEventLimiter;
 
 	// The total number, used for progress measurement
 	std::size_t _totalNodeCount;
@@ -53,14 +53,14 @@ private:
 	std::size_t _entityNum;
 	std::size_t _primitiveNum;
 
-    bool _sendProgressMessages;
+	bool _sendProgressMessages;
 
 public:
 	// The constructor prepares the scene and the output stream
 	MapExporter(IMapWriter& writer, const scene::IMapRootNodePtr& root,
 				std::ostream& mapStream, std::size_t nodeCount = 0);
 
-	// Additional constructor allowed to write to the auxiliary .darkradiant file
+	// Additional constructor allowed to write to the auxiliary .project/.mapx file
 	MapExporter(IMapWriter& writer, const scene::IMapRootNodePtr& root,
 				std::ostream& mapStream, std::ostream& auxStream, std::size_t nodeCount = 0);
 
@@ -74,11 +74,11 @@ public:
 	bool pre(const scene::INodePtr& node) override;
 	void post(const scene::INodePtr& node) override;
 
-    // Send FileProgress messages through the MessageBus while exporting
-    void enableProgressMessages();
+	// Send FileProgress messages through the MessageBus while exporting
+	void enableProgressMessages();
 
-    // Don't send any progress messages through the MessageBus while exporting
-    void disableProgressMessages();
+	// Don't send any progress messages through the MessageBus while exporting
+	void disableProgressMessages();
 
 private:
 	// Common code shared by the constructors

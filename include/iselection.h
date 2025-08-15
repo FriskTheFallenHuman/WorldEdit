@@ -37,27 +37,27 @@ class IPatch;
 
 namespace selection
 { 
-    struct WorkZone; 
+	struct WorkZone; 
 
-    // The possible modes when in "component manipulation mode"
-    // Used by the SelectionSystem as well as the Texture Tool
-    enum class ComponentSelectionMode
-    {
-        Default,
-        Vertex,
-        Edge,
-        Face,
-    };
+	// The possible modes when in "component manipulation mode"
+	// Used by the SelectionSystem as well as the Texture Tool
+	enum class ComponentSelectionMode
+	{
+		Default,
+		Vertex,
+		Edge,
+		Face,
+	};
 
-    // The selection strategy determining the scene objects chosen for selection tests
-    enum class SelectionMode
-    {
-        Entity,         // Entities only
-        Primitive,      // Primitives (no components), entities take precedence
-        GroupPart,      // Child Primitives of non-worldspawn entities
-        Component,      // Components
-        MergeAction,    // Merge Action nodes only
-    };
+	// The selection strategy determining the scene objects chosen for selection tests
+	enum class SelectionMode
+	{
+		Entity,         // Entities only
+		Primitive,      // Primitives (no components), entities take precedence
+		GroupPart,      // Child Primitives of non-worldspawn entities
+		Component,      // Components
+		MergeAction,    // Merge Action nodes only
+	};
 }
 
 namespace selection
@@ -107,11 +107,11 @@ public:
 
 	virtual const SelectionInfo& getSelectionInfo() = 0;
 
-    virtual void setSelectionMode(SelectionMode mode) = 0;
-    virtual SelectionMode getSelectionMode() const = 0;
+	virtual void setSelectionMode(SelectionMode mode) = 0;
+	virtual SelectionMode getSelectionMode() const = 0;
 
-    virtual void SetComponentMode(ComponentSelectionMode mode) = 0;
-    virtual ComponentSelectionMode ComponentMode() const = 0;
+	virtual void SetComponentMode(ComponentSelectionMode mode) = 0;
+	virtual ComponentSelectionMode ComponentMode() const = 0;
 
 	virtual sigc::signal<void, SelectionMode>& signal_selectionModeChanged() = 0;
 	virtual sigc::signal<void, ComponentSelectionMode>& signal_componentModeChanged() = 0;
@@ -124,52 +124,52 @@ public:
 	virtual scene::INodePtr ultimateSelected() = 0;
 	virtual scene::INodePtr penultimateSelected() = 0;
 
-    /**
-     * \brief
-     * Set the selection status of all objects in the scene.
-     *
-     * \param selected
-     * true to select all objects, false to deselect all objects.
-     */
-    virtual void setSelectedAll(bool selected) = 0;
+	/**
+	 * \brief
+	 * Set the selection status of all objects in the scene.
+	 *
+	 * \param selected
+	 * true to select all objects, false to deselect all objects.
+	 */
+	virtual void setSelectedAll(bool selected) = 0;
 
   virtual void setSelectedAllComponents(bool selected) = 0;
 
-    /**
-     * @brief Visitor interface for the selection system.
-     *
-     * This defines the Visitor interface which is used in the foreachSelected()
-     * and foreachSelectedComponent() visit methods.
-     */
+	/**
+	 * @brief Visitor interface for the selection system.
+	 *
+	 * This defines the Visitor interface which is used in the foreachSelected()
+	 * and foreachSelectedComponent() visit methods.
+	 */
 	class Visitor
 	{
 	public:
 		virtual ~Visitor() {}
 
-        /// Called by the selection system for each visited node.
+		/// Called by the selection system for each visited node.
 		virtual void visit(const scene::INodePtr& node) const = 0;
 	};
 
-    /// Use the provided Visitor object to enumerate each selected node.
-    void foreachSelected(const Visitor& visitor)
-    {
-        foreachSelected([&visitor](const scene::INodePtr& p)
-                        { visitor.visit(p); });
-    }
+	/// Use the provided Visitor object to enumerate each selected node.
+	void foreachSelected(const Visitor& visitor)
+	{
+		foreachSelected([&visitor](const scene::INodePtr& p)
+						{ visitor.visit(p); });
+	}
 
-    /**
-     * @brief
-     * Use the provided Visitor object to enumerate each selected component.
-     */
-    virtual void foreachSelectedComponent(const Visitor& visitor) = 0;
+	/**
+	 * @brief
+	 * Use the provided Visitor object to enumerate each selected component.
+	 */
+	virtual void foreachSelectedComponent(const Visitor& visitor) = 0;
 
 	/// Call the given functor to enumerate each selected node.
 	virtual void foreachSelected(const std::function<void(const scene::INodePtr&)>& functor) = 0;
 
 	/**
-     * @brief
-     * Use the provided functor to enumerate each selected component.
-     */
+	 * @brief
+	 * Use the provided functor to enumerate each selected component.
+	 */
 	virtual void foreachSelectedComponent(const std::function<void(const scene::INodePtr&)>& functor) = 0;
 
 	/**
@@ -199,11 +199,11 @@ public:
 	// Calling this will cause an cmd::ExecutionFailure if getSelectedFaceCount() != 1
 	virtual IFace& getSingleSelectedFace() = 0;
 
-    /// Signal emitted when the selection is changed
-    virtual SelectionChangedSignal signal_selectionChanged() const = 0;
+	/// Signal emitted when the selection is changed
+	virtual SelectionChangedSignal signal_selectionChanged() const = 0;
 
 	virtual const Matrix4& getPivot2World() = 0;
-    virtual void pivotChanged() = 0;
+	virtual void pivotChanged() = 0;
 
 	// Feedback events invoked by the ManipulationMouseTool
 	virtual void onManipulationStart() = 0;
@@ -230,19 +230,19 @@ public:
 	// Returns the center point of the current selection
 	virtual Vector3 getCurrentSelectionCenter() = 0;
 
-    // Toggles selection focus mode (only possible with a non-empty selection)
-    // After activating, only items that are part of the set can be selected and manipulated.
-    // Throws cmd::ExecutionNotPossible when trying to activate with an empty selection
-    virtual void toggleSelectionFocus() = 0;
+	// Toggles selection focus mode (only possible with a non-empty selection)
+	// After activating, only items that are part of the set can be selected and manipulated.
+	// Throws cmd::ExecutionNotPossible when trying to activate with an empty selection
+	virtual void toggleSelectionFocus() = 0;
 
-    // Returns true when focus mode is active
-    // In focus mode only certain elements in the map can be selected.
-    // It's also possible to select single parts of selection groups
-    // without disbanding the group.
-    virtual bool selectionFocusIsActive() = 0;
+	// Returns true when focus mode is active
+	// In focus mode only certain elements in the map can be selected.
+	// It's also possible to select single parts of selection groups
+	// without disbanding the group.
+	virtual bool selectionFocusIsActive() = 0;
 
-    // Returns the volume the focus items are occupying
-    virtual AABB getSelectionFocusBounds() = 0;
+	// Returns the volume the focus items are occupying
+	virtual AABB getSelectionFocusBounds() = 0;
 };
 
 }

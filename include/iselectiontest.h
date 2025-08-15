@@ -87,63 +87,63 @@ public:
   class iterator
   {
   public:
-    iterator() {}
-    iterator(byte_pointer vertices, std::size_t stride)
-      : m_iter(vertices), m_stride(stride) {}
+	iterator() {}
+	iterator(byte_pointer vertices, std::size_t stride)
+	  : m_iter(vertices), m_stride(stride) {}
 
-    bool operator==(const iterator& other) const
-    {
-      return m_iter == other.m_iter;
-    }
-    bool operator!=(const iterator& other) const
-    {
-      return !operator==(other);
-    }
+	bool operator==(const iterator& other) const
+	{
+	  return m_iter == other.m_iter;
+	}
+	bool operator!=(const iterator& other) const
+	{
+	  return !operator==(other);
+	}
 
-    iterator operator+(std::size_t i)
-    {
-      return iterator(m_iter + i * m_stride, m_stride);
-    }
-    iterator operator+=(std::size_t i)
-    {
-      m_iter += i * m_stride;
-      return *this;
-    }
-    iterator& operator++()
-    {
-      m_iter += m_stride;
-      return *this;
-    }
-    iterator operator++(int)
-    {
-      iterator tmp = *this;
-      m_iter += m_stride;
-      return tmp;
-    }
-    vector_reference operator*() const
-    {
-      return *reinterpret_cast<vector_pointer>(m_iter);
-    }
+	iterator operator+(std::size_t i)
+	{
+	  return iterator(m_iter + i * m_stride, m_stride);
+	}
+	iterator operator+=(std::size_t i)
+	{
+	  m_iter += i * m_stride;
+	  return *this;
+	}
+	iterator& operator++()
+	{
+	  m_iter += m_stride;
+	  return *this;
+	}
+	iterator operator++(int)
+	{
+	  iterator tmp = *this;
+	  m_iter += m_stride;
+	  return tmp;
+	}
+	vector_reference operator*() const
+	{
+	  return *reinterpret_cast<vector_pointer>(m_iter);
+	}
   private:
-    byte_pointer m_iter;
-    std::size_t m_stride;
+	byte_pointer m_iter;
+	std::size_t m_stride;
   };
 
   VertexPointer(vector_pointer vertices, std::size_t stride)
-    : m_vertices(reinterpret_cast<byte_pointer>(vertices)), m_stride(stride) {}
+	: m_vertices(reinterpret_cast<byte_pointer>(vertices)), m_stride(stride) {}
 
   iterator begin() const
   {
-    return iterator(m_vertices, m_stride);
+	return iterator(m_vertices, m_stride);
   }
 
   vector_reference operator[](std::size_t i) const
   {
-    return *reinterpret_cast<vector_pointer>(m_vertices + m_stride*i);
+	return *reinterpret_cast<vector_pointer>(m_vertices + m_stride*i);
   }
 
 private:
-    // The address of the first Vector3 object
+	// The address of the first Vector3 object
 	byte_pointer m_vertices;
 
 	// The distance (in bytes) to the next object in memory
@@ -159,55 +159,55 @@ public:
   class iterator
   {
   public:
-    iterator(pointer iter) : m_iter(iter) {}
+	iterator(pointer iter) : m_iter(iter) {}
 
-    bool operator==(const iterator& other) const
-    {
-      return m_iter == other.m_iter;
-    }
-    bool operator!=(const iterator& other) const
-    {
-      return !operator==(other);
-    }
+	bool operator==(const iterator& other) const
+	{
+	  return m_iter == other.m_iter;
+	}
+	bool operator!=(const iterator& other) const
+	{
+	  return !operator==(other);
+	}
 
-    iterator operator+(std::size_t i)
-    {
-      return m_iter + i;
-    }
-    iterator operator+=(std::size_t i)
-    {
-      return m_iter += i;
-    }
-    iterator operator++()
-    {
-      return ++m_iter;
-    }
-    iterator operator++(int)
-    {
-      return m_iter++;
-    }
-    const index_type& operator*() const
-    {
-      return *m_iter;
-    }
+	iterator operator+(std::size_t i)
+	{
+	  return m_iter + i;
+	}
+	iterator operator+=(std::size_t i)
+	{
+	  return m_iter += i;
+	}
+	iterator operator++()
+	{
+	  return ++m_iter;
+	}
+	iterator operator++(int)
+	{
+	  return m_iter++;
+	}
+	const index_type& operator*() const
+	{
+	  return *m_iter;
+	}
   private:
-    void increment()
-    {
-      ++m_iter;
-    }
-    pointer m_iter;
+	void increment()
+	{
+	  ++m_iter;
+	}
+	pointer m_iter;
   };
 
   IndexPointer(pointer indices, std::size_t count)
-    : m_indices(indices), m_finish(indices + count) {}
+	: m_indices(indices), m_finish(indices + count) {}
 
   iterator begin() const
   {
-    return m_indices;
+	return m_indices;
   }
   iterator end() const
   {
-    return m_finish;
+	return m_finish;
   }
 
 private:
@@ -255,50 +255,50 @@ typedef std::shared_ptr<SelectionTest> SelectionTestPtr;
 class Selector
 {
 public:
-    virtual ~Selector() {}
+	virtual ~Selector() {}
 
-    /// Set the given object as the current selectable
-    virtual void pushSelectable(ISelectable& selectable) = 0;
+	/// Set the given object as the current selectable
+	virtual void pushSelectable(ISelectable& selectable) = 0;
 
-    /// Commit the current selectable, storing it along with its best intersection
-    virtual void popSelectable() = 0;
+	/// Commit the current selectable, storing it along with its best intersection
+	virtual void popSelectable() = 0;
 
-    /**
-     * @brief Add a candidate intersection for the current selectable.
-     *
-     * The candidate intersection is only stored if it is a better fit than the
-     * best intersection seen so far.
-     */
-    virtual void addIntersection(const SelectionIntersection& intersection) = 0;
+	/**
+	 * @brief Add a candidate intersection for the current selectable.
+	 *
+	 * The candidate intersection is only stored if it is a better fit than the
+	 * best intersection seen so far.
+	 */
+	virtual void addIntersection(const SelectionIntersection& intersection) = 0;
 
-    // Returns true if no selectable has been chosen
-    virtual bool empty() const = 0;
+	// Returns true if no selectable has been chosen
+	virtual bool empty() const = 0;
 
-    // Iterate over every selectable in the pool
-    virtual void foreachSelectable(const std::function<void(ISelectable*)>& functor) = 0;
+	// Iterate over every selectable in the pool
+	virtual void foreachSelectable(const std::function<void(ISelectable*)>& functor) = 0;
 
-    /// Add a selectable object and immediately commit it with a null intersection
-    void addWithNullIntersection(ISelectable& selectable)
-    {
-        pushSelectable(selectable);
-        addIntersection(SelectionIntersection(0, 0));
-        popSelectable();
-    }
+	/// Add a selectable object and immediately commit it with a null intersection
+	void addWithNullIntersection(ISelectable& selectable)
+	{
+		pushSelectable(selectable);
+		addIntersection(SelectionIntersection(0, 0));
+		popSelectable();
+	}
 
-    /// Add a selectable object and immediately commit it with the given intersection
-    void addWithIntersection(ISelectable& selectable, const SelectionIntersection& intersection)
-    {
-        pushSelectable(selectable);
-        addIntersection(intersection);
-        popSelectable();
-    }
+	/// Add a selectable object and immediately commit it with the given intersection
+	void addWithIntersection(ISelectable& selectable, const SelectionIntersection& intersection)
+	{
+		pushSelectable(selectable);
+		addIntersection(intersection);
+		popSelectable();
+	}
 };
 
 class VolumeTest;
 class SelectionTestable
 {
 public:
-    virtual ~SelectionTestable() {}
+	virtual ~SelectionTestable() {}
 	virtual void testSelect(Selector& selector, SelectionTest& test) = 0;
 };
 typedef std::shared_ptr<SelectionTestable> SelectionTestablePtr;
@@ -309,7 +309,7 @@ inline SelectionTestablePtr Node_getSelectionTestable(const scene::INodePtr& nod
 
 class ComponentSelectionTestable {
 public:
-    virtual ~ComponentSelectionTestable() {}
+	virtual ~ComponentSelectionTestable() {}
 	virtual bool isSelectedComponents() const = 0;
 	virtual void setSelectedComponents(bool select, selection::ComponentSelectionMode mode) = 0;
 	virtual void invertSelectedComponents(selection::ComponentSelectionMode mode) = 0;
@@ -334,7 +334,7 @@ public:
 class PlaneSelectable
 {
 public:
-    virtual ~PlaneSelectable() {}
+	virtual ~PlaneSelectable() {}
 	virtual void selectPlanes(Selector& selector, SelectionTest& test, const PlaneCallback& selectedPlaneCallback) = 0;
 	virtual void selectReversedPlanes(Selector& selector, const SelectedPlanes& selectedPlanes) = 0;
 };
@@ -358,24 +358,24 @@ namespace selection
 class ISceneSelectionTester
 {
 public:
-    using Ptr = std::shared_ptr<ISceneSelectionTester>;
+	using Ptr = std::shared_ptr<ISceneSelectionTester>;
 
-    virtual ~ISceneSelectionTester() {}
+	virtual ~ISceneSelectionTester() {}
 
-    // Tests all qualified nodes in the scene for selection
-    // and stores the ones passing the test internally
-    virtual void testSelectScene(const VolumeTest& view, SelectionTest& test) = 0;
+	// Tests all qualified nodes in the scene for selection
+	// and stores the ones passing the test internally
+	virtual void testSelectScene(const VolumeTest& view, SelectionTest& test) = 0;
 
-    // Tests all qualified nodes in the scene for selection
-    // all passing selectables are stored internally if they pass the given predicate
-    virtual void testSelectSceneWithFilter(const VolumeTest& view, SelectionTest& test,
-        const std::function<bool(ISelectable*)>& predicate) = 0;
+	// Tests all qualified nodes in the scene for selection
+	// all passing selectables are stored internally if they pass the given predicate
+	virtual void testSelectSceneWithFilter(const VolumeTest& view, SelectionTest& test,
+		const std::function<bool(ISelectable*)>& predicate) = 0;
 
-    // Returns true if the tester found one or more selectables passing the test
-    virtual bool hasSelectables() const = 0;
+	// Returns true if the tester found one or more selectables passing the test
+	virtual bool hasSelectables() const = 0;
 
-    // Iterates over the selectables that were passing the test
-    virtual void foreachSelectable(const std::function<void(ISelectable*)>& functor) = 0;
+	// Iterates over the selectables that were passing the test
+	virtual void foreachSelectable(const std::function<void(ISelectable*)>& functor) = 0;
 };
 
 /**
@@ -385,13 +385,13 @@ public:
 class ISceneSelectionTesterFactory
 {
 public:
-    virtual ~ISceneSelectionTesterFactory() {}
+	virtual ~ISceneSelectionTesterFactory() {}
 
-    /**
-     * Returns an instance of a selection tester suitable for testing
-     * scene nodes according to the given purpose/selection mode.
-     */
-    virtual ISceneSelectionTester::Ptr createSceneSelectionTester(SelectionMode mode) = 0;
+	/**
+	 * Returns an instance of a selection tester suitable for testing
+	 * scene nodes according to the given purpose/selection mode.
+	 */
+	virtual ISceneSelectionTester::Ptr createSceneSelectionTester(SelectionMode mode) = 0;
 };
 
 } // namespace

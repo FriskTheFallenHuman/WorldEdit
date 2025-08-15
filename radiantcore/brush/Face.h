@@ -30,8 +30,8 @@ class Face :
 	public util::Noncopyable
 {
 private:
-    // The structure which is saved to the undo stack
-    class SavedState;
+	// The structure which is saved to the undo stack
+	class SavedState;
 
 public:
 	PlanePoints m_move_planepts;
@@ -44,7 +44,7 @@ private:
 	FacePlane m_plane;
 	FacePlane m_planeTransformed;
 
-    // Face shader, stores material name and GL shader object
+	// Face shader, stores material name and GL shader object
 	SurfaceShader _shader;
 
 	TextureProjection _texdef;
@@ -58,10 +58,10 @@ private:
 	// Cached visibility flag, queried during front end rendering
 	bool _faceIsVisible;
 
-    render::RenderableWinding _windingSurfaceSolid;
-    render::RenderableWinding _windingSurfaceWireframe;
+	render::RenderableWinding _windingSurfaceSolid;
+	render::RenderableWinding _windingSurfaceWireframe;
 
-    sigc::signal<void> _sigDestroyed;
+	sigc::signal<void> _sigDestroyed;
 
 public:
 
@@ -82,17 +82,17 @@ public:
 	// Get the parent brush object
 	IBrush& getBrush() override;
 
-    Brush& getBrushInternal();
+	Brush& getBrushInternal();
 
-    sigc::signal<void>& signal_faceDestroyed() override;
+	sigc::signal<void>& signal_faceDestroyed() override;
 
 	void planeChanged();
 
 	// greebo: Emits the updated normals to the Winding class.
 	void updateWinding();
 
-    void connectUndoSystem(IUndoSystem& undoSystem);
-    void disconnectUndoSystem(IUndoSystem& undoSystem);
+	void connectUndoSystem(IUndoSystem& undoSystem);
+	void disconnectUndoSystem(IUndoSystem& undoSystem);
 
 	void undoSave() override;
 
@@ -100,8 +100,8 @@ public:
 	IUndoMementoPtr exportState() const override;
 	void importState(const IUndoMementoPtr& data) override;
 
-    /// Translate the face by the given vector
-    void translate(const Vector3& translation);
+	/// Translate the face by the given vector
+	void translate(const Vector3& translation);
 
 	void flipWinding();
 
@@ -133,15 +133,15 @@ public:
 	void revertTexdef();
 	void texdefChanged();
 
-    const TextureProjection& getProjection() const;
-    TextureProjection& getProjection();
+	const TextureProjection& getProjection() const;
+	TextureProjection& getProjection();
 
 	void GetTexdef(TextureProjection& projection) const;
 	void SetTexdef(const TextureProjection& projection);
 
-    // Constructs the texture projection matrix from the given (world) vertex and texture coords.
-    // Three vertices and their UV coordinates are enough to construct the texdef.
-    void setTexDefFromPoints(const Vector3 points[3], const Vector2 uvs[3]) override;
+	// Constructs the texture projection matrix from the given (world) vertex and texture coords.
+	// Three vertices and their UV coordinates are enough to construct the texdef.
+	void setTexDefFromPoints(const Vector3 points[3], const Vector2 uvs[3]) override;
 
 	ShiftScaleRotation getShiftScaleRotation() const override;
 	void setShiftScaleRotation(const ShiftScaleRotation& ssr) override;
@@ -153,19 +153,19 @@ public:
 	 */
 	void applyShaderFromFace(const Face& other);
 
-    // s and t are texture coordinates
+	// s and t are texture coordinates
 	void shiftTexdef(float s, float t) override;
 
-    // Same as above, but with pixel values
-    void shiftTexdefByPixels(float sPixels, float tPixels) override;
+	// Same as above, but with pixel values
+	void shiftTexdefByPixels(float sPixels, float tPixels) override;
 
-    // Scale the texdef by the given factors in s and t direction
-    // Passing s=1.05 will scale the texture to 105% in the s dimension
+	// Scale the texdef by the given factors in s and t direction
+	// Passing s=1.05 will scale the texture to 105% in the s dimension
 	void scaleTexdef(float sFactor, float tFactor) override;
 	void rotateTexdef(float angle) override;
 
-    Vector2 getTexelScale() const override;
-    float getTextureAspectRatio() const override;
+	Vector2 getTexelScale() const override;
+	float getTextureAspectRatio() const override;
 
 	void fitTexture(float s_repeat, float t_repeat) override;
 	void flipTexture(unsigned int flipAxis) override;
@@ -178,9 +178,9 @@ public:
 
 	void emitTextureCoordinates();
 
-    // When constructing faces with a default-constructed TextureProjection the scale is very small
-    // fix that by calling this method.
-    void applyDefaultTextureScale();
+	// When constructing faces with a default-constructed TextureProjection the scale is very small
+	// fix that by calling this method.
+	void applyDefaultTextureScale();
 
 	const Vector3& centroid() const;
 
@@ -189,8 +189,8 @@ public:
 	const Winding& getWinding() const override;
 	Winding& getWinding() override;
 
-    render::RenderableWinding& getWindingSurfaceSolid();
-    render::RenderableWinding& getWindingSurfaceWireframe();
+	render::RenderableWinding& getWindingSurfaceSolid();
+	render::RenderableWinding& getWindingSurfaceWireframe();
 
 	const Plane3& plane3() const;
 
@@ -211,10 +211,10 @@ public:
 
 	bool isVisible() const override;
 
-    // Called when the owning brush changes its visibility status
-    void onBrushVisibilityChanged(bool visible);
+	// Called when the owning brush changes its visibility status
+	void onBrushVisibilityChanged(bool visible);
 
-    void onBrushRenderStateChanged();
+	void onBrushRenderStateChanged();
 
 	void updateFaceVisibility();
 
@@ -227,10 +227,10 @@ private:
 	// Connects surface shader signals and calls realiseShader() if possible
 	void setupSurfaceShader();
 
-    // Transforms the texdef using the given world transform, with the goal
-    // to keep the texture coordinates of the winding unaltered by the transform
-    void transformTexDefLocked(const Matrix4& transform);
+	// Transforms the texdef using the given world transform, with the goal
+	// to keep the texture coordinates of the winding unaltered by the transform
+	void transformTexDefLocked(const Matrix4& transform);
 
-    void clearRenderables();
-    void updateRenderables();
+	void clearRenderables();
+	void updateRenderables();
 };

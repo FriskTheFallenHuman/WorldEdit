@@ -8,7 +8,7 @@ namespace ui
 
 namespace
 {
-	const char* const FILTER_ICON = "iconFilter16.png";
+	const char* const FILTER_ICON = "icon_filter.png";
 }
 
 FilterOrthoContextMenuItem::FilterOrthoContextMenuItem(const std::string& caption,

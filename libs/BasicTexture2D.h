@@ -23,7 +23,7 @@ public:
 	// Constructor
 	BasicTexture2D(GLuint texNum = 0, const std::string& name = "")
    : texture_number(texNum),
-     _name(name)
+	 _name(name)
 	{}
 
 	~BasicTexture2D() {
@@ -33,50 +33,50 @@ public:
 		}
 	}
 
-    /**
-     * \brief
-     * Set the texture number.
-     */
-    void setGLTexNum(GLuint texnum)
-    {
-        texture_number = texnum;
-    }
+	/**
+	 * \brief
+	 * Set the texture number.
+	 */
+	void setGLTexNum(GLuint texnum)
+	{
+		texture_number = texnum;
+	}
 
-    /**
-     * \brief
-     * Set the image width.
-     */
-    void setWidth(std::size_t width)
-    {
-        _width = width;
-    }
+	/**
+	 * \brief
+	 * Set the image width.
+	 */
+	void setWidth(std::size_t width)
+	{
+		_width = width;
+	}
 
-    /**
-     * \brief
-     * Set the image height.
-     */
-    void setHeight(std::size_t height)
-    {
-        _height = height;
-    }
+	/**
+	 * \brief
+	 * Set the image height.
+	 */
+	void setHeight(std::size_t height)
+	{
+		_height = height;
+	}
 
-    /* Texture interface */
-    std::string getName() const
-    {
-        return _name;
-    }
-    GLuint getGLTexNum() const
-    {
-        return texture_number;
-    }
-    std::size_t getWidth() const
-    {
-        return _width;
-    }
-    std::size_t getHeight() const
-    {
-        return _height;
-    }
+	/* Texture interface */
+	std::string getName() const
+	{
+		return _name;
+	}
+	GLuint getGLTexNum() const
+	{
+		return texture_number;
+	}
+	std::size_t getWidth() const
+	{
+		return _width;
+	}
+	std::size_t getHeight() const
+	{
+		return _height;
+	}
 
 }; // class Texture
 

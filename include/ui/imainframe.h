@@ -53,7 +53,7 @@ public:
 	virtual wxFrame* getWxTopLevelWindow() = 0;
 
 	/**
-	 * Returns TRUE if DarkRadiant is currently "in focus", i.e. the app in the foreground.
+	 * Returns TRUE if WorldEdit is currently "in focus", i.e. the app in the foreground.
 	 */
 	virtual bool isActiveApp() = 0;
 
@@ -65,25 +65,25 @@ public:
 	 */
 	virtual wxBoxSizer* getWxMainContainer() = 0;
 
-    /// Identifiers for application toolbars
-    enum class Toolbar
-    {
-        /// Top horizontal toolbar, containing mostly view-related options
-        TOP,
+	/// Identifiers for application toolbars
+	enum class Toolbar
+	{
+		/// Top horizontal toolbar, containing mostly view-related options
+		TOP,
 
-        /// Left vertical toolbar, containing various edit options
-        LEFT,
+		/// Left vertical toolbar, containing various edit options
+		LEFT,
 
-        /// Toolbar above the 3D camera view
-        CAMERA
-    };
+		/// Toolbar above the 3D camera view
+		CAMERA
+	};
 
-    /// Obtain a pointer to an application toolbar
+	/// Obtain a pointer to an application toolbar
 	virtual wxToolBar* getToolbar(Toolbar toolbarID) = 0;
 
 	/**
 	 * Updates all viewports which are child of the toplevel window.
-     * Set the force flag to true to redraw immediately insteaf of queueing.
+	 * Set the force flag to true to redraw immediately insteaf of queueing.
 	 */
 	virtual void updateAllWindows(bool force = false) = 0;
 
@@ -96,58 +96,58 @@ public:
 	virtual IScopedScreenUpdateBlockerPtr getScopedScreenUpdateBlocker(const std::string& title,
 		const std::string& message, bool forceDisplay = false) = 0;
 
-    // Specifies the location controls are added to the main frame
-    enum class Location
-    {
-        PropertyPanel,  // a tab in the property notebook
-        FloatingWindow, // a floating window
-    };
+	// Specifies the location controls are added to the main frame
+	enum class Location
+	{
+		PropertyPanel,  // a tab in the property notebook
+		FloatingWindow, // a floating window
+	};
 
-    struct ControlSettings
-    {
-        // The location this control is added to
-        Location location;
+	struct ControlSettings
+	{
+		// The location this control is added to
+		Location location;
 
-        // Whether this control is visible
-        bool visible;
+		// Whether this control is visible
+		bool visible;
 
-        // Default control width when packed in a floating window
-        int defaultFloatingWidth = 128;
+		// Default control width when packed in a floating window
+		int defaultFloatingWidth = 128;
 
-        // Default control height when packed in a floating window
-        int defaultFloatingHeight = 128;
+		// Default control height when packed in a floating window
+		int defaultFloatingHeight = 128;
 
-        /// Convenience constructor for a floating window with a particular default size
-        static ControlSettings floating(int width, int height)
-        {
-            return {Location::FloatingWindow, false, width, height};
-        }
-    };
+		/// Convenience constructor for a floating window with a particular default size
+		static ControlSettings floating(int width, int height)
+		{
+			return {Location::FloatingWindow, false, width, height};
+		}
+	};
 
-    /**
-     * Add a named control to the main frame. The given setting specifies
-     * where the control is added to and whether it's visible by default.
-     * Persisted user settings might still overrule these default values.
-     *
-     * The suitable point in time to call this method is when
-     * signal_MainFrameConstructed is invoked. This gives the mainframe
-     * time to restore the layout as customised by the user.
-     *
-     * The control has to be registered with the IUserInterfaceModule before it can
-     * be acquired by the mainframe, so make sure this is done beforehand.
-     */
-    virtual void addControl(const std::string& controlName, const ControlSettings& defaultSettings) = 0;
+	/**
+	 * Add a named control to the main frame. The given setting specifies
+	 * where the control is added to and whether it's visible by default.
+	 * Persisted user settings might still overrule these default values.
+	 *
+	 * The suitable point in time to call this method is when
+	 * signal_MainFrameConstructed is invoked. This gives the mainframe
+	 * time to restore the layout as customised by the user.
+	 *
+	 * The control has to be registered with the IUserInterfaceModule before it can
+	 * be acquired by the mainframe, so make sure this is done beforehand.
+	 */
+	virtual void addControl(const std::string& controlName, const ControlSettings& defaultSettings) = 0;
 
-    /**
-     * \brief
-     * A signal emitted when the MainFrame window has been set up.
-     *
-     * Modules can subscribe to this to register any UI parts that require a
-     * valid main window or sub component like the group dialog to be
-     * constructed. This is a one-time signal, after emission the subscribers
-     * will be automatically removed by this class.
-     */
-    virtual sigc::signal<void>& signal_MainFrameConstructed() = 0;
+	/**
+	 * \brief
+	 * A signal emitted when the MainFrame window has been set up.
+	 *
+	 * Modules can subscribe to this to register any UI parts that require a
+	 * valid main window or sub component like the group dialog to be
+	 * constructed. This is a one-time signal, after emission the subscribers
+	 * will be automatically removed by this class.
+	 */
+	virtual sigc::signal<void>& signal_MainFrameConstructed() = 0;
 
 	/**
 	 * Signal fired after the MainFrame window is shown the first time

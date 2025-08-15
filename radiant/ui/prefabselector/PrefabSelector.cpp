@@ -45,10 +45,10 @@ namespace
 	const std::string RKEY_SPLIT_POS = RKEY_BASE + "splitPos";
 
 	const char* const PREFAB_FOLDER = "prefabs/";
-    const char* const PREFAB_FILE_ICON = "cmenu_add_prefab.png";
+	const char* const PREFAB_FILE_ICON = "cmenu_add_prefab.png";
 
-    const std::string RKEY_LAST_CUSTOM_PREFAB_PATH = RKEY_BASE + "lastPrefabPath";
-    const std::string RKEY_RECENT_PREFAB_PATHS = RKEY_BASE + "recentPaths";
+	const std::string RKEY_LAST_CUSTOM_PREFAB_PATH = RKEY_BASE + "lastPrefabPath";
+	const std::string RKEY_RECENT_PREFAB_PATHS = RKEY_BASE + "recentPaths";
 	const std::string RKEY_INSERT_AS_GROUP = RKEY_BASE + "insertAsGroup";
 	const std::string RKEY_RECALCULATE_PREFAB_ORIGIN = RKEY_BASE + "recalculatePrefabOrigin";
 }
@@ -63,13 +63,13 @@ PrefabSelector::PrefabSelector() :
 	wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
 	GetSizer()->Add(vbox, 1, wxEXPAND | wxALL, 12);
 
-    setupPathSelector(vbox);
+	setupPathSelector(vbox);
 
 	wxSplitterWindow* splitter = new wxSplitterWindow(this, wxID_ANY,
 		wxDefaultPosition, wxDefaultSize, wxSP_3D | wxSP_LIVE_UPDATE);
-    splitter->SetMinimumPaneSize(10); // disallow unsplitting
+	splitter->SetMinimumPaneSize(10); // disallow unsplitting
 
-    setupTreeView(splitter);
+	setupTreeView(splitter);
 	
 	wxPanel* previewPanel = new wxPanel(splitter, wxID_ANY);
 	previewPanel->SetSizer(new wxBoxSizer(wxVERTICAL));
@@ -95,9 +95,9 @@ PrefabSelector::PrefabSelector() :
 
 	_insertAsGroupBox = new wxCheckBox(this, wxID_ANY, _("Create Group out of Prefab parts"));
 	registry::bindWidget(_insertAsGroupBox, RKEY_INSERT_AS_GROUP);
-    
-    _recalculatePrefabOriginBox = new wxCheckBox(this, wxID_ANY, _("Recalculate Prefab Origin"));
-    _recalculatePrefabOriginBox->SetToolTip(_("Check to move uncentered prefabs back to the prefab's 0,0,0 coordinate before insertion"));
+	
+	_recalculatePrefabOriginBox = new wxCheckBox(this, wxID_ANY, _("Recalculate Prefab Origin"));
+	_recalculatePrefabOriginBox->SetToolTip(_("Check to move uncentered prefabs back to the prefab's 0,0,0 coordinate before insertion"));
 
 	registry::bindWidget(_recalculatePrefabOriginBox, RKEY_RECALCULATE_PREFAB_ORIGIN);
 
@@ -125,109 +125,109 @@ PrefabSelector::PrefabSelector() :
 	_panedPosition.connect(splitter);
 	_panedPosition.loadFromPath(RKEY_SPLIT_POS);
 
-    // Update the controls right now, this also triggers a prefab rescan
-    onPrefabPathSelectionChanged();
+	// Update the controls right now, this also triggers a prefab rescan
+	onPrefabPathSelectionChanged();
  
-    Bind( wxEVT_DATAVIEW_ITEM_ACTIVATED, &PrefabSelector::_onItemActivated, this );
+	Bind( wxEVT_DATAVIEW_ITEM_ACTIVATED, &PrefabSelector::_onItemActivated, this );
 }
 
 void PrefabSelector::_onItemActivated( wxDataViewEvent& ev ) {
-    if ( !getSelectedPath().empty() && !_treeView->GetIsFolderSelected() ) {
-        EndModal( wxID_OK );
-    }
+	if ( !getSelectedPath().empty() && !_treeView->GetIsFolderSelected() ) {
+		EndModal( wxID_OK );
+	}
 }
 
 void PrefabSelector::setupPathSelector(wxSizer* parentSizer)
 {
-    // Path selection box
-    wxBoxSizer* hbox = new wxBoxSizer(wxHORIZONTAL);
+	// Path selection box
+	wxBoxSizer* hbox = new wxBoxSizer(wxHORIZONTAL);
 
-    _useModPath = new wxRadioButton(this, wxID_ANY, _("Browse mod resources"),
-                                                  wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
-    
-    _useRecentPath = new wxRadioButton(this, wxID_ANY, _("Select recently used path:"));
+	_useModPath = new wxRadioButton(this, wxID_ANY, _("Browse mod resources"),
+												  wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
+	
+	_useRecentPath = new wxRadioButton(this, wxID_ANY, _("Select recently used path:"));
 
-    _useCustomPath = new wxRadioButton(this, wxID_ANY, _("Browse custom path:"));
+	_useCustomPath = new wxRadioButton(this, wxID_ANY, _("Browse custom path:"));
 
-    // Setup recent path selector
-    _recentPathSelector = new wxComboBox(this, wxID_ANY);
+	// Setup recent path selector
+	_recentPathSelector = new wxComboBox(this, wxID_ANY);
 
-    _recentPathSelector->Bind(wxEVT_COMBOBOX, [&](wxCommandEvent& ev)
-    {
-        _useRecentPath->SetValue(true);
-        onPrefabPathSelectionChanged();
-    });
+	_recentPathSelector->Bind(wxEVT_COMBOBOX, [&](wxCommandEvent& ev)
+	{
+		_useRecentPath->SetValue(true);
+		onPrefabPathSelectionChanged();
+	});
 
-    // Load recent paths from registry
-    xml::NodeList recentNodes = GlobalRegistry().findXPath(RKEY_RECENT_PREFAB_PATHS + "//path");
+	// Load recent paths from registry
+	xml::NodeList recentNodes = GlobalRegistry().findXPath(RKEY_RECENT_PREFAB_PATHS + "//path");
 
-    for (const xml::Node& node : recentNodes)
-    {
-        std::string recentPath = node.getAttributeValue("value");
+	for (const xml::Node& node : recentNodes)
+	{
+		std::string recentPath = node.getAttributeValue("value");
 
-        if (recentPath.empty()) continue;
+		if (recentPath.empty()) continue;
 
-        _recentPaths.push_back(recentPath);
-        _recentPathSelector->AppendString(recentPath);
-    }
+		_recentPaths.push_back(recentPath);
+		_recentPathSelector->AppendString(recentPath);
+	}
 
-    _customPath = new wxutil::PathEntry(this, true);
+	_customPath = new wxutil::PathEntry(this, true);
 
-    // Load the most recent folder into the control
-    _customPath->setValue(registry::getValue<std::string>(RKEY_LAST_CUSTOM_PREFAB_PATH));
+	// Load the most recent folder into the control
+	_customPath->setValue(registry::getValue<std::string>(RKEY_LAST_CUSTOM_PREFAB_PATH));
 
-    // Connect to the changed event
-    _customPath->Bind(wxutil::EV_PATH_ENTRY_CHANGED, [&](wxCommandEvent& ev)
-    {
-        addCustomPathToRecentList();
-        onPrefabPathSelectionChanged();
-    });
+	// Connect to the changed event
+	_customPath->Bind(wxutil::EV_PATH_ENTRY_CHANGED, [&](wxCommandEvent& ev)
+	{
+		addCustomPathToRecentList();
+		onPrefabPathSelectionChanged();
+	});
 
-    hbox->Add(_useModPath, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 6);
-    hbox->Add(_useRecentPath, 0, wxLEFT | wxALIGN_CENTER_VERTICAL, 6);
-    hbox->Add(_recentPathSelector, 1, wxLEFT | wxALIGN_CENTER_VERTICAL, 6);
-    hbox->Add(_useCustomPath, 0, wxLEFT | wxALIGN_CENTER_VERTICAL, 6);
-    hbox->Add(_customPath, 1, wxLEFT, 6);
+	hbox->Add(_useModPath, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 6);
+	hbox->Add(_useRecentPath, 0, wxLEFT | wxALIGN_CENTER_VERTICAL, 6);
+	hbox->Add(_recentPathSelector, 1, wxLEFT | wxALIGN_CENTER_VERTICAL, 6);
+	hbox->Add(_useCustomPath, 0, wxLEFT | wxALIGN_CENTER_VERTICAL, 6);
+	hbox->Add(_customPath, 1, wxLEFT, 6);
 
-    parentSizer->Add(hbox, 0, wxBOTTOM | wxEXPAND, 12);
+	parentSizer->Add(hbox, 0, wxBOTTOM | wxEXPAND, 12);
 
-    // Wire up the signals
-    _useModPath->Bind(wxEVT_RADIOBUTTON, [&] (wxCommandEvent& ev)
-    {
-        onPrefabPathSelectionChanged();
-    });
+	// Wire up the signals
+	_useModPath->Bind(wxEVT_RADIOBUTTON, [&] (wxCommandEvent& ev)
+	{
+		onPrefabPathSelectionChanged();
+	});
 
-    _useRecentPath->Bind(wxEVT_RADIOBUTTON, [&] (wxCommandEvent& ev)
-    {
-        onPrefabPathSelectionChanged();
-    });
+	_useRecentPath->Bind(wxEVT_RADIOBUTTON, [&] (wxCommandEvent& ev)
+	{
+		onPrefabPathSelectionChanged();
+	});
 
-    _useCustomPath->Bind(wxEVT_RADIOBUTTON, [&](wxCommandEvent& ev)
-    {
-        onPrefabPathSelectionChanged();
-    });
+	_useCustomPath->Bind(wxEVT_RADIOBUTTON, [&](wxCommandEvent& ev)
+	{
+		onPrefabPathSelectionChanged();
+	});
 }
 
 void PrefabSelector::addCustomPathToRecentList()
 {
-    std::string customPath = string::to_lower_copy(_customPath->getValue());
-    string::trim(customPath);
+	std::string customPath = string::to_lower_copy(_customPath->getValue());
+	string::trim(customPath);
 
-    if (customPath.empty())
-    {
-        return;
-    }
+	if (customPath.empty())
+	{
+		return;
+	}
 
-    for (const auto& existing : _recentPaths)
-    {
-        if (existing == customPath)
-        {
-            return; // already in recent path list
-        }
-    }
-    
-    _recentPaths.push_back(customPath);
-    _recentPathSelector->AppendString(customPath);
+	for (const auto& existing : _recentPaths)
+	{
+		if (existing == customPath)
+		{
+			return; // already in recent path list
+		}
+	}
+	
+	_recentPaths.push_back(customPath);
+	_recentPathSelector->AppendString(customPath);
 }
 
 int PrefabSelector::ShowModal()
@@ -242,21 +242,21 @@ int PrefabSelector::ShowModal()
 
 	_panedPosition.saveToPath(RKEY_SPLIT_POS);
 
-    // Remember the most recently used path
-    registry::setValue<std::string>(RKEY_LAST_CUSTOM_PREFAB_PATH, _customPath->getValue());
+	// Remember the most recently used path
+	registry::setValue<std::string>(RKEY_LAST_CUSTOM_PREFAB_PATH, _customPath->getValue());
 
-    // Persist recent paths to registry
-    GlobalRegistry().deleteXPath(RKEY_RECENT_PREFAB_PATHS + "//path");
+	// Persist recent paths to registry
+	GlobalRegistry().deleteXPath(RKEY_RECENT_PREFAB_PATHS + "//path");
 
-    xml::Node parentNode = GlobalRegistry().createKey(RKEY_RECENT_PREFAB_PATHS);
+	xml::Node parentNode = GlobalRegistry().createKey(RKEY_RECENT_PREFAB_PATHS);
 
-    for (const auto& recentPath : _recentPaths)
-    {
-        if (recentPath.empty()) continue;
+	for (const auto& recentPath : _recentPaths)
+	{
+		if (recentPath.empty()) continue;
 
-        xml::Node pathNode = parentNode.createChild("path");
-        pathNode.setAttributeValue("value", recentPath);
-    }
+		xml::Node pathNode = parentNode.createChild("path");
+		pathNode.setAttributeValue("value", recentPath);
+	}
 
 	return returnCode;
 }
@@ -323,48 +323,48 @@ PrefabSelector::Result PrefabSelector::ChoosePrefab(const std::string& curPrefab
 // Helper function to create the TreeView
 void PrefabSelector::setupTreeView(wxWindow* parent)
 {
-    _treeView = wxutil::FileSystemView::Create(parent, wxBORDER_STATIC | wxDV_NO_HEADER);
-    _treeView->Bind(wxutil::EV_FSVIEW_SELECTION_CHANGED, &PrefabSelector::onSelectionChanged, this);
-    _treeView->signal_TreePopulated().connect(sigc::mem_fun(this, &PrefabSelector::onFileViewTreePopulated));
+	_treeView = wxutil::FileSystemView::Create(parent, wxBORDER_STATIC | wxDV_NO_HEADER);
+	_treeView->Bind(wxutil::EV_FSVIEW_SELECTION_CHANGED, &PrefabSelector::onSelectionChanged, this);
+	_treeView->signal_TreePopulated().connect(sigc::mem_fun(this, &PrefabSelector::onFileViewTreePopulated));
 
-    // Get the extensions from all possible patterns (e.g. *.pfb or *.pfbx)
-    FileTypePatterns patterns = GlobalFiletypes().getPatternsForType(filetype::TYPE_PREFAB);
+	// Get the extensions from all possible patterns (e.g. *.pfb or *.pfbx)
+	FileTypePatterns patterns = GlobalFiletypes().getPatternsForType(filetype::TYPE_PREFAB);
 
-    std::set<std::string> fileExtensions;
+	std::set<std::string> fileExtensions;
 
-    for (const auto & pattern : patterns)
-    {
-        fileExtensions.insert(pattern.extension);
-    }
+	for (const auto & pattern : patterns)
+	{
+		fileExtensions.insert(pattern.extension);
+	}
 
-    _treeView->SetFileExtensions(fileExtensions);
-    _treeView->SetDefaultFileIcon(PREFAB_FILE_ICON);
+	_treeView->SetFileExtensions(fileExtensions);
+	_treeView->SetDefaultFileIcon(PREFAB_FILE_ICON);
 }
 
 std::string PrefabSelector::getPrefabFolder()
 {
-    std::string customPath = _customPath->getEntryWidget()->GetValue().ToStdString();
+	std::string customPath = _customPath->getEntryWidget()->GetValue().ToStdString();
 
-    // Only search in custom paths if it is absolute
-    if (_useCustomPath->GetValue() && !customPath.empty() && path_is_absolute(customPath.c_str()))
-    {
-        return os::standardPathWithSlash(customPath);
-    }
-    else if (_useRecentPath->GetValue() && !_recentPathSelector->GetStringSelection().IsEmpty())
-    {
-        return os::standardPathWithSlash(_recentPathSelector->GetStringSelection().ToStdString());
-    }
-    else
-    {
-        // No custom path
-        return PREFAB_FOLDER;
-    }
+	// Only search in custom paths if it is absolute
+	if (_useCustomPath->GetValue() && !customPath.empty() && path_is_absolute(customPath.c_str()))
+	{
+		return os::standardPathWithSlash(customPath);
+	}
+	else if (_useRecentPath->GetValue() && !_recentPathSelector->GetStringSelection().IsEmpty())
+	{
+		return os::standardPathWithSlash(_recentPathSelector->GetStringSelection().ToStdString());
+	}
+	else
+	{
+		// No custom path
+		return PREFAB_FOLDER;
+	}
 }
 
 void PrefabSelector::populatePrefabs()
 {
-    _treeView->SetBasePath(getPrefabFolder());
-    _treeView->Populate(_lastPrefab);
+	_treeView->SetBasePath(getPrefabFolder());
+	_treeView->Populate(_lastPrefab);
 }
 
 void PrefabSelector::onRescanPrefabs(wxCommandEvent& ev)
@@ -385,80 +385,80 @@ bool PrefabSelector::getInsertAsGroup()
 
 bool PrefabSelector::getRecalculatePrefabOrigin()
 {
-    return _recalculatePrefabOriginBox->GetValue();
+	return _recalculatePrefabOriginBox->GetValue();
 }
 
 void PrefabSelector::clearPreview()
 {
-    // NULLify the preview map root on failure
-    _preview->setRootNode(scene::IMapRootNodePtr());
-    _preview->queueDraw();
+	// NULLify the preview map root on failure
+	_preview->setRootNode(scene::IMapRootNodePtr());
+	_preview->queueDraw();
 
-    _description->SetValue("");
+	_description->SetValue("");
 }
 
 void PrefabSelector::onSelectionChanged(wxutil::FileSystemView::SelectionChangedEvent& ev)
 {
-    util::ScopedBoolLock lock(_handlingSelectionChange);
+	util::ScopedBoolLock lock(_handlingSelectionChange);
 
-    if (ev.GetSelectedPath().empty())
-    {
-        clearPreview();
-        return;
-    }
+	if (ev.GetSelectedPath().empty())
+	{
+		clearPreview();
+		return;
+	}
 
-    if (ev.SelectionIsFolder())
-    {
-        clearPreview();
-        return;
-    }
+	if (ev.SelectionIsFolder())
+	{
+		clearPreview();
+		return;
+	}
 
-    const auto& prefabPath = ev.GetSelectedPath();
+	const auto& prefabPath = ev.GetSelectedPath();
 
-    _mapResource = GlobalMapResourceManager().createFromPath(prefabPath);
+	_mapResource = GlobalMapResourceManager().createFromPath(prefabPath);
 
-    if (!_mapResource)
-    {
-        clearPreview();
-        return;
-    }
+	if (!_mapResource)
+	{
+		clearPreview();
+		return;
+	}
 
-    _lastPrefab = prefabPath;
+	_lastPrefab = prefabPath;
 
-    // Suppress the map loading dialog to avoid user
-    // getting stuck in the "drag filename" operation
-    registry::ScopedKeyChanger<bool> changer(
-        RKEY_MAP_SUPPRESS_LOAD_STATUS_DIALOG, true
-    );
+	// Suppress the map loading dialog to avoid user
+	// getting stuck in the "drag filename" operation
+	registry::ScopedKeyChanger<bool> changer(
+		RKEY_MAP_SUPPRESS_LOAD_STATUS_DIALOG, true
+	);
 
-    if (_mapResource->load())
-    {
-        // Get the node from the resource
-        const auto& root = _mapResource->getRootNode();
+	if (_mapResource->load())
+	{
+		// Get the node from the resource
+		const auto& root = _mapResource->getRootNode();
 
-        assert(root);
+		assert(root);
 
-        // Set the new rootnode
-        _preview->setRootNode(root);
+		// Set the new rootnode
+		_preview->setRootNode(root);
 
-        _preview->getWidget()->Refresh();
-    }
-    else
-    {
-        // Map load failed
-        rWarning() << "Could not load prefab: " << prefabPath << std::endl;
-        clearPreview();
-    }
+		_preview->getWidget()->Refresh();
+	}
+	else
+	{
+		// Map load failed
+		rWarning() << "Could not load prefab: " << prefabPath << std::endl;
+		clearPreview();
+	}
 
-    updateUsageInfo();
+	updateUsageInfo();
 }
 
 void PrefabSelector::onPrefabPathSelectionChanged()
 {
-    _customPath->Enable(_useCustomPath->GetValue());
+	_customPath->Enable(_useCustomPath->GetValue());
 
-    // Reload the prefabs from the newly selected path
-    populatePrefabs();
+	// Reload the prefabs from the newly selected path
+	populatePrefabs();
 }
 
 void PrefabSelector::updateUsageInfo()
@@ -487,7 +487,7 @@ void PrefabSelector::updateUsageInfo()
 
 void PrefabSelector::onFileViewTreePopulated()
 {
-    _treeView->ExpandTopLevelItems();
+	_treeView->ExpandTopLevelItems();
 }
 
 } // namespace ui

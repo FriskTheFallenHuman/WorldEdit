@@ -9,12 +9,12 @@ namespace ui
 
 	namespace 
 	{
-		// greebo: These are used for the DarkRadiant main menu
+		// greebo: These are used for the WorldEdit main menu
 		const std::string MENU_NAME = "main";
 		const std::string MENU_INSERT_BEFORE = MENU_NAME + "/map";
 		const std::string MENU_FILTERS_NAME = "filters";
 		const std::string MENU_PATH = MENU_NAME + "/" + MENU_FILTERS_NAME;
-		const std::string MENU_ICON = "iconFilter16.png";
+		const std::string MENU_ICON = "icon_filter.png";
 	}
 
 // Construct menu items
@@ -37,7 +37,7 @@ void FiltersMenu::addItemsToMainMenu()
 
 		// Create the menu item
 		menuManager.add(MENU_PATH, MENU_PATH + "_" + filterName,
-            menu::ItemType::Item, filterName,
+			menu::ItemType::Item, filterName,
 			MENU_ICON, eventName);
 	});
 
@@ -52,7 +52,7 @@ void FiltersMenu::addItemsToMainMenu()
 void FiltersMenu::removeItemsFromMainMenu()
 {
 	// Remove the filters menu if there exists one
-    GlobalMenuManager().remove(MENU_PATH);
+	GlobalMenuManager().remove(MENU_PATH);
 }
 
 } // namespace ui

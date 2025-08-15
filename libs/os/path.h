@@ -57,7 +57,7 @@ inline bool path_is_absolute(const char* path)
 {
 #if defined(WIN32)
   return path[0] == '/'
-    || (path[0] != '\0' && path[1] == ':'); // local drive
+	|| (path[0] != '\0' && path[1] == ':'); // local drive
 #elif defined(POSIX)
   return path[0] == '/';
 #endif
@@ -70,7 +70,7 @@ inline const char* path_remove_directory(const char* path)
   const char* first_separator = strchr(path, '/');
   if(first_separator != 0)
   {
-    return ++first_separator;
+	return ++first_separator;
   }
   return "";
 }
@@ -79,19 +79,19 @@ inline const char* path_remove_directory(const char* path)
  */
 namespace os
 {
-    /** Convert the slashes in a Doom 3 path to forward-slashes. Doom 3 accepts either
-     * forward or backslashes in its definitions
-     */
+	/** Convert the slashes in a Doom 3 path to forward-slashes. Doom 3 accepts either
+	 * forward or backslashes in its definitions
+	 */
 
-    inline std::string standardPath(const std::string& inPath)
+	inline std::string standardPath(const std::string& inPath)
 	{
-        return string::replace_all_copy(inPath, "\\", "/");
-    }
+		return string::replace_all_copy(inPath, "\\", "/");
+	}
 
-    /** greebo: OS Folder names have forward slashes and a trailing slash
-     * at the end by convention. Empty strings are returned unchanged.
-     */
-    inline std::string standardPathWithSlash(const std::string& input) 
+	/** greebo: OS Folder names have forward slashes and a trailing slash
+	 * at the end by convention. Empty strings are returned unchanged.
+	 */
+	inline std::string standardPathWithSlash(const std::string& input) 
 	{
 		std::string output = standardPath(input);
 
@@ -103,13 +103,13 @@ namespace os
 		return output;
 	}
 
-    /**
-     * Return the path of fullPath relative to basePath, as long as fullPath
-     * is contained within basePath. If not, fullPath is returned unchanged.
-     */
-    inline std::string getRelativePath(const std::string& fullPath,
-                                       const std::string& basePath)
-    {
+	/**
+	 * Return the path of fullPath relative to basePath, as long as fullPath
+	 * is contained within basePath. If not, fullPath is returned unchanged.
+	 */
+	inline std::string getRelativePath(const std::string& fullPath,
+									   const std::string& basePath)
+	{
 #ifdef OS_CASE_INSENSITIVE
 		if (string::istarts_with(fullPath, basePath))
 #else
@@ -117,11 +117,11 @@ namespace os
 #endif
 		{
 			return fullPath.substr(basePath.length());
-        }
-        else {
-            return fullPath;
-        }
-    }
+		}
+		else {
+			return fullPath;
+		}
+	}
 
 	/**
 	 * stifu: Does the same as getRelativePath, but also strips the filename.
@@ -136,77 +136,77 @@ namespace os
 #endif
 		{
 			return fullPath.substr(basePath.length(), fullPath.rfind('/') - basePath.length());
-        }
-        else {
-            return fullPath;
-        }
+		}
+		else {
+			return fullPath;
+		}
 	}
 
 
-    /**
-     * greebo: Get the filename contained in the given path (the part after the last slash).
-     * If there is no filename, an empty string is returned.
+	/**
+	 * greebo: Get the filename contained in the given path (the part after the last slash).
+	 * If there is no filename, an empty string is returned.
 	 * If there's no slash, the input string is returned as is.
-     *
-     * Note: The input string is expected to be standardised (forward slashes).
-     */
-    inline std::string getFilename(const std::string& path) 
+	 *
+	 * Note: The input string is expected to be standardised (forward slashes).
+	 */
+	inline std::string getFilename(const std::string& path) 
 	{
-        std::size_t slashPos = path.rfind('/');
+		std::size_t slashPos = path.rfind('/');
 
 		return slashPos == std::string::npos ? path : path.substr(slashPos + 1);
-    }
+	}
 
-    /**
-     * Get the extension of the given filename. If there is no extension, an
-     * empty string is returned.
-     */
-    inline std::string getExtension(const std::string& path) {
-        std::size_t dotPos = path.rfind('.');
-        if (dotPos == std::string::npos) {
-            return "";
-        }
-        else {
-            return path.substr(dotPos + 1);
-        }
-    }
+	/**
+	 * Get the extension of the given filename. If there is no extension, an
+	 * empty string is returned.
+	 */
+	inline std::string getExtension(const std::string& path) {
+		std::size_t dotPos = path.rfind('.');
+		if (dotPos == std::string::npos) {
+			return "";
+		}
+		else {
+			return path.substr(dotPos + 1);
+		}
+	}
 
-    /**
-     * Strip off the extension of the given path and return the new string. 
-     * If there is no extension, the original string is returned.
-     */
-    inline std::string removeExtension(const std::string& path)
-    {
-        std::size_t dotPos = path.rfind('.');
+	/**
+	 * Strip off the extension of the given path and return the new string. 
+	 * If there is no extension, the original string is returned.
+	 */
+	inline std::string removeExtension(const std::string& path)
+	{
+		std::size_t dotPos = path.rfind('.');
 
-        if (dotPos == std::string::npos)
-        {
-            return path;
-        }
-        
-        return path.substr(0, dotPos);
-    }
+		if (dotPos == std::string::npos)
+		{
+			return path;
+		}
+		
+		return path.substr(0, dotPos);
+	}
 
-    /**
-     * Get the containing folder of the specified object. This is calculated
-     * as the directory before the rightmost slash (which will be the object
-     * itself, if the pathname ends in a slash).
-     *
-     * If the path does not contain a slash, the empty string will be returned.
-     *
-     * E.g.
-     * blah/bleh/file   -> "bleh"
-     * blah/bloog/      -> "bloog"
-     */
-    inline std::string getContainingDir(const std::string& path) {
-        std::size_t lastSlash = path.rfind('/');
-        if (lastSlash == std::string::npos) {
-            return "";
-        }
-        std::string trimmed = path.substr(0, lastSlash);
-        lastSlash = trimmed.rfind('/');
-        return trimmed.substr(lastSlash + 1);
-    }
+	/**
+	 * Get the containing folder of the specified object. This is calculated
+	 * as the directory before the rightmost slash (which will be the object
+	 * itself, if the pathname ends in a slash).
+	 *
+	 * If the path does not contain a slash, the empty string will be returned.
+	 *
+	 * E.g.
+	 * blah/bleh/file   -> "bleh"
+	 * blah/bloog/      -> "bloog"
+	 */
+	inline std::string getContainingDir(const std::string& path) {
+		std::size_t lastSlash = path.rfind('/');
+		if (lastSlash == std::string::npos) {
+			return "";
+		}
+		std::string trimmed = path.substr(0, lastSlash);
+		lastSlash = trimmed.rfind('/');
+		return trimmed.substr(lastSlash + 1);
+	}
 
 	/**
 	 * Returns the directory part of the given path, cutting off the filename
@@ -228,28 +228,28 @@ namespace os
 		return path.substr(0, lastSlash + 1);
 	}
 
-    /**
-     * Returns the outermost directory name of the given path, which must be
-     * provided in standardised form (forward slashes only).
-     * 
-     * E.g. 
-     * blah/bleh/file.ext   -> "blah/"
+	/**
+	 * Returns the outermost directory name of the given path, which must be
+	 * provided in standardised form (forward slashes only).
+	 * 
+	 * E.g. 
+	 * blah/bleh/file.ext   -> "blah/"
 	 * blah/bloog           -> "blah/"
-     * blah                 -> ""
-     * test.mtr             -> ""
-     * ""                   -> ""
-     */
-    inline std::string getToplevelDirectory(const std::string& path)
-    {
-        std::size_t firstSlash = path.find('/');
+	 * blah                 -> ""
+	 * test.mtr             -> ""
+	 * ""                   -> ""
+	 */
+	inline std::string getToplevelDirectory(const std::string& path)
+	{
+		std::size_t firstSlash = path.find('/');
 
-        if (firstSlash == std::string::npos)
-        {
-            return std::string();
-        }
+		if (firstSlash == std::string::npos)
+		{
+			return std::string();
+		}
 
-        return path.substr(0, firstSlash + 1); // include the slash
-    }
+		return path.substr(0, firstSlash + 1); // include the slash
+	}
 
 	/**
 	 * Returns true if the given string qualifies as path to a directory,

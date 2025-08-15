@@ -11,7 +11,7 @@ class ModuleLoader;
 
 /** 
  * greebo: Implementation of the IModuleRegistry interface defined in imodule.h.
- * It stores and manages the lifecycle of all modules in DarkRadiant.
+ * It stores and manages the lifecycle of all modules in WorldEdit.
  * 
  * Use the registerModule() method to add new modules, which will be initialised
  * during the startup phase, resolving the module dependencies on the go.
@@ -23,7 +23,7 @@ private:
 	// application context
 	const IApplicationContext& _context;
 
-    typedef std::map<std::string, RegisterableModulePtr> ModulesMap;
+	typedef std::map<std::string, RegisterableModulePtr> ModulesMap;
 
 	// This is where the uninitialised modules go after registration
 	ModulesMap _uninitialisedModules;
@@ -40,8 +40,8 @@ private:
 	// For progress meter in the splash screen
 	float _progress;
 
-    // Signals fired after ALL modules have been initialised or shut down.
-    sigc::signal<void> _sigAllModulesInitialised;
+	// Signals fired after ALL modules have been initialised or shut down.
+	sigc::signal<void> _sigAllModulesInitialised;
 	sigc::signal<void> _sigAllModulesUninitialised;
 	sigc::signal<void> _sigModulesUnloading;
 	sigc::signal<void> _sigModulesUninitialising;
@@ -53,33 +53,33 @@ private:
 public:
 	ModuleRegistry(const IApplicationContext& ctx);
 
-    ~ModuleRegistry();
+	~ModuleRegistry();
 
 	// Registers the given module
-    void registerModule(const RegisterableModulePtr& module) override;
+	void registerModule(const RegisterableModulePtr& module) override;
 
 	// Initialise all registered modules
-    void loadAndInitialiseModules() override;
+	void loadAndInitialiseModules() override;
 
 	// Shutdown all modules
-    void shutdownModules() override;
+	void shutdownModules() override;
 
 	// Get the module
-    RegisterableModulePtr getModule(const std::string& name) const override;
+	RegisterableModulePtr getModule(const std::string& name) const override;
 
-    // Returns TRUE if the named module exists in the records
-    bool moduleExists(const std::string& name) const override;
+	// Returns TRUE if the named module exists in the records
+	bool moduleExists(const std::string& name) const override;
 
 	// Get the application context info structure
-    const IApplicationContext& getApplicationContext() const override;
+	const IApplicationContext& getApplicationContext() const override;
 
 	applog::ILogWriter& getApplicationLogWriter() override;
 
-    sigc::signal<void>& signal_allModulesInitialised() override;
+	sigc::signal<void>& signal_allModulesInitialised() override;
 	ProgressSignal& signal_moduleInitialisationProgress() override;
-    sigc::signal<void>& signal_modulesUninitialising() override;
-    sigc::signal<void>& signal_allModulesUninitialised() override;
-    sigc::signal<void>& signal_modulesUnloading() override;
+	sigc::signal<void>& signal_modulesUninitialising() override;
+	sigc::signal<void>& signal_allModulesUninitialised() override;
+	sigc::signal<void>& signal_modulesUnloading() override;
 
 	std::size_t getCompatibilityLevel() const override;
 

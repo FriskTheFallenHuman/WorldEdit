@@ -21,7 +21,7 @@ class FaceInstance
 {
 private:
 	Face* m_face;
-    SelectionChangedSlot m_selectionChanged;
+	SelectionChangedSlot m_selectionChanged;
 	selection::ObservedSelectable m_selectable;
 	selection::ObservedSelectable m_selectableVertices;
 	selection::ObservedSelectable m_selectableEdges;

@@ -57,8 +57,8 @@ namespace math
 /// Epsilon equality test for TexCoord2f
 inline bool isNear(const TexCoord2f& v1, const TexCoord2f& v2, double epsilon)
 {
-    TexCoord2f diff = v1 - v2;
-    return std::abs(diff.x()) < epsilon && std::abs(diff.y()) < epsilon;
+	TexCoord2f diff = v1 - v2;
+	return std::abs(diff.x()) < epsilon && std::abs(diff.y()) < epsilon;
 }
 
 }

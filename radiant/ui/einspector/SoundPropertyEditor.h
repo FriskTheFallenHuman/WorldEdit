@@ -13,22 +13,22 @@ class SoundPropertyEditor :
 {
 private:
 	// Keyvalue to set
-    ITargetKey::Ptr _key;
+	ITargetKey::Ptr _key;
 
 private:
 
 	void onBrowseButtonClick() override;
-    void onAssignSilence(wxCommandEvent& ev);
+	void onAssignSilence(wxCommandEvent& ev);
 
 public:
 
 	// Main constructor
-    SoundPropertyEditor(wxWindow* parent, IEntitySelection& entities, const ITargetKey::Ptr& key);
+	SoundPropertyEditor(wxWindow* parent, IEntitySelection& entities, const ITargetKey::Ptr& key);
 
-    static Ptr CreateNew(wxWindow* parent, IEntitySelection& entities, const ITargetKey::Ptr& key)
-    {
-        return std::make_shared<SoundPropertyEditor>(parent, entities, key);
-    }
+	static Ptr CreateNew(wxWindow* parent, IEntitySelection& entities, const ITargetKey::Ptr& key)
+	{
+		return std::make_shared<SoundPropertyEditor>(parent, entities, key);
+	}
 };
 
 }

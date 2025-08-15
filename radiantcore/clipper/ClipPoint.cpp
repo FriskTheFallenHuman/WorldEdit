@@ -48,14 +48,14 @@ void ClipPoint::Draw(const std::string& label, float scale)
 
 namespace
 {
-    template<typename T>
-    T fDiff(T f1, T f2)
-    {
-        if (f1 > f2)
-            return f1 - f2;
-        else
-            return f2 - f1;
-    }
+	template<typename T>
+	T fDiff(T f1, T f2)
+	{
+		if (f1 > f2)
+			return f1 - f2;
+		else
+			return f2 - f1;
+	}
 }
 
 double ClipPoint::intersect(const Vector3& point, OrthoOrientation viewtype, float scale)
@@ -63,12 +63,12 @@ double ClipPoint::intersect(const Vector3& point, OrthoOrientation viewtype, flo
 	int nDim1 = (viewtype == OrthoOrientation::YZ) ? 1 : 0;
 	int nDim2 = (viewtype == OrthoOrientation::XY) ? 1 : 2;
 
-    double screenDistanceSquared = Vector2(
-        fDiff(_coords[nDim1], point[nDim1]) * scale,
-        fDiff(_coords[nDim2], point[nDim2]) * scale).getLengthSquared();
+	double screenDistanceSquared = Vector2(
+		fDiff(_coords[nDim1], point[nDim1]) * scale,
+		fDiff(_coords[nDim2], point[nDim2]) * scale).getLengthSquared();
 
 	if (screenDistanceSquared < 8*8)
-    {
+	{
 		return screenDistanceSquared;
 	}
 

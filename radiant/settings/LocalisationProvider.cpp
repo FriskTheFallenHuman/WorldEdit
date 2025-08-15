@@ -19,7 +19,7 @@ namespace settings
 
 namespace
 {
-	const char* const LANGUAGE_SETTING_FILE = "darkradiant.language";
+	const char* const LANGUAGE_SETTING_FILE = "worldedit.language";
 	const char* const DEFAULT_LANGUAGE = "en";
 }
 
@@ -41,7 +41,7 @@ LocalisationProvider::LocalisationProvider(IApplicationContext& ctx)
 	wxFileTranslationsLoader::AddCatalogLookupPathPrefix(_i18nPath);
 
 	// Load the persisted language setting
-    settings::SettingsManager manager(ctx);
+	settings::SettingsManager manager(ctx);
 	_languageSettingFile = manager.getCurrentVersionSettingsFolder() + LANGUAGE_SETTING_FILE;
 	_curLanguage = loadLanguageSetting();
 
@@ -91,7 +91,7 @@ std::string LocalisationProvider::loadLanguageSetting()
 		str >> language;
 	}
 
-    str.close();
+	str.close();
 
 	return language;
 }

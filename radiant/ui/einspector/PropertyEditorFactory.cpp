@@ -140,6 +140,10 @@ wxBitmap PropertyEditorFactory::getBitmapFor(const std::string& type)
     if (type.empty()) return wxNullBitmap;
 
     auto candidate = wxutil::GetLocalBitmap("icon_" + type + ".png");
+    if (!candidate.IsOk())
+    {
+        rWarning() << "Could not load property icon for key " << "icon_" + type + ".png." << std::endl;
+    }
     return candidate.IsOk() ? candidate : wxutil::GetLocalBitmap("empty.png");
 }
 

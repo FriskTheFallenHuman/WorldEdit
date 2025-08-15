@@ -20,9 +20,9 @@ class DirectoryNotFoundException :
 	public std::runtime_error
 {
 public:
-    DirectoryNotFoundException(const std::string& what) :
+	DirectoryNotFoundException(const std::string& what) :
 		std::runtime_error(what)
-    {}
+	{}
 };
 
 /**
@@ -42,14 +42,14 @@ public:
 template<typename F>
 bool forEachItemInDirectory(const std::string& path, F functor, std::nothrow_t)
 {
-    fs::path start(path);
-    if (!fs::exists(start))
-        return false;
+	fs::path start(path);
+	if (!fs::exists(start))
+		return false;
 
-    for (fs::directory_iterator it(start); it != fs::directory_iterator(); ++it) {
-        functor(*it);
-    }
-    return true;
+	for (fs::directory_iterator it(start); it != fs::directory_iterator(); ++it) {
+		functor(*it);
+	}
+	return true;
 }
 
 /**
@@ -62,9 +62,9 @@ bool forEachItemInDirectory(const std::string& path, F functor, std::nothrow_t)
 template<typename F>
 inline void forEachItemInDirectory(const std::string& path, F functor)
 {
-    if (!forEachItemInDirectory(path, functor, std::nothrow))
-        throw DirectoryNotFoundException("forEachItemInDirectory(): invalid directory '" + path
-                                         + "'");
+	if (!forEachItemInDirectory(path, functor, std::nothrow))
+		throw DirectoryNotFoundException("forEachItemInDirectory(): invalid directory '" + path
+										 + "'");
 }
 
 /**

@@ -8,7 +8,7 @@ class Matrix4;
 class ITransformNode
 {
 public:
-    virtual ~ITransformNode() {}
+	virtual ~ITransformNode() {}
 
 	/// \brief Returns the transform which maps the node's local-space into the local-space of its parent node.
 	virtual Matrix4 localToParent() const = 0;
@@ -20,6 +20,6 @@ class IMatrixTransform: public ITransformNode
 {
 public:
 
-    /// Set the value of the contained transformation matrix
+	/// Set the value of the contained transformation matrix
 	virtual void setLocalToParent(const Matrix4& localToParent) = 0;
 };

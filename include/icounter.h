@@ -6,7 +6,7 @@
 class ICounter
 {
 public:
-    /** Destructor */
+	/** Destructor */
 	virtual ~ICounter() {}
 
 	/** greebo: Decrements/increments the counter.

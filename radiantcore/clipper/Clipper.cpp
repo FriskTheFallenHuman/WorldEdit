@@ -140,12 +140,12 @@ void Clipper::getPlanePoints(Vector3 planepts[3], const AABB& bounds) const {
 
 const Plane3& Clipper::getClipPlane()
 {
-    return _clipPlane;
+	return _clipPlane;
 }
 
 void Clipper::setClipPlane(const Plane3& plane)
 {
-    _clipPlane = plane;
+	_clipPlane = plane;
 	algorithm::setBrushClipPlane(plane);
 }
 
@@ -270,27 +270,27 @@ void Clipper::initialiseModule(const IApplicationContext& ctx)
 	_caulkShader = GlobalRegistry().get(RKEY_CLIPPER_CAULK_SHADER);
 
 	GlobalRegistry().signalForKey(RKEY_CLIPPER_USE_CAULK).connect(
-        sigc::mem_fun(this, &Clipper::keyChanged)
-    );
+		sigc::mem_fun(this, &Clipper::keyChanged)
+	);
 	GlobalRegistry().signalForKey(RKEY_CLIPPER_CAULK_SHADER).connect(
-        sigc::mem_fun(this, &Clipper::keyChanged)
-    );
+		sigc::mem_fun(this, &Clipper::keyChanged)
+	);
 
 	constructPreferences();
 
 	// Register the clip commands
-    auto haveSomethingToClip = [this] {
-        return clipMode() && selection::pred::haveBrush();
-    };
-    GlobalCommandSystem().addWithCheck(
-        "ClipSelected", cmd::noArgs([this] { clipSelectionCmd(); }), haveSomethingToClip
-    );
-    GlobalCommandSystem().addWithCheck(
-        "SplitSelected", cmd::noArgs([this] { splitSelectedCmd(); }), haveSomethingToClip
-    );
-    GlobalCommandSystem().addWithCheck(
-        "FlipClip", cmd::noArgs([this] { flipClip(); }), haveSomethingToClip
-    );
+	auto haveSomethingToClip = [this] {
+		return clipMode() && selection::pred::haveBrush();
+	};
+	GlobalCommandSystem().addWithCheck(
+		"ClipSelected", cmd::noArgs([this] { clipSelectionCmd(); }), haveSomethingToClip
+	);
+	GlobalCommandSystem().addWithCheck(
+		"SplitSelected", cmd::noArgs([this] { splitSelectedCmd(); }), haveSomethingToClip
+	);
+	GlobalCommandSystem().addWithCheck(
+		"FlipClip", cmd::noArgs([this] { flipClip(); }), haveSomethingToClip
+	);
 }
 
 void Clipper::clipSelectionCmd() {

@@ -40,7 +40,7 @@ namespace map
 class PrimitiveParser
 {
 public:
-    virtual ~PrimitiveParser() {}
+	virtual ~PrimitiveParser() {}
 
 	/**
 	 * Returns the primitive keyword of this parser, e.g. "brushDef3". When the Map parser
@@ -52,7 +52,7 @@ public:
 	/**
 	 * Creates and returns a primitive node according to the encountered token.
 	 */
-    virtual scene::INodePtr parse(parser::DefTokeniser& tok) const = 0;
+	virtual scene::INodePtr parse(parser::DefTokeniser& tok) const = 0;
 };
 typedef std::shared_ptr<PrimitiveParser> PrimitiveParserPtr;
 
@@ -163,7 +163,7 @@ public:
 	/**
 	 * Send an entity node to the import filter. In idTech4 maps all entities
 	 * are immediate children of the root node in the scene, so this is where
-     * they usually end up after being added (unless they're filtered out).
+	 * they usually end up after being added (unless they're filtered out).
 	 *
 	 * @returns: true if the entity got added, false otherwise.
 	 */
@@ -212,8 +212,8 @@ public:
 	virtual IMapWriterPtr getMapWriter() const = 0;
 
 	/**
-	 * Returns true if this map format allows the .darkradiant file
-     * to be saved along the actual .map file. Some exporter modules
+	 * Returns true if this map format allows the .project/.mapx file
+	 * to be saved along the actual .map file. Some exporter modules
 	 * might want to disable that (i.e. the prefab exporter)
 	 */
 	virtual bool allowInfoFileCreation() const = 0;

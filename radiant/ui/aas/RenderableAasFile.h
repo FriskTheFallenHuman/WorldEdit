@@ -20,34 +20,34 @@ const char* const RKEY_AAS_AREA_HIDE_DISTANCE = "user/ui/aasViewer/hideDistance"
 // Renderable drawing all the area bounds of the attached AAS file,
 // optionally showing the area numbers too
 class RenderableAasFile :
-    public Renderable,
+	public Renderable,
 	public sigc::trackable
 {
 private:
-    IAasFilePtr _aasFile;
+	IAasFilePtr _aasFile;
 
 	ShaderPtr _normalShader;
-    ITextRenderer::Ptr _textRenderer;
+	ITextRenderer::Ptr _textRenderer;
 
-    std::vector<AABB> _areas;
-    std::vector<AABB> _visibleAreas;
+	std::vector<AABB> _areas;
+	std::vector<AABB> _visibleAreas;
 
 	bool _renderNumbers;
 	bool _hideDistantAreas;
 	float _hideDistanceSquared;
 
-    render::RenderableBoundingBoxes _renderableAreas;
-    std::map<std::size_t, render::StaticRenderableText> _renderableNumbers;
+	render::RenderableBoundingBoxes _renderableAreas;
+	std::map<std::size_t, render::StaticRenderableText> _renderableNumbers;
 
 public:
 	RenderableAasFile();
 
    void clear();
 
-    void setRenderSystem(const RenderSystemPtr& renderSystem) override {}
-    void onPreRender(const VolumeTest& volume) override;
-    void renderHighlights(IRenderableCollector& collector, const VolumeTest& volume) override
-    {}
+	void setRenderSystem(const RenderSystemPtr& renderSystem) override {}
+	void onPreRender(const VolumeTest& volume) override;
+	void renderHighlights(IRenderableCollector& collector, const VolumeTest& volume) override
+	{}
 
 	std::size_t getHighlightFlags() override;
 
@@ -56,8 +56,8 @@ public:
 private:
 	void prepare();
 	void constructRenderables();
-    void onHideDistantAreasChanged();
-    void onShowAreaNumbersChanged();
+	void onHideDistantAreasChanged();
+	void onShowAreaNumbersChanged();
 };
 
 } // namespace

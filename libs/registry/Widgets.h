@@ -19,8 +19,8 @@ namespace detail
 template <typename Value_T, typename Widget_T>
 void setWidgetValueIfKeyExists(const std::string& key, Widget_T& widget)
 {
-    if (GlobalRegistry().keyExists(key))
-        widget.SetValue(registry::getValue<Value_T>(key));
+	if (GlobalRegistry().keyExists(key))
+		widget.SetValue(registry::getValue<Value_T>(key));
 }
 
 } // namespace detail
@@ -36,38 +36,38 @@ void setWidgetValueIfKeyExists(const std::string& key, Widget_T& widget)
  */
 inline void bindWidget(wxSpinCtrlDouble* spinCtrl, const std::string& key)
 {
-    detail::setWidgetValueIfKeyExists<double>(key, *spinCtrl);
-    spinCtrl->Bind(wxEVT_SPINCTRLDOUBLE, [=](wxSpinDoubleEvent& ev) {
-        registry::setValue(key, spinCtrl->GetValue());
-        ev.Skip();
-    });
+	detail::setWidgetValueIfKeyExists<double>(key, *spinCtrl);
+	spinCtrl->Bind(wxEVT_SPINCTRLDOUBLE, [=](wxSpinDoubleEvent& ev) {
+		registry::setValue(key, spinCtrl->GetValue());
+		ev.Skip();
+	});
 }
 
 inline void bindWidget(wxTextCtrl* text, const std::string& key)
 {
-    detail::setWidgetValueIfKeyExists<std::string>(key, *text);
-    text->Bind(wxEVT_TEXT, [=](wxCommandEvent& ev) {
-        registry::setValue(key, text->GetValue().ToStdString());
-        ev.Skip();
-    });
+	detail::setWidgetValueIfKeyExists<std::string>(key, *text);
+	text->Bind(wxEVT_TEXT, [=](wxCommandEvent& ev) {
+		registry::setValue(key, text->GetValue().ToStdString());
+		ev.Skip();
+	});
 }
 
 inline void bindWidget(wxCheckBox* checkbox, const std::string& key)
 {
-    detail::setWidgetValueIfKeyExists<bool>(key, *checkbox);
-    checkbox->Bind(wxEVT_CHECKBOX, [=](wxCommandEvent& ev) {
-        registry::setValue(key, checkbox->GetValue() ? "1" : "0");
-        ev.Skip();
-    });
+	detail::setWidgetValueIfKeyExists<bool>(key, *checkbox);
+	checkbox->Bind(wxEVT_CHECKBOX, [=](wxCommandEvent& ev) {
+		registry::setValue(key, checkbox->GetValue() ? "1" : "0");
+		ev.Skip();
+	});
 }
 
 inline void bindWidget(wxToggleButton* toggleButton, const std::string& key)
 {
-    detail::setWidgetValueIfKeyExists<bool>(key, *toggleButton);
-    toggleButton->Bind(wxEVT_TOGGLEBUTTON, [=](wxCommandEvent& ev) {
-        registry::setValue(key, toggleButton->GetValue() ? "1" : "0");
-        ev.Skip();
-    });
+	detail::setWidgetValueIfKeyExists<bool>(key, *toggleButton);
+	toggleButton->Bind(wxEVT_TOGGLEBUTTON, [=](wxCommandEvent& ev) {
+		registry::setValue(key, toggleButton->GetValue() ? "1" : "0");
+		ev.Skip();
+	});
 }
 
 // ------------- Variants supporting registry::Buffer ---------------------

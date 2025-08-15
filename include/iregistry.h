@@ -28,12 +28,12 @@ public:
 	};
 
 	/// Set a keyvalue in the registry
-    virtual void set(const std::string& key, const std::string& value) = 0;
+	virtual void set(const std::string& key, const std::string& value) = 0;
 
-    /// Get a keyvalue from the registry
-    virtual std::string get(const std::string& key) = 0;
+	/// Get a keyvalue from the registry
+	virtual std::string get(const std::string& key) = 0;
 
-    // Checks whether a key exists in the registry
+	// Checks whether a key exists in the registry
 	virtual bool keyExists(const std::string& key) = 0;
 
 	/**
@@ -98,8 +98,8 @@ public:
 	// Deletes an entire subtree from the registry
 	virtual void deleteXPath(const std::string& path) = 0;
 
-    /// Return a signal which will be emitted when a given key changes
-    virtual sigc::signal<void> signalForKey(const std::string& key) const = 0;
+	/// Return a signal which will be emitted when a given key changes
+	virtual sigc::signal<void> signalForKey(const std::string& key) const = 0;
 };
 typedef std::shared_ptr<Registry> RegistryPtr;
 

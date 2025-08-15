@@ -1,3 +1,3 @@
-# Called at DarkRadiant startup
+# Called at WorldEdit startup
 import sys
-print('DarkRadiant init.py called, this is Python {0}'.format(sys.version))
+print('WorldEdit init.py called, this is Python {0}'.format(sys.version))

@@ -30,20 +30,20 @@ inline void Node_setSelected(const scene::INodePtr& node, bool selected)
 {
 	auto selectable = scene::node_cast<ISelectable>(node);
 
-    if (selectable)
+	if (selectable)
 	{
-        selectable->setSelected(selected);
-    }
+		selectable->setSelected(selected);
+	}
 }
 
 inline bool Node_isSelected(const scene::INodePtr& node)
 {
 	auto selectable = scene::node_cast<ISelectable>(node);
 
-    if (selectable)
+	if (selectable)
 	{
-        return selectable->isSelected();
-    }
+		return selectable->isSelected();
+	}
 
-    return false;
+	return false;
 }

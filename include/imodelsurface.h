@@ -49,13 +49,13 @@ public:
 	 */
 	virtual const std::string& getActiveMaterial() const = 0;
 
-    // Returns the local bounds of this surface
-    virtual const AABB& getSurfaceBounds() const = 0;
+	// Returns the local bounds of this surface
+	virtual const AABB& getSurfaceBounds() const = 0;
 };
 
 /**
  * Model surface supporting direct access to its vertex and index arrays
- * which define the polygons. Model surfaces in DarkRadiant are loaded by
+ * which define the polygons. Model surfaces in WorldEdit are loaded by
  * the PicoModel library which generates clockwise polygon windings.
  */
 class IIndexedModelSurface :

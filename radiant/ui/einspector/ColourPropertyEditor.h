@@ -24,7 +24,7 @@ private:
 	wxColourPickerCtrl* _colorButton;
 
 	// The target key
-    ITargetKey::Ptr _key;
+	ITargetKey::Ptr _key;
 
 private:
 	// Set the colour button from the given string
@@ -44,10 +44,10 @@ public:
 	void updateFromEntity();
 
 	/// Create a new ColourPropertyEditor
-    static Ptr CreateNew(wxWindow* parent, IEntitySelection& entities, const ITargetKey::Ptr& key)
-    {
-        return std::make_shared<ColourPropertyEditor>(parent, entities, key);
-    }
+	static Ptr CreateNew(wxWindow* parent, IEntitySelection& entities, const ITargetKey::Ptr& key)
+	{
+		return std::make_shared<ColourPropertyEditor>(parent, entities, key);
+	}
 };
 
 }

@@ -14,7 +14,7 @@ namespace string
  */
 template <typename ContainerType>
 inline void split(ContainerType& tokens, const std::string& subject, const std::string& delimiters,
-                  bool trimEmpty = true)
+				  bool trimEmpty = true)
 {
 	std::string::size_type lastPos = 0;
 	std::string::size_type length = subject.length();
@@ -54,11 +54,11 @@ inline void split(ContainerType& tokens, const std::string& subject, const std::
  * Convenience wrapper for split() which does not require an existing container variable.
  */
 inline std::vector<std::string> splitToVec(const std::string& subject,
-                                           const std::string& delimiters, bool trimEmpty = true)
+										   const std::string& delimiters, bool trimEmpty = true)
 {
-    std::vector<std::string> result;
-    split(result, subject, delimiters, trimEmpty);
-    return result;
+	std::vector<std::string> result;
+	split(result, subject, delimiters, trimEmpty);
+	return result;
 }
 
 }

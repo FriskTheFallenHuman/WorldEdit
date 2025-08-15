@@ -18,27 +18,27 @@ namespace ui
  */
 class ParticleChooserDialog :
 	public wxutil::DeclarationSelectorDialog,
-    public sigc::trackable
+	public sigc::trackable
 {
 private:
-    ParticleSelector* _selector;
+	ParticleSelector* _selector;
 
-    wxRadioButton* _funcEmitter;
-    wxRadioButton* _funcSmoke;
+	wxRadioButton* _funcEmitter;
+	wxRadioButton* _funcSmoke;
 
 private:
 	// Constructor creates elements
 	ParticleChooserDialog(bool showClassnameSelector);
 
-    std::string getSelectedClassname();
+	std::string getSelectedClassname();
 
 public:
 
-    struct SelectionResult
-    {
-        std::string selectedParticle;
-        std::string selectedClassname;
-    };
+	struct SelectionResult
+	{
+		std::string selectedParticle;
+		std::string selectedClassname;
+	};
 
 	/**
 	 * Display the dialog and return the name of the selected
@@ -55,23 +55,23 @@ public:
 	 */
 	static std::string ChooseParticle(const std::string& currentParticle = "");
 
-    /**
-     * Display the dialog and return the name of the selected
-     * particle system, or the empty string if none was selected.
-     *
-     * @param currentParticle
-     * The particle name which should be highlighted in the list when the dialog
-     * is first displayed. If this value is left at the default value of "", no
-     * particle will be selected.
-     *
-     * @returns
-     * The name of the particle selected by the user, or an empty string if the
-     * choice was cancelled or invalid.
-     */
-    static SelectionResult ChooseParticleAndEmitter(const std::string& currentParticle = "");
+	/**
+	 * Display the dialog and return the name of the selected
+	 * particle system, or the empty string if none was selected.
+	 *
+	 * @param currentParticle
+	 * The particle name which should be highlighted in the list when the dialog
+	 * is first displayed. If this value is left at the default value of "", no
+	 * particle will be selected.
+	 *
+	 * @returns
+	 * The name of the particle selected by the user, or an empty string if the
+	 * choice was cancelled or invalid.
+	 */
+	static SelectionResult ChooseParticleAndEmitter(const std::string& currentParticle = "");
 
 private:
-    static SelectionResult RunDialog(bool showClassnameSelector, std::string currentParticle);
+	static SelectionResult RunDialog(bool showClassnameSelector, std::string currentParticle);
 };
 
 }

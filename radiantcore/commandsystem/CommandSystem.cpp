@@ -192,9 +192,9 @@ void CommandSystem::foreachCommand(const std::function<void(const std::string&)>
 void CommandSystem::addCommandObject(const std::string& name, CommandPtr cmd)
 {
 	if (auto result = _commands.emplace(name, cmd); !result.second) {
-        rError() << "Cannot register command " << name << ", this command is already registered."
-                 << std::endl;
-    }
+		rError() << "Cannot register command " << name << ", this command is already registered."
+				 << std::endl;
+	}
 }
 
 void CommandSystem::addCommand(const std::string& name, Function func,
@@ -204,7 +204,7 @@ void CommandSystem::addCommand(const std::string& name, Function func,
 }
 
 void CommandSystem::addWithCheck(const std::string& name, Function func, CheckFunction check,
-                                 const Signature& sig)
+								 const Signature& sig)
 {
 	addCommandObject(name, std::make_shared<Command>(func, sig, check));
 }
@@ -329,41 +329,41 @@ StatementVec parseCommandString(const std::string& input)
 		statements.push_back(curStatement);
 	}
 
-    return statements;
+	return statements;
 }
 
 bool CommandSystem::canExecute(const std::string& input) const
 {
-    // Check the first command, ignoring arguments or subsequent commands.
-    // For now we discount the possibility that the specific arguments could
-    // change whether a command can be run, although in theory this could be possible.
+	// Check the first command, ignoring arguments or subsequent commands.
+	// For now we discount the possibility that the specific arguments could
+	// change whether a command can be run, although in theory this could be possible.
 
-    // Parsing the whole command string is rather expensive, so extract just the first token
-    CommandTokeniser tokeniser(input);
+	// Parsing the whole command string is rather expensive, so extract just the first token
+	CommandTokeniser tokeniser(input);
 
-    if (tokeniser.hasMoreTokens())
-    {
-        if (auto cmd = _commands.find(tokeniser.nextToken()); cmd != _commands.end())
-        {
-            return cmd->second->canExecute();
-        }
-    }
+	if (tokeniser.hasMoreTokens())
+	{
+		if (auto cmd = _commands.find(tokeniser.nextToken()); cmd != _commands.end())
+		{
+			return cmd->second->canExecute();
+		}
+	}
 
-    // We only return false if we know that a command cannot run; if the command
-    // was not found at all, return true by default.
-    return true;
+	// We only return false if we know that a command cannot run; if the command
+	// was not found at all, return true by default.
+	return true;
 }
 
 void CommandSystem::execute(const std::string& input)
 {
-    // Parse the string into statement(s)
-    auto statements = parseCommandString(input);
+	// Parse the string into statement(s)
+	auto statements = parseCommandString(input);
 
-    // Now execute the statements
-    for (const auto& statement : statements) {
-        // Attempt ordinary command execution
-        executeCommand(statement.command, statement.args);
-    }
+	// Now execute the statements
+	for (const auto& statement : statements) {
+		// Attempt ordinary command execution
+		executeCommand(statement.command, statement.args);
+	}
 }
 
 void CommandSystem::executeCommand(const std::string& name, const ArgumentList& args)

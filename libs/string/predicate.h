@@ -240,15 +240,15 @@ inline bool iends_with(const std::string& input, const TestStringType& test)
  */
 inline bool isAlphaNumeric(const std::string& input)
 {
-    for (const auto c : input)
-    {
-        if (!::isalpha(c) && !::isdigit(c))
-        {
-            return false;
-        }
-    }
+	for (const auto c : input)
+	{
+		if (!::isalpha(c) && !::isdigit(c))
+		{
+			return false;
+		}
+	}
 
-    return !input.empty();
+	return !input.empty();
 }
 
 }

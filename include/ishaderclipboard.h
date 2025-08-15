@@ -21,10 +21,10 @@ enum class PasteMode
  * to pick/copy/paste shaders from and to Texturable objects.
  */
 class IShaderClipboard :
-    public RegisterableModule
+	public RegisterableModule
 {
 public:
-    virtual ~IShaderClipboard() {}
+	virtual ~IShaderClipboard() {}
 
 	virtual void clear() = 0;
 

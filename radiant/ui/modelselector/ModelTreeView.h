@@ -20,10 +20,10 @@ public:
             isModelDefFolder(add(wxutil::TreeModel::Column::Boolean))
         {}
 
-        // iconAndName column contains the filename, e.g. "chair1.lwo"
-        // fullPath column contains the VFS path to the model plus skin info, e.g. "models/darkmod/props/chair1.lwo[/skinName]"
-        wxutil::TreeModel::Column skin;		// e.g. "chair1_brown_wood", or "" for no skin
-        wxutil::TreeModel::Column modelPath;// e.g. "models/darkmod/props/chair1.lwo"
+        // iconAndName column contains the filename, e.g. "airlockbrace.lwo"
+        // fullPath column contains the VFS path to the model plus skin info, e.g. "models/mapobjects/airlock/airlockbrace.lwo[/skinName]"
+        wxutil::TreeModel::Column skin;		// e.g. "airlockbrace", or "" for no skin
+        wxutil::TreeModel::Column modelPath;// e.g. "models/mapobjects/airlock/airlockbrace.lwo"
         wxutil::TreeModel::Column isSkin;	// TRUE if this is a skin entry, FALSE if actual model or folder
         wxutil::TreeModel::Column isModelDefFolder;	// TRUE if this is the model def folder, which should sort last
     };

@@ -23,7 +23,7 @@ namespace scene
 class Filterable
 {
 public:
-    /**
+	/**
 	 * Destructor
 	 */
 	virtual ~Filterable() {}
@@ -60,7 +60,7 @@ typedef std::shared_ptr<Graph> GraphPtr;
 class NodeVisitor
 {
 public:
-    /**
+	/**
 	 * Destructor
 	 */
 	virtual ~NodeVisitor() {}
@@ -98,19 +98,19 @@ public:
 		MapRoot,
 		Entity,
 		Brush,
-        Patch,
+		Patch,
 		Model,
 		Particle,
-        EntityConnection,
-        MergeAction,
+		EntityConnection,
+		MergeAction,
 	};
 
 public:
 
 	virtual ~INode() {}
 
-    /// Get the user-friendly string name of this node.
-    virtual std::string name() const = 0;
+	/// Get the user-friendly string name of this node.
+	virtual std::string name() const = 0;
 
 	// Returns the type of this node
 	virtual Type getNodeType() const = 0;
@@ -139,25 +139,25 @@ public:
 	virtual void enable(unsigned int state) = 0;
 	virtual void disable(unsigned int state) = 0;
 
-    // Returns true if the given state bit mask is set, false otherwise
-    virtual bool checkStateFlag(unsigned int state) const = 0;
+	// Returns true if the given state bit mask is set, false otherwise
+	virtual bool checkStateFlag(unsigned int state) const = 0;
 
-    // Returns true if this node supports the given state flag
-    virtual bool supportsStateFlag(unsigned int state) const = 0;
+	// Returns true if this node supports the given state flag
+	virtual bool supportsStateFlag(unsigned int state) const = 0;
 
-    // Defines the active/inactive state of a node
-    // An inactive node might be rendered differently
-    enum class RenderState
-    {
-        Active,
-        Inactive
-    };
+	// Defines the active/inactive state of a node
+	// An inactive node might be rendered differently
+	enum class RenderState
+	{
+		Active,
+		Inactive
+	};
 
-    // Returns the current render state of this node
-    virtual RenderState getRenderState() const = 0;
+	// Returns the current render state of this node
+	virtual RenderState getRenderState() const = 0;
 
-    // Sets the render state of this node
-    virtual void setRenderState(RenderState state) = 0;
+	// Sets the render state of this node
+	virtual void setRenderState(RenderState state) = 0;
 
 	/** greebo: Returns true, if the node is not hidden by
 	 * 			exclusion, filtering or anything else.
@@ -237,7 +237,7 @@ public:
 	 * removed from the scene. This gives the node the opportunity to
 	 * change its "selected" status or anything else.
 	 */
-    virtual void onRemoveFromScene(IMapRootNode& root) = 0;
+	virtual void onRemoveFromScene(IMapRootNode& root) = 0;
 
 	/**
 	 * Returns true if this node is in the scene
@@ -257,12 +257,12 @@ public:
 	virtual const AABB& worldAABB() const = 0;
 
 	/**
-     * \brief Return the transformation from local to world coordinates
-     *
-     * This represents the final transformation from this node's own coordinate
-     * space into world space, including any transformations inherited from
-     * parent nodes.
-     */
+	 * \brief Return the transformation from local to world coordinates
+	 *
+	 * This represents the final transformation from this node's own coordinate
+	 * space into world space, including any transformations inherited from
+	 * parent nodes.
+	 */
 	virtual const Matrix4& localToWorld() const = 0;
 
 	// Undo/Redo events - some nodes need to do extra legwork after undo or redo
@@ -271,19 +271,19 @@ public:
 	virtual void onPostUndo() {}
 	virtual void onPostRedo() {}
 
-    // Called during recursive transform changed, but only by INodes themselves
-    virtual void transformChangedLocal() = 0;
+	// Called during recursive transform changed, but only by INodes themselves
+	virtual void transformChangedLocal() = 0;
 
-    // Method invoked on every node whenever the filter system
-    // changes its state - nodes get a chance to react on that
-    virtual void onFiltersChanged() = 0;
+	// Method invoked on every node whenever the filter system
+	// changes its state - nodes get a chance to react on that
+	virtual void onFiltersChanged() = 0;
 };
 
 /// Cast an INode to a particular interface
 template<typename Interface>
 std::shared_ptr<Interface> node_cast(const INodePtr& node)
 {
-    return std::dynamic_pointer_cast<Interface>(node);
+	return std::dynamic_pointer_cast<Interface>(node);
 }
 
 } // namespace scene

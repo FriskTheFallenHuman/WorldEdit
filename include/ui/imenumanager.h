@@ -23,7 +23,7 @@ enum class ItemType
 	Separator,
 };
 
-// Interface of the menu items used by DarkRadiant's MenuManager
+// Interface of the menu items used by WorldEdit's MenuManager
 class IMenuElement
 {
 public:
@@ -46,12 +46,12 @@ public:
 };
 
 class IMenuManager :
-    public RegisterableModule
+	public RegisterableModule
 {
 public:
-    /** Destructor
+	/** Destructor
 	 */
-    virtual ~IMenuManager() {}
+	virtual ~IMenuManager() {}
 
 	/**
 	 * Returns the constructed menu bar, ready for packing into a parent container.
@@ -65,21 +65,21 @@ public:
 	 */
 	virtual void setVisibility(const std::string& path, bool visible) = 0;
 
-    /** greebo: Adds a new item as child under the given path.
-     *
-     * @insertPath: the path where to insert the item: "main/filters"
-     * @name: the name of the new item
-     * @type: the item type (usually menuFolder / menuItem)
-     * @caption: the display string of the menu item (incl. mnemonic)
-     * @icon: the icon filename (can be empty)
-     * @eventname: the event name (e.g. "ToggleShowSizeInfo")
-     */
-    virtual void add(const std::string& insertPath,
-                     const std::string& name,
-                     ItemType type,
-                     const std::string& caption = "",
-                     const std::string& icon = "",
-                     const std::string& eventName = "") = 0;
+	/** greebo: Adds a new item as child under the given path.
+	 *
+	 * @insertPath: the path where to insert the item: "main/filters"
+	 * @name: the name of the new item
+	 * @type: the item type (usually menuFolder / menuItem)
+	 * @caption: the display string of the menu item (incl. mnemonic)
+	 * @icon: the icon filename (can be empty)
+	 * @eventname: the event name (e.g. "ToggleShowSizeInfo")
+	 */
+	virtual void add(const std::string& insertPath,
+					 const std::string& name,
+					 ItemType type,
+					 const std::string& caption = "",
+					 const std::string& icon = "",
+					 const std::string& eventName = "") = 0;
 
 	/** greebo: Inserts a new menuItem as sibling _before_ the given insertPath.
 	 *
@@ -90,18 +90,18 @@ public:
 	 * @eventName: the event name this item is associated with (can be empty).
 	 */
 	virtual void insert(const std::string& insertPath,
-                        const std::string& name,
-                        ItemType type,
-                        const std::string& caption,
-                        const std::string& icon,
-                        const std::string& eventName) = 0;
+						const std::string& name,
+						ItemType type,
+						const std::string& caption,
+						const std::string& icon,
+						const std::string& eventName) = 0;
 
 	// Returns true if the given path exists
 	virtual bool exists(const std::string& path) = 0;
 
 	/**
 	 * Removes an entire path from the menus.
- 	 */
+	 */
 	virtual void remove(const std::string& path) = 0;
 };
 
@@ -113,6 +113,6 @@ constexpr const char* const MODULE_MENUMANAGER = "MenuManager";
 
 inline ui::menu::IMenuManager& GlobalMenuManager()
 {
-    static module::InstanceReference<ui::menu::IMenuManager> _reference(MODULE_MENUMANAGER);
-    return _reference;
+	static module::InstanceReference<ui::menu::IMenuManager> _reference(MODULE_MENUMANAGER);
+	return _reference;
 }

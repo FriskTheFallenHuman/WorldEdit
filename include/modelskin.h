@@ -13,59 +13,59 @@ namespace decl
 {
 
 class ISkin :
-    public IDeclaration
+	public IDeclaration
 {
 public:
-    using Ptr = std::shared_ptr<ISkin>;
+	using Ptr = std::shared_ptr<ISkin>;
 
-    ~ISkin() override {}
+	~ISkin() override {}
 
-    struct Remapping
-    {
-        // The original material name (can also be a wildcard "*")
-        std::string Original;
+	struct Remapping
+	{
+		// The original material name (can also be a wildcard "*")
+		std::string Original;
 
-        // The replacement material name
-        std::string Replacement;
-    };
+		// The replacement material name
+		std::string Replacement;
+	};
 
-    /**
-     * Get the mapped texture for the given query texture, using the mappings
-     * in this skin. If there is no mapping for the given texture, return an
-     * empty string.
-     */
-    virtual std::string getRemap(const std::string& name) = 0;
+	/**
+	 * Get the mapped texture for the given query texture, using the mappings
+	 * in this skin. If there is no mapping for the given texture, return an
+	 * empty string.
+	 */
+	virtual std::string getRemap(const std::string& name) = 0;
 
-    // Returns the list of models this skin applies to
-    virtual const std::set<std::string>& getModels() = 0;
+	// Returns the list of models this skin applies to
+	virtual const std::set<std::string>& getModels() = 0;
 
-    // Adds the given model to the set of associated models (does nothing if the model is already present)
-    virtual void addModel(const std::string& model) = 0;
+	// Adds the given model to the set of associated models (does nothing if the model is already present)
+	virtual void addModel(const std::string& model) = 0;
 
-    // Removes the given model from the set of models (does nothing if the model is not listed)
-    virtual void removeModel(const std::string& model) = 0;
+	// Removes the given model from the set of models (does nothing if the model is not listed)
+	virtual void removeModel(const std::string& model) = 0;
 
-    // The list of all remappings defined in this skin
-    virtual const std::vector<Remapping>& getAllRemappings() = 0;
+	// The list of all remappings defined in this skin
+	virtual const std::vector<Remapping>& getAllRemappings() = 0;
 
-    // Adds the given remapping to this skin (doesn't check for redundancy)
-    virtual void addRemapping(const Remapping& remapping) = 0;
+	// Adds the given remapping to this skin (doesn't check for redundancy)
+	virtual void addRemapping(const Remapping& remapping) = 0;
 
-    // Removes the remapping for the given (source) material
-    virtual void removeRemapping(const std::string& material) = 0;
+	// Removes the remapping for the given (source) material
+	virtual void removeRemapping(const std::string& material) = 0;
 
-    // Removes all remappings from this skin
-    virtual void clearRemappings() = 0;
+	// Removes all remappings from this skin
+	virtual void clearRemappings() = 0;
 
-    // Returns true if the skin has changed since it has been parsed
-    virtual bool isModified() = 0;
+	// Returns true if the skin has changed since it has been parsed
+	virtual bool isModified() = 0;
 
-    // Save any modifications, after this call isModified() will return false
-    virtual void commitModifications() = 0;
+	// Save any modifications, after this call isModified() will return false
+	virtual void commitModifications() = 0;
 
-    // Discard any modifications, reverting this to the state it had after parsing.
-    // After this call isModified() will return false again.
-    virtual void revertModifications() = 0;
+	// Discard any modifications, reverting this to the state it had after parsing.
+	// After this call isModified() will return false again.
+	virtual void revertModifications() = 0;
 };
 
 } // namespace
@@ -73,20 +73,20 @@ public:
 class SkinnedModel
 {
 public:
-    using Ptr = std::shared_ptr<SkinnedModel>;
+	using Ptr = std::shared_ptr<SkinnedModel>;
 
-    virtual ~SkinnedModel() {}
+	virtual ~SkinnedModel() {}
 
-    // greebo: Updates the model's surface remaps. Pass the new skin name (can be empty).
-    virtual void skinChanged(const std::string& newSkinName) = 0;
+	// greebo: Updates the model's surface remaps. Pass the new skin name (can be empty).
+	virtual void skinChanged(const std::string& newSkinName) = 0;
 
-    // Returns the name of the currently active skin
-    // If no explicit skin has been defined through skinChanged, this returns the default skin
-    virtual std::string getSkin() const = 0;
+	// Returns the name of the currently active skin
+	// If no explicit skin has been defined through skinChanged, this returns the default skin
+	virtual std::string getSkin() const = 0;
 
-    // Define the skin that is active when an empty skin name is active
-    // This is basically referring to the skin value in the modelDefs
-    virtual void setDefaultSkin(const std::string& defaultSkin) = 0;
+	// Define the skin that is active when an empty skin name is active
+	// This is basically referring to the skin value in the modelDefs
+	virtual void setDefaultSkin(const std::string& defaultSkin) = 0;
 };
 
 // Model skinlist typedef
@@ -110,17 +110,17 @@ public:
 	 */
 	virtual ISkin::Ptr findSkin(const std::string& name) = 0;
 
-    /**
-     * Copies the existing material and creates a new skin with the suggested name.
-     * If the suggested name is already present, a non-conflicting name will be generated and used instead.
-     * Returns the new skin reference - or an empty reference if the original skin is not existing
-     * or if the suggested name is empty.
-     */
-    virtual ISkin::Ptr copySkin(const std::string& nameOfOriginal, const std::string& nameOfCopy) = 0;
+	/**
+	 * Copies the existing material and creates a new skin with the suggested name.
+	 * If the suggested name is already present, a non-conflicting name will be generated and used instead.
+	 * Returns the new skin reference - or an empty reference if the original skin is not existing
+	 * or if the suggested name is empty.
+	 */
+	virtual ISkin::Ptr copySkin(const std::string& nameOfOriginal, const std::string& nameOfCopy) = 0;
 
-    // Renames the skin named oldName to newName, and returns true if the operation was successful. 
-    // If the new name is already in use, this returns false too.
-    virtual bool renameSkin(const std::string& oldName, const std::string& newName) = 0;
+	// Renames the skin named oldName to newName, and returns true if the operation was successful. 
+	// If the new name is already in use, this returns false too.
+	virtual bool renameSkin(const std::string& oldName, const std::string& newName) = 0;
 
 	/**
 	 * Return the skins associated with the given model.
@@ -141,11 +141,11 @@ public:
 	 */
 	virtual const StringList& getAllSkins() = 0;
 
-    /**
-     * A skin can be modified if it has been declared in a physical file,
-     * i.e. outside a PAK file.
-     */
-    virtual bool skinCanBeModified(const std::string& name) = 0;
+	/**
+	 * A skin can be modified if it has been declared in a physical file,
+	 * i.e. outside a PAK file.
+	 */
+	virtual bool skinCanBeModified(const std::string& name) = 0;
 
 	/**
 	 * greebo: Reloads all skins from the definition files.

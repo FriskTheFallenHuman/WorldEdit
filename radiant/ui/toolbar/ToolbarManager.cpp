@@ -20,45 +20,45 @@ namespace
 
 const std::string& ToolbarManager::getName() const
 {
-    static std::string _name(MODULE_TOOLBARMANAGER);
-    return _name;
+	static std::string _name(MODULE_TOOLBARMANAGER);
+	return _name;
 }
 
 const StringSet& ToolbarManager::getDependencies() const
 {
-    static StringSet _dependencies;
+	static StringSet _dependencies;
 
-    if (_dependencies.empty())
-    {
-        _dependencies.insert(MODULE_XMLREGISTRY);
-    }
+	if (_dependencies.empty())
+	{
+		_dependencies.insert(MODULE_XMLREGISTRY);
+	}
 
-    return _dependencies;
+	return _dependencies;
 }
 
 void ToolbarManager::initialiseModule(const IApplicationContext& ctx)
 {
-    _nextToolItemId = 100;
+	_nextToolItemId = 100;
 
-    try
-    {
-        // Query the registry
-        loadToolbars();
-    }
-    catch (const std::runtime_error& e)
-    {
-        rError() << "ToolbarManager: Warning: " << e.what() << std::endl;
-    }
+	try
+	{
+		// Query the registry
+		loadToolbars();
+	}
+	catch (const std::runtime_error& e)
+	{
+		rError() << "ToolbarManager: Warning: " << e.what() << std::endl;
+	}
 }
 
 wxToolBar* ToolbarManager::createToolbar(const std::string& toolbarName, wxWindow* parent)
 {
 	// Check if the toolbarName exists
-    if (!toolbarExists(toolbarName))
-    {
-        rError() << "ToolbarManager: Critical: Named toolbar doesn't exist: " << toolbarName << std::endl;
-	    return nullptr;
-    }
+	if (!toolbarExists(toolbarName))
+	{
+		rError() << "ToolbarManager: Critical: Named toolbar doesn't exist: " << toolbarName << std::endl;
+		return nullptr;
+	}
 
 	// Instantiate the toolbar with buttons
 	rMessage() << "ToolbarManager: Instantiating toolbar: " << toolbarName << std::endl;
@@ -69,8 +69,8 @@ wxToolBar* ToolbarManager::createToolbar(const std::string& toolbarName, wxWindo
 
 	if (toolbarList.empty())
 	{
-        rError() << "ToolbarManager: Critical: Could not instantiate " << toolbarName << std::endl;
-	    return nullptr;
+		rError() << "ToolbarManager: Critical: Could not instantiate " << toolbarName << std::endl;
+		return nullptr;
 	}
 
 	return createToolbarFromNode(toolbarList[0], parent);
@@ -94,12 +94,12 @@ wxToolBarToolBase* ToolbarManager::createToolItem(wxToolBar* toolbar, const xml:
 		std::string tooltip 	= _(node.getAttributeValue("tooltip").c_str());
 		std::string action 	= node.getAttributeValue("action");
 
-        // Don't assign a label to the tool item since OSX is painting
-        // the first few characters over the bitmap
-        if (!icon.empty())
-        {
-            name.clear();
-        }
+		// Don't assign a label to the tool item since OSX is painting
+		// the first few characters over the bitmap
+		if (!icon.empty())
+		{
+			name.clear();
+		}
 
 		if (nodeName == "toolbutton")
 		{
@@ -130,10 +130,10 @@ wxToolBar* ToolbarManager::createToolbarFromNode(xml::Node& node, wxWindow* pare
 	auto toolItemList = node.getChildren();
 	wxToolBar* toolbar = nullptr;
 
-    if (toolItemList.empty())
-    {
-        throw std::runtime_error("No elements in toolbar.");
-    }
+	if (toolItemList.empty())
+	{
+		throw std::runtime_error("No elements in toolbar.");
+	}
 
 	// Try to set the alignment, if the attribute is properly set
 	auto align = node.getAttributeValue("align");
@@ -190,10 +190,10 @@ void ToolbarManager::loadToolbars()
 {
 	auto toolbarList = GlobalRegistry().findXPath("//ui//toolbar");
 
-    if (toolbarList.empty())
-    {
+	if (toolbarList.empty())
+	{
 		throw std::runtime_error("No toolbars found.");
-    }
+	}
 
 	for (std::size_t i = 0; i < toolbarList.size(); ++i)
 	{

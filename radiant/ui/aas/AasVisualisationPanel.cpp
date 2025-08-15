@@ -16,43 +16,43 @@ namespace ui
 {
 
 AasVisualisationPanel::AasVisualisationPanel(wxWindow* parent) :
-    DockablePanel(parent),
+	DockablePanel(parent),
 	_dialogPanel(nullptr),
 	_controlContainer(nullptr)
 {
 	populateWindow();
 
-    SetMinClientSize(wxSize(135, 100));
+	SetMinClientSize(wxSize(135, 100));
 }
 
 AasVisualisationPanel::~AasVisualisationPanel()
 {
-    if (panelIsActive())
-    {
-        disconnectListeners();
-    }
+	if (panelIsActive())
+	{
+		disconnectListeners();
+	}
 }
 
 void AasVisualisationPanel::onPanelActivated()
 {
-    connectListeners();
-    refresh();
+	connectListeners();
+	refresh();
 }
 
 void AasVisualisationPanel::onPanelDeactivated()
 {
-    disconnectListeners();
+	disconnectListeners();
 }
 
 void AasVisualisationPanel::connectListeners()
 {
-    _mapEventSlot = GlobalMapModule().signal_mapEvent().connect(
-        sigc::mem_fun(*this, &AasVisualisationPanel::onMapEvent));
+	_mapEventSlot = GlobalMapModule().signal_mapEvent().connect(
+		sigc::mem_fun(*this, &AasVisualisationPanel::onMapEvent));
 }
 
 void AasVisualisationPanel::disconnectListeners()
 {
-    _mapEventSlot.disconnect();
+	_mapEventSlot.disconnect();
 }
 
 void AasVisualisationPanel::onMapEvent(IMap::MapEvent ev)
@@ -72,31 +72,31 @@ void AasVisualisationPanel::onMapEvent(IMap::MapEvent ev)
 
 void AasVisualisationPanel::populateWindow()
 {
-    auto scrollView = new wxScrolledWindow(this, wxID_ANY);
-    scrollView->SetScrollRate(0, 15);
+	auto scrollView = new wxScrolledWindow(this, wxID_ANY);
+	scrollView->SetScrollRate(0, 15);
 
-    _dialogPanel = scrollView;
+	_dialogPanel = scrollView;
 
-    _dialogPanel->SetSizer(new wxBoxSizer(wxVERTICAL));
+	_dialogPanel->SetSizer(new wxBoxSizer(wxVERTICAL));
 
-    _controlContainer = new wxFlexGridSizer(1, 2, 3, 3);
-    _controlContainer->AddGrowableCol(0);
+	_controlContainer = new wxFlexGridSizer(1, 2, 3, 3);
+	_controlContainer->AddGrowableCol(0);
 
-    _dialogPanel->GetSizer()->Add(_controlContainer, 1, wxEXPAND | wxTOP | wxLEFT | wxRIGHT, 12);
+	_dialogPanel->GetSizer()->Add(_controlContainer, 1, wxEXPAND | wxTOP | wxLEFT | wxRIGHT, 12);
 
-    createButtons();
+	createButtons();
 
-    _dialogPanel->FitInside(); // ask the sizer about the needed size
+	_dialogPanel->FitInside(); // ask the sizer about the needed size
 
-    SetSizer(new wxBoxSizer(wxVERTICAL));
-    GetSizer()->Add(scrollView, 1, wxEXPAND);
+	SetSizer(new wxBoxSizer(wxVERTICAL));
+	GetSizer()->Add(scrollView, 1, wxEXPAND);
 }
 
 void AasVisualisationPanel::createButtons()
 {
 	// Rescan button
 	_rescanButton = new wxButton(_dialogPanel, wxID_ANY, _("Search for AAS Files"));
-    _rescanButton->Bind(wxEVT_BUTTON, [this](wxCommandEvent& ev) { refresh(); });
+	_rescanButton->Bind(wxEVT_BUTTON, [this](wxCommandEvent& ev) { refresh(); });
 
 	// Bind the toggle button to the registry key
 	wxToggleButton* showNumbersButton = new wxToggleButton(_dialogPanel, wxID_ANY, _("Show Area Numbers"));
@@ -126,21 +126,21 @@ void AasVisualisationPanel::refresh()
 	std::map<std::string, AasFileControlPtr> sortedControls;
 
 	// Find all available AAS files for the current map
-    
-    std::list<map::AasFileInfo> aasFiles = GlobalAasFileManager().getAasFilesForMap(GlobalMapModule().getMapName());
+	
+	std::list<map::AasFileInfo> aasFiles = GlobalAasFileManager().getAasFilesForMap(GlobalMapModule().getMapName());
 
-    for (map::AasFileInfo& info : aasFiles)
-    {
-        // Create a new control for each AAS type
-        // Store the object in a sorted container
-        sortedControls[info.type.fileExtension] = std::make_shared<AasFileControl>(_dialogPanel, info);
-    }
+	for (map::AasFileInfo& info : aasFiles)
+	{
+		// Create a new control for each AAS type
+		// Store the object in a sorted container
+		sortedControls[info.type.fileExtension] = std::make_shared<AasFileControl>(_dialogPanel, info);
+	}
 
-    // Assign all controls to the target vector, alphabetically sorted
-    for (const auto& pair : sortedControls)
-    {
-        _aasControls.push_back(pair.second);
-    }
+	// Assign all controls to the target vector, alphabetically sorted
+	for (const auto& pair : sortedControls)
+	{
+		_aasControls.push_back(pair.second);
+	}
 
 	_controlContainer->SetRows(static_cast<int>(_aasControls.size()));
 
@@ -149,12 +149,12 @@ void AasVisualisationPanel::refresh()
 		_controlContainer->Add((*i)->getToggle(), 1, wxEXPAND);
 		_controlContainer->Add((*i)->getButtons(), 0, wxEXPAND);
 
-        if (i == _aasControls.begin())
-        {
-            // Prevent setting the focus on the buttons at the bottom which lets the scrollbar 
-            // of the window jump around, set the focus on the first button.
-            (*i)->getToggle()->SetFocus();
-        }
+		if (i == _aasControls.begin())
+		{
+			// Prevent setting the focus on the buttons at the bottom which lets the scrollbar 
+			// of the window jump around, set the focus on the first button.
+			(*i)->getToggle()->SetFocus();
+		}
 	}
 
 	_controlContainer->Layout();

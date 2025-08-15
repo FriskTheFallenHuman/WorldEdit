@@ -22,7 +22,7 @@ const std::string& PatchDef3Parser::getKeyword() const
 {
 patchDef3
 {
-"textures/darkmod/nature/skybox/starry1/skyfade"
+"textures/hell/sandylanrockblend"
 ( 5 5 4 4 0 0 0 )
 (
 ( ( 4288 1152 1824 0.5 0.5 ) ( 4288 1088 1952 0.25 0.5 ) ( 4288 1024 1952 0 0.5 ) ( 4288 960 1952 -0.25 0.5 ) ( 4288 896 1824 -0.5 0.5 ) )

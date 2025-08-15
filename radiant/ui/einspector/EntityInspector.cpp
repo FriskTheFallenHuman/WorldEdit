@@ -366,12 +366,12 @@ void EntityInspector::createContextMenu()
     _contextMenu.reset(new wxutil::PopupMenu);
 
     _contextMenu->addItem(
-        new wxutil::StockIconTextMenuItem(_("Add property..."), wxART_PLUS),
+        new wxutil::IconTextMenuItem(_("Add property..."), ICON_ADD),
         std::bind(&EntityInspector::_onAddKey, this),
         std::bind(&EntityInspector::_testAddKey, this)
     );
     _contextMenu->addItem(
-        new wxutil::StockIconTextMenuItem(_("Delete property"), wxART_MINUS),
+        new wxutil::IconTextMenuItem(_("Delete property"), ICON_REMOVE),
         std::bind(&EntityInspector::_onDeleteKey, this),
         std::bind(&EntityInspector::_testDeleteKey, this)
     );
@@ -379,17 +379,17 @@ void EntityInspector::createContextMenu()
     _contextMenu->addSeparator();
 
     _contextMenu->addItem(
-        new wxutil::StockIconTextMenuItem(_("Copy Spawnarg(s)"), wxART_COPY),
+        new wxutil::IconTextMenuItem(_("Copy Spawnarg(s)"), ICON_COPY),
         std::bind(&EntityInspector::_onCopyKey, this),
         std::bind(&EntityInspector::_testCopyKey, this)
     );
     _contextMenu->addItem(
-        new wxutil::StockIconTextMenuItem(_("Cut Spawnarg(s)"), wxART_CUT),
+        new wxutil::IconTextMenuItem(_("Cut Spawnarg(s)"), ICON_CUT),
         std::bind(&EntityInspector::_onCutKey, this),
         std::bind(&EntityInspector::_testCutKey, this)
     );
     _contextMenu->addItem(
-        new wxutil::StockIconTextMenuItem(_("Paste Spawnarg(s)"), wxART_PASTE),
+        new wxutil::IconTextMenuItem(_("Paste Spawnarg(s)"), ICON_PASTE),
         std::bind(&EntityInspector::_onPasteKey, this),
         std::bind(&EntityInspector::_testPasteKey, this)
     );
@@ -397,14 +397,14 @@ void EntityInspector::createContextMenu()
     _contextMenu->addSeparator();
 
     _contextMenu->addItem(
-        new wxutil::StockIconTextMenuItem(_("Accept selected Changes"), wxART_TICK_MARK),
+        new wxutil::IconTextMenuItem(_("Accept selected Changes"), ICON_TICK_MARK),
         std::bind(&EntityInspector::_onAcceptMergeAction, this),
         std::bind(&EntityInspector::_testAcceptMergeAction, this),
         [] { return GlobalMapModule().getEditMode() == IMap::EditMode::Merge; }
     );
 
     _contextMenu->addItem(
-        new wxutil::StockIconTextMenuItem(_("Reject selected Changes"), wxART_UNDO),
+        new wxutil::StockIconTextMenuItem(_("Reject selected Changes"), ICON_UNDO),
         std::bind(&EntityInspector::_onRejectMergeAction, this),
         std::bind(&EntityInspector::_testRejectMergeAction, this),
         [] { return GlobalMapModule().getEditMode() == IMap::EditMode::Merge; }
@@ -595,8 +595,8 @@ wxWindow* EntityInspector::createTreeViewPane(wxWindow* parent)
     _keyEntry = new wxTextCtrl(treeViewPanel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
     _valEntry = new wxTextCtrl(treeViewPanel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
 
-    wxBitmap icon = wxArtProvider::GetBitmap(wxART_TICK_MARK, wxART_MENU);
-    _setButton = new wxBitmapButton(treeViewPanel, wxID_APPLY, icon);
+    auto tickMarkIcon = wxutil::GetLocalBitmap(ICON_TICK_MARK);
+    _setButton = new wxBitmapButton(treeViewPanel, wxID_APPLY, tickMarkIcon);
 
     buttonHbox->Add(_valEntry, 1, wxEXPAND);
     buttonHbox->Add(_setButton, 0, wxEXPAND);

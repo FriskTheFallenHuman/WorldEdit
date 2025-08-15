@@ -15,7 +15,7 @@ class TexturePropertyEditor :
 {
 private:
 	// Keyval to set
-    ITargetKey::Ptr _key;
+	ITargetKey::Ptr _key;
 
 private:
 
@@ -24,13 +24,13 @@ private:
 public:
 
 	// Construct a TexturePropertyEditor with an entity and key to edit
-    TexturePropertyEditor(wxWindow* parent, IEntitySelection& entities, const ITargetKey::Ptr& key);
+	TexturePropertyEditor(wxWindow* parent, IEntitySelection& entities, const ITargetKey::Ptr& key);
 
 	// Create a new TexturePropertyEditor
-    static Ptr CreateNew(wxWindow* parent, IEntitySelection& entities, const ITargetKey::Ptr& key)
-    {
-        return std::make_shared<TexturePropertyEditor>(parent, entities, key);
-    }
+	static Ptr CreateNew(wxWindow* parent, IEntitySelection& entities, const ITargetKey::Ptr& key)
+	{
+		return std::make_shared<TexturePropertyEditor>(parent, entities, key);
+	}
 };
 
 }

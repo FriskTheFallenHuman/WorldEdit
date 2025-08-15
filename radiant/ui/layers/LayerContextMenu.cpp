@@ -27,9 +27,9 @@ void LayerContextMenu::populate()
 
 	// Populate the map with all layer names and IDs
 	GlobalMapModule().getRoot()->getLayerManager().foreachLayer([&](int layerId, const std::string& layerName)
-    {
-        _sortedLayers.insert(SortedLayerMap::value_type(layerName, layerId));
-    });
+	{
+		_sortedLayers.insert(SortedLayerMap::value_type(layerName, layerId));
+	});
 
 	// Clear all existing items
 	for (const MenuItemIdToLayerMapping::value_type& i : _menuItemMapping)

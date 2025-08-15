@@ -49,7 +49,7 @@ private:
 	TexturePtr _texture;
 
 private:
-    void observeKey(const std::string& key);
+	void observeKey(const std::string& key);
 	void keyChanged();
 
 	/* Main constructor */
