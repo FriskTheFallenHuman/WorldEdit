@@ -124,7 +124,7 @@ else
 
 if (-not $SkipBuild)
 {
-	Start-Process "msbuild" -ArgumentList ("..\..\WorldEdit.sln", "/p:configuration=release", "/t:rebuild", "/p:platform=$platform", "/maxcpucount:4", "/nodeReuse:false", "/p:UseSharedConfiguration=false") -NoNewWindow -Wait
+	Start-Process "msbuild" -ArgumentList ("..\..\WorldEdit.sln", "/nologo", "/p:configuration=release", "/t:rebuild", "/p:platform=$platform", "/maxcpucount:4") -NoNewWindow -Wait
 }
 
 # Copy files to portable files folder
@@ -143,7 +143,7 @@ Get-ChildItem -Path $portableFilesFolder | Remove-Item -Recurse -Force
 Write-Host ("Copying files...")
 
 $installFolder = Get-Item "..\..\install"
-$excludes = @('*.exp', '*.lib', '*.iobj', '*.ipdb', '*.suo', '*.pgd', '*.fbp', 'worldedit.desktop.in', 'Tests.*')
+$excludes = @('*.exp', '*.lib', '*.iobj', '*.ipdb', '*.suo', '*.pgd', '*.fbp', 'worldedit.desktop.in')
 
 Get-ChildItem $installFolder -Recurse -Exclude $excludes | Copy-Item -Destination { Join-Path $portableFilesFolder $_.FullName.Substring($installFolder.FullName.Length) }
 
