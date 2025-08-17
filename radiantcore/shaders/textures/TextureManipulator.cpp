@@ -28,11 +28,11 @@ TextureManipulator::TextureManipulator() :
 	_textureQuality(registry::getValue<int>(RKEY_TEXTURES_QUALITY))
 {
 	GlobalRegistry().signalForKey(RKEY_TEXTURES_GAMMA).connect(
-        sigc::mem_fun(this, &TextureManipulator::keyChanged)
-    );
+		sigc::mem_fun(this, &TextureManipulator::keyChanged)
+	);
 	GlobalRegistry().signalForKey(RKEY_TEXTURES_QUALITY).connect(
-        sigc::mem_fun(this, &TextureManipulator::keyChanged)
-    );
+		sigc::mem_fun(this, &TextureManipulator::keyChanged)
+	);
 
 	calculateGammaTable();
 
@@ -42,8 +42,8 @@ TextureManipulator::TextureManipulator() :
 
 // the accessor function
 TextureManipulator& TextureManipulator::instance() {
-    static TextureManipulator _instance;
-    return _instance;
+	static TextureManipulator _instance;
+	return _instance;
 }
 
 void TextureManipulator::keyChanged() 

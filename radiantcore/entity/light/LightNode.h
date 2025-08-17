@@ -26,76 +26,76 @@ typedef std::shared_ptr<LightNode> LightNodePtr;
 
 /// Scenegraph node representing a light
 class LightNode :
-    public EntityNode,
-    public ILightNode,
-    public Snappable,
-    public ComponentSelectionTestable,
-    public ComponentEditable,
-    public ComponentSnappable,
-    public PlaneSelectable,
-    public RendererLight
+	public EntityNode,
+	public ILightNode,
+	public Snappable,
+	public ComponentSelectionTestable,
+	public ComponentEditable,
+	public ComponentSnappable,
+	public PlaneSelectable,
+	public RendererLight
 {
 	OriginKey m_originKey;
 	// The "working" version of the origin
 	Vector3 _originTransformed;
 
-    RotationKey m_rotationKey;
-    RotationMatrix m_rotation;
+	RotationKey m_rotationKey;
+	RotationMatrix m_rotation;
 
 	Doom3LightRadius m_doom3Radius;
 
-    RotationMatrix m_lightRotation;
-    bool m_useLightRotation = false;
+	RotationMatrix m_lightRotation;
+	bool m_useLightRotation = false;
 
-    // Projected light vectors, both base and transformed
-    scene::TransformedCopy<Projected<Vector3>> _projVectors;
+	// Projected light vectors, both base and transformed
+	scene::TransformedCopy<Projected<Vector3>> _projVectors;
 
-    // Projected light use flags
-    Projected<bool> _projUseFlags;
+	// Projected light use flags
+	Projected<bool> _projUseFlags;
 
-    mutable AABB m_doom3AABB;
-    mutable Matrix4 m_doom3Rotation;
+	mutable AABB m_doom3AABB;
+	mutable Matrix4 m_doom3Rotation;
 
-    // Frustum for projected light (used for rendering the light volume)
-    mutable Frustum _frustum;
+	// Frustum for projected light (used for rendering the light volume)
+	mutable Frustum _frustum;
 
-    // Transforms local space coordinates into texture coordinates
-    // To get the complete texture transform this one needs to be
-    // post-multiplied by the world rotation and translation.
-    mutable Matrix4 _localToTexture;
+	// Transforms local space coordinates into texture coordinates
+	// To get the complete texture transform this one needs to be
+	// post-multiplied by the world rotation and translation.
+	mutable Matrix4 _localToTexture;
 
-    mutable bool _projectionChanged;
+	mutable bool _projectionChanged;
 
 	LightShader m_shader;
-    ShaderPtr _vertexShader;
-    ShaderPtr _crystalFillShader;
-    ShaderPtr _crystalOutlineShader;
+	ShaderPtr _vertexShader;
+	ShaderPtr _crystalFillShader;
+	ShaderPtr _crystalOutlineShader;
 
-    // The 8x8 box representing the light object itself
-    AABB _lightBox;
+	// The 8x8 box representing the light object itself
+	AABB _lightBox;
 
-    Callback m_transformChanged;
-    Callback m_boundsChanged;
-    Callback m_evaluateTransform;
+	Callback m_transformChanged;
+	Callback m_boundsChanged;
+	Callback m_evaluateTransform;
 
-    LightVertexInstanceSet _instances;
+	LightVertexInstanceSet _instances;
 
 	// dragplanes for lightresizing using mousedrag
-    selection::DragPlanes _dragPlanes;
+	selection::DragPlanes _dragPlanes;
 
 	// Renderable components of this light
-    RenderableLightOctagon _renderableOctagon;
-    RenderableLightOctagon _renderableOctagonOutline;
-    RenderableLightVolume _renderableLightVolume;
-    RenderableLightVertices _renderableVertices;
+	RenderableLightOctagon _renderableOctagon;
+	RenderableLightOctagon _renderableOctagonOutline;
+	RenderableLightVolume _renderableLightVolume;
+	RenderableLightVertices _renderableVertices;
 
-    bool _showLightVolumeWhenUnselected;
+	bool _showLightVolumeWhenUnselected;
 
 	// a temporary variable for calculating the AABB of all (selected) components
 	mutable AABB m_aabb_component;
 
-    // Cached rkey to override light volume colour
-    registry::CachedKey<bool> _overrideColKey;
+	// Cached rkey to override light volume colour
+	registry::CachedKey<bool> _overrideColKey;
 
 	mutable Matrix4 m_projectionOrientation;
 
@@ -108,10 +108,10 @@ private:
 public:
 	static LightNodePtr Create(const IEntityClassPtr& eclass);
 
-    // ILightNode implementation
-    const RendererLight& getRendererLight() const override { return *this; }
+	// ILightNode implementation
+	const RendererLight& getRendererLight() const override { return *this; }
 
-    void transformChanged() override;
+	void transformChanged() override;
 
 	// RenderEntity implementation
 	virtual float getShaderParm(int parmNum) const override;
@@ -165,58 +165,58 @@ public:
 	void selectedChangedComponent(const ISelectable& selectable);
 
 	// Renderable implementation
-    void onPreRender(const VolumeTest& volume) override;
-    void renderHighlights(IRenderableCollector& collector, const VolumeTest& volume) override;
+	void onPreRender(const VolumeTest& volume) override;
+	void renderHighlights(IRenderableCollector& collector, const VolumeTest& volume) override;
 	void setRenderSystem(const RenderSystemPtr& renderSystem) override;
 
 	const Matrix4& rotation() const;
 
-    // Returns the original "origin" value
-    const Vector3& getUntransformedOrigin() override;
+	// Returns the original "origin" value
+	const Vector3& getUntransformedOrigin() override;
 
-    const Vector3& getWorldPosition() const override;
+	const Vector3& getWorldPosition() const override;
 
-    void onEntitySettingsChanged() override;
+	void onEntitySettingsChanged() override;
 
-    // Is this light projected or omni?
-    bool isProjected() const;
+	// Is this light projected or omni?
+	bool isProjected() const;
 
-    // Returns the frustum structure (calling this on point lights will throw)
-    const Frustum& getLightFrustum() const;
+	// Returns the frustum structure (calling this on point lights will throw)
+	const Frustum& getLightFrustum() const;
 
-    // Returns the relative start point used by projected lights to cut off
-    // the upper part of the projection cone to form the frustum
-    // Calling this on point lights will throw.
-    const Vector3& getLightStart() const;
+	// Returns the relative start point used by projected lights to cut off
+	// the upper part of the projection cone to form the frustum
+	// Calling this on point lights will throw.
+	const Vector3& getLightStart() const;
 
-    // Returns the light radius for point lights
-    // Calling this on projected lights will throw
-    const Vector3& getLightRadius() const;
+	// Returns the light radius for point lights
+	// Calling this on projected lights will throw
+	const Vector3& getLightRadius() const;
 
-    virtual Vector4 getEntityColour() const override;
+	virtual Vector4 getEntityColour() const override;
 
 protected:
 	// Gets called by the Transformable implementation whenever
 	// scale, rotation or translation is changed.
-    void _onTransformationChanged() override;
+	void _onTransformationChanged() override;
 
 	// Called by the Transformable implementation before freezing
 	// or when reverting transformations.
-    void _applyTransformation() override;
+	void _applyTransformation() override;
 
 	// Override EntityNode::construct()
 	void construct() override;
 
-    void onVisibilityChanged(bool isVisibleNow) override;
-    void onSelectionStatusChange(bool changeGroupStatus) override;
+	void onVisibilityChanged(bool isVisibleNow) override;
+	void onSelectionStatusChange(bool changeGroupStatus) override;
 
-    void onColourKeyChanged(const std::string& value) override;
-    void onRenderStateChanged() override;
+	void onColourKeyChanged(const std::string& value) override;
+	void onRenderStateChanged() override;
 
 private:
-    void evaluateTransform();
+	void evaluateTransform();
 
-    // Ensure the start and end points are set to sensible values
+	// Ensure the start and end points are set to sensible values
 	void checkStartEnd();
 
 	void updateOrigin();
@@ -228,22 +228,22 @@ private:
 	void lightEndChanged(const std::string& value);
 	void rotationChanged();
 	void lightRotationChanged(const std::string& value);
-    void onLightRadiusChanged();
+	void onLightRadiusChanged();
 
 	// Returns a reference to the member class Doom3LightRadius (used to set colours)
 	Doom3LightRadius& getDoom3Radius();
 
-    /**
-     * greebo: This sets the light start to the given value, including bounds checks.
-     */
+	/**
+	 * greebo: This sets the light start to the given value, including bounds checks.
+	 */
 	void setLightStart(const Vector3& newLightStart);
 
-    /**
-     * greebo: Checks if the light_start is positioned "above" the light origin and constrains
-     * the movement accordingly to prevent the light volume to become an "hourglass".
-     * Only affects the _lightStartTransformed member.
-     */
-    void ensureLightStartConstraints();
+	/**
+	 * greebo: Checks if the light_start is positioned "above" the light origin and constrains
+	 * the movement accordingly to prevent the light volume to become an "hourglass".
+	 * Only affects the _lightStartTransformed member.
+	 */
+	void ensureLightStartConstraints();
 
 	void translate(const Vector3& translation);
 	void rotate(const Quaternion& rotation);
@@ -252,25 +252,25 @@ private:
 	void revertLightTransform();
 	void freezeLightTransform();
 
-    // Set the projection-changed flag
+	// Set the projection-changed flag
 	void projectionChanged();
 
-    // Update the projected light frustum
-    void updateProjection() const;
+	// Update the projected light frustum
+	void updateProjection() const;
 	bool useStartEnd() const;
 
-    void updateRenderables();
-    void clearRenderables();
+	void updateRenderables();
+	void clearRenderables();
 
 public:
-    // RendererLight implementation
-    bool isVisible() override;
-    const IRenderEntity& getLightEntity() const override;
-    Matrix4 getLightTextureTransformation() const override;
-    Vector3 getLightOrigin() const override;
-    bool isShadowCasting() const override;
-    bool isBlendLight() const override;
-    const ShaderPtr& getShader() const override;
+	// RendererLight implementation
+	bool isVisible() override;
+	const IRenderEntity& getLightEntity() const override;
+	Matrix4 getLightTextureTransformation() const override;
+	Vector3 getLightOrigin() const override;
+	bool isShadowCasting() const override;
+	bool isBlendLight() const override;
+	const ShaderPtr& getShader() const override;
 	AABB lightAABB() const override;
 };
 

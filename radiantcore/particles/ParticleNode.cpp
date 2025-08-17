@@ -61,10 +61,10 @@ Matrix4 ParticleNode::localToParent() const
 
 void ParticleNode::onPreRender(const VolumeTest& volume)
 {
-    if (!_renderableParticle) return;
+	if (!_renderableParticle) return;
 
-    // Update the particle system before rendering
-    update(volume);
+	// Update the particle system before rendering
+	update(volume);
 }
 
 void ParticleNode::renderHighlights(IRenderableCollector& collector, const VolumeTest& volume)
@@ -80,10 +80,10 @@ void ParticleNode::setRenderSystem(const RenderSystemPtr& renderSystem)
 
 void ParticleNode::update(const VolumeTest& viewVolume) const
 {
-    if (!viewVolume.fill())
-    {
-        return;
-    }
+	if (!viewVolume.fill())
+	{
+		return;
+	}
 
 	// Get the view rotation and cancel out the translation part
 	Matrix4 viewRotation = viewVolume.GetModelview();
@@ -104,20 +104,20 @@ void ParticleNode::update(const VolumeTest& viewVolume) const
 
 void ParticleNode::onVisibilityChanged(bool isVisibleNow)
 {
-    Node::onVisibilityChanged(isVisibleNow);
+	Node::onVisibilityChanged(isVisibleNow);
 
-    // Clear geometry when hidden. When shown, the particle will be updated every frame anyway
-    if (!isVisibleNow)
-    {
-        _renderableParticle->clearRenderables();
-    }
+	// Clear geometry when hidden. When shown, the particle will be updated every frame anyway
+	if (!isVisibleNow)
+	{
+		_renderableParticle->clearRenderables();
+	}
 }
 
 void ParticleNode::onRemoveFromScene(scene::IMapRootNode& root)
 {
-    _renderableParticle->clearRenderables();
+	_renderableParticle->clearRenderables();
 
-    Node::onRemoveFromScene(root);
+	Node::onRemoveFromScene(root);
 }
 
 } // namespace

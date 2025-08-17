@@ -66,7 +66,7 @@ public:
 		const AABB& other(node->worldAABB());
 
 		for (unsigned int i = 0; i < 3; ++i) {
-            if (std::abs(box.origin[i] - other.origin[i]) > (box.extents[i] + other.extents[i])) {
+			if (std::abs(box.origin[i] - other.origin[i]) > (box.extents[i] + other.extents[i])) {
 				return false;
 			}
 		}
@@ -113,27 +113,27 @@ public:
 class SelectionPolicy_FullyInside
 {
 public:
-    bool evaluate(const AABB& box, const scene::INodePtr& node) const
-    {
-        AABB other = node->worldAABB();
+	bool evaluate(const AABB& box, const scene::INodePtr& node) const
+	{
+		AABB other = node->worldAABB();
 
-        // greebo: Perform a special selection test for lights
-        // as the small diamond should be tested against selection only
-        ILightNodePtr light = Node_getLightNode(node);
+		// greebo: Perform a special selection test for lights
+		// as the small diamond should be tested against selection only
+		ILightNodePtr light = Node_getLightNode(node);
 
-        if (light)
-        {
-            other = light->getSelectAABB();
-        }
+		if (light)
+		{
+			other = light->getSelectAABB();
+		}
 
-        for (unsigned int i = 0; i < 3; ++i)
-        {
-            if (std::abs(box.origin[i] - other.origin[i]) >= (box.extents[i] - other.extents[i]))
-            {
-                return false;
-            }
-        }
+		for (unsigned int i = 0; i < 3; ++i)
+		{
+			if (std::abs(box.origin[i] - other.origin[i]) >= (box.extents[i] - other.extents[i]))
+			{
+				return false;
+			}
+		}
 
-        return true;
-    }
+		return true;
+	}
 };

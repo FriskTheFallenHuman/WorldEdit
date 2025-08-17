@@ -25,29 +25,29 @@ const std::string& FontManager::getName() const
 
 const StringSet& FontManager::getDependencies() const
 {
-    static StringSet _dependencies
-    {
-        MODULE_VIRTUALFILESYSTEM,
-        MODULE_XMLREGISTRY,
-        MODULE_GAMEMANAGER,
-        MODULE_SHADERSYSTEM,
-    };
+	static StringSet _dependencies
+	{
+		MODULE_VIRTUALFILESYSTEM,
+		MODULE_XMLREGISTRY,
+		MODULE_GAMEMANAGER,
+		MODULE_SHADERSYSTEM,
+	};
 
 	return _dependencies;
 }
 
 void FontManager::initialiseModule(const IApplicationContext& ctx)
 {
-    _loader = std::make_unique<FontLoader>(*this);
+	_loader = std::make_unique<FontLoader>(*this);
 
 	// Find installed fonts in a new thread
-    _loader->start();
+	_loader->start();
 }
 
 void FontManager::shutdownModule()
 {
-    _loader->reset();
-    _fonts.clear();
+	_loader->reset();
+	_fonts.clear();
 }
 
 const std::string& FontManager::getCurLanguage()
@@ -57,25 +57,25 @@ const std::string& FontManager::getCurLanguage()
 
 void FontManager::ensureFontsLoaded()
 {
-    _loader->ensureFinished();
+	_loader->ensureFinished();
 }
 
 std::size_t FontManager::getNumFonts()
 {
-    return _fonts.size();
+	return _fonts.size();
 }
 
 void FontManager::reloadFonts()
 {
-    _fonts.clear();
+	_fonts.clear();
 
-    _loader->reset();
-    _loader->start();
+	_loader->reset();
+	_loader->start();
 }
 
 IFontInfoPtr FontManager::findFontInfo(const std::string& name)
 {
-    ensureFontsLoaded();
+	ensureFontsLoaded();
 
 	FontMap::const_iterator found = _fonts.find(name);
 

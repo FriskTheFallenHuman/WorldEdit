@@ -72,7 +72,7 @@ public:
 			}
 		}
 
-        GlobalModelFormatManager().registerImporter(std::make_shared<AseModelLoader>());
+		GlobalModelFormatManager().registerImporter(std::make_shared<AseModelLoader>());
 	}
 
 private:

@@ -9,7 +9,7 @@ namespace image
 class ImageTypeLoader
 {
 public:
-    typedef std::shared_ptr<ImageTypeLoader> Ptr;
+	typedef std::shared_ptr<ImageTypeLoader> Ptr;
 
 	/* greebo: Loads an image from the given ArchiveFile class
 	 *
@@ -17,13 +17,13 @@ public:
 	 */
 	virtual ImagePtr load(ArchiveFile& file) const = 0;
 
-    typedef std::list<std::string> Extensions;
+	typedef std::list<std::string> Extensions;
 
-    /**
-     * \brief
-     * Return the list of extensions this ImageTypeLoader is capable of
-     * loading.
-     */
+	/**
+	 * \brief
+	 * Return the list of extensions this ImageTypeLoader is capable of
+	 * loading.
+	 */
 	virtual Extensions getExtensions() const = 0;
 
 	/* greebo: Retrieves the directory prefix needed to construct the

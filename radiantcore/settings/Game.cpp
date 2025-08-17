@@ -29,7 +29,7 @@ Game::Game(const std::string& path, const std::string& filename)
 
 	if (list.empty())
 	{
-	    rError() << "Couldn't find <game> node in the game description file " << fullPath << std::endl;
+		rError() << "Couldn't find <game> node in the game description file " << fullPath << std::endl;
 		return;
 	}
 
@@ -78,37 +78,37 @@ std::string Game::getXPathRoot() const
 
 std::string Game::getKeyValue(const std::string& key) const
 {
-    if (xml::NodeList found = GlobalRegistry().findXPath(getXPathRoot()); !found.empty()) {
-        return found[0].getAttributeValue(key);
-    }
-    else {
-        rError() << "Game: Keyvalue '" << key << "' not found for game type '" << _name << "'"
-                 << std::endl;
-        return "";
-    }
+	if (xml::NodeList found = GlobalRegistry().findXPath(getXPathRoot()); !found.empty()) {
+		return found[0].getAttributeValue(key);
+	}
+	else {
+		rError() << "Game: Keyvalue '" << key << "' not found for game type '" << _name << "'"
+				 << std::endl;
+		return "";
+	}
 }
 
 bool Game::hasFeature(const std::string& feature) const
 {
-    xml::NodeList nodes = getLocalXPath("/features");
-    if (nodes.empty())
-        return false;
+	xml::NodeList nodes = getLocalXPath("/features");
+	if (nodes.empty())
+		return false;
 
-    // Find the first available feature which matches the query feature
-    xml::NodeList features = nodes[0].getNamedChildren("feature");
-    for (const auto& f: features) {
-        if (f.getContent() == feature)
-            return true;
-    }
+	// Find the first available feature which matches the query feature
+	xml::NodeList features = nodes[0].getNamedChildren("feature");
+	for (const auto& f: features) {
+		if (f.getContent() == feature)
+			return true;
+	}
 
-    // Nothing found, so the optional feature isn't present
-    return false;
+	// Nothing found, so the optional feature isn't present
+	return false;
 }
 
 xml::NodeList Game::getLocalXPath(const std::string& localPath) const
 {
-    std::string absolutePath = getXPathRoot() + localPath;
-    return GlobalRegistry().findXPath(absolutePath);
+	std::string absolutePath = getXPathRoot() + localPath;
+	return GlobalRegistry().findXPath(absolutePath);
 }
 
 } // namespace game

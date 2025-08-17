@@ -17,12 +17,12 @@ namespace selection
 class RadiantSelectionSystem final :
 	public SelectionSystem,
 	public Renderable,
-    public ISceneSelectionTesterFactory
+	public ISceneSelectionTesterFactory
 {
 private:
 	SceneManipulationPivot _pivot;
 
-    std::set<Observer*> _observers;
+	std::set<Observer*> _observers;
 
 	// The 3D volume surrounding the most recent selection.
 	WorkZone _workZone;
@@ -39,24 +39,24 @@ private:
 
 	SelectionInfo _selectionInfo;
 
-    sigc::signal<void, const ISelectable&> _sigSelectionChanged;
+	sigc::signal<void, const ISelectable&> _sigSelectionChanged;
 
-    std::map<std::size_t, ISceneManipulator::Ptr> _manipulators;
+	std::map<std::size_t, ISceneManipulator::Ptr> _manipulators;
 
 	// The currently active manipulator
-    ISceneManipulator::Ptr _activeManipulator;
-    IManipulator::Type _defaultManipulatorType;
+	ISceneManipulator::Ptr _activeManipulator;
+	IManipulator::Type _defaultManipulatorType;
 
 	// state
 	SelectionMode _mode;
-    ComponentSelectionMode _componentMode;
+	ComponentSelectionMode _componentMode;
 
 	std::size_t _countPrimitive;
 	std::size_t _countComponent;
 
 	// The internal list to keep track of the selected instances (components and primitives)
-    SelectedNodeList _selection;
-    SelectedNodeList _componentSelection;
+	SelectedNodeList _selection;
+	SelectedNodeList _componentSelection;
 
 	// The coordinates of the mouse pointer when the manipulation starts
 	Vector2 _deviceStart;
@@ -67,8 +67,8 @@ private:
 	sigc::signal<void, SelectionMode> _sigSelectionModeChanged;
 	sigc::signal<void, ComponentSelectionMode> _sigComponentModeChanged;
 
-    bool _selectionFocusActive;
-    std::set<scene::INodePtr> _selectionFocusPool;
+	bool _selectionFocusActive;
+	std::set<scene::INodePtr> _selectionFocusPool;
 
 public:
 	RadiantSelectionSystem();
@@ -83,16 +83,16 @@ public:
 
 	void pivotChanged() override;
 
-  	void pivotChangedSelection(const ISelectable& selectable);
+	void pivotChangedSelection(const ISelectable& selectable);
 
 	void addObserver(Observer* observer) override;
 	void removeObserver(Observer* observer) override;
 
 	void setSelectionMode(SelectionMode mode) override;
-    SelectionMode getSelectionMode() const override;
+	SelectionMode getSelectionMode() const override;
 
 	void SetComponentMode(ComponentSelectionMode mode) override;
-    ComponentSelectionMode ComponentMode() const override;
+	ComponentSelectionMode ComponentMode() const override;
 
 	sigc::signal<void, SelectionMode>& signal_selectionModeChanged() override;
 	sigc::signal<void, ComponentSelectionMode>& signal_componentModeChanged() override;
@@ -101,7 +101,7 @@ public:
 	std::size_t registerManipulator(const ISceneManipulator::Ptr& manipulator) override;
 	void unregisterManipulator(const ISceneManipulator::Ptr& manipulator) override;
 
-    IManipulator::Type getActiveManipulatorType() override;
+	IManipulator::Type getActiveManipulatorType() override;
 	const ISceneManipulator::Ptr& getActiveManipulator() override;
 	void setActiveManipulator(std::size_t manipulatorId) override;
 	void setActiveManipulator(IManipulator::Type manipulatorType) override;
@@ -113,10 +113,10 @@ public:
 	void onSelectedChanged(const scene::INodePtr& node, const ISelectable& selectable) override;
 	void onComponentSelection(const scene::INodePtr& node, const ISelectable& selectable) override;
 
-    SelectionChangedSignal signal_selectionChanged() const override
-    {
-        return _sigSelectionChanged;
-    }
+	SelectionChangedSignal signal_selectionChanged() const override
+	{
+		return _sigSelectionChanged;
+	}
 
 	scene::INodePtr ultimateSelected() override;
 	scene::INodePtr penultimateSelected() override;
@@ -148,9 +148,9 @@ public:
 	const WorkZone& getWorkZone() override;
 	Vector3 getCurrentSelectionCenter() override;
 
-    void onPreRender(const VolumeTest& volume) override;
-    void renderHighlights(IRenderableCollector& collector, const VolumeTest& volume) override
-    {}
+	void onPreRender(const VolumeTest& volume) override;
+	void renderHighlights(IRenderableCollector& collector, const VolumeTest& volume) override
+	{}
 
 	void setRenderSystem(const RenderSystemPtr& renderSystem) override
 	{}
@@ -162,9 +162,9 @@ public:
 
 	const Matrix4& getPivot2World() override;
 
-    void toggleSelectionFocus() override;
-    bool selectionFocusIsActive() override;
-    AABB getSelectionFocusBounds() override;
+	void toggleSelectionFocus() override;
+	bool selectionFocusIsActive() override;
+	AABB getSelectionFocusBounds() override;
 
 	// RegisterableModule implementation
 	const std::string& getName() const override;
@@ -172,18 +172,18 @@ public:
 	void initialiseModule(const IApplicationContext& ctx) override;
 	void shutdownModule() override;
 
-    ISceneSelectionTester::Ptr createSceneSelectionTester(SelectionMode mode) override;
+	ISceneSelectionTester::Ptr createSceneSelectionTester(SelectionMode mode) override;
 
 private:
-    bool nodeCanBeSelectionTested(const scene::INodePtr& node);
+	bool nodeCanBeSelectionTested(const scene::INodePtr& node);
 
-    // Sets the selection status of the given selectable. The selection status will
-    // be propagated to groups if the current selection mode / focus is allowing that
-    void setSelectionStatus(ISelectable* selectable, bool selected);
+	// Sets the selection status of the given selectable. The selection status will
+	// be propagated to groups if the current selection mode / focus is allowing that
+	void setSelectionStatus(ISelectable* selectable, bool selected);
 
 	// Traverses the scene and adds any selectable nodes matching the given SelectionTest to the "targetList".
 	void testSelectScene(SelectablesList& targetList, SelectionTest& test,
-        const VolumeTest& view, SelectionMode mode);
+		const VolumeTest& view, SelectionMode mode);
 
 	bool higherEntitySelectionPriority() const;
 

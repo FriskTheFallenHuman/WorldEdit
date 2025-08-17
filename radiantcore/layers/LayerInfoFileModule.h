@@ -19,11 +19,11 @@ private:
 	std::stringstream _layerHierarchyBuffer;
 
 	// The list of layernames
-    std::map<int, std::string> _layerNames;
+	std::map<int, std::string> _layerNames;
 
-    std::map<int, int> _layerParentIds;
-    int _activeLayerId;
-    std::vector<int> _hiddenLayerIds;
+	std::map<int, int> _layerParentIds;
+	int _activeLayerId;
+	std::vector<int> _hiddenLayerIds;
 
 	typedef std::vector<scene::LayerList> LayerLists;
 	LayerLists _layerMappings;

@@ -12,100 +12,100 @@ sigc::signal<void>& ParticleDef::signal_changed()
 
 float ParticleDef::getDepthHack()
 {
-    ensureParsed();
+	ensureParsed();
 	return _depthHack;
 }
 
 void ParticleDef::setDepthHack(float value)
 {
-    ensureParsed();
-    _depthHack = value;
-    onParsedContentsChanged();
+	ensureParsed();
+	_depthHack = value;
+	onParsedContentsChanged();
 }
 
 std::size_t ParticleDef::getNumStages()
 {
-    ensureParsed();
+	ensureParsed();
 	return _stages.size();
 }
 
 const std::shared_ptr<IStageDef>& ParticleDef::getStage(std::size_t stageNum)
 {
-    ensureParsed();
+	ensureParsed();
 	return _stages[stageNum].first;
 }
 
 std::size_t ParticleDef::addParticleStage()
 {
-    ensureParsed();
+	ensureParsed();
 
-    // Create and append a new stage
-    appendStage(std::make_shared<StageDef>());
+	// Create and append a new stage
+	appendStage(std::make_shared<StageDef>());
 
-    onParticleChanged();
+	onParticleChanged();
 
-    return _stages.size() - 1;
+	return _stages.size() - 1;
 }
 
 void ParticleDef::removeParticleStage(std::size_t index)
 {
-    ensureParsed();
+	ensureParsed();
 
-    if (index < _stages.size())
-    {
-        // Disconnect the change signal before removal
-        _stages[index].second.disconnect();
-        _stages.erase(_stages.begin() + index);
-    }
+	if (index < _stages.size())
+	{
+		// Disconnect the change signal before removal
+		_stages[index].second.disconnect();
+		_stages.erase(_stages.begin() + index);
+	}
 
-    onParticleChanged();
+	onParticleChanged();
 }
 
 void ParticleDef::swapParticleStages(std::size_t index, std::size_t index2)
 {
-    ensureParsed();
+	ensureParsed();
 
-    if (index >= _stages.size() || index2 >= _stages.size() || index == index2)
-    {
-        return;
-    }
+	if (index >= _stages.size() || index2 >= _stages.size() || index == index2)
+	{
+		return;
+	}
 
-    std::swap(_stages[index], _stages[index2]);
-    onParticleChanged();
+	std::swap(_stages[index], _stages[index2]);
+	onParticleChanged();
 }
 
 void ParticleDef::appendStage(const StageDef::Ptr& stage)
 {
-    // Add to list and connect the incoming stage's changed signal
-    _stages.emplace_back(std::make_pair(
-        stage,
-        stage->signal_changed().connect(sigc::mem_fun(this, &ParticleDef::onParticleChanged)))
-    );
+	// Add to list and connect the incoming stage's changed signal
+	_stages.emplace_back(std::make_pair(
+		stage,
+		stage->signal_changed().connect(sigc::mem_fun(this, &ParticleDef::onParticleChanged)))
+	);
 
-    // This method is only used internally, no signal emission
+	// This method is only used internally, no signal emission
 }
 
 void ParticleDef::copyFrom(const Ptr& other)
 {
-    ensureParsed();
+	ensureParsed();
 
-    {
-        // Suppress signals until we're done copying
-        util::ScopedBoolLock changeLock(_blockChangedSignal);
+	{
+		// Suppress signals until we're done copying
+		util::ScopedBoolLock changeLock(_blockChangedSignal);
 
-        setDepthHack(other->getDepthHack());
+		setDepthHack(other->getDepthHack());
 
-        _stages.clear();
+		_stages.clear();
 
-        // Copy each stage
-        for (std::size_t i = 0; i < other->getNumStages(); ++i)
-        {
-            auto stage = std::make_shared<StageDef>();
-            stage->copyFrom(other->getStage(i));
+		// Copy each stage
+		for (std::size_t i = 0; i < other->getNumStages(); ++i)
+		{
+			auto stage = std::make_shared<StageDef>();
+			stage->copyFrom(other->getStage(i));
 
-            appendStage(stage);
-        }
-    }
+			appendStage(stage);
+		}
+	}
 
 	// We've changed all the stages, so emit the changed signal now (#4411)
 	onParticleChanged();
@@ -113,89 +113,89 @@ void ParticleDef::copyFrom(const Ptr& other)
 
 bool ParticleDef::isEqualTo(const Ptr& other)
 {
-    // Compare depth hack flag
-    if (getDepthHack() != other->getDepthHack()) return false;
+	// Compare depth hack flag
+	if (getDepthHack() != other->getDepthHack()) return false;
 
-    // Compare number of stages
-    if (getNumStages() != other->getNumStages()) return false;
+	// Compare number of stages
+	if (getNumStages() != other->getNumStages()) return false;
 
-    // Compare each stage
-    for (std::size_t i = 0; i < getNumStages(); ++i)
-    {
-        if (!getStage(i)->isEqualTo(other->getStage(i))) return false;
-    }
+	// Compare each stage
+	for (std::size_t i = 0; i < getNumStages(); ++i)
+	{
+		if (!getStage(i)->isEqualTo(other->getStage(i))) return false;
+	}
 
-    // All checks passed => equal
-    return true;
+	// All checks passed => equal
+	return true;
 }
 
 void ParticleDef::onBeginParsing()
 {
-    // Clear out the particle def (except the name) before parsing
-    clear();
+	// Clear out the particle def (except the name) before parsing
+	clear();
 }
 
 void ParticleDef::parseFromTokens(parser::DefTokeniser& tokeniser)
 {
-    // Any global keywords will come first, after which we get a series of
-    // brace-delimited stages.
+	// Any global keywords will come first, after which we get a series of
+	// brace-delimited stages.
 
-    while (tokeniser.hasMoreTokens())
-    {
-        auto token = tokeniser.nextToken();
+	while (tokeniser.hasMoreTokens())
+	{
+		auto token = tokeniser.nextToken();
 
-        if (token == "depthHack")
-        {
-            setDepthHack(string::convert<float>(tokeniser.nextToken()));
-        }
-        else if (token == "{")
-        {
-            // Construct/Parse the stage from the tokens
-            // Append to the ParticleDef
-            appendStage(StageDef::Parse(tokeniser));
-        }
-    }
+		if (token == "depthHack")
+		{
+			setDepthHack(string::convert<float>(tokeniser.nextToken()));
+		}
+		else if (token == "{")
+		{
+			// Construct/Parse the stage from the tokens
+			// Append to the ParticleDef
+			appendStage(StageDef::Parse(tokeniser));
+		}
+	}
 }
 
 void ParticleDef::onSyntaxBlockAssigned(const decl::DeclarationBlockSyntax& block)
 {
-    EditableDeclaration<IParticleDef>::onSyntaxBlockAssigned(block);
+	EditableDeclaration<IParticleDef>::onSyntaxBlockAssigned(block);
 
-    _changedSignal.emit();
+	_changedSignal.emit();
 }
 
 std::string ParticleDef::generateSyntax()
 {
-    std::stringstream stream;
+	std::stringstream stream;
 
-    // Don't use scientific notation when exporting floats
-    stream << std::fixed;
-    stream.precision(3); // Three post-comma digits precision
+	// Don't use scientific notation when exporting floats
+	stream << std::fixed;
+	stream.precision(3); // Three post-comma digits precision
 
-    stream << "\n"; // initial line break after the opening brace
+	stream << "\n"; // initial line break after the opening brace
 
-    if (_depthHack > 0)
-    {
-        stream << "\tdepthHack\t" << _depthHack << std::endl;
-    }
+	if (_depthHack > 0)
+	{
+		stream << "\tdepthHack\t" << _depthHack << std::endl;
+	}
 
-    // Write stages, one by one
-    for (const auto& stage : _stages)
-    {
-        stream << *std::static_pointer_cast<StageDef>(stage.first);
-    }
+	// Write stages, one by one
+	for (const auto& stage : _stages)
+	{
+		stream << *std::static_pointer_cast<StageDef>(stage.first);
+	}
 
-    stream << "\n"; // final line break before the closing brace
+	stream << "\n"; // final line break before the closing brace
 
-    return stream.str();
+	return stream.str();
 }
 
 void ParticleDef::onParticleChanged()
 {
-    if (_blockChangedSignal) return;
+	if (_blockChangedSignal) return;
 
-    onParsedContentsChanged();
-    _changedSignal.emit();
+	onParsedContentsChanged();
+	_changedSignal.emit();
 }
 
 }

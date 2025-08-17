@@ -18,14 +18,14 @@ public:
 	}
 
 	/**
-     * Cast to float*, also enables operator[].
+	 * Cast to float*, also enables operator[].
 	 */
 	operator float* () {
 		return rotation;
 	}
 
 	/**
-     * Cast to const float* to provide operator[] for const objects.
+	 * Cast to const float* to provide operator[] for const objects.
 	 */
 	operator const float* () const {
 		return rotation;
@@ -38,9 +38,9 @@ public:
 
 	void writeToEntity(Entity* entity, const std::string& key = "rotation") const;
 
-    // Returns the string representation of this rotation
-    // suitable for writing it to the entity's key/value pairs.
-    std::string getRotationKeyValue() const;
+	// Returns the string representation of this rotation
+	// suitable for writing it to the entity's key/value pairs.
+	std::string getRotationKeyValue() const;
 
 	Matrix4 getMatrix4() const;
 

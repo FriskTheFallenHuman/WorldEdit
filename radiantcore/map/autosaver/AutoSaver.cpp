@@ -57,7 +57,7 @@ namespace
 
 AutoMapSaver::AutoMapSaver() :
 	_snapshotsEnabled(false),
-    _savedChangeCount(0)
+	_savedChangeCount(0)
 {}
 
 void AutoMapSaver::registryKeyChanged()
@@ -67,7 +67,7 @@ void AutoMapSaver::registryKeyChanged()
 
 void AutoMapSaver::clearChanges()
 {
-    _savedChangeCount = 0;
+	_savedChangeCount = 0;
 }
 
 void AutoMapSaver::saveSnapshot()
@@ -81,16 +81,16 @@ void AutoMapSaver::saveSnapshot()
 	// Construct the fs::path class out of the full map path (throws on fail)
 	fs::path fullPath = GlobalMapModule().getMapName();
 
-    if (!fullPath.is_absolute())
-    {
-        fullPath = GlobalFileSystem().findFile(fullPath.string()) + fullPath.string();
-    }
+	if (!fullPath.is_absolute())
+	{
+		fullPath = GlobalFileSystem().findFile(fullPath.string()) + fullPath.string();
+	}
 
 	// Assemble the absolute path to the snapshot folder
 	fs::path snapshotPath = fullPath;
 	snapshotPath.remove_filename();
 
-    // If the snapshots folder in the registry is absolute, operator/= will use the absolute one
+	// If the snapshots folder in the registry is absolute, operator/= will use the absolute one
 	snapshotPath /= GlobalRegistry().get(RKEY_AUTOSAVE_SNAPSHOTS_FOLDER);
 
 	// Retrieve the mapname
@@ -99,8 +99,8 @@ void AutoMapSaver::saveSnapshot()
 	// Check if the folder exists and create it if necessary
 	if (os::fileOrDirExists(snapshotPath.string()) || os::makeDirectory(snapshotPath.string()))
 	{
-        // Map existing snapshots (snapshot num => path)
-        std::map<int, std::string> existingSnapshots;
+		// Map existing snapshots (snapshot num => path)
+		std::map<int, std::string> existingSnapshots;
 
 		collectExistingSnapshots(existingSnapshots, snapshotPath, mapName);
 
@@ -111,7 +111,7 @@ void AutoMapSaver::saveSnapshot()
 		rMessage() << "Autosaving snapshot to " << filename << std::endl;
 
 		// Dump to map to the next available filename
-        GlobalCommandSystem().executeCommand("SaveAutomaticBackup", filename);
+		GlobalCommandSystem().executeCommand("SaveAutomaticBackup", filename);
 
 		handleSnapshotSizeLimit(existingSnapshots, snapshotPath, mapName);
 	}
@@ -200,77 +200,77 @@ void AutoMapSaver::collectExistingSnapshots(std::map<int, std::string>& existing
 
 bool AutoMapSaver::runAutosaveCheck()
 {
-    // Check, if changes have been made since the last autosave
-    if (!GlobalSceneGraph().root() || _savedChangeCount == GlobalSceneGraph().root()->getUndoChangeTracker().getCurrentChangeCount())
-    {
-        return false;
-    }
+	// Check, if changes have been made since the last autosave
+	if (!GlobalSceneGraph().root() || _savedChangeCount == GlobalSceneGraph().root()->getUndoChangeTracker().getCurrentChangeCount())
+	{
+		return false;
+	}
 
-    AutomaticMapSaveRequest request;
-    GlobalRadiantCore().getMessageBus().sendMessage(request);
+	AutomaticMapSaveRequest request;
+	GlobalRadiantCore().getMessageBus().sendMessage(request);
 
-    if (request.isDenied())
-    {
-        rMessage() << "Auto save skipped: " << request.getReason() << std::endl;
-        return false;
-    }
+	if (request.isDenied())
+	{
+		rMessage() << "Auto save skipped: " << request.getReason() << std::endl;
+		return false;
+	}
 
-    return true;
+	return true;
 }
 
 void AutoMapSaver::performAutosave()
 {
-    // Remember the change tracking counter
-    _savedChangeCount = GlobalSceneGraph().root()->getUndoChangeTracker().getCurrentChangeCount();
+	// Remember the change tracking counter
+	_savedChangeCount = GlobalSceneGraph().root()->getUndoChangeTracker().getCurrentChangeCount();
 
-    // only snapshot if not working on an unnamed map
-    if (_snapshotsEnabled && !GlobalMapModule().isUnnamed())
-    {
-        try
-        {
-            saveSnapshot();
-        }
-        catch (fs::filesystem_error& f)
-        {
-            rError() << "AutoSaver::saveSnapshot: " << f.what() << std::endl;
-        }
-    }
-    else
-    {
-        if (GlobalMapModule().isUnnamed())
-        {
-            // Get the maps path (within the mod path)
-            auto autoSaveFilename = GlobalGameManager().getMapPath();
+	// only snapshot if not working on an unnamed map
+	if (_snapshotsEnabled && !GlobalMapModule().isUnnamed())
+	{
+		try
+		{
+			saveSnapshot();
+		}
+		catch (fs::filesystem_error& f)
+		{
+			rError() << "AutoSaver::saveSnapshot: " << f.what() << std::endl;
+		}
+	}
+	else
+	{
+		if (GlobalMapModule().isUnnamed())
+		{
+			// Get the maps path (within the mod path)
+			auto autoSaveFilename = GlobalGameManager().getMapPath();
 
-            // Try to create the map folder, in case there doesn't exist one
-            os::makeDirectory(autoSaveFilename);
+			// Try to create the map folder, in case there doesn't exist one
+			os::makeDirectory(autoSaveFilename);
 
-            // Append the "autosave.map" to the filename
-            autoSaveFilename += "autosave.";
-            autoSaveFilename += game::current::getValue<std::string>(GKEY_MAP_EXTENSION);
+			// Append the "autosave.map" to the filename
+			autoSaveFilename += "autosave.";
+			autoSaveFilename += game::current::getValue<std::string>(GKEY_MAP_EXTENSION);
 
-            rMessage() << "Autosaving unnamed map to " << autoSaveFilename << std::endl;
+			rMessage() << "Autosaving unnamed map to " << autoSaveFilename << std::endl;
 
-            // Invoke the save call
-            GlobalCommandSystem().executeCommand("SaveAutomaticBackup", autoSaveFilename);
-        }
-        else
-        {
-            // Construct the new filename (e.g. "test_autosave.map")
-            auto filename = GlobalMapModule().getMapName();
-            auto extension = os::getExtension(filename);
+			// Invoke the save call
+			GlobalCommandSystem().executeCommand("SaveAutomaticBackup", autoSaveFilename);
+		}
+		else
+		{
+			// Construct the new filename (e.g. "test_autosave.map")
+			auto filename = GlobalMapModule().getMapName();
+			auto extension = os::getExtension(filename);
 
-            // Cut off the extension
-            filename = filename.substr(0, filename.rfind('.'));
-            filename += "_autosave";
-            filename += "." + extension;
+			// Cut off the extension
+			filename = filename.substr(0, filename.rfind('.'));
+			filename += "_autosave";
+			filename += "." + extension;
 
-            rMessage() << "Autosaving map to " << filename << std::endl;
+			rMessage() << "Autosaving map to " << filename << std::endl;
 
-            // Invoke the save call
-            GlobalCommandSystem().executeCommand("SaveAutomaticBackup", filename);
-        }
-    }
+			// Invoke the save call
+			GlobalCommandSystem().executeCommand("SaveAutomaticBackup", filename);
+		}
+	}
 }
 
 void AutoMapSaver::constructPreferences()
@@ -295,8 +295,8 @@ void AutoMapSaver::onMapEvent(IMap::MapEvent ev)
 	case IMap::MapUnloaded:
 		clearChanges();
 		break;
-    default:
-        break;
+	default:
+		break;
 	};
 }
 
@@ -334,11 +334,11 @@ void AutoMapSaver::initialiseModule(const IApplicationContext& ctx)
 	// Refresh all values from the registry right now (this might also start the timer)
 	registryKeyChanged();
 
-    // Add the autosave options after all the modules are done. A cheap solution to let
-    // the options appear below the Enabled / Interval setting added by the UI
-    module::GlobalModuleRegistry().signal_allModulesInitialised().connect(
-        sigc::mem_fun(*this, &AutoMapSaver::constructPreferences)
-    );
+	// Add the autosave options after all the modules are done. A cheap solution to let
+	// the options appear below the Enabled / Interval setting added by the UI
+	module::GlobalModuleRegistry().signal_allModulesInitialised().connect(
+		sigc::mem_fun(*this, &AutoMapSaver::constructPreferences)
+	);
 }
 
 void AutoMapSaver::shutdownModule()

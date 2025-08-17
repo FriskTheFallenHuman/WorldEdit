@@ -52,61 +52,61 @@ MapExpressionPtr MapExpression::createForToken(DefTokeniser& token)
 	std::string type = token.nextToken();
 
 	if (string::iequals(type, "heightmap"))
-    {
+	{
 		return std::make_shared<HeightMapExpression>(token);
 	}
 	else if (string::iequals(type, "addnormals"))
-    {
+	{
 		return std::make_shared<AddNormalsExpression>(token);
 	}
 	else if (string::iequals(type, "smoothnormals"))
-    {
+	{
 		return std::make_shared<SmoothNormalsExpression>(token);
 	}
 	else if (string::iequals(type, "add"))
-    {
+	{
 		return std::make_shared<AddExpression>(token);
 	}
 	else if (string::iequals(type, "scale"))
-    {
+	{
 		return std::make_shared<ScaleExpression>(token);
 	}
 	else if (string::iequals(type, "invertalpha"))
-    {
+	{
 		return std::make_shared<InvertAlphaExpression>(token);
 	}
 	else if (string::iequals(type, "invertcolor"))
-    {
+	{
 		return std::make_shared<InvertColorExpression>(token);
 	}
 	else if (string::iequals(type, "makeintensity"))
-    {
+	{
 		return std::make_shared<MakeIntensityExpression>(token);
 	}
 	else if (string::iequals(type, "makealpha"))
-    {
+	{
 		return std::make_shared<MakeAlphaExpression>(token);
 	}
 	
-    // since we already took away the expression into the variable type, we need to pass type instead of token
+	// since we already took away the expression into the variable type, we need to pass type instead of token
 	return std::make_shared<ImageExpression>(type);
 }
 
 MapExpressionPtr MapExpression::createForString(const std::string& str)
 {
-    try
-    {
-        parser::BasicDefTokeniser<std::string> tokeniser(
-            str,
-            ShaderTemplate::DiscardedDelimiters, // delimiters (whitespace)
-            ShaderTemplate::KeptDelimiters
-        );
-        return createForToken(tokeniser);
-    }
-    catch (const parser::ParseException&)
-    {
-        return MapExpressionPtr();
-    }
+	try
+	{
+		parser::BasicDefTokeniser<std::string> tokeniser(
+			str,
+			ShaderTemplate::DiscardedDelimiters, // delimiters (whitespace)
+			ShaderTemplate::KeptDelimiters
+		);
+		return createForToken(tokeniser);
+	}
+	catch (const parser::ParseException&)
+	{
+		return MapExpressionPtr();
+	}
 }
 
 ImagePtr MapExpression::getResampled(const ImagePtr& input, std::size_t width, std::size_t height)
@@ -170,7 +170,7 @@ std::string HeightMapExpression::getIdentifier() const {
 
 std::string HeightMapExpression::getExpressionString()
 {
-    return fmt::format("heightmap({0}, {1})", heightMapExp->getExpressionString(), scale);
+	return fmt::format("heightmap({0}, {1})", heightMapExp->getExpressionString(), scale);
 }
 
 AddNormalsExpression::AddNormalsExpression (DefTokeniser& token) {
@@ -182,16 +182,16 @@ AddNormalsExpression::AddNormalsExpression (DefTokeniser& token) {
 }
 
 ImagePtr AddNormalsExpression::getImage() const {
-    ImagePtr imgOne = mapExpOne->getImage();
+	ImagePtr imgOne = mapExpOne->getImage();
 
-    if (imgOne == NULL) return ImagePtr();
+	if (imgOne == NULL) return ImagePtr();
 
-    std::size_t width = imgOne->getWidth();
-    std::size_t height = imgOne->getHeight();
+	std::size_t width = imgOne->getWidth();
+	std::size_t height = imgOne->getHeight();
 
-    ImagePtr imgTwo = mapExpTwo->getImage();
+	ImagePtr imgTwo = mapExpTwo->getImage();
 
-    if (imgTwo == NULL) return ImagePtr();
+	if (imgTwo == NULL) return ImagePtr();
 
 	// Don't process precompressed images
 	if (imgOne->isPrecompressed() || imgTwo->isPrecompressed()) {
@@ -202,27 +202,27 @@ ImagePtr AddNormalsExpression::getImage() const {
 	// The image must match the dimensions of the first
 	imgTwo = getResampled(imgTwo, width, height);
 
-    ImagePtr result (new image::RGBAImage(width, height));
+	ImagePtr result (new image::RGBAImage(width, height));
 
-    byte* pixOne = imgOne->getPixels();
-    byte* pixTwo = imgTwo->getPixels();
-    byte* pixOut = result->getPixels();
+	byte* pixOne = imgOne->getPixels();
+	byte* pixTwo = imgTwo->getPixels();
+	byte* pixOut = result->getPixels();
 
-    // iterate through the pixels
-    for( std::size_t y = 0; y < height; y++ )
+	// iterate through the pixels
+	for( std::size_t y = 0; y < height; y++ )
 	{
 		for( std::size_t x = 0; x < width; x++ )
 		{
 			// create the two vectors
 			Vector3 vectorOne(
-    			static_cast<double>(pixOne[0]),
-    			static_cast<double>(pixOne[1]),
-    			static_cast<double>(pixOne[2])
+				static_cast<double>(pixOne[0]),
+				static_cast<double>(pixOne[1]),
+				static_cast<double>(pixOne[2])
 			);
 			Vector3 vectorTwo(
-    			static_cast<double>(pixTwo[0]),
-    			static_cast<double>(pixTwo[1]),
-    			static_cast<double>(pixTwo[2])
+				static_cast<double>(pixTwo[0]),
+				static_cast<double>(pixTwo[1]),
+				static_cast<double>(pixTwo[2])
 			);
 			// Take the mean value of the two vectors
 			Vector3 vectorOut = (vectorOne + vectorTwo) * 0.5;
@@ -237,8 +237,8 @@ ImagePtr AddNormalsExpression::getImage() const {
 			pixTwo += 4;
 			pixOut += 4;
 		}
-    }
-    return result;
+	}
+	return result;
 }
 
 std::string AddNormalsExpression::getIdentifier() const {
@@ -249,7 +249,7 @@ std::string AddNormalsExpression::getIdentifier() const {
 
 std::string AddNormalsExpression::getExpressionString()
 {
-    return fmt::format("addnormals({0}, {1})", mapExpOne->getExpressionString(), mapExpTwo->getExpressionString());
+	return fmt::format("addnormals({0}, {1})", mapExpOne->getExpressionString(), mapExpTwo->getExpressionString());
 }
 
 SmoothNormalsExpression::SmoothNormalsExpression (DefTokeniser& token) {
@@ -323,9 +323,9 @@ ImagePtr SmoothNormalsExpression::getImage() const {
 
 			// advance the pixel pointer
 			out += 4;
-	    }
+		}
 	}
-    return result;
+	return result;
 }
 
 std::string SmoothNormalsExpression::getIdentifier() const {
@@ -336,7 +336,7 @@ std::string SmoothNormalsExpression::getIdentifier() const {
 
 std::string SmoothNormalsExpression::getExpressionString()
 {
-    return fmt::format("smoothnormals({0})", mapExp->getExpressionString());
+	return fmt::format("smoothnormals({0})", mapExp->getExpressionString());
 }
 
 AddExpression::AddExpression (DefTokeniser& token) {
@@ -348,12 +348,12 @@ AddExpression::AddExpression (DefTokeniser& token) {
 }
 
 ImagePtr AddExpression::getImage() const {
-    ImagePtr imgOne = mapExpOne->getImage();
+	ImagePtr imgOne = mapExpOne->getImage();
 
-    if (imgOne == NULL) return ImagePtr();
+	if (imgOne == NULL) return ImagePtr();
 
-    std::size_t width = imgOne->getWidth();
-    std::size_t height = imgOne->getHeight();
+	std::size_t width = imgOne->getWidth();
+	std::size_t height = imgOne->getHeight();
 
 	ImagePtr imgTwo = mapExpTwo->getImage();
 
@@ -366,16 +366,16 @@ ImagePtr AddExpression::getImage() const {
 	}
 
 	// Resize the image to match the dimensions of the first
-    imgTwo = getResampled(imgTwo, width, height);
+	imgTwo = getResampled(imgTwo, width, height);
 
-    ImagePtr result (new image::RGBAImage(width, height));
+	ImagePtr result (new image::RGBAImage(width, height));
 
-    byte* pixOne = imgOne->getPixels();
-    byte* pixTwo = imgTwo->getPixels();
-    byte* pixOut = result->getPixels();
+	byte* pixOne = imgOne->getPixels();
+	byte* pixTwo = imgTwo->getPixels();
+	byte* pixOut = result->getPixels();
 
-    // iterate through the pixels
-    for( std::size_t y = 0; y < height; y++)
+	// iterate through the pixels
+	for( std::size_t y = 0; y < height; y++)
 	{
 		for( std::size_t x = 0; x < width; x++)
 		{
@@ -390,7 +390,7 @@ ImagePtr AddExpression::getImage() const {
 			pixTwo += 4;
 			pixOut += 4;
 		}
-    }
+	}
 	return result;
 }
 
@@ -403,13 +403,13 @@ std::string AddExpression::getIdentifier() const
 
 std::string AddExpression::getExpressionString()
 {
-    return fmt::format("add({0}, {1})", mapExpOne->getExpressionString(), mapExpTwo->getExpressionString());
+	return fmt::format("add({0}, {1})", mapExpOne->getExpressionString(), mapExpTwo->getExpressionString());
 }
 
 ScaleExpression::ScaleExpression(DefTokeniser& token) : 
-    scaleGreen(0),
-    scaleBlue(0),
-    scaleAlpha(0)
+	scaleGreen(0),
+	scaleBlue(0),
+	scaleAlpha(0)
 {
 	token.assertNextToken("(");
 	mapExp = createForToken(token);
@@ -432,9 +432,9 @@ ScaleExpression::ScaleExpression(DefTokeniser& token) :
 
 ImagePtr ScaleExpression::getImage() const
 {
-    ImagePtr img = mapExp->getImage();
+	ImagePtr img = mapExp->getImage();
 
-    if (img == NULL) return ImagePtr();
+	if (img == NULL) return ImagePtr();
 
 	// Don't process precompressed images
 	if (img->isPrecompressed()) {
@@ -442,21 +442,21 @@ ImagePtr ScaleExpression::getImage() const
 		return img;
 	}
 
-    std::size_t width = img->getWidth();
-    std::size_t height = img->getHeight();
+	std::size_t width = img->getWidth();
+	std::size_t height = img->getHeight();
 
-    if (scaleRed < 0 || scaleGreen < 0 || scaleBlue < 0 || scaleAlpha < 0) {
-        rWarning() << "[shaders] ScaleExpression: Invalid scale values found." << std::endl;
+	if (scaleRed < 0 || scaleGreen < 0 || scaleBlue < 0 || scaleAlpha < 0) {
+		rWarning() << "[shaders] ScaleExpression: Invalid scale values found." << std::endl;
 		return img;
 	}
 
-    ImagePtr result (new image::RGBAImage(width, height));
+	ImagePtr result (new image::RGBAImage(width, height));
 
-    byte* in = img->getPixels();
-    byte* out = result->getPixels();
+	byte* in = img->getPixels();
+	byte* out = result->getPixels();
 
-    // iterate through the pixels
-    for( std::size_t y = 0; y < height; ++y)
+	// iterate through the pixels
+	for( std::size_t y = 0; y < height; ++y)
 	{
 		for( std::size_t x = 0; x < width; ++x)
 		{
@@ -477,7 +477,7 @@ ImagePtr ScaleExpression::getImage() const
 			in += 4;
 			out += 4;
 		}
-    }
+	}
 	return result;
 }
 
@@ -489,11 +489,11 @@ std::string ScaleExpression::getIdentifier() const {
 
 std::string ScaleExpression::getExpressionString()
 {
-    auto scaleAlphaStr = scaleAlpha == 0 ? std::string() : fmt::format(", {0}", scaleAlpha);
-    auto scaleBlueStr = scaleBlue == 0 && scaleAlphaStr.empty() ? std::string() : fmt::format(", {0}", scaleBlue);
-    auto scaleGreenStr = scaleGreen == 0 && scaleBlueStr.empty() ? std::string() : fmt::format(", {0}", scaleGreen);
+	auto scaleAlphaStr = scaleAlpha == 0 ? std::string() : fmt::format(", {0}", scaleAlpha);
+	auto scaleBlueStr = scaleBlue == 0 && scaleAlphaStr.empty() ? std::string() : fmt::format(", {0}", scaleBlue);
+	auto scaleGreenStr = scaleGreen == 0 && scaleBlueStr.empty() ? std::string() : fmt::format(", {0}", scaleGreen);
 
-    return fmt::format("scale({0}, {1}{2}{3}{4})", mapExp->getExpressionString(), scaleRed, scaleGreenStr, scaleBlueStr, scaleAlphaStr);
+	return fmt::format("scale({0}, {1}{2}{3}{4})", mapExp->getExpressionString(), scaleRed, scaleGreenStr, scaleBlueStr, scaleAlphaStr);
 }
 
 InvertAlphaExpression::InvertAlphaExpression (DefTokeniser& token) {
@@ -548,7 +548,7 @@ std::string InvertAlphaExpression::getIdentifier() const {
 
 std::string InvertAlphaExpression::getExpressionString()
 {
-    return fmt::format("invertAlpha({0})", mapExp->getExpressionString());
+	return fmt::format("invertAlpha({0})", mapExp->getExpressionString());
 }
 
 InvertColorExpression::InvertColorExpression (DefTokeniser& token) {
@@ -601,7 +601,7 @@ std::string InvertColorExpression::getIdentifier() const {
 
 std::string InvertColorExpression::getExpressionString()
 {
-    return fmt::format("invertColor({0})", mapExp->getExpressionString());
+	return fmt::format("invertColor({0})", mapExp->getExpressionString());
 }
 
 MakeIntensityExpression::MakeIntensityExpression (DefTokeniser& token) {
@@ -657,7 +657,7 @@ std::string MakeIntensityExpression::getIdentifier() const
 
 std::string MakeIntensityExpression::getExpressionString()
 {
-    return fmt::format("makeIntensity({0})", mapExp->getExpressionString());
+	return fmt::format("makeIntensity({0})", mapExp->getExpressionString());
 }
 
 MakeAlphaExpression::MakeAlphaExpression(DefTokeniser& token)
@@ -715,16 +715,16 @@ std::string MakeAlphaExpression::getIdentifier() const
 
 std::string MakeAlphaExpression::getExpressionString()
 {
-    return fmt::format("makeAlpha({0})", mapExp->getExpressionString());
+	return fmt::format("makeAlpha({0})", mapExp->getExpressionString());
 }
 
 /* ImageExpression */
 
 ImageExpression::ImageExpression(const std::string& imgName) :
-    _imgName(imgName)
+	_imgName(imgName)
 {
-    // _imgName holds the raw incoming name of the expression
-    // it is normalised and stripped of its extension by the GlobalImageLoader()
+	// _imgName holds the raw incoming name of the expression
+	// it is normalised and stripped of its extension by the GlobalImageLoader()
 }
 
 ImagePtr ImageExpression::getImage() const
@@ -732,72 +732,72 @@ ImagePtr ImageExpression::getImage() const
 	// Check for some image keywords and load the correct file
 	if (_imgName == "_black") {
 		return GlobalImageLoader().imageFromFile(
-            getBitmapsPath() + IMAGE_BLACK
-        );
+			getBitmapsPath() + IMAGE_BLACK
+		);
 	}
 	else if (_imgName == "_currentRender") {
 		return GlobalImageLoader().imageFromFile(
-            getBitmapsPath() + IMAGE_CURRENTRENDER
-        );
+			getBitmapsPath() + IMAGE_CURRENTRENDER
+		);
 	}
 	else if (_imgName == "_default") {
 		return GlobalImageLoader().imageFromFile(
-            getBitmapsPath() + IMAGE_DEFAULT
-        );
+			getBitmapsPath() + IMAGE_DEFAULT
+		);
 	}
 	else if (_imgName == "_flat") {
 		return GlobalImageLoader().imageFromFile(
-            getBitmapsPath() + IMAGE_FLAT
-        );
+			getBitmapsPath() + IMAGE_FLAT
+		);
 	}
 	else if (_imgName == "_fog") {
 		return GlobalImageLoader().imageFromFile(
-            getBitmapsPath() + IMAGE_FOG
-        );
+			getBitmapsPath() + IMAGE_FOG
+		);
 	}
 	else if (_imgName == "_nofalloff") {
 		return GlobalImageLoader().imageFromFile(
-            getBitmapsPath() + IMAGE_NOFALLOFF
-        );
+			getBitmapsPath() + IMAGE_NOFALLOFF
+		);
 	}
 	else if (_imgName == "_pointlight1") {
 		return GlobalImageLoader().imageFromFile(
-            getBitmapsPath() + IMAGE_POINTLIGHT1
-        );
+			getBitmapsPath() + IMAGE_POINTLIGHT1
+		);
 	}
 	else if (_imgName == "_pointlight2") {
 		return GlobalImageLoader().imageFromFile(
-            getBitmapsPath() + IMAGE_POINTLIGHT2
-        );
+			getBitmapsPath() + IMAGE_POINTLIGHT2
+		);
 	}
 	else if (_imgName == "_pointlight3") {
 		return GlobalImageLoader().imageFromFile(
-            getBitmapsPath() + IMAGE_POINTLIGHT3
-        );
+			getBitmapsPath() + IMAGE_POINTLIGHT3
+		);
 	}
 	else if (_imgName == "_quadratic") {
 		return GlobalImageLoader().imageFromFile(
-            getBitmapsPath() + IMAGE_QUADRATIC
-        );
+			getBitmapsPath() + IMAGE_QUADRATIC
+		);
 	}
 	else if (_imgName == "_scratch") {
 		return GlobalImageLoader().imageFromFile(
-            getBitmapsPath() + IMAGE_SCRATCH
-        );
+			getBitmapsPath() + IMAGE_SCRATCH
+		);
 	}
 	else if (_imgName == "_spotlight") {
 		return GlobalImageLoader().imageFromFile(
-            getBitmapsPath() + IMAGE_SPOTLIGHT
-        );
+			getBitmapsPath() + IMAGE_SPOTLIGHT
+		);
 	}
 	else if (_imgName == "_white") {
 		return GlobalImageLoader().imageFromFile(
-            getBitmapsPath() + IMAGE_WHITE
-        );
+			getBitmapsPath() + IMAGE_WHITE
+		);
 	}
 	else
-    {
-        // this is a normal material image, so we load the image from VFS
+	{
+		// this is a normal material image, so we load the image from VFS
 		return GlobalImageLoader().imageFromVFS(_imgName);
 	}
 }
@@ -809,7 +809,7 @@ std::string ImageExpression::getIdentifier() const
 
 std::string ImageExpression::getExpressionString()
 {
-    return _imgName;
+	return _imgName;
 }
 
 } // namespace shaders

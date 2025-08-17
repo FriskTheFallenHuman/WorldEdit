@@ -11,7 +11,7 @@ class SelectionSet :
 	public ISelectionSet
 {
 private:
-    typedef std::set<scene::INodeWeakPtr, std::owner_less<scene::INodeWeakPtr> > NodeSet;
+	typedef std::set<scene::INodeWeakPtr, std::owner_less<scene::INodeWeakPtr> > NodeSet;
 	NodeSet _nodes;
 
 	std::string _name;

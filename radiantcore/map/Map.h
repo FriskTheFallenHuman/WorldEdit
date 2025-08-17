@@ -36,7 +36,7 @@ class Map :
 	public scene::Graph::Observer
 {
 private:
-    EditMode _editMode;
+	EditMode _editMode;
 
 	// The map name
 	std::string _mapName;
@@ -46,8 +46,8 @@ private:
 
 	sigc::signal<void> _mapNameChangedSignal;
 	sigc::signal<void> _mapModifiedChangedSignal;
-    sigc::signal<void> _mapPostUndoSignal;
-    sigc::signal<void> _mapPostRedoSignal;
+	sigc::signal<void> _mapPostUndoSignal;
+	sigc::signal<void> _mapPostRedoSignal;
 	sigc::signal<void, EditMode> _mapEditModeChangedSignal;
 
 	// Pointer to the resource for this map
@@ -64,36 +64,36 @@ private:
 	std::unique_ptr<MapPositionManager> _mapPositionManager;
 	std::unique_ptr<ModelScalePreserver> _modelScalePreserver;
 
-    // Map save timer, for displaying "changes from last n minutes will be lost"
-    // messages
-    util::StopWatch _mapSaveTimer;
+	// Map save timer, for displaying "changes from last n minutes will be lost"
+	// messages
+	util::StopWatch _mapSaveTimer;
 
 	MapEventSignal _mapEvent;
 	std::size_t _shutdownListener;
 
-    scene::merge::IMergeOperation::Ptr _mergeOperation;
-    std::list<scene::MergeActionNodeBase::Ptr> _mergeActionNodes;
-    sigc::connection _mergeOperationListener;
+	scene::merge::IMergeOperation::Ptr _mergeOperation;
+	std::list<scene::MergeActionNodeBase::Ptr> _mergeActionNodes;
+	sigc::connection _mergeOperationListener;
 
-    sigc::connection _modifiedStatusListener;
-    sigc::connection _undoEventListener;
-    sigc::connection _layerHierarchyChangedListener;
+	sigc::connection _modifiedStatusListener;
+	sigc::connection _undoEventListener;
+	sigc::connection _layerHierarchyChangedListener;
 
-    // Point trace for leak detection
-    std::unique_ptr<PointFile> _pointTrace;
+	// Point trace for leak detection
+	std::unique_ptr<PointFile> _pointTrace;
 
 private:
-    std::string getSaveConfirmationText() const;
+	std::string getSaveConfirmationText() const;
 
 public:
 	Map();
 
 	MapEventSignal signal_mapEvent() const override;
 
-    EditMode getEditMode() override;
-    void setEditMode(EditMode mode) override;
+	EditMode getEditMode() override;
+	void setEditMode(EditMode mode) override;
 
-    sigc::signal<void, EditMode>& signal_editModeChanged() override;
+	sigc::signal<void, EditMode>& signal_editModeChanged() override;
 
 	const scene::INodePtr& getWorldspawn() override;
 	const scene::INodePtr& findOrInsertWorldspawn() override;
@@ -108,14 +108,14 @@ public:
 	// Gets called when a node is removed from the scenegraph
 	void onSceneNodeErase(const scene::INodePtr& node) override;
 
-    // IMap implementation
+	// IMap implementation
 	bool isUnnamed() const override;
 	void setMapName(const std::string& newName);
 	std::string getMapName() const override;
 	sigc::signal<void>& signal_mapNameChanged() override;
-    void forEachPointfile(PointfileFunctor func) const override;
-    void showPointFile(const fs::path& filePath) override;
-    bool isPointTraceVisible() const override;
+	void forEachPointfile(PointfileFunctor func) const override;
+	void showPointFile(const fs::path& filePath) override;
+	bool isPointTraceVisible() const override;
 
 	/**
 	 * greebo: Saves the current map, doesn't ask for any filenames,
@@ -145,19 +145,19 @@ public:
 	 */
 	void saveCopyAs();
 
-    /**
-     * Saves a copy of the current map to the given path, using the
-     * given format (which may be an empty reference, in which case the map format
-     * will be guessed from the filename).
-     */
-    void saveCopyAs(const std::string& absolutePath, const MapFormatPtr& mapFormat = MapFormatPtr());
+	/**
+	 * Saves a copy of the current map to the given path, using the
+	 * given format (which may be an empty reference, in which case the map format
+	 * will be guessed from the filename).
+	 */
+	void saveCopyAs(const std::string& absolutePath, const MapFormatPtr& mapFormat = MapFormatPtr());
 
 	/** greebo: Saves the current selection to the target <filename>.
 	 */
 	void saveSelected(const std::string& filename, const MapFormatPtr& mapFormat = MapFormatPtr());
 
 	// Loads the map from the given filename
-    void load(const std::string& filename);
+	void load(const std::string& filename);
 
 	/** greebo: Imports the contents from the given filename.
 	 *
@@ -177,11 +177,11 @@ public:
 	void exportSelected(std::ostream& out) override;
 	void exportSelected(std::ostream& out, const MapFormatPtr& format) override;
 
-    void startMergeOperation(const std::string& sourceMap) override;
-    void startMergeOperation(const std::string& sourceMap, const std::string& baseMap) override;
-    void finishMergeOperation() override;
-    void abortMergeOperation() override;
-    scene::merge::IMergeOperation::Ptr getActiveMergeOperation() override;
+	void startMergeOperation(const std::string& sourceMap) override;
+	void startMergeOperation(const std::string& sourceMap, const std::string& baseMap) override;
+	void finishMergeOperation() override;
+	void abortMergeOperation() override;
+	scene::merge::IMergeOperation::Ptr getActiveMergeOperation() override;
 
 	// free all map elements, reinitialize the structures that depend on them
 	void freeMap();
@@ -194,10 +194,10 @@ public:
 	void setModified(bool modifiedFlag) override;
 
 	sigc::signal<void>& signal_modifiedChanged() override;
-    sigc::signal<void>& signal_postUndo() override;
-    sigc::signal<void>& signal_postRedo() override;
+	sigc::signal<void>& signal_postUndo() override;
+	sigc::signal<void>& signal_postRedo() override;
 
-    IUndoSystem& getUndoSystem() override;
+	IUndoSystem& getUndoSystem() override;
 
 	// greebo: Creates a new, empty map file.
 	void createNewMap() override;
@@ -212,8 +212,8 @@ public:
 	 */
 	MapFormatPtr getFormat();
 
-    // Return the map format for the given filename, falling back to the
-    // format of the currently loaded map in case the lookup fails.
+	// Return the map format for the given filename, falling back to the
+	// format of the currently loaded map in case the lookup fails.
 	MapFormatPtr getMapFormatForFilenameSafe(const std::string& filename);
 
 	/** greebo: Registers the commands with the EventManager.
@@ -235,7 +235,7 @@ public:
 	 */
 	void saveMapCopyAs(const cmd::ArgumentList& args);
 
-    // Used by the auto saver
+	// Used by the auto saver
 	void saveAutomaticMapBackup(const cmd::ArgumentList& args);
 
 	/** greebo: Asks the user for the .pfb file and exports the file/selection
@@ -267,46 +267,46 @@ private:
 	// Creates a fresh worldspawn node and inserts it into the root scene node
 	scene::INodePtr createWorldspawn();
 
-    // Defines a map location
-    struct MapLocation
-    {
-        std::string path;
-        bool isArchive;
-        std::string archiveRelativePath;
-    };
-    void loadMapResourceFromLocation(const MapLocation& location);
+	// Defines a map location
+	struct MapLocation
+	{
+		std::string path;
+		bool isArchive;
+		std::string archiveRelativePath;
+	};
+	void loadMapResourceFromLocation(const MapLocation& location);
 
 	void loadMapResourceFromPath(const std::string& path);
 	void loadMapResourceFromArchive(const std::string& archive, const std::string& archiveRelativePath);
 
-    void startMergeOperationCmd(const cmd::ArgumentList& args);
-    void abortMergeOperationCmd(const cmd::ArgumentList& args);
-    void finishMergeOperationCmd(const cmd::ArgumentList& args);
+	void startMergeOperationCmd(const cmd::ArgumentList& args);
+	void abortMergeOperationCmd(const cmd::ArgumentList& args);
+	void finishMergeOperationCmd(const cmd::ArgumentList& args);
 
-    void createMergeActions();
-    void prepareMergeOperation();
-    void onMergeActionAdded(const scene::merge::IMergeAction::Ptr& action);
+	void createMergeActions();
+	void prepareMergeOperation();
+	void onMergeActionAdded(const scene::merge::IMergeAction::Ptr& action);
 
 	void emitMapEvent(MapEvent ev);
 
 	void clearMapResource();
 	void connectToRootNode();
 
-    void onLayerHierarchyChanged();
-    void onUndoEvent(IUndoSystem::EventType type, const std::string& operationName);
+	void onLayerHierarchyChanged();
+	void onUndoEvent(IUndoSystem::EventType type, const std::string& operationName);
 
-    void cleanupMergeOperation();
+	void cleanupMergeOperation();
 
-    /** greebo: Focus the XYViews and the Camera to the given point/angle.
-     */
-    void focusViews(const Vector3& point, const Vector3& angles);
-    void focusViewCmd(const cmd::ArgumentList& args);
-    void focusCameraOnSelectionCmd(const cmd::ArgumentList& args);
+	/** greebo: Focus the XYViews and the Camera to the given point/angle.
+	 */
+	void focusViews(const Vector3& point, const Vector3& angles);
+	void focusViewCmd(const cmd::ArgumentList& args);
+	void focusCameraOnSelectionCmd(const cmd::ArgumentList& args);
 
-    void undoCmd(const cmd::ArgumentList& args);
-    void redoCmd(const cmd::ArgumentList& args);
+	void undoCmd(const cmd::ArgumentList& args);
+	void redoCmd(const cmd::ArgumentList& args);
 
-    void assignRenderSystem(const scene::IMapRootNodePtr& root);
+	void assignRenderSystem(const scene::IMapRootNodePtr& root);
 };
 
 } // namespace map

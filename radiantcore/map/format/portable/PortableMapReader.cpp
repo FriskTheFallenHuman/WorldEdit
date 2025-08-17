@@ -76,8 +76,8 @@ void PortableMapReader::readLayers(const xml::Node& mapNode)
 {
 	try
 	{
-        auto& layerManager = _importFilter.getRootNode()->getLayerManager();
-        layerManager.reset();
+		auto& layerManager = _importFilter.getRootNode()->getLayerManager();
+		layerManager.reset();
 
 		auto mapLayers = getNamedChild(mapNode, TAG_MAP_LAYERS);
 
@@ -88,30 +88,30 @@ void PortableMapReader::readLayers(const xml::Node& mapNode)
 			auto id = string::convert<int>(layer.getAttributeValue(ATTR_MAP_LAYER_ID));
 			auto name = layer.getAttributeValue(ATTR_MAP_LAYER_NAME);
 
-            layerManager.createLayer(name, id);
+			layerManager.createLayer(name, id);
 
-            // Check active layer properties
-            if (layer.getAttributeValue(ATTR_MAP_LAYER_ACTIVE) == ATTR_VALUE_TRUE)
-            {
-                layerManager.setActiveLayer(id);
-            }
+			// Check active layer properties
+			if (layer.getAttributeValue(ATTR_MAP_LAYER_ACTIVE) == ATTR_VALUE_TRUE)
+			{
+				layerManager.setActiveLayer(id);
+			}
 
-            // Set visibility (and make sure this happens before the hierarchy is restored)
-            if (layer.getAttributeValue(ATTR_MAP_LAYER_HIDDEN) == ATTR_VALUE_TRUE)
-            {
-                layerManager.setLayerVisibility(id, false);
-            }
+			// Set visibility (and make sure this happens before the hierarchy is restored)
+			if (layer.getAttributeValue(ATTR_MAP_LAYER_HIDDEN) == ATTR_VALUE_TRUE)
+			{
+				layerManager.setLayerVisibility(id, false);
+			}
 		}
 
-        // Restore the layer hierarchy after all layers have been created
-        for (const auto& layer : layers)
-        {
-            auto childLayerId = string::convert<int>(layer.getAttributeValue(ATTR_MAP_LAYER_ID));
-            // Parent layer ID is optional and defaults to -1
-            auto parentLayerId = string::convert<int>(layer.getAttributeValue(ATTR_MAP_LAYER_PARENT_ID), -1);
+		// Restore the layer hierarchy after all layers have been created
+		for (const auto& layer : layers)
+		{
+			auto childLayerId = string::convert<int>(layer.getAttributeValue(ATTR_MAP_LAYER_ID));
+			// Parent layer ID is optional and defaults to -1
+			auto parentLayerId = string::convert<int>(layer.getAttributeValue(ATTR_MAP_LAYER_PARENT_ID), -1);
 
-            layerManager.setParentLayer(childLayerId, parentLayerId);
-        }
+			layerManager.setParentLayer(childLayerId, parentLayerId);
+		}
 	}
 	catch (const BadDocumentFormatException& ex)
 	{
@@ -295,8 +295,8 @@ void PortableMapReader::readBrush(const xml::Node& brushTag, const scene::INodeP
 		}
 	}
 
-    // Cleanup redundant face planes
-    brush.removeRedundantFaces();
+	// Cleanup redundant face planes
+	brush.removeRedundantFaces();
 
 	_importFilter.addPrimitiveToEntity(node, entity);
 
@@ -450,25 +450,25 @@ void PortableMapReader::readLayerInformation(const xml::Node& tag, const scene::
 
 void PortableMapReader::readSelectionGroupInformation(const xml::Node& tag, const scene::INodePtr& sceneNode)
 {
-    auto groupsTag = getNamedChild(tag, TAG_OBJECT_SELECTIONGROUPS);
-    auto groupTags = groupsTag.getNamedChildren(TAG_OBJECT_SELECTIONGROUP);
+	auto groupsTag = getNamedChild(tag, TAG_OBJECT_SELECTIONGROUPS);
+	auto groupTags = groupsTag.getNamedChildren(TAG_OBJECT_SELECTIONGROUP);
 
-    auto& groupManager = _importFilter.getRootNode()->getSelectionGroupManager();
+	auto& groupManager = _importFilter.getRootNode()->getSelectionGroupManager();
 
-    // Read the list of group IDs
-    for (const auto& groupTag : groupTags)
-    {
-        auto groupId = string::convert<IGroupSelectable::GroupIds::value_type>(
-            groupTag.getAttributeValue(ATTR_OBJECT_SELECTIONGROUP_ID)
-        );
+	// Read the list of group IDs
+	for (const auto& groupTag : groupTags)
+	{
+		auto groupId = string::convert<IGroupSelectable::GroupIds::value_type>(
+			groupTag.getAttributeValue(ATTR_OBJECT_SELECTIONGROUP_ID)
+		);
 
-        auto group = groupManager.getSelectionGroup(groupId);
+		auto group = groupManager.getSelectionGroup(groupId);
 
-        if (group)
-        {
-            group->addNode(sceneNode);
-        }
-    }
+		if (group)
+		{
+			group->addNode(sceneNode);
+		}
+	}
 }
 
 void PortableMapReader::readSelectionSetInformation(const xml::Node& tag, const scene::INodePtr& sceneNode)
@@ -502,7 +502,7 @@ bool PortableMapReader::CanLoad(std::istream& stream)
 
 	for (int i = 0; i < 25; ++i)
 	{
-        std::getline(stream, buffer);
+		std::getline(stream, buffer);
 
 		// Check if the format="portable" string is occurring somewhere
 		std::regex pattern(R"(<map[^>]+format=\"portable\")");

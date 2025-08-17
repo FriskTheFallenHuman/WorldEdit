@@ -57,51 +57,51 @@ scene::INodePtr MD5ModelLoader::loadModel(const std::string& modelName)
 		return std::make_shared<MD5ModelNode>(md5Model);
 	}
 	
-    rError() << "MD5ModelLoader: Cached model is not an MD5Model?" << std::endl;
+	rError() << "MD5ModelLoader: Cached model is not an MD5Model?" << std::endl;
 	return scene::INodePtr();
 }
 
 model::IModelPtr MD5ModelLoader::loadModelFromPath(const std::string& path)
 {
 	// Open an ArchiveFile to load
-    auto file = path_is_absolute(path.c_str()) ? 
-        GlobalFileSystem().openFileInAbsolutePath(path) :
-	    GlobalFileSystem().openFile(path);
+	auto file = path_is_absolute(path.c_str()) ? 
+		GlobalFileSystem().openFileInAbsolutePath(path) :
+		GlobalFileSystem().openFile(path);
 
-    if (!file)
-    {
-        rError() << "Failed to load model " << path << std::endl;
-        return model::IModelPtr(); // delete the model
-    }
+	if (!file)
+	{
+		rError() << "Failed to load model " << path << std::endl;
+		return model::IModelPtr(); // delete the model
+	}
 
-    // Construct a new MD5Model container
-    auto model = std::make_shared<MD5Model>();
+	// Construct a new MD5Model container
+	auto model = std::make_shared<MD5Model>();
 
-    // Store the path in this model
-    model->setModelPath(path);
-    // Set the filename this model was loaded from
-    model->setFilename(os::getFilename(file->getName()));
+	// Store the path in this model
+	model->setModelPath(path);
+	// Set the filename this model was loaded from
+	model->setFilename(os::getFilename(file->getName()));
 
-    // greebo: Get the Inputstream from the given file
-    stream::BinaryToTextInputStream<InputStream> inputStream(file->getInputStream());
+	// greebo: Get the Inputstream from the given file
+	stream::BinaryToTextInputStream<InputStream> inputStream(file->getInputStream());
 
-    // Construct a Tokeniser object and start reading the file
-    try
-    {
-        std::istream is(&inputStream);
-        parser::BasicDefTokeniser<std::istream> tokeniser(is);
+	// Construct a Tokeniser object and start reading the file
+	try
+	{
+		std::istream is(&inputStream);
+		parser::BasicDefTokeniser<std::istream> tokeniser(is);
 
-        // Invoke the parser routine (might throw)
-        model->parseFromTokens(tokeniser);
+		// Invoke the parser routine (might throw)
+		model->parseFromTokens(tokeniser);
 
-        // Load was successful, return the model
-        return model;
-    }
-    catch (parser::ParseException& e)
-    {
-        rError() << "[md5model] Parse failure. Exception was: " << e.what() << std::endl;
-        return model::IModelPtr();
-    }
+		// Load was successful, return the model
+		return model;
+	}
+	catch (parser::ParseException& e)
+	{
+		rError() << "[md5model] Parse failure. Exception was: " << e.what() << std::endl;
+		return model::IModelPtr();
+	}
 }
 
 } // namespace md5

@@ -50,10 +50,10 @@ void image_decode(stream::PointerInputStream& istream, PixelDecoder& decode, RGB
   RGBAPixel* end = image.pixels + (image.getHeight() * image.getWidth());
   for(RGBAPixel* row = end; row != image.pixels; row -= image.getWidth())
   {
-    for(RGBAPixel* pixel = row - image.getWidth(); pixel != row; ++pixel)
-    {
-      decode(istream, *pixel);
-    }
+	for(RGBAPixel* pixel = row - image.getWidth(); pixel != row; ++pixel)
+	{
+	  decode(istream, *pixel);
+	}
   }
 }
 
@@ -63,10 +63,10 @@ void image_decode(stream::PointerInputStream& istream, PixelDecoder& decode, RGB
   RGBAPixel* end = image.pixels + (image.getHeight() * image.getWidth());
   for(RGBAPixel* row = image.pixels; row != end; row += image.getWidth())
   {
-    for(RGBAPixel* pixel = row; pixel != row + image.getWidth(); ++pixel)
-    {
-      decode(istream, *pixel);
-    }
+	for(RGBAPixel* pixel = row; pixel != row + image.getWidth(); ++pixel)
+	{
+	  decode(istream, *pixel);
+	}
   }
 }
 
@@ -76,10 +76,10 @@ void image_decode(stream::PointerInputStream& istream, PixelDecoder& decode, RGB
   RGBAPixel* end = image.pixels + (image.getHeight() * image.getWidth());
   for(RGBAPixel* row = end; row != image.pixels; row -= image.getWidth())
   {
-    for(RGBAPixel* pixel = row; pixel != row - image.getWidth();)
-    {
-      decode(istream, *--pixel);
-    }
+	for(RGBAPixel* pixel = row; pixel != row - image.getWidth();)
+	{
+	  decode(istream, *--pixel);
+	}
   }
 }
 
@@ -89,10 +89,10 @@ void image_decode(stream::PointerInputStream& istream, PixelDecoder& decode, RGB
   RGBAPixel* end = image.pixels + (image.getHeight() * image.getWidth());
   for(RGBAPixel* row = image.pixels; row != end; row += image.getWidth())
   {
-    for(RGBAPixel* pixel = row + image.getWidth(); pixel != row;)
-    {
-      decode(istream, *--pixel);
-    }
+	for(RGBAPixel* pixel = row + image.getWidth(); pixel != row;)
+	{
+	  decode(istream, *--pixel);
+	}
   }
 }
 
@@ -124,7 +124,7 @@ class TargaDecodeGrayPixel
 public:
   void operator()(stream::PointerInputStream& istream, RGBAPixel& pixel)
   {
-    istream_read_gray(istream, pixel);
+	istream_read_gray(istream, pixel);
   }
 };
 
@@ -140,7 +140,7 @@ class TargaDecodeRGBPixel
 public:
   void operator()(stream::PointerInputStream& istream, RGBAPixel& pixel)
   {
-    istream_read_rgb(istream, pixel);
+	istream_read_rgb(istream, pixel);
   }
 };
 
@@ -156,7 +156,7 @@ class TargaDecodeRGBAPixel
 public:
   void operator()(stream::PointerInputStream& istream, RGBAPixel& pixel)
   {
-    istream_read_rgba(istream, pixel);
+	istream_read_rgba(istream, pixel);
   }
 };
 
@@ -197,27 +197,27 @@ public:
   }
   void operator()(stream::PointerInputStream& istream, RGBAPixel& pixel)
   {
-    if(m_packetSize == 0)
-    {
-      targa_packet_read_istream(m_packet, istream);
-      m_packetSize = targa_packet_size(m_packet);
+	if(m_packetSize == 0)
+	{
+	  targa_packet_read_istream(m_packet, istream);
+	  m_packetSize = targa_packet_size(m_packet);
 
-      if(targa_packet_is_rle(m_packet))
-      {
-        istream_read_rgb(istream, m_pixel);
-      }
-    }
+	  if(targa_packet_is_rle(m_packet))
+	  {
+		istream_read_rgb(istream, m_pixel);
+	  }
+	}
 
-    if(targa_packet_is_rle(m_packet))
-    {
-      pixel = m_pixel;
-    }
-    else
-    {
-      istream_read_rgb(istream, pixel);
-    }
+	if(targa_packet_is_rle(m_packet))
+	{
+	  pixel = m_pixel;
+	}
+	else
+	{
+	  istream_read_rgb(istream, pixel);
+	}
 
-    --m_packetSize;
+	--m_packetSize;
   }
 };
 
@@ -239,27 +239,27 @@ public:
   }
   void operator()(stream::PointerInputStream& istream, RGBAPixel& pixel)
   {
-    if(m_packetSize == 0)
-    {
-      targa_packet_read_istream(m_packet, istream);
-      m_packetSize = targa_packet_size(m_packet);
+	if(m_packetSize == 0)
+	{
+	  targa_packet_read_istream(m_packet, istream);
+	  m_packetSize = targa_packet_size(m_packet);
 
-      if(targa_packet_is_rle(m_packet))
-      {
-        istream_read_rgba(istream, m_pixel);
-      }
-    }
+	  if(targa_packet_is_rle(m_packet))
+	  {
+		istream_read_rgba(istream, m_pixel);
+	  }
+	}
 
-    if(targa_packet_is_rle(m_packet))
-    {
-      pixel = m_pixel;
-    }
-    else
-    {
-      istream_read_rgba(istream, pixel);
-    }
+	if(targa_packet_is_rle(m_packet))
+	{
+	  pixel = m_pixel;
+	}
+	else
+	{
+	  istream_read_rgba(istream, pixel);
+	}
 
-    --m_packetSize;
+	--m_packetSize;
   }
 };
 
@@ -298,7 +298,7 @@ inline void targa_header_read_istream(TargaHeader& targa_header, stream::Pointer
 	targa_header.attributes = stream::readByte(istream);
 
   if (targa_header.id_length != 0)
-    istream.seek(targa_header.id_length);	// skip TARGA image comment
+	istream.seek(targa_header.id_length);	// skip TARGA image comment
 }
 
 template<typename Type>
@@ -313,11 +313,11 @@ public:
   }
   ~ScopeDelete()
   {
-    delete m_value;
+	delete m_value;
   }
   Type* get_pointer() const
   {
-    return m_value;
+	return m_value;
   }
 };
 
@@ -328,36 +328,36 @@ RGBAImagePtr Targa_decodeImageData(const TargaHeader& targa_header, stream::Poin
 
   if (targa_header.image_type == 2 || targa_header.image_type == 3)
   {
-    switch (targa_header.pixel_size)
-    {
-    case 8:
-      targa_decode_grayscale(istream, *image, flip);
-      break;
-    case 24:
-      targa_decode_rgb(istream, *image, flip);
-      break;
-    case 32:
-      targa_decode_rgba(istream, *image, flip);
-      break;
-    default:
-      rError() << "LoadTGA: illegal pixel_size '" << targa_header.pixel_size << "'\n";
-      return RGBAImagePtr();
-    }
+	switch (targa_header.pixel_size)
+	{
+	case 8:
+	  targa_decode_grayscale(istream, *image, flip);
+	  break;
+	case 24:
+	  targa_decode_rgb(istream, *image, flip);
+	  break;
+	case 32:
+	  targa_decode_rgba(istream, *image, flip);
+	  break;
+	default:
+	  rError() << "LoadTGA: illegal pixel_size '" << targa_header.pixel_size << "'\n";
+	  return RGBAImagePtr();
+	}
   }
   else if (targa_header.image_type == 10)
   {
-    switch (targa_header.pixel_size)
-    {
-    case 24:
-      targa_decode_rle_rgb(istream, *image, flip);
-      break;
-    case 32:
-      targa_decode_rle_rgba(istream, *image, flip);
-      break;
-    default:
-      rError() << "LoadTGA: illegal pixel_size '" << targa_header.pixel_size << "'\n";
-      return RGBAImagePtr();
-    }
+	switch (targa_header.pixel_size)
+	{
+	case 24:
+	  targa_decode_rle_rgb(istream, *image, flip);
+	  break;
+	case 32:
+	  targa_decode_rle_rgba(istream, *image, flip);
+	  break;
+	default:
+	  rError() << "LoadTGA: illegal pixel_size '" << targa_header.pixel_size << "'\n";
+	  return RGBAImagePtr();
+	}
   }
 
   return image;
@@ -375,45 +375,45 @@ RGBAImagePtr LoadTGABuff(const byte* buffer)
 
   if (targa_header.image_type != 2 && targa_header.image_type != 10 && targa_header.image_type != 3)
   {
-    rError() << "LoadTGA: TGA type " << targa_header.image_type << " not supported\n";
-    rError() << "LoadTGA: Only type 2 (RGB), 3 (gray), and 10 (RGB) TGA images supported\n";
-    return RGBAImagePtr();
+	rError() << "LoadTGA: TGA type " << targa_header.image_type << " not supported\n";
+	rError() << "LoadTGA: Only type 2 (RGB), 3 (gray), and 10 (RGB) TGA images supported\n";
+	return RGBAImagePtr();
   }
 
   if (targa_header.colormap_type != 0)
   {
-    rError() << "LoadTGA: colormaps not supported\n";
-    return RGBAImagePtr();
+	rError() << "LoadTGA: colormaps not supported\n";
+	return RGBAImagePtr();
   }
 
   if ((targa_header.pixel_size != 32 && targa_header.pixel_size != 24)
-      && targa_header.image_type != 3)
+	  && targa_header.image_type != 3)
   {
-    rError() << "LoadTGA: Only 32 or 24 bit images supported\n";
-    return RGBAImagePtr();
+	rError() << "LoadTGA: Only 32 or 24 bit images supported\n";
+	return RGBAImagePtr();
   }
 
   if ((targa_header.attributes & (TGA_FLIP_HORIZONTAL|TGA_FLIP_VERTICAL)) == 0)
   {
-    return Targa_decodeImageData(targa_header, istream, Flip00());
+	return Targa_decodeImageData(targa_header, istream, Flip00());
   }
 
   if((targa_header.attributes & TGA_FLIP_HORIZONTAL) == 0 &&
 	 (targa_header.attributes & TGA_FLIP_VERTICAL) != 0)
   {
-    return Targa_decodeImageData(targa_header, istream, Flip01());
+	return Targa_decodeImageData(targa_header, istream, Flip01());
   }
 
   if ((targa_header.attributes & TGA_FLIP_HORIZONTAL) != 0 &&
 	  (targa_header.attributes & TGA_FLIP_VERTICAL) == 0)
   {
-    return Targa_decodeImageData(targa_header, istream, Flip10());
+	return Targa_decodeImageData(targa_header, istream, Flip10());
   }
 
   if ((targa_header.attributes & TGA_FLIP_HORIZONTAL) != 0 &&
 	  (targa_header.attributes & TGA_FLIP_VERTICAL) != 0)
   {
-    return Targa_decodeImageData(targa_header, istream, Flip11());
+	return Targa_decodeImageData(targa_header, istream, Flip11());
   }
 
   // unreachable
@@ -422,15 +422,15 @@ RGBAImagePtr LoadTGABuff(const byte* buffer)
 
 ImagePtr TGALoader::load(ArchiveFile& file) const
 {
-    archive::ScopedArchiveBuffer buffer(file);
-    return LoadTGABuff(buffer.buffer);
+	archive::ScopedArchiveBuffer buffer(file);
+	return LoadTGABuff(buffer.buffer);
 }
 
 ImageTypeLoader::Extensions TGALoader::getExtensions() const
 {
-    Extensions extensions;
-    extensions.push_back("tga");
-    return extensions;
+	Extensions extensions;
+	extensions.push_back("tga");
+	return extensions;
 }
 
 }

@@ -44,12 +44,12 @@ public:
 		return _shader;
 	}
 
-    bool isBlendLight() const
+	bool isBlendLight() const
 	{
-        if (!_shader) return false;
+		if (!_shader) return false;
 
-        const auto& material = _shader->getMaterial();
-        return material ? material->isBlendLight() : false;
+		const auto& material = _shader->getMaterial();
+		return material ? material->isBlendLight() : false;
 	}
 
 private:

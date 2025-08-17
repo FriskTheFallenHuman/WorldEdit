@@ -22,9 +22,9 @@ StaticGeometryNode::StaticGeometryNode(const IEntityClassPtr& eclass) :
 	_catmullRomEditInstance(m_curveCatmullRom,
 					  std::bind(&StaticGeometryNode::selectionChangedComponent, this, std::placeholders::_1)),
 	_originInstance(getOrigin(), std::bind(&StaticGeometryNode::selectionChangedComponent, this, std::placeholders::_1)),
-    _nurbsVertices(m_curveNURBS, _nurbsEditInstance),
-    _catmullRomVertices(m_curveCatmullRom, _catmullRomEditInstance),
-    _renderableOriginVertex(_originInstance, localToWorld())
+	_nurbsVertices(m_curveNURBS, _nurbsEditInstance),
+	_catmullRomVertices(m_curveCatmullRom, _catmullRomEditInstance),
+	_renderableOriginVertex(_originInstance, localToWorld())
 {}
 
 StaticGeometryNode::StaticGeometryNode(const StaticGeometryNode& other) :
@@ -47,9 +47,9 @@ StaticGeometryNode::StaticGeometryNode(const StaticGeometryNode& other) :
 	_catmullRomEditInstance(m_curveCatmullRom,
 					  std::bind(&StaticGeometryNode::selectionChangedComponent, this, std::placeholders::_1)),
 	_originInstance(getOrigin(), std::bind(&StaticGeometryNode::selectionChangedComponent, this, std::placeholders::_1)),
-    _nurbsVertices(m_curveNURBS, _nurbsEditInstance),
-    _catmullRomVertices(m_curveCatmullRom, _catmullRomEditInstance),
-    _renderableOriginVertex(_originInstance, localToWorld())
+	_nurbsVertices(m_curveNURBS, _nurbsEditInstance),
+	_catmullRomVertices(m_curveCatmullRom, _catmullRomEditInstance),
+	_renderableOriginVertex(_originInstance, localToWorld())
 {
 	// greebo: Don't call construct() here, this should be invoked by the
 	// clone() method
@@ -70,75 +70,75 @@ StaticGeometryNode::~StaticGeometryNode()
 
 void StaticGeometryNode::construct()
 {
-    EntityNode::construct();
+	EntityNode::construct();
 
 	m_rotation.setIdentity();
 
-    // Observe common spawnarg changes
-    static_assert(std::is_base_of<sigc::trackable, RotationKey>::value);
-    static_assert(std::is_base_of<sigc::trackable, StaticGeometryNode>::value);
-    observeKey("origin", sigc::mem_fun(m_originKey, &OriginKey::onKeyValueChanged));
-    observeKey("angle", sigc::mem_fun(m_rotationKey, &RotationKey::angleChanged));
-    observeKey("rotation", sigc::mem_fun(m_rotationKey, &RotationKey::rotationChanged));
-    observeKey("name", sigc::mem_fun(this, &StaticGeometryNode::nameChanged));
+	// Observe common spawnarg changes
+	static_assert(std::is_base_of<sigc::trackable, RotationKey>::value);
+	static_assert(std::is_base_of<sigc::trackable, StaticGeometryNode>::value);
+	observeKey("origin", sigc::mem_fun(m_originKey, &OriginKey::onKeyValueChanged));
+	observeKey("angle", sigc::mem_fun(m_rotationKey, &RotationKey::angleChanged));
+	observeKey("rotation", sigc::mem_fun(m_rotationKey, &RotationKey::rotationChanged));
+	observeKey("name", sigc::mem_fun(this, &StaticGeometryNode::nameChanged));
 
-    // Observe curve-related spawnargs
-    static_assert(std::is_base_of<sigc::trackable, CurveNURBS>::value);
-    static_assert(std::is_base_of<sigc::trackable, CurveCatmullRom>::value);
-    observeKey(curve_Nurbs, sigc::mem_fun(m_curveNURBS, &CurveNURBS::onKeyValueChanged));
-    observeKey(curve_CatmullRomSpline,
-               sigc::mem_fun(m_curveCatmullRom, &CurveCatmullRom::onKeyValueChanged));
+	// Observe curve-related spawnargs
+	static_assert(std::is_base_of<sigc::trackable, CurveNURBS>::value);
+	static_assert(std::is_base_of<sigc::trackable, CurveCatmullRom>::value);
+	observeKey(curve_Nurbs, sigc::mem_fun(m_curveNURBS, &CurveNURBS::onKeyValueChanged));
+	observeKey(curve_CatmullRomSpline,
+			   sigc::mem_fun(m_curveCatmullRom, &CurveCatmullRom::onKeyValueChanged));
 
-    updateIsModel();
+	updateIsModel();
 
-    m_curveNURBS.signal_curveChanged().connect(
-        sigc::mem_fun(_nurbsEditInstance, &CurveEditInstance::curveChanged)
-    );
-    m_curveCatmullRom.signal_curveChanged().connect(
-        sigc::mem_fun(_catmullRomEditInstance, &CurveEditInstance::curveChanged)
-    );
+	m_curveNURBS.signal_curveChanged().connect(
+		sigc::mem_fun(_nurbsEditInstance, &CurveEditInstance::curveChanged)
+	);
+	m_curveCatmullRom.signal_curveChanged().connect(
+		sigc::mem_fun(_catmullRomEditInstance, &CurveEditInstance::curveChanged)
+	);
 }
 
 void StaticGeometryNode::onVisibilityChanged(bool isVisibleNow)
 {
-    EntityNode::onVisibilityChanged(isVisibleNow);
+	EntityNode::onVisibilityChanged(isVisibleNow);
 
-    if (isVisibleNow)
-    {
-        m_curveNURBS.updateRenderable();
-        m_curveCatmullRom.updateRenderable();
-        _nurbsVertices.queueUpdate();
-        _catmullRomVertices.queueUpdate();
-        _renderableOriginVertex.queueUpdate();
-    }
-    else
-    {
-        m_curveNURBS.clearRenderable();
-        m_curveCatmullRom.clearRenderable();
-        _nurbsVertices.clear();
-        _catmullRomVertices.clear();
-        _renderableOriginVertex.clear();
-    }
+	if (isVisibleNow)
+	{
+		m_curveNURBS.updateRenderable();
+		m_curveCatmullRom.updateRenderable();
+		_nurbsVertices.queueUpdate();
+		_catmullRomVertices.queueUpdate();
+		_renderableOriginVertex.queueUpdate();
+	}
+	else
+	{
+		m_curveNURBS.clearRenderable();
+		m_curveCatmullRom.clearRenderable();
+		_nurbsVertices.clear();
+		_catmullRomVertices.clear();
+		_renderableOriginVertex.clear();
+	}
 }
 
 void StaticGeometryNode::onSelectionStatusChange(bool changeGroupStatus)
 {
-    EntityNode::onSelectionStatusChange(changeGroupStatus);
+	EntityNode::onSelectionStatusChange(changeGroupStatus);
 
-    if (isSelected())
-    {
-        _renderOrigin.queueUpdate();
-        _nurbsVertices.queueUpdate();
-        _catmullRomVertices.queueUpdate();
-        _renderableOriginVertex.queueUpdate();
-    }
-    else
-    {
-        _renderOrigin.clear();
-        _nurbsVertices.clear();
-        _catmullRomVertices.clear();
-        _renderableOriginVertex.clear();
-    }
+	if (isSelected())
+	{
+		_renderOrigin.queueUpdate();
+		_nurbsVertices.queueUpdate();
+		_catmullRomVertices.queueUpdate();
+		_renderableOriginVertex.queueUpdate();
+	}
+	else
+	{
+		_renderOrigin.clear();
+		_nurbsVertices.clear();
+		_catmullRomVertices.clear();
+		_renderableOriginVertex.clear();
+	}
 }
 
 bool StaticGeometryNode::hasEmptyCurve() {
@@ -175,21 +175,21 @@ namespace
 // Node visitor class to translate brushes
 class BrushTranslator: public scene::NodeVisitor
 {
-    Vector3 m_origin;
+	Vector3 m_origin;
 public:
-    BrushTranslator(const Vector3& origin) :
-        m_origin(origin)
-    {}
+	BrushTranslator(const Vector3& origin) :
+		m_origin(origin)
+	{}
 
-    bool pre(const scene::INodePtr& node)
-    {
-        Translatable* t = dynamic_cast<Translatable*>(node.get());
-        if (t)
-        {
-            t->translate(m_origin);
-        }
-        return true;
-    }
+	bool pre(const scene::INodePtr& node)
+	{
+		Translatable* t = dynamic_cast<Translatable*>(node.get());
+		if (t)
+		{
+			t->translate(m_origin);
+		}
+		return true;
+	}
 };
 
 }
@@ -197,7 +197,7 @@ public:
 void StaticGeometryNode::addOriginToChildren()
 {
 	if (!isModel())
-    {
+	{
 		BrushTranslator translator(getOrigin());
 		traverseChildren(translator);
 	}
@@ -206,7 +206,7 @@ void StaticGeometryNode::addOriginToChildren()
 void StaticGeometryNode::removeOriginFromChildren()
 {
 	if (!isModel())
-    {
+	{
 		BrushTranslator translator(-getOrigin());
 		traverseChildren(translator);
 	}
@@ -216,9 +216,9 @@ void StaticGeometryNode::selectionChangedComponent(const ISelectable& selectable
 {
 	GlobalSelectionSystem().onComponentSelection(Node::getSelf(), selectable);
 
-    _nurbsVertices.queueUpdate();
-    _catmullRomVertices.queueUpdate();
-    _renderableOriginVertex.queueUpdate();
+	_nurbsVertices.queueUpdate();
+	_catmullRomVertices.queueUpdate();
+	_renderableOriginVertex.queueUpdate();
 }
 
 bool StaticGeometryNode::isSelectedComponents() const {
@@ -287,18 +287,18 @@ scene::INodePtr StaticGeometryNode::clone() const
 {
 	StaticGeometryNode::Ptr clone(new StaticGeometryNode(*this));
 	clone->construct();
-    clone->constructClone(*this);
+	clone->constructClone(*this);
 
 	return clone;
 }
 
 void StaticGeometryNode::onInsertIntoScene(scene::IMapRootNode& root)
 {
-    EntityNode::onInsertIntoScene(root);
+	EntityNode::onInsertIntoScene(root);
 
-    // Clear curve renderables when hidden
-    m_curveNURBS.updateRenderable();
-    m_curveCatmullRom.updateRenderable();
+	// Clear curve renderables when hidden
+	m_curveNURBS.updateRenderable();
+	m_curveCatmullRom.updateRenderable();
 }
 
 void StaticGeometryNode::onRemoveFromScene(scene::IMapRootNode& root)
@@ -306,9 +306,9 @@ void StaticGeometryNode::onRemoveFromScene(scene::IMapRootNode& root)
 	// Call the base class first
 	EntityNode::onRemoveFromScene(root);
 
-    // Clear curve renderables when hidden
-    m_curveNURBS.clearRenderable();
-    m_curveCatmullRom.clearRenderable();
+	// Clear curve renderables when hidden
+	m_curveNURBS.clearRenderable();
+	m_curveCatmullRom.clearRenderable();
 
 	// De-select all child components as well
 	setSelectedComponents(false, selection::ComponentSelectionMode::Vertex);
@@ -333,73 +333,73 @@ void StaticGeometryNode::testSelect(Selector& selector, SelectionTest& test)
 
 void StaticGeometryNode::onPreRender(const VolumeTest& volume)
 {
-    EntityNode::onPreRender(volume);
+	EntityNode::onPreRender(volume);
 
-    m_curveNURBS.onPreRender(getColourShader(), volume);
-    m_curveCatmullRom.onPreRender(getColourShader(), volume);
+	m_curveNURBS.onPreRender(getColourShader(), volume);
+	m_curveCatmullRom.onPreRender(getColourShader(), volume);
 
-    if (isSelected())
-    {
-        _renderOrigin.update(_pivotShader);
+	if (isSelected())
+	{
+		_renderOrigin.update(_pivotShader);
 
-        if (GlobalSelectionSystem().ComponentMode() == selection::ComponentSelectionMode::Vertex)
-        {
-            // Selected patches in component mode render the lattice connecting the control points
-            _nurbsVertices.update(_pointShader);
-            _catmullRomVertices.update(_pointShader);
+		if (GlobalSelectionSystem().ComponentMode() == selection::ComponentSelectionMode::Vertex)
+		{
+			// Selected patches in component mode render the lattice connecting the control points
+			_nurbsVertices.update(_pointShader);
+			_catmullRomVertices.update(_pointShader);
 
-            if (!isModel())
-            {
-                _renderableOriginVertex.update(_pointShader);
-            }
-            else
-            {
-                _renderableOriginVertex.clear();
-            }
-        }
-        else
-        {
-            _nurbsVertices.clear();
-            _catmullRomVertices.clear();
-            _renderableOriginVertex.clear();
+			if (!isModel())
+			{
+				_renderableOriginVertex.update(_pointShader);
+			}
+			else
+			{
+				_renderableOriginVertex.clear();
+			}
+		}
+		else
+		{
+			_nurbsVertices.clear();
+			_catmullRomVertices.clear();
+			_renderableOriginVertex.clear();
 
-            // Queue an update the next time it's rendered
-            _nurbsVertices.queueUpdate();
-            _catmullRomVertices.queueUpdate();
-            _renderableOriginVertex.queueUpdate();
-        }
-    }
+			// Queue an update the next time it's rendered
+			_nurbsVertices.queueUpdate();
+			_catmullRomVertices.queueUpdate();
+			_renderableOriginVertex.queueUpdate();
+		}
+	}
 }
 
 void StaticGeometryNode::renderHighlights(IRenderableCollector& collector, const VolumeTest& volume)
 {
-    m_curveNURBS.renderHighlights(collector, volume);
-    m_curveCatmullRom.renderHighlights(collector, volume);
+	m_curveNURBS.renderHighlights(collector, volume);
+	m_curveCatmullRom.renderHighlights(collector, volume);
 
-    EntityNode::renderHighlights(collector, volume);
+	EntityNode::renderHighlights(collector, volume);
 }
 
 void StaticGeometryNode::setRenderSystem(const RenderSystemPtr& renderSystem)
 {
 	EntityNode::setRenderSystem(renderSystem);
 
-    // Clear the geometry from any previous shader
-    m_curveNURBS.clearRenderable();
-    m_curveCatmullRom.clearRenderable();
-    _nurbsVertices.clear();
-    _catmullRomVertices.clear();
-    _renderableOriginVertex.clear();
+	// Clear the geometry from any previous shader
+	m_curveNURBS.clearRenderable();
+	m_curveCatmullRom.clearRenderable();
+	_nurbsVertices.clear();
+	_catmullRomVertices.clear();
+	_renderableOriginVertex.clear();
 
-    if (renderSystem)
-    {
-        _pivotShader = renderSystem->capture(BuiltInShaderType::Pivot);
-        _pointShader = renderSystem->capture(BuiltInShaderType::BigPoint);
-    }
-    else
-    {
-        _pivotShader.reset();
-        _pointShader.reset();
-    }
+	if (renderSystem)
+	{
+		_pivotShader = renderSystem->capture(BuiltInShaderType::Pivot);
+		_pointShader = renderSystem->capture(BuiltInShaderType::BigPoint);
+	}
+	else
+	{
+		_pivotShader.reset();
+		_pointShader.reset();
+	}
 }
 
 void StaticGeometryNode::evaluateTransform()
@@ -409,7 +409,7 @@ void StaticGeometryNode::evaluateTransform()
 		const Quaternion& rotation = getRotation();
 		const Vector3& scaleFactor = getScale();
 
-        rotate(rotation);
+		rotate(rotation);
 		scale(scaleFactor);
 		translate(getTranslation());
 
@@ -430,21 +430,21 @@ void StaticGeometryNode::evaluateTransform()
 void StaticGeometryNode::transformComponents(const Matrix4& matrix)
 {
 	if (_nurbsEditInstance.isSelected())
-    {
+	{
 		_nurbsEditInstance.transform(matrix);
-        _nurbsVertices.queueUpdate();
+		_nurbsVertices.queueUpdate();
 	}
 
 	if (_catmullRomEditInstance.isSelected())
-    {
+	{
 		_catmullRomEditInstance.transform(matrix);
-        _catmullRomVertices.queueUpdate();
+		_catmullRomVertices.queueUpdate();
 	}
 
 	if (_originInstance.isSelected())
-    {
+	{
 		translateOrigin(getTranslation());
-        _renderableOriginVertex.queueUpdate();
+		_renderableOriginVertex.queueUpdate();
 	}
 }
 
@@ -453,15 +453,15 @@ void StaticGeometryNode::_onTransformationChanged()
 	// If this is a container, pass the call to the children and leave the entity unharmed
 	if (!isModel())
 	{
-        // Notify, any targeting nodes need to update their arrows pointing at us
-        TargetableNode::onTransformationChanged();
+		// Notify, any targeting nodes need to update their arrows pointing at us
+		TargetableNode::onTransformationChanged();
 
 		scene::forEachTransformable(*this, [] (ITransformable& child)
 		{
 			child.revertTransform();
 		});
 
-        revertTransformInternal();
+		revertTransformInternal();
 
 		evaluateTransform();
 	}
@@ -475,9 +475,9 @@ void StaticGeometryNode::_onTransformationChanged()
 
 	m_curveNURBS.curveChanged();
 	m_curveCatmullRom.curveChanged();
-    _nurbsVertices.queueUpdate();
-    _catmullRomVertices.queueUpdate();
-    _renderableOriginVertex.queueUpdate();
+	_nurbsVertices.queueUpdate();
+	_catmullRomVertices.queueUpdate();
+	_renderableOriginVertex.queueUpdate();
 }
 
 void StaticGeometryNode::_applyTransformation()
@@ -500,9 +500,9 @@ inline void PointVertexArray_testSelect(VertexCb* first, std::size_t count,
 	SelectionTest& test, SelectionIntersection& best)
 {
 	test.TestLineStrip(
-	    VertexPointer(&first->vertex, sizeof(VertexCb)),
-	    IndexPointer::index_type(count),
-	    best
+		VertexPointer(&first->vertex, sizeof(VertexCb)),
+		IndexPointer::index_type(count),
+		best
 	);
 }
 
@@ -512,12 +512,12 @@ Vector3& StaticGeometryNode::getOrigin() {
 
 const Vector3& StaticGeometryNode::getUntransformedOrigin()
 {
-    return m_originKey.get();
+	return m_originKey.get();
 }
 
 const Vector3& StaticGeometryNode::getWorldPosition() const
 {
-    return m_origin;
+	return m_origin;
 }
 
 const AABB& StaticGeometryNode::localAABB() const {
@@ -547,13 +547,13 @@ void StaticGeometryNode::snapOrigin(float snap)
 void StaticGeometryNode::translateOrigin(const Vector3& translation)
 {
 	m_origin = m_originKey.get() + translation;
-    _renderOrigin.queueUpdate();
+	_renderOrigin.queueUpdate();
 }
 
 void StaticGeometryNode::translate(const Vector3& translation)
 {
 	m_origin += translation;
-    _renderOrigin.queueUpdate();
+	_renderOrigin.queueUpdate();
 	translateChildren(translation);
 }
 
@@ -568,8 +568,8 @@ void StaticGeometryNode::rotate(const Quaternion& rotation)
 			child.setRotation(rotation);
 		});
 
-        m_origin = rotation.transformPoint(m_origin);
-        _renderOrigin.queueUpdate();
+		m_origin = rotation.transformPoint(m_origin);
+		_renderOrigin.queueUpdate();
 	}
 	else
 	{
@@ -588,8 +588,8 @@ void StaticGeometryNode::scale(const Vector3& scale)
 			child.setScale(scale);
 		});
 
-        m_origin *= scale;
-        _renderOrigin.queueUpdate();
+		m_origin *= scale;
+		_renderOrigin.queueUpdate();
 	}
 }
 
@@ -604,11 +604,11 @@ void StaticGeometryNode::revertTransformInternal()
 	m_origin = m_originKey.get();
 
 	if (isModel())
-    {
+	{
 		m_rotation = m_rotationKey.m_rotation;
 	}
 
-    _renderOrigin.queueUpdate();
+	_renderOrigin.queueUpdate();
 	m_curveNURBS.revertTransform();
 	m_curveCatmullRom.revertTransform();
 }
@@ -692,7 +692,7 @@ void StaticGeometryNode::setIsModel(bool newValue) {
  */
 void StaticGeometryNode::updateIsModel()
 {
-    // A non-empty "model" key value is another requirement for being treated as model
+	// A non-empty "model" key value is another requirement for being treated as model
 	if (m_modelKey != m_name && !_spawnArgs.isWorldspawn() && !_spawnArgs.getKeyValue("model").empty())
 	{
 		setIsModel(true);
@@ -722,18 +722,18 @@ void StaticGeometryNode::modelChanged(const std::string& value)
 		getModelKey().modelChanged("");
 	}
 
-    _renderOrigin.queueUpdate();
+	_renderOrigin.queueUpdate();
 }
 
 void StaticGeometryNode::updateTransform()
 {
-    if (isModel())
-        setLocalToParent(Matrix4::getTranslation(m_origin) * m_rotation.getMatrix4());
-    else
-        setLocalToParent(Matrix4::getIdentity());
+	if (isModel())
+		setLocalToParent(Matrix4::getTranslation(m_origin) * m_rotation.getMatrix4());
+	else
+		setLocalToParent(Matrix4::getIdentity());
 
-    // Notify the Node about this transformation change	to update the local2World matrix
-    transformChanged();
+	// Notify the Node about this transformation change	to update the local2World matrix
+	transformChanged();
 }
 
 void StaticGeometryNode::translateChildren(const Vector3& childTranslation)
@@ -754,8 +754,8 @@ void StaticGeometryNode::originChanged()
 	m_origin = m_originKey.get();
 	updateTransform();
 
-    _renderableOriginVertex.queueUpdate();
-    _renderOrigin.queueUpdate();
+	_renderableOriginVertex.queueUpdate();
+	_renderOrigin.queueUpdate();
 }
 
 void StaticGeometryNode::rotationChanged() {

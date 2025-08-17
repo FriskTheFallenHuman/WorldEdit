@@ -36,10 +36,10 @@ public:
 		return material;
 	}
 
-    void setMaterial(const std::string& newMaterial)
-    {
-        material = newMaterial;
-    }
+	void setMaterial(const std::string& newMaterial)
+	{
+		material = newMaterial;
+	}
 
 	void addVertex(const MeshVertex& vertex)
 	{

@@ -79,28 +79,28 @@ typedef struct index_DUP_LUT_s
 
 typedef struct
 {
-        short   s;
-        short   t;
+		short   s;
+		short   t;
 } md2St_t;
 
 typedef struct
 {
-        short   index_xyz[3];
-        short   index_st[3];
+		short   index_xyz[3];
+		short   index_st[3];
 } md2Triangle_t;
 
 typedef struct
 {
-        byte	v[3];                   // scaled byte to fit in frame mins/maxs
-        byte	lightnormalindex;
+		byte	v[3];                   // scaled byte to fit in frame mins/maxs
+		byte	lightnormalindex;
 } md2XyzNormal_t;
 
 typedef struct md2Frame_s
 {
-        float           scale[3];       // multiply byte verts by this
-        float           translate[3];   // then add this
-        char            name[16];       // frame name from grabbing
-        md2XyzNormal_t  verts[1];       // variable sized
+		float           scale[3];       // multiply byte verts by this
+		float           translate[3];   // then add this
+		char            name[16];       // frame name from grabbing
+		md2XyzNormal_t  verts[1];       // variable sized
 }
 md2Frame_t;
 
@@ -304,7 +304,7 @@ static int _md2_canload( PM_PARAMS_CANLOAD )
 {
 	md2_t	*md2;
 
- 	/* to keep the compiler happy */
+	/* to keep the compiler happy */
 	*fileName = *fileName;
 
 	/* sanity check */
@@ -317,15 +317,15 @@ static int _md2_canload( PM_PARAMS_CANLOAD )
 	/* check md2 magic */
 	if (md2->magic[0] != MD2_MAGIC[0] || md2->magic[1] != MD2_MAGIC[1] ||
 		md2->magic[2] != MD2_MAGIC[2] || md2->magic[3] != MD2_MAGIC[3])
-    {
+	{
 		return PICO_PMV_ERROR_IDENT;
-    }
+	}
 
 	/* check md2 version */
 	if( _pico_little_long( md2->version ) != MD2_VERSION )
 		return PICO_PMV_ERROR_VERSION;
 
- 	/* file seems to be a valid md2 */
+	/* file seems to be a valid md2 */
 	return PICO_PMV_OK;
 }
 
@@ -346,8 +346,8 @@ static picoModel_t *_md2_load( PM_PARAMS_LOAD )
 	md2Triangle_t	*p_md2Triangle;
 
 	char			skinname[ MD2_MAX_SKINNAME + 1 ];
- 	md2_t			*md2;
- 	md2St_t			*texCoord;
+	md2_t			*md2;
+	md2St_t			*texCoord;
 	md2Frame_t		*frame;
 	md2Triangle_t	*triangle;
 	md2XyzNormal_t	*vertex;

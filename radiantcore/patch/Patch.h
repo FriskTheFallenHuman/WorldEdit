@@ -31,7 +31,7 @@ class Patch :
 	public Snappable,
 	public IUndoable
 {
-    friend class PatchNode;
+	friend class PatchNode;
 	PatchNode& _node;
 
 	typedef std::set<IPatch::Observer*> Observers;
@@ -61,8 +61,8 @@ class Patch :
 	// The rendersystem we're attached to, to acquire materials
 	RenderSystemWeakPtr _renderSystem;
 
-    // Shader container, taking care of use count
-    SurfaceShader _shader;
+	// Shader container, taking care of use count
+	SurfaceShader _shader;
 
 	// If true, this patch is using fixed subdivisions
 	bool _patchDef3;
@@ -88,11 +88,11 @@ public:
 	void detachObserver(Observer* observer) override;
 
 	void connectUndoSystem(IUndoSystem& undoSystem);
-    void disconnectUndoSystem(IUndoSystem& undoSystem);
+	void disconnectUndoSystem(IUndoSystem& undoSystem);
 
 	const AABB& localAABB() const override;
 
-    RenderSystemPtr getRenderSystem() const;
+	RenderSystemPtr getRenderSystem() const;
 	void setRenderSystem(const RenderSystemPtr& renderSystem);
 
 	// Implementation of the abstract method of SelectionTestable
@@ -129,13 +129,13 @@ public:
 	const std::string& getShader() const override;
 	void setShader(const std::string& name) override;
 
-    const SurfaceShader& getSurfaceShader() const;
-    SurfaceShader& getSurfaceShader();
+	const SurfaceShader& getSurfaceShader() const;
+	SurfaceShader& getSurfaceShader();
 
 	// greebo: returns true if the patch's shader is visible, false otherwise
 	bool hasVisibleMaterial() const override;
 
-    float getTextureAspectRatio() const override;
+	float getTextureAspectRatio() const override;
 
 	// As the name states: get the shader flags of the m_state shader
 	int getShaderFlags() const;
@@ -183,26 +183,26 @@ public:
 	// The same as above just for const
 	const PatchControl& ctrlAt(std::size_t row, std::size_t col) const override;
 
-    PatchControl& getTransformedCtrlAt(std::size_t row, std::size_t col) override;
+	PatchControl& getTransformedCtrlAt(std::size_t row, std::size_t col) override;
 
- 	/** greebo: Inserts two columns before and after the column with index <colIndex>.
- 	 * 			Throws an GenericPatchException if an error occurs.
- 	 */
- 	void insertColumns(std::size_t colIndex) override;
+	/** greebo: Inserts two columns before and after the column with index <colIndex>.
+	 * 			Throws an GenericPatchException if an error occurs.
+	 */
+	void insertColumns(std::size_t colIndex) override;
 
- 	/** greebo: Inserts two rows before and after the row with index <rowIndex>.
- 	 * 			Throws an GenericPatchException if an error occurs.
- 	 */
- 	void insertRows(std::size_t rowIndex) override;
+	/** greebo: Inserts two rows before and after the row with index <rowIndex>.
+	 * 			Throws an GenericPatchException if an error occurs.
+	 */
+	void insertRows(std::size_t rowIndex) override;
 
- 	/** greebo: Removes columns or rows right before and after the col/row
- 	 * 			with the given index, reducing the according dimension by 2.
- 	 */
- 	void removePoints(bool columns, std::size_t index) override;
+	/** greebo: Removes columns or rows right before and after the col/row
+	 * 			with the given index, reducing the according dimension by 2.
+	 */
+	void removePoints(bool columns, std::size_t index) override;
 
- 	/** greebo: Appends two rows or columns at the beginning or the end.
- 	 */
- 	void appendPoints(bool columns, bool beginning) override;
+	/** greebo: Appends two rows or columns at the beginning or the end.
+	 */
+	void appendPoints(bool columns, bool beginning) override;
 
 	void ConstructPrefab(const AABB& aabb, EPatchPrefab eType, OrthoOrientation viewType, std::size_t width = 3, std::size_t height = 3);
 	void constructPlane(const AABB& aabb, int axis, std::size_t width, std::size_t height);
@@ -215,7 +215,7 @@ public:
 	void redisperseRows() override;
 	void redisperseColumns() override;
 	void insertRemove(bool insert, bool column, bool first) override;
-    void constructSeam(patch::CapType eType, std::vector<Vector3>& points, std::size_t width);
+	void constructSeam(patch::CapType eType, std::vector<Vector3>& points, std::size_t width);
 
 	void flipTexture(int axis) override;
 
@@ -261,8 +261,8 @@ public:
 	/* This takes the texture from the given brush face and applies it to this patch.
 	 * It determines the closest control vertex of this patch to the brush and
 	 * tries to continue the texture seamlessly. The resulting texturing is undistorted.
-     * Might throw a cmd::ExecutionFailure if the patch is not suitable.
-     */
+	 * Might throw a cmd::ExecutionFailure if the patch is not suitable.
+	 */
 	void pasteTextureNatural(const Face* face);
 
 	/** greebo: Pastes the texture from the given sourcepatch
@@ -325,8 +325,8 @@ public:
 	// Static signal holder, signal is emitted after any patch texture has changed
 	static sigc::signal<void>& signal_patchTextureChanged();
 
-    void updateTesselation(bool force = false) override;
-    void queueTesselationUpdate();
+	void updateTesselation(bool force = false) override;
+	void queueTesselationUpdate();
 
 private:
 	// This notifies the surfaceinspector/patchinspector about the texture change

@@ -161,13 +161,13 @@ private:
 				stream << "( ";
 				writeDoubleSafe(patch.ctrlAt(r,c).vertex[0], stream);
 				stream << " ";
-                writeDoubleSafe(patch.ctrlAt(r,c).vertex[1], stream);
+				writeDoubleSafe(patch.ctrlAt(r,c).vertex[1], stream);
 				stream << " ";
-                writeDoubleSafe(patch.ctrlAt(r,c).vertex[2], stream);
+				writeDoubleSafe(patch.ctrlAt(r,c).vertex[2], stream);
 				stream << " ";
-                writeDoubleSafe(patch.ctrlAt(r,c).texcoord[0], stream);
+				writeDoubleSafe(patch.ctrlAt(r,c).texcoord[0], stream);
 				stream << " ";
-                writeDoubleSafe(patch.ctrlAt(r,c).texcoord[1], stream);
+				writeDoubleSafe(patch.ctrlAt(r,c).texcoord[1], stream);
 				stream << " ) ";
 			}
 

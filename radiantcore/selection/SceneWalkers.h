@@ -17,7 +17,7 @@ class SelectAllComponentWalker :
 	public scene::NodeVisitor
 {
 	bool _select;
-    selection::ComponentSelectionMode _mode;
+	selection::ComponentSelectionMode _mode;
 
 public:
 	SelectAllComponentWalker(bool select, selection::ComponentSelectionMode mode) :
@@ -41,42 +41,42 @@ public:
 // Traverses through the scenegraph and removes degenerated brushes from the selected.
 // greebo: The actual erasure is performed in the destructor to keep the scenegraph intact during traversal.
 class RemoveDegenerateBrushWalker :
-    public selection::SelectionSystem::Visitor
+	public selection::SelectionSystem::Visitor
 {
 	mutable std::list<scene::INodePtr> _eraseList;
 public:
 	// Destructor removes marked paths
 	~RemoveDegenerateBrushWalker() override
-    {
-        for (const auto& node : _eraseList)
-        {
-            // Check if the parent has any children left at all
-            auto parent = node->getParent();
+	{
+		for (const auto& node : _eraseList)
+		{
+			// Check if the parent has any children left at all
+			auto parent = node->getParent();
 
-            // Remove the node from the scene
-            removeNodeFromParent(node);
+			// Remove the node from the scene
+			removeNodeFromParent(node);
 
-            if (parent && !parent->hasChildNodes())
-            {
-                rError() << "Warning: removing empty parent entity." << std::endl;
-                removeNodeFromParent(parent);
-            }
-        }
+			if (parent && !parent->hasChildNodes())
+			{
+				rError() << "Warning: removing empty parent entity." << std::endl;
+				removeNodeFromParent(parent);
+			}
+		}
 	}
 
 	void visit(const scene::INodePtr& node) const override
 	{
 		if (auto brush = Node_getBrush(node); brush)
 		{
-            brush->evaluateBRep();
+			brush->evaluateBRep();
 
-            if (!brush->hasContributingFaces())
-            {
-			    // greebo: Mark this path for removal
-			    _eraseList.push_back(node);
+			if (!brush->hasContributingFaces())
+			{
+				// greebo: Mark this path for removal
+				_eraseList.push_back(node);
 
-			    rError() << "Warning: removed degenerate brush!\n";
-            }
+				rError() << "Warning: removed degenerate brush!\n";
+			}
 		}
 	}
 };
@@ -200,7 +200,7 @@ protected:
 
 		if (brush != nullptr)
 		{
-            brush->forEachVisibleFace(_functor);
+			brush->forEachVisibleFace(_functor);
 		}
 	}
 };

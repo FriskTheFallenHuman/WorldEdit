@@ -70,8 +70,8 @@ T3dsLoaderPers;
 
 /* 3ds chunk types that we use */
 enum {
-    /* primary chunk */
-    CHUNK_MAIN				= 0x4D4D,
+	/* primary chunk */
+	CHUNK_MAIN				= 0x4D4D,
 
 	/* main chunks */
 	CHUNK_VERSION       	= 0x0002,

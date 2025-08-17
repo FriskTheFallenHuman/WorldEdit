@@ -53,7 +53,7 @@ void ColourSchemeManager::restoreColourSchemes()
 	// Clear the whole colourScheme map and reload it from the registry
 	_colourSchemes.clear();
 	loadColourSchemes();
-    emitEclassOverrides();
+	emitEclassOverrides();
 }
 
 void ColourSchemeManager::deleteScheme(const std::string& name)
@@ -143,7 +143,7 @@ void ColourSchemeManager::loadColourSchemes()
 	}
 
 	std::string schemeName = "";
-    _activeScheme = "";
+	_activeScheme = "";
 
 	// Cycle through all found scheme nodes
 	for (const auto& node : schemeNodes)
@@ -220,19 +220,19 @@ const StringSet& ColourSchemeManager::getDependencies() const
 void ColourSchemeManager::initialiseModule(const IApplicationContext& ctx)
 {
 	loadColourSchemes();
-    emitEclassOverrides();
+	emitEclassOverrides();
 }
 
 void ColourSchemeManager::emitEclassOverrides()
 {
-    auto& colourManager = GlobalEclassColourManager();
-    colourManager.clearOverrideColours();
+	auto& colourManager = GlobalEclassColourManager();
+	colourManager.clearOverrideColours();
 
-    // Apply the overrides for the known entity classes
-    auto& activeScheme = getActiveScheme();
+	// Apply the overrides for the known entity classes
+	auto& activeScheme = getActiveScheme();
 
-    colourManager.addOverrideColour("worldspawn", activeScheme.getColour("default_brush").getColour());
-    colourManager.addOverrideColour("light", activeScheme.getColour("light_volumes").getColour());
+	colourManager.addOverrideColour("worldspawn", activeScheme.getColour("default_brush").getColour());
+	colourManager.addOverrideColour("light", activeScheme.getColour("light_volumes").getColour());
 }
 
 module::StaticModuleRegistration<ColourSchemeManager> colourSchemeManagerModule;

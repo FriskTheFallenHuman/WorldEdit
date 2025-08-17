@@ -16,7 +16,7 @@ class TGALoader : public ImageTypeLoader
 {
 public:
 
-    // ImageTypeLoader implementation
+	// ImageTypeLoader implementation
 	ImagePtr load(ArchiveFile& file) const;
 	Extensions getExtensions() const;
 };

@@ -251,103 +251,103 @@ void connectSelectedEntities()
 
 bool entityReferencesModel(const Entity& entity, const std::string& searchString)
 {
-    auto model = entity.getKeyValue("model");
+	auto model = entity.getKeyValue("model");
 
-    if (searchString == model)
-    {
-        return true;
-    }
+	if (searchString == model)
+	{
+		return true;
+	}
 
-    // The entity might still reference the model through a model def
-    auto modelDef = GlobalEntityClassManager().findModel(model);
+	// The entity might still reference the model through a model def
+	auto modelDef = GlobalEntityClassManager().findModel(model);
 
-    return modelDef && modelDef->getMesh() == searchString;
+	return modelDef && modelDef->getMesh() == searchString;
 }
 
 void selectItemsByModel(const std::string& model)
 {
-    if (!GlobalSceneGraph().root()) return;
+	if (!GlobalSceneGraph().root()) return;
 
-    scene::EntitySelector selector([&](const Entity& entity)
-    {
-        return entityReferencesModel(entity, model);
-    }, true);
+	scene::EntitySelector selector([&](const Entity& entity)
+	{
+		return entityReferencesModel(entity, model);
+	}, true);
 
-    GlobalSceneGraph().root()->traverse(selector);
+	GlobalSceneGraph().root()->traverse(selector);
 }
 
 void deselectItemsByModel(const std::string& model)
 {
-    if (!GlobalSceneGraph().root()) return;
-    
-    scene::EntitySelector deselector([&](const Entity& entity)
-    {
-        return entityReferencesModel(entity, model);
-    }, false);
+	if (!GlobalSceneGraph().root()) return;
+	
+	scene::EntitySelector deselector([&](const Entity& entity)
+	{
+		return entityReferencesModel(entity, model);
+	}, false);
 
-    GlobalSceneGraph().root()->traverse(deselector);
+	GlobalSceneGraph().root()->traverse(deselector);
 }
 
 // Command target to (de-)select items by model
 void selectItemsByModelCmd(const cmd::ArgumentList& args)
 {
-    if (args.size() != 1)
-    {
-        rMessage() << "Usage: SelectItemsByModel <modelpath>" << std::endl;
-        return;
-    }
+	if (args.size() != 1)
+	{
+		rMessage() << "Usage: SelectItemsByModel <modelpath>" << std::endl;
+		return;
+	}
 
-    selectItemsByModel(args[0].getString());
+	selectItemsByModel(args[0].getString());
 }
 
 void deselectItemsByModelCmd(const cmd::ArgumentList& args)
 {
-    if (args.size() != 1)
-    {
-        rMessage() << "Usage: DeselectItemsByModel <modelpath>" << std::endl;
-        return;
-    }
+	if (args.size() != 1)
+	{
+		rMessage() << "Usage: DeselectItemsByModel <modelpath>" << std::endl;
+		return;
+	}
 
-    deselectItemsByModel(args[0].getString());
+	deselectItemsByModel(args[0].getString());
 }
 
 void placePlayerStart(const cmd::ArgumentList& args)
 {
-    if (args.size() != 1)
-    {
-        rWarning() << "Usage: PlacePlayerStart <position:vector3>" << std::endl;
-        return;
-    }
+	if (args.size() != 1)
+	{
+		rWarning() << "Usage: PlacePlayerStart <position:vector3>" << std::endl;
+		return;
+	}
 
-    auto position = args[0].getVector3();
+	auto position = args[0].getVector3();
 
-    UndoableCommand command(_("Place Player Start"));
+	UndoableCommand command(_("Place Player Start"));
 
-    EntityNodeFindByClassnameWalker walker(PLAYERSTART_CLASSNAME);
-    GlobalSceneGraph().root()->traverse(walker);
+	EntityNodeFindByClassnameWalker walker(PLAYERSTART_CLASSNAME);
+	GlobalSceneGraph().root()->traverse(walker);
 
-    auto playerStartNode = walker.getEntityNode();
-    auto playerStartEntity = walker.getEntity();
+	auto playerStartNode = walker.getEntityNode();
+	auto playerStartEntity = walker.getEntity();
 
-    if (playerStartEntity == nullptr)
-    {
-        // Create the player start entity
-        auto eclass = GlobalEntityClassManager().findClass(PLAYERSTART_CLASSNAME);
-        if (!eclass) throw cmd::ExecutionNotPossible(_("Could not find the info_player_start entityDef"));
+	if (playerStartEntity == nullptr)
+	{
+		// Create the player start entity
+		auto eclass = GlobalEntityClassManager().findClass(PLAYERSTART_CLASSNAME);
+		if (!eclass) throw cmd::ExecutionNotPossible(_("Could not find the info_player_start entityDef"));
 
-        playerStartNode = GlobalEntityModule().createEntity(eclass);
-        scene::addNodeToContainer(playerStartNode, GlobalSceneGraph().root());
+		playerStartNode = GlobalEntityModule().createEntity(eclass);
+		scene::addNodeToContainer(playerStartNode, GlobalSceneGraph().root());
 
-        playerStartEntity = Node_getEntity(playerStartNode);
+		playerStartEntity = Node_getEntity(playerStartNode);
 
-        // Set a default angle
-        playerStartEntity->setKeyValue(ANGLE_KEY_NAME, DEFAULT_ANGLE);
-    }
+		// Set a default angle
+		playerStartEntity->setKeyValue(ANGLE_KEY_NAME, DEFAULT_ANGLE);
+	}
 
-    playerStartEntity->setKeyValue("origin", string::to_string(position));
+	playerStartEntity->setKeyValue("origin", string::to_string(position));
 
-    // #5972: Leave player start selected after placement
-    Node_setSelected(playerStartNode, true);
+	// #5972: Leave player start selected after placement
+	Node_setSelected(playerStartNode, true);
 }
 
 } // namespace algorithm

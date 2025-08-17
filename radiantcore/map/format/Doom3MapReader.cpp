@@ -77,49 +77,49 @@ void Doom3MapReader::addPrimitiveParser(const PrimitiveParserPtr& parser)
 void Doom3MapReader::parseMapVersion(parser::DefTokeniser& tok)
 {
 	// Parse the map version
-    float version = 0;
+	float version = 0;
 
-    try
+	try
 	{
-        tok.assertNextToken("Version");
-        version = std::stof(tok.nextToken());
-    }
-    catch (parser::ParseException& e)
+		tok.assertNextToken("Version");
+		version = std::stof(tok.nextToken());
+	}
+	catch (parser::ParseException& e)
 	{
 		// failed => quit
 		rError()
-            << "[mapdoom3] Unable to parse map version: "
-            << e.what() << std::endl;
+			<< "[mapdoom3] Unable to parse map version: "
+			<< e.what() << std::endl;
 
 		throw FailureException(_("Unable to parse map version (parse exception)."));
-    }
-    catch (std::invalid_argument& e)
+	}
+	catch (std::invalid_argument& e)
 	{
-        rError()
-            << "[mapdoom3] Unable to parse map version: "
-            << e.what() << std::endl;
+		rError()
+			<< "[mapdoom3] Unable to parse map version: "
+			<< e.what() << std::endl;
 
 		throw FailureException(_("Could not recognise map version number format."));
-    }
+	}
 
 	float requiredVersion = MAP_VERSION_D3;
 
-    // Check we have the correct version for this module
-    if (version != requiredVersion)
+	// Check we have the correct version for this module
+	if (version != requiredVersion)
 	{
 		std::string errMsg = fmt::format(_("Incorrect map version: required {0:f}, found {1:f}"), requiredVersion, version);
 
-        rError() << errMsg << std::endl;
+		rError() << errMsg << std::endl;
 
 		throw FailureException(errMsg);
-    }
+	}
 
 	// success
 }
 
 void Doom3MapReader::parsePrimitive(parser::DefTokeniser& tok, const scene::INodePtr& parentEntity)
 {
-    _primitiveCount++;
+	_primitiveCount++;
 
 	std::string primitiveKeyword = tok.nextToken();
 
@@ -157,16 +157,16 @@ void Doom3MapReader::parsePrimitive(parser::DefTokeniser& tok, const scene::INod
 
 scene::INodePtr Doom3MapReader::createEntity(const EntityKeyValues& keyValues)
 {
-    // Get the classname from the EntityKeyValues
-    EntityKeyValues::const_iterator found = keyValues.find("classname");
+	// Get the classname from the EntityKeyValues
+	EntityKeyValues::const_iterator found = keyValues.find("classname");
 
-    if (found == keyValues.end())
+	if (found == keyValues.end())
 	{
 		throw FailureException("Doom3MapReader::createEntity(): could not find classname.");
-    }
+	}
 
-    // Otherwise create the entity and add all of the properties
-    std::string className = found->second;
+	// Otherwise create the entity and add all of the properties
+	std::string className = found->second;
 	IEntityClassPtr classPtr = GlobalEntityClassManager().findClass(className);
 
 	if (classPtr == NULL)
@@ -179,26 +179,26 @@ scene::INodePtr Doom3MapReader::createEntity(const EntityKeyValues& keyValues)
 	}
 
 	// Create the actual entity node
-    EntityNodePtr node(GlobalEntityModule().createEntity(classPtr));
+	EntityNodePtr node(GlobalEntityModule().createEntity(classPtr));
 
-    for (EntityKeyValues::const_iterator i = keyValues.begin();
-         i != keyValues.end();
-         ++i)
-    {
-        node->getEntity().setKeyValue(i->first, i->second);
-    }
+	for (EntityKeyValues::const_iterator i = keyValues.begin();
+		 i != keyValues.end();
+		 ++i)
+	{
+		node->getEntity().setKeyValue(i->first, i->second);
+	}
 
-    return node;
+	return node;
 }
 
 void Doom3MapReader::parseEntity(parser::DefTokeniser& tok)
 {
-    // Map of keyvalues for this entity
-    EntityKeyValues keyValues;
+	// Map of keyvalues for this entity
+	EntityKeyValues keyValues;
 
-    // The actual entity. This is initially null, and will be created when
-    // primitives start or the end of the entity is reached
-    scene::INodePtr entity;
+	// The actual entity. This is initially null, and will be created when
+	// primitives start or the end of the entity is reached
+	scene::INodePtr entity;
 
 	// Start parsing, first token must be an open brace
 	tok.assertNextToken("{");
@@ -210,10 +210,10 @@ void Doom3MapReader::parseEntity(parser::DefTokeniser& tok)
 
 	while (true)
 	{
-	    // Token must be either a key, a "{" to indicate the start of a
-	    // primitive, or a "}" to indicate the end of the entity
+		// Token must be either a key, a "{" to indicate the start of a
+		// primitive, or a "}" to indicate the end of the entity
 
-	    if (token == "{") // PRIMITIVE
+		if (token == "{") // PRIMITIVE
 		{
 			// Create the entity right now, if not yet done
 			if (entity == NULL)
@@ -223,34 +223,34 @@ void Doom3MapReader::parseEntity(parser::DefTokeniser& tok)
 
 			// Parse the primitive block, and pass the parent entity
 			parsePrimitive(tok, entity);
-	    }
-	    else if (token == "}") // END OF ENTITY
+		}
+		else if (token == "}") // END OF ENTITY
 		{
-            // Create the entity if necessary and return it
-	        if (entity == NULL)
+			// Create the entity if necessary and return it
+			if (entity == NULL)
 			{
-	            entity = createEntity(keyValues);
-	        }
+				entity = createEntity(keyValues);
+			}
 
 			break;
-	    }
-	    else // KEY
+		}
+		else // KEY
 		{
-	        std::string value = tok.nextToken();
+			std::string value = tok.nextToken();
 
-	        // Sanity check (invalid number of tokens will get us out of sync)
-	        if (value == "{" || value == "}")
+			// Sanity check (invalid number of tokens will get us out of sync)
+			if (value == "{" || value == "}")
 			{
 				std::string text = fmt::format(_("Parsed invalid value '{0}' for key '{1}'"), value, token);
-	            throw FailureException(text);
-	        }
+				throw FailureException(text);
+			}
 
-	        // Otherwise add the keyvalue pair to our map
-	        keyValues.insert(EntityKeyValues::value_type(token, value));
-	    }
+			// Otherwise add the keyvalue pair to our map
+			keyValues.insert(EntityKeyValues::value_type(token, value));
+		}
 
-	    // Get the next token
-	    token = tok.nextToken();
+		// Get the next token
+		token = tok.nextToken();
 	}
 
 	// Insert the entity

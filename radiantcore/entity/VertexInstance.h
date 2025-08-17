@@ -74,12 +74,12 @@ public:
 	{}
 
 	const Vector3 getVertex() const override
-    {
+	{
 		return _origin + _vertex;
 	}
 
 	void testSelect(Selector& selector, SelectionTest& test) override
-    {
+	{
 		SelectionIntersection best;
 		Vector3 testVertex = _origin + _vertex;
 		test.TestPoint(testVertex, best);

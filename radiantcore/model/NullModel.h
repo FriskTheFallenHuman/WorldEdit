@@ -28,7 +28,7 @@ public:
 	void applySkin(const decl::ISkin::Ptr& skin) override;
 
 	int getSurfaceCount() const override;
-    int getVertexCount() const override;
+	int getVertexCount() const override;
 	int getPolyCount() const override;
 	const IModelSurface& getSurface(unsigned surfaceNum) const override;
 

@@ -1134,12 +1134,6 @@
     <ClInclude Include="..\..\radiantcore\log\COutRedirector.h">
       <Filter>src\log</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\radiantcore\log\LogDevice.h">
-      <Filter>src\log</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\radiantcore\log\LogLevels.h">
-      <Filter>src\log</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\radiantcore\log\LogStream.h">
       <Filter>src\log</Filter>
     </ClInclude>
@@ -1147,12 +1141,6 @@
       <Filter>src\log</Filter>
     </ClInclude>
     <ClInclude Include="..\..\radiantcore\log\LogWriter.h">
-      <Filter>src\log</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\radiantcore\log\PIDFile.h">
-      <Filter>src\log</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\radiantcore\log\PopupErrorHandler.h">
       <Filter>src\log</Filter>
     </ClInclude>
     <ClInclude Include="..\..\radiantcore\log\StringLogDevice.h">
@@ -1965,9 +1953,6 @@
     <ClInclude Include="..\..\radiantcore\map\MapResourceManager.h">
       <Filter>src\map</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\radiantcore\map\ModelBreakdown.h">
-      <Filter>src\map</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\radiantcore\map\PointFile.h">
       <Filter>src\map</Filter>
     </ClInclude>
@@ -1978,9 +1963,6 @@
       <Filter>src\map</Filter>
     </ClInclude>
     <ClInclude Include="..\..\radiantcore\map\RootNode.h">
-      <Filter>src\map</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\radiantcore\map\ShaderBreakdown.h">
       <Filter>src\map</Filter>
     </ClInclude>
     <ClInclude Include="..\..\radiantcore\model\export\ModelExporter.h">
@@ -2201,9 +2183,6 @@
     </ClInclude>
     <ClInclude Include="..\..\radiantcore\rendersystem\backend\ColourShader.h">
       <Filter>src\rendersystem\backend</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\radiantcore\rendersystem\LightingModeRenderResult.h">
-      <Filter>src\rendersystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\radiantcore\rendersystem\backend\InteractionPass.h">
       <Filter>src\rendersystem\backend</Filter>

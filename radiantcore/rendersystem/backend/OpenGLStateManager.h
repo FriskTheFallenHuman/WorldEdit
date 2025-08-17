@@ -31,17 +31,17 @@ class OpenGLStateManager
 {
 public:
 
-    /**
-     * \brief
-     * Insert a new OpenGL state into the map.
-     */
-    virtual void insertSortedState(const OpenGLStates::value_type& val) = 0;
+	/**
+	 * \brief
+	 * Insert a new OpenGL state into the map.
+	 */
+	virtual void insertSortedState(const OpenGLStates::value_type& val) = 0;
 
-    /**
-     * \brief
-     * Remove a given OpenGL state from the map.
-     */
-    virtual void eraseSortedState(const OpenGLStates::key_type& key) = 0;
+	/**
+	 * \brief
+	 * Remove a given OpenGL state from the map.
+	 */
+	virtual void eraseSortedState(const OpenGLStates::key_type& key) = 0;
 
 };
 

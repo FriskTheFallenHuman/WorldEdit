@@ -8,16 +8,16 @@ namespace map
 {
 
 InfoFileExporter::InfoFileExporter(std::ostream& stream) :
-    _stream(stream)
+	_stream(stream)
 {
 	GlobalMapInfoFileManager().foreachModule([](IMapInfoFileModule& module)
 	{
 		module.onInfoFileSaveStart();
 	});
 
-    // Write the information file header
-    _stream << InfoFile::HEADER_SEQUENCE << " " << InfoFile::MAP_INFO_VERSION << std::endl;
-    _stream << "{" << std::endl;
+	// Write the information file header
+	_stream << InfoFile::HEADER_SEQUENCE << " " << InfoFile::MAP_INFO_VERSION << std::endl;
+	_stream << "{" << std::endl;
 }
 
 InfoFileExporter::~InfoFileExporter()
@@ -31,7 +31,7 @@ InfoFileExporter::~InfoFileExporter()
 	});
 
 	// Write the closing braces of the information file
-    _stream << "}" << std::endl;
+	_stream << "}" << std::endl;
 
 	_stream.flush();
 

@@ -9,8 +9,8 @@ namespace fx
 
 IFxDeclaration::Ptr FxManager::findFx(const std::string& name)
 {
-    return std::static_pointer_cast<IFxDeclaration>(
-        GlobalDeclarationManager().findDeclaration(decl::Type::Fx, name));
+	return std::static_pointer_cast<IFxDeclaration>(
+		GlobalDeclarationManager().findDeclaration(decl::Type::Fx, name));
 }
 
 const std::string& FxManager::getName() const
@@ -21,18 +21,18 @@ const std::string& FxManager::getName() const
 
 const StringSet& FxManager::getDependencies() const
 {
-    static StringSet _dependencies
-    {
-        MODULE_DECLMANAGER,
-    };
+	static StringSet _dependencies
+	{
+		MODULE_DECLMANAGER,
+	};
 
 	return _dependencies;
 }
 
 void FxManager::initialiseModule(const IApplicationContext& ctx)
 {
-    GlobalDeclarationManager().registerDeclType("fx", std::make_shared<decl::DeclarationCreator<FxDeclaration>>(decl::Type::Fx));
-    GlobalDeclarationManager().registerDeclFolder(decl::Type::Fx, "fx/", ".fx");
+	GlobalDeclarationManager().registerDeclType("fx", std::make_shared<decl::DeclarationCreator<FxDeclaration>>(decl::Type::Fx));
+	GlobalDeclarationManager().registerDeclFolder(decl::Type::Fx, "fx/", ".fx");
 }
 
 // Static module instance

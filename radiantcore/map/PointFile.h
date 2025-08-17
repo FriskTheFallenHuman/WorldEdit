@@ -20,7 +20,7 @@ class PointFile
 	// Holds the current position in the point file chain
 	std::size_t _curPos;
 
-    RenderablePointFile _renderable;
+	RenderablePointFile _renderable;
 
 public:
 	// Constructor
@@ -34,7 +34,7 @@ public:
 
 	void onMapEvent(IMap::MapEvent ev);
 
-    /// Show the specified pointfile, or hide if the path is empty
+	/// Show the specified pointfile, or hide if the path is empty
 	void show(const fs::path& pointfile);
 
 private:

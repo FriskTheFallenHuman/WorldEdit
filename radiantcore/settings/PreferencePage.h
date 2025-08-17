@@ -58,7 +58,7 @@ public:
 	/** 
 	 * greebo: Performs a recursive lookup of the given path
 	 * and creates any items that do not exist.
- 	 * @returns: the shared_ptr to the PrefPage.
+	 * @returns: the shared_ptr to the PrefPage.
 	 * @throws: a std::logic_error if the given path is empty
 	 */
 	PreferencePage& createOrFindPage(const std::string& path);

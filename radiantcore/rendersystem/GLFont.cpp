@@ -9,14 +9,14 @@ namespace gl
 {
 
 GLFont::GLFont(Style style, unsigned int size) :
-    _lineHeight(0),
+	_lineHeight(0),
 	_ftglFont(nullptr)
 {
-    // Load the locally-provided TTF font file
+	// Load the locally-provided TTF font file
 	std::string fontpath = module::GlobalModuleRegistry()
-                           .getApplicationContext()
-                           .getRuntimeDataPath()
-                           + "ui/fonts/";
+						   .getApplicationContext()
+						   .getRuntimeDataPath()
+						   + "ui/fonts/";
 
 	fontpath += style == Style::Sans ? "FreeSans.ttf" : "FreeMono.ttf";
 
@@ -24,8 +24,8 @@ GLFont::GLFont(Style style, unsigned int size) :
 
 	if (_ftglFont)
 	{
-        FTGL::ftglSetFontFaceSize(_ftglFont, size, 0);
-        _lineHeight = FTGL::ftglGetFontLineHeight(_ftglFont);
+		FTGL::ftglSetFontFaceSize(_ftglFont, size, 0);
+		_lineHeight = FTGL::ftglGetFontLineHeight(_ftglFont);
 	}
 	else
 	{
@@ -44,12 +44,12 @@ GLFont::~GLFont()
 
 float GLFont::getLineHeight() const
 {
-    return _lineHeight;
+	return _lineHeight;
 }
 
 void GLFont::drawString(const std::string& string)
 {
-    FTGL::ftglRenderFont(_ftglFont, string.c_str(), FTGL::RENDER_ALL);
+	FTGL::ftglRenderFont(_ftglFont, string.c_str(), FTGL::RENDER_ALL);
 }
 
 } // namespace

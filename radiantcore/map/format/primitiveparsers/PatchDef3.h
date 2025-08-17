@@ -12,7 +12,7 @@ class PatchDef3Parser :
 public:
 	const std::string& getKeyword() const;
 
-    scene::INodePtr parse(parser::DefTokeniser& tok) const;
+	scene::INodePtr parse(parser::DefTokeniser& tok) const;
 };
 typedef std::shared_ptr<PatchDef3Parser> PatchDef3ParserPtr;
 

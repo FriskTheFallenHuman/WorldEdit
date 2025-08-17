@@ -73,16 +73,16 @@ public:
 	// Time is specified in stage time without offset,in msecs.
 	void update(std::size_t time);
 
-    // Add the renderable geometry to the given arrays
-    void addVertexData(std::vector<render::RenderVertex>& vertices,
-        std::vector<unsigned int>& indices, const Matrix4& localToWorld);
+	// Add the renderable geometry to the given arrays
+	void addVertexData(std::vector<render::RenderVertex>& vertices,
+		std::vector<unsigned int>& indices, const Matrix4& localToWorld);
 
 	const AABB& getBounds();
 
-    std::size_t getNumQuads() const
-    {
-        return _quads.size();
-    }
+	std::size_t getNumQuads() const
+	{
+		return _quads.size();
+	}
 
 private:
 	// Time is measured in seconds!

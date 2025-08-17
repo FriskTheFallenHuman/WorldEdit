@@ -15,8 +15,8 @@ RootNode::RootNode(const std::string& name) :
 	_namespace = GlobalNamespaceFactory().createNamespace();
 	assert(_namespace);
 
-    _targetManager = GlobalEntityModule().createTargetManager();
-    assert(_targetManager);
+	_targetManager = GlobalEntityModule().createTargetManager();
+	assert(_targetManager);
 
 	_selectionGroupManager = GlobalSelectionGroupModule().createSelectionGroupManager();
 	assert(_selectionGroupManager);
@@ -27,17 +27,17 @@ RootNode::RootNode(const std::string& name) :
 	_layerManager = GlobalLayerModule().createLayerManager(*this);
 	assert(_layerManager);
 
-    _undoSystem = GlobalUndoSystemFactory().createUndoSystem();
-    assert(_undoSystem);
+	_undoSystem = GlobalUndoSystemFactory().createUndoSystem();
+	assert(_undoSystem);
 
-    _undoEventHandler = _undoSystem->signal_undoEvent().connect(
-        sigc::mem_fun(this, &RootNode::onUndoEvent)
-    );
+	_undoEventHandler = _undoSystem->signal_undoEvent().connect(
+		sigc::mem_fun(this, &RootNode::onUndoEvent)
+	);
 }
 
 RootNode::~RootNode()
 {
-    _undoEventHandler.disconnect();
+	_undoEventHandler.disconnect();
 
 	// Remove all child nodes to trigger their destruction
 	removeAllChildNodes();
@@ -50,12 +50,12 @@ const INamespacePtr& RootNode::getNamespace()
 
 IMapFileChangeTracker& RootNode::getUndoChangeTracker() 
 {
-    return *this;
+	return *this;
 }
 
 ITargetManager& RootNode::getTargetManager()
 {
-    return *_targetManager;
+	return *_targetManager;
 }
 
 selection::ISelectionGroupManager& RootNode::getSelectionGroupManager()
@@ -75,7 +75,7 @@ scene::ILayerManager& RootNode::getLayerManager()
 
 IUndoSystem& RootNode::getUndoSystem()
 {
-    return *_undoSystem;
+	return *_undoSystem;
 }
 
 std::string RootNode::name() const 
@@ -111,12 +111,12 @@ void RootNode::onChildRemoved(const scene::INodePtr& child)
 
 void RootNode::onFiltersChanged()
 {
-    // Recursively notify the whole tree
-    foreachNode([](const scene::INodePtr& node)
-    {
-        node->onFiltersChanged();
-        return true;
-    });
+	// Recursively notify the whole tree
+	foreachNode([](const scene::INodePtr& node)
+	{
+		node->onFiltersChanged();
+		return true;
+	});
 }
 
 } // namespace map

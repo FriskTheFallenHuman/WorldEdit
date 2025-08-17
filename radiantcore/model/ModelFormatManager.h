@@ -42,7 +42,7 @@ public:
 
 private:
 	void postModuleInitialisation();
-    void convertModelCmd(const cmd::ArgumentList& args);
+	void convertModelCmd(const cmd::ArgumentList& args);
 };
 
 }

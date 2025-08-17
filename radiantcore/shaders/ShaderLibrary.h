@@ -12,28 +12,28 @@ namespace shaders
 class ShaderLibrary
 {
 	typedef std::map<std::string, CShaderPtr, string::ILess> ShaderMap;
-    ShaderMap _shaders;
+	ShaderMap _shaders;
 
 public:
 
 	/* greebo: Trys to lookup the named shader definition and returns
 	 * its reference. Always returns a valid reference.
 	 */
-    std::shared_ptr<ShaderTemplate> getTemplate(const std::string& name);
+	std::shared_ptr<ShaderTemplate> getTemplate(const std::string& name);
 
 	/**
 	 * Returns true if the given shader definition exists.
 	 */
 	bool definitionExists(const std::string& name) const;
 
-    // Copies the given definition, original name must be present, new name must not conflict
-    void copyDefinition(const std::string& nameOfOriginal, const std::string& nameOfCopy);
+	// Copies the given definition, original name must be present, new name must not conflict
+	void copyDefinition(const std::string& nameOfOriginal, const std::string& nameOfCopy);
 
-    // Renames the definition oldName => newName. oldName must be present, newName must not be present
-    bool renameDefinition(const std::string& oldName, const std::string& newName);
+	// Renames the definition oldName => newName. oldName must be present, newName must not be present
+	bool renameDefinition(const std::string& oldName, const std::string& newName);
 
-    // Removes the named definition. The name must be present in the library.
-    void removeDefinition(const std::string& name);
+	// Removes the named definition. The name must be present in the library.
+	void removeDefinition(const std::string& name);
 
 	/* greebo: Clears out all internal containers (definitions, tables, shaders)
 	 */

@@ -11,11 +11,11 @@ PatchNode::PatchNode(patch::PatchDefType type) :
 	scene::SelectableNode(),
 	m_dragPlanes(std::bind(&PatchNode::selectedChangedComponent, this, std::placeholders::_1)),
 	m_patch(*this),
-    _untransformedOriginChanged(true),
-    _renderableSurfaceSolid(m_patch.getTesselation(), true),
-    _renderableSurfaceWireframe(m_patch.getTesselation(), false),
-    _renderableCtrlLattice(m_patch, m_ctrl_instances),
-    _renderableCtrlPoints(m_patch, m_ctrl_instances)
+	_untransformedOriginChanged(true),
+	_renderableSurfaceSolid(m_patch.getTesselation(), true),
+	_renderableSurfaceWireframe(m_patch.getTesselation(), false),
+	_renderableCtrlLattice(m_patch, m_ctrl_instances),
+	_renderableCtrlPoints(m_patch, m_ctrl_instances)
 {
 	m_patch.setFixedSubdivisions(type == patch::PatchDefType::Def3, Subdivisions(m_patch.getSubdivisions()));
 }
@@ -33,11 +33,11 @@ PatchNode::PatchNode(const PatchNode& other) :
 	Transformable(other),
 	m_dragPlanes(std::bind(&PatchNode::selectedChangedComponent, this, std::placeholders::_1)),
 	m_patch(other.m_patch, *this), // create the patch out of the <other> one
-    _untransformedOriginChanged(true),
-    _renderableSurfaceSolid(m_patch.getTesselation(), true),
-    _renderableSurfaceWireframe(m_patch.getTesselation(), false),
-    _renderableCtrlLattice(m_patch, m_ctrl_instances),
-    _renderableCtrlPoints(m_patch, m_ctrl_instances)
+	_untransformedOriginChanged(true),
+	_renderableSurfaceSolid(m_patch.getTesselation(), true),
+	_renderableSurfaceWireframe(m_patch.getTesselation(), false),
+	_renderableCtrlLattice(m_patch, m_ctrl_instances),
+	_renderableCtrlPoints(m_patch, m_ctrl_instances)
 {
 }
 
@@ -48,38 +48,38 @@ scene::INode::Type PatchNode::getNodeType() const
 
 std::string PatchNode::getFingerprint()
 {
-    constexpr std::size_t SignificantDigits = scene::SignificantFingerprintDoubleDigits;
+	constexpr std::size_t SignificantDigits = scene::SignificantFingerprintDoubleDigits;
 
-    if (m_patch.getHeight() * m_patch.getWidth() == 0)
-    {
-        return std::string(); // empty patches produce an empty fingerprint
-    }
+	if (m_patch.getHeight() * m_patch.getWidth() == 0)
+	{
+		return std::string(); // empty patches produce an empty fingerprint
+	}
 
-    math::Hash hash;
+	math::Hash hash;
 
-    // Width & Height
-    hash.addSizet(m_patch.getHeight());
-    hash.addSizet(m_patch.getWidth());
+	// Width & Height
+	hash.addSizet(m_patch.getHeight());
+	hash.addSizet(m_patch.getWidth());
 
-    // Subdivision Settings
-    if (m_patch.subdivisionsFixed())
-    {
-        hash.addSizet(static_cast<std::size_t>(m_patch.getSubdivisions().x()));
-        hash.addSizet(static_cast<std::size_t>(m_patch.getSubdivisions().y()));
-    }
+	// Subdivision Settings
+	if (m_patch.subdivisionsFixed())
+	{
+		hash.addSizet(static_cast<std::size_t>(m_patch.getSubdivisions().x()));
+		hash.addSizet(static_cast<std::size_t>(m_patch.getSubdivisions().y()));
+	}
 
-    // Material Name
-    hash.addString(m_patch.getShader());
+	// Material Name
+	hash.addString(m_patch.getShader());
 
-    // Combine all control point data
-    for (const auto& ctrl : m_patch.getControlPoints())
-    {
-        hash.addVector3(ctrl.vertex, SignificantDigits);
-        hash.addDouble(ctrl.texcoord.x(), SignificantDigits);
-        hash.addDouble(ctrl.texcoord.y(), SignificantDigits);
-    }
+	// Combine all control point data
+	for (const auto& ctrl : m_patch.getControlPoints())
+	{
+		hash.addVector3(ctrl.vertex, SignificantDigits);
+		hash.addDouble(ctrl.texcoord.x(), SignificantDigits);
+		hash.addDouble(ctrl.texcoord.y(), SignificantDigits);
+	}
 
-    return hash;
+	return hash;
 }
 
 void PatchNode::updateSelectableControls()
@@ -87,8 +87,8 @@ void PatchNode::updateSelectableControls()
 	// Clear the control instance vector and reserve <size> memory
 	m_ctrl_instances.clear();
 
-    // We link the instances to the working control point set
-    auto& ctrlPoints = m_patch.getControlPointsTransformed();
+	// We link the instances to the working control point set
+	auto& ctrlPoints = m_patch.getControlPointsTransformed();
 
 	m_ctrl_instances.reserve(ctrlPoints.size());
 
@@ -98,7 +98,7 @@ void PatchNode::updateSelectableControls()
 	for(auto& ctrl : ctrlPoints)
 	{
 		m_ctrl_instances.emplace_back(ctrl,
-            std::bind(&PatchNode::selectedChangedComponent, this, std::placeholders::_1));
+			std::bind(&PatchNode::selectedChangedComponent, this, std::placeholders::_1));
 	}
 }
 
@@ -130,40 +130,40 @@ bool PatchNode::selectedVertices() {
 			return true;
 		}
 	}
-    return false;
+	return false;
 }
 
 void PatchNode::snapComponents(float snap)
 {
 	// Are there any selected vertices
-    if (!selectedVertices()) return;
+	if (!selectedVertices()) return;
 
-    // Cycle through all the selected control instances and snap them to the grid
-    for (auto& vertex : m_ctrl_instances)
-    {
-	    if (vertex.isSelected())
-        {
-            vertex.snapto(snap);
-	    }
-    }
+	// Cycle through all the selected control instances and snap them to the grid
+	for (auto& vertex : m_ctrl_instances)
+	{
+		if (vertex.isSelected())
+		{
+			vertex.snapto(snap);
+		}
+	}
 
-    // Save the transformed control point array to the real set
-    m_patch.freezeTransform();
-    // Tell the patch that control points have changed
-    m_patch.controlPointsChanged();
+	// Save the transformed control point array to the real set
+	m_patch.freezeTransform();
+	// Tell the patch that control points have changed
+	m_patch.controlPointsChanged();
 }
 
 // Test the Patch instance for selection
 void PatchNode::testSelect(Selector& selector, SelectionTest& test)
 {
-    // Check if this patch has a twosided material
-    const auto& shader = m_patch.getSurfaceShader().getGLShader();
-    bool isTwosided = shader && shader->getMaterial()->getCullType() == Material::CULL_NONE;
+	// Check if this patch has a twosided material
+	const auto& shader = m_patch.getSurfaceShader().getGLShader();
+	bool isTwosided = shader && shader->getMaterial()->getCullType() == Material::CULL_NONE;
 
-    test.BeginMesh(localToWorld(), isTwosided);
+	test.BeginMesh(localToWorld(), isTwosided);
 
-    // Pass the selection test call to the patch
-    m_patch.testSelect(selector, test);
+	// Pass the selection test call to the patch
+	m_patch.testSelect(selector, test);
 }
 
 void PatchNode::selectPlanes(Selector& selector, SelectionTest& test, const PlaneCallback& selectedPlaneCallback) {
@@ -224,11 +224,11 @@ void PatchNode::testSelectComponents(Selector& selector, SelectionTest& test, se
 
 	// Only react to eVertex selection mode
 	switch(mode) {
-        case selection::ComponentSelectionMode::Vertex:
-        {
+		case selection::ComponentSelectionMode::Vertex:
+		{
 			// Cycle through all the control instances and test them for selection
 			for (auto& i : m_ctrl_instances)
-            {
+			{
 				i.testSelect(selector, test);
 			}
 		}
@@ -264,8 +264,8 @@ bool PatchNode::hasVisibleMaterial() const
 
 void PatchNode::selectedChangedComponent(const ISelectable& selectable)
 {
-    // We need to update our vertex colours next time we render them
-    _renderableCtrlPoints.queueUpdate();
+	// We need to update our vertex colours next time we render them
+	_renderableCtrlPoints.queueUpdate();
 
 	// Notify the selection system that this PatchNode was selected. The RadiantSelectionSystem adds
 	// this to its internal list of selected nodes.
@@ -280,51 +280,51 @@ scene::INodePtr PatchNode::clone() const
 
 void PatchNode::updateAllRenderables()
 {
-    _renderableSurfaceSolid.queueUpdate();
-    _renderableSurfaceWireframe.queueUpdate();
-    _renderableCtrlLattice.queueUpdate();
-    _renderableCtrlPoints.queueUpdate();
+	_renderableSurfaceSolid.queueUpdate();
+	_renderableSurfaceWireframe.queueUpdate();
+	_renderableCtrlLattice.queueUpdate();
+	_renderableCtrlPoints.queueUpdate();
 }
 
 void PatchNode::hideAllRenderables()
 {
-    _renderableSurfaceSolid.hide();
-    _renderableSurfaceWireframe.hide();
-    _renderableCtrlLattice.hide();
-    _renderableCtrlPoints.hide();
+	_renderableSurfaceSolid.hide();
+	_renderableSurfaceWireframe.hide();
+	_renderableCtrlLattice.hide();
+	_renderableCtrlPoints.hide();
 }
 
 void PatchNode::clearAllRenderables()
 {
-    _renderableSurfaceSolid.clear();
-    _renderableSurfaceWireframe.clear();
-    _renderableCtrlLattice.clear();
-    _renderableCtrlPoints.clear();
+	_renderableSurfaceSolid.clear();
+	_renderableSurfaceWireframe.clear();
+	_renderableCtrlLattice.clear();
+	_renderableCtrlPoints.clear();
 }
 
 void PatchNode::onInsertIntoScene(scene::IMapRootNode& root)
 {
-    // Mark the GL shader as used from now on, this is used by the TextureBrowser's filtering
-    m_patch.getSurfaceShader().setInUse(true);
+	// Mark the GL shader as used from now on, this is used by the TextureBrowser's filtering
+	m_patch.getSurfaceShader().setInUse(true);
 
-    // When inserting a patch into the scene, it gets a parent entity assigned
-    // The colour of that entity will influence the tesselation's vertex colours
-    m_patch.queueTesselationUpdate();
+	// When inserting a patch into the scene, it gets a parent entity assigned
+	// The colour of that entity will influence the tesselation's vertex colours
+	m_patch.queueTesselationUpdate();
 
-    updateAllRenderables();
+	updateAllRenderables();
 
 	m_patch.connectUndoSystem(root.getUndoSystem());
 	GlobalCounters().getCounter(counterPatches).increment();
 
-    // Update the origin information needed for transformations
-    _untransformedOrigin = worldAABB().getOrigin();
+	// Update the origin information needed for transformations
+	_untransformedOrigin = worldAABB().getOrigin();
 
 	SelectableNode::onInsertIntoScene(root);
 }
 
 void PatchNode::onRemoveFromScene(scene::IMapRootNode& root)
 {
-    // De-select this node
+	// De-select this node
 	setSelected(false);
 
 	// De-select all child components as well
@@ -334,9 +334,9 @@ void PatchNode::onRemoveFromScene(scene::IMapRootNode& root)
 
 	m_patch.disconnectUndoSystem(root.getUndoSystem());
 
-    clearAllRenderables();
+	clearAllRenderables();
 
-    m_patch.getSurfaceShader().setInUse(false);
+	m_patch.getSurfaceShader().setInUse(false);
 
 	SelectableNode::onRemoveFromScene(root);
 }
@@ -348,54 +348,54 @@ bool PatchNode::getIntersection(const Ray& ray, Vector3& intersection)
 
 void PatchNode::onPreRender(const VolumeTest& volume)
 {
-    // Defer the tesselation calculation to the last minute
-    m_patch.evaluateTransform();
-    m_patch.updateTesselation();
+	// Defer the tesselation calculation to the last minute
+	m_patch.evaluateTransform();
+	m_patch.updateTesselation();
 
-    if (m_patch.getWidth() > 0 && m_patch.getHeight() > 0)
-    {
-        _renderableSurfaceSolid.update(m_patch._shader.getGLShader());
-        _renderableSurfaceWireframe.update(getRenderState() == RenderState::Active ?
-            _renderEntity->getWireShader() : _inactiveShader);
-        _renderableSurfaceSolid.attachToEntity(_renderEntity);
-    }
-    else
-    {
-        _renderableSurfaceSolid.clear();
-        _renderableSurfaceWireframe.clear();
-    }
+	if (m_patch.getWidth() > 0 && m_patch.getHeight() > 0)
+	{
+		_renderableSurfaceSolid.update(m_patch._shader.getGLShader());
+		_renderableSurfaceWireframe.update(getRenderState() == RenderState::Active ?
+			_renderEntity->getWireShader() : _inactiveShader);
+		_renderableSurfaceSolid.attachToEntity(_renderEntity);
+	}
+	else
+	{
+		_renderableSurfaceSolid.clear();
+		_renderableSurfaceWireframe.clear();
+	}
 
-    if (isSelected() && GlobalSelectionSystem().ComponentMode() == selection::ComponentSelectionMode::Vertex)
-    {
-        // Selected patches in component mode render the lattice connecting the control points
-        _renderableCtrlLattice.update(_ctrlLatticeShader);
-        _renderableCtrlPoints.update(_ctrlPointShader);
-    }
-    else
-    {
-        _renderableCtrlPoints.hide();
-        _renderableCtrlLattice.hide();
+	if (isSelected() && GlobalSelectionSystem().ComponentMode() == selection::ComponentSelectionMode::Vertex)
+	{
+		// Selected patches in component mode render the lattice connecting the control points
+		_renderableCtrlLattice.update(_ctrlLatticeShader);
+		_renderableCtrlPoints.update(_ctrlPointShader);
+	}
+	else
+	{
+		_renderableCtrlPoints.hide();
+		_renderableCtrlLattice.hide();
 
-        // Queue an update the next time it's rendered
-        _renderableCtrlPoints.queueUpdate();
-        _renderableCtrlLattice.queueUpdate();
-    }
+		// Queue an update the next time it's rendered
+		_renderableCtrlPoints.queueUpdate();
+		_renderableCtrlLattice.queueUpdate();
+	}
 }
 
 void PatchNode::renderHighlights(IRenderableCollector& collector, const VolumeTest& volume)
 {
-    if (GlobalSelectionSystem().getSelectionMode() != selection::SelectionMode::Component)
-    {
-        // The coloured selection overlay should use the same triangulated surface to avoid z fighting
-        collector.setHighlightFlag(IRenderableCollector::Highlight::Faces, true);
-        collector.setHighlightFlag(IRenderableCollector::Highlight::Primitives, false);
-        collector.addHighlightRenderable(_renderableSurfaceSolid, localToWorld());
-    }
+	if (GlobalSelectionSystem().getSelectionMode() != selection::SelectionMode::Component)
+	{
+		// The coloured selection overlay should use the same triangulated surface to avoid z fighting
+		collector.setHighlightFlag(IRenderableCollector::Highlight::Faces, true);
+		collector.setHighlightFlag(IRenderableCollector::Highlight::Primitives, false);
+		collector.addHighlightRenderable(_renderableSurfaceSolid, localToWorld());
+	}
 
-    // The selection outline (wireframe) should use the quadrangulated surface
-    collector.setHighlightFlag(IRenderableCollector::Highlight::Faces, false);
-    collector.setHighlightFlag(IRenderableCollector::Highlight::Primitives, true);
-    collector.addHighlightRenderable(_renderableSurfaceWireframe, localToWorld());
+	// The selection outline (wireframe) should use the quadrangulated surface
+	collector.setHighlightFlag(IRenderableCollector::Highlight::Faces, false);
+	collector.setHighlightFlag(IRenderableCollector::Highlight::Primitives, true);
+	collector.addHighlightRenderable(_renderableSurfaceWireframe, localToWorld());
 }
 
 void PatchNode::setRenderSystem(const RenderSystemPtr& renderSystem)
@@ -404,19 +404,19 @@ void PatchNode::setRenderSystem(const RenderSystemPtr& renderSystem)
 
 	m_patch.setRenderSystem(renderSystem);
 
-    clearAllRenderables();
+	clearAllRenderables();
 
-    if (renderSystem)
+	if (renderSystem)
 	{
-        _ctrlPointShader = renderSystem->capture(BuiltInShaderType::BigPoint);
-        _inactiveShader = renderSystem->capture(BuiltInShaderType::WireframeInactive);
-        _ctrlLatticeShader = renderSystem->capture(BuiltInShaderType::PatchLattice);
+		_ctrlPointShader = renderSystem->capture(BuiltInShaderType::BigPoint);
+		_inactiveShader = renderSystem->capture(BuiltInShaderType::WireframeInactive);
+		_ctrlLatticeShader = renderSystem->capture(BuiltInShaderType::PatchLattice);
 	}
 	else
 	{
-        _ctrlPointShader.reset();
-        _inactiveShader.reset();
-        _ctrlLatticeShader.reset();
+		_ctrlPointShader.reset();
+		_inactiveShader.reset();
+		_ctrlLatticeShader.reset();
 	}
 }
 
@@ -479,7 +479,7 @@ void PatchNode::_onTransformationChanged()
 {
 	m_patch.transformChanged();
 
-    updateAllRenderables();
+	updateAllRenderables();
 }
 
 void PatchNode::_applyTransformation()
@@ -489,54 +489,54 @@ void PatchNode::_applyTransformation()
 	evaluateTransform();
 	m_patch.freezeTransform();
 
-    _untransformedOriginChanged = true;
+	_untransformedOriginChanged = true;
 }
 
 const Vector3& PatchNode::getUntransformedOrigin()
 {
-    if (_untransformedOriginChanged)
-    {
-        _untransformedOriginChanged = false;
-        _untransformedOrigin = worldAABB().getOrigin();
-    }
+	if (_untransformedOriginChanged)
+	{
+		_untransformedOriginChanged = false;
+		_untransformedOrigin = worldAABB().getOrigin();
+	}
 
-    return _untransformedOrigin;
+	return _untransformedOrigin;
 }
 
 void PatchNode::onTesselationChanged()
 {
-    updateAllRenderables();
+	updateAllRenderables();
 }
 
 void PatchNode::onControlPointsChanged()
 {
-    updateAllRenderables();
+	updateAllRenderables();
 }
 
 void PatchNode::onMaterialChanged()
 {
-    _renderableSurfaceSolid.queueUpdate();
-    _renderableSurfaceWireframe.queueUpdate();
+	_renderableSurfaceSolid.queueUpdate();
+	_renderableSurfaceWireframe.queueUpdate();
 }
 
 void PatchNode::onVisibilityChanged(bool visible)
 {
-    SelectableNode::onVisibilityChanged(visible);
+	SelectableNode::onVisibilityChanged(visible);
 
-    if (!visible)
-    {
-        hideAllRenderables();
-    }
-    else
-    {
-        // Queue an update, renderables are automatically shown in onPreRender
-        updateAllRenderables();
-    }
+	if (!visible)
+	{
+		hideAllRenderables();
+	}
+	else
+	{
+		// Queue an update, renderables are automatically shown in onPreRender
+		updateAllRenderables();
+	}
 }
 
 void PatchNode::onRenderStateChanged()
 {
-    SelectableNode::onRenderStateChanged();
+	SelectableNode::onRenderStateChanged();
 
-    _renderableSurfaceWireframe.queueUpdate();
+	_renderableSurfaceWireframe.queueUpdate();
 }

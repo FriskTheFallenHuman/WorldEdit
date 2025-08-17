@@ -181,7 +181,7 @@ static picoModel_t *_iqm_load( PM_PARAMS_LOAD ){
 	iqmmesh_t m;
 	iqmvertexarray_t a;
 	size_t s, j;
-    unsigned int t, i;
+	unsigned int t, i;
 	const char *stringtable;
 	char skinname[512];
 	const unsigned int *tri;

@@ -17,7 +17,7 @@ namespace particles
  * time.
  */
 class RenderableParticleStage :
-    public render::RenderableGeometry
+	public render::RenderableGeometry
 {
 	// The stage def we're rendering
 	const IStageDef& _stageDef;
@@ -32,7 +32,7 @@ class RenderableParticleStage :
 
 	// The rotation matrix to orient particles
 	Matrix4 _viewRotation;
-    // Matrix to produce world coordinates
+	// Matrix to produce world coordinates
 	Matrix4 _localToWorld;
 
 	// The particle direction (instance owned by RenderableParticle)
@@ -53,18 +53,18 @@ public:
 	// Generate particle geometry, time is absolute in msecs
 	void update(std::size_t time, const Matrix4& viewRotation);
 
-    void submitGeometry(const ShaderPtr& shader, const Matrix4& localToWorld);
+	void submitGeometry(const ShaderPtr& shader, const Matrix4& localToWorld);
 
 	const AABB& getBounds();
 
-    /// Return the stage definition associated with this renderable
+	/// Return the stage definition associated with this renderable
 	const IStageDef& getDef() const;
 
-    // Returns the number of quads in this stage
-    std::size_t getNumQuads() const;
+	// Returns the number of quads in this stage
+	std::size_t getNumQuads() const;
 
 protected:
-    void updateGeometry() override;
+	void updateGeometry() override;
 
 private:
 	// Returns the correct rotation matrix required by the stage orientation settings

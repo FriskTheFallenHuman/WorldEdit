@@ -71,7 +71,7 @@ public:
 			std::bind(&LayerModule::moveSelectionToLayer, this, std::placeholders::_1),
 			{ cmd::ARGTYPE_INT });
 
-        GlobalCommandSystem().addCommand(COMMAND_REMOVEFROMLAYER,
+		GlobalCommandSystem().addCommand(COMMAND_REMOVEFROMLAYER,
 			std::bind(&LayerModule::removeSelectionFromLayer, this, std::placeholders::_1),
 			{ cmd::ARGTYPE_INT });
 
@@ -83,17 +83,17 @@ public:
 			std::bind(&LayerModule::hideLayer, this, std::placeholders::_1),
 			{ cmd::ARGTYPE_INT });
 
-        GlobalCommandSystem().addCommand(COMMAND_CREATELAYER,
-            std::bind(&LayerModule::createLayer, this, std::placeholders::_1),
-            { cmd::ARGTYPE_STRING });
+		GlobalCommandSystem().addCommand(COMMAND_CREATELAYER,
+			std::bind(&LayerModule::createLayer, this, std::placeholders::_1),
+			{ cmd::ARGTYPE_STRING });
 
-        GlobalCommandSystem().addCommand(COMMAND_RENAMELAYER,
-            std::bind(&LayerModule::renameLayer, this, std::placeholders::_1),
-            { cmd::ARGTYPE_INT, cmd::ARGTYPE_STRING });
+		GlobalCommandSystem().addCommand(COMMAND_RENAMELAYER,
+			std::bind(&LayerModule::renameLayer, this, std::placeholders::_1),
+			{ cmd::ARGTYPE_INT, cmd::ARGTYPE_STRING });
 
-        GlobalCommandSystem().addCommand(COMMAND_DELETELAYER,
-            std::bind(&LayerModule::deleteLayer, this, std::placeholders::_1),
-            { cmd::ARGTYPE_INT });
+		GlobalCommandSystem().addCommand(COMMAND_DELETELAYER,
+			std::bind(&LayerModule::deleteLayer, this, std::placeholders::_1),
+			{ cmd::ARGTYPE_INT });
 
 		GlobalMapInfoFileManager().registerInfoFileModule(
 			std::make_shared<LayerInfoFileModule>()
@@ -106,64 +106,64 @@ public:
 	}
 
 private:
-    void createLayer(const cmd::ArgumentList& args)
-    {
-        if (args.size() != 1)
-        {
-            rError() << "Usage: " << COMMAND_CREATELAYER << " <LayerName> " << std::endl;
-            return;
-        }
+	void createLayer(const cmd::ArgumentList& args)
+	{
+		if (args.size() != 1)
+		{
+			rError() << "Usage: " << COMMAND_CREATELAYER << " <LayerName> " << std::endl;
+			return;
+		}
 
-        DoWithMapLayerManager([&](ILayerManager& manager)
-        {
-            manager.createLayer(args[0].getString());
-            GlobalMapModule().setModified(true);
-        });
-    }
+		DoWithMapLayerManager([&](ILayerManager& manager)
+		{
+			manager.createLayer(args[0].getString());
+			GlobalMapModule().setModified(true);
+		});
+	}
 
-    void renameLayer(const cmd::ArgumentList& args)
-    {
-        if (args.size() != 2)
-        {
-            rError() << "Usage: " << COMMAND_RENAMELAYER << " <LayerID> <NewLayerName>" << std::endl;
-            return;
-        }
+	void renameLayer(const cmd::ArgumentList& args)
+	{
+		if (args.size() != 2)
+		{
+			rError() << "Usage: " << COMMAND_RENAMELAYER << " <LayerID> <NewLayerName>" << std::endl;
+			return;
+		}
 
-        DoWithMapLayerManager([&](ILayerManager& manager)
-        {
-            auto layerName = manager.getLayerName(args[0].getInt());
+		DoWithMapLayerManager([&](ILayerManager& manager)
+		{
+			auto layerName = manager.getLayerName(args[0].getInt());
 
-            if (args[1].getString().empty())
-            {
-                throw cmd::ExecutionFailure(_("Cannot use an empty string as new layer name"));
-            }
+			if (args[1].getString().empty())
+			{
+				throw cmd::ExecutionFailure(_("Cannot use an empty string as new layer name"));
+			}
 
-            manager.renameLayer(args[0].getInt(), args[1].getString());
-            GlobalMapModule().setModified(true);
-        });
-    }
+			manager.renameLayer(args[0].getInt(), args[1].getString());
+			GlobalMapModule().setModified(true);
+		});
+	}
 
-    void deleteLayer(const cmd::ArgumentList& args)
-    {
-        if (args.size() != 1)
-        {
-            rError() << "Usage: " << COMMAND_DELETELAYER << " <LayerID> " << std::endl;
-            return;
-        }
+	void deleteLayer(const cmd::ArgumentList& args)
+	{
+		if (args.size() != 1)
+		{
+			rError() << "Usage: " << COMMAND_DELETELAYER << " <LayerID> " << std::endl;
+			return;
+		}
 
-        DoWithMapLayerManager([&](ILayerManager& manager)
-        {
-            auto layerName = manager.getLayerName(args[0].getInt());
+		DoWithMapLayerManager([&](ILayerManager& manager)
+		{
+			auto layerName = manager.getLayerName(args[0].getInt());
 
-            if (layerName.empty())
-            {
-                throw cmd::ExecutionFailure(_("This layer ID doesn't exist"));
-            }
+			if (layerName.empty())
+			{
+				throw cmd::ExecutionFailure(_("This layer ID doesn't exist"));
+			}
 
-            manager.deleteLayer(layerName);
-            GlobalMapModule().setModified(true);
-        });
-    }
+			manager.deleteLayer(layerName);
+			GlobalMapModule().setModified(true);
+		});
+	}
 
 	void addSelectionToLayer(const cmd::ArgumentList& args)
 	{
@@ -176,7 +176,7 @@ private:
 		DoWithMapLayerManager([&](ILayerManager& manager)
 		{
 			manager.addSelectionToLayer(args[0].getInt());
-            GlobalMapModule().setModified(true);
+			GlobalMapModule().setModified(true);
 		});
 	}
 
@@ -191,11 +191,11 @@ private:
 		DoWithMapLayerManager([&](ILayerManager& manager)
 		{
 			manager.moveSelectionToLayer(args[0].getInt());
-            GlobalMapModule().setModified(true);
+			GlobalMapModule().setModified(true);
 		});
 	}
 
-    void removeSelectionFromLayer(const cmd::ArgumentList& args)
+	void removeSelectionFromLayer(const cmd::ArgumentList& args)
 	{
 		if (args.size() != 1)
 		{
@@ -206,7 +206,7 @@ private:
 		DoWithMapLayerManager([&](ILayerManager& manager)
 		{
 			manager.removeSelectionFromLayer(args[0].getInt());
-            GlobalMapModule().setModified(true);
+			GlobalMapModule().setModified(true);
 		});
 	}
 

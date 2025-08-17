@@ -39,12 +39,12 @@ public:
 	{}
 
 	
-    bool hasMoreTokens() const 
+	bool hasMoreTokens() const 
 	{
 		return !_buffer.empty() || _tokeniser.hasMoreTokens();
 	}
 
-    std::string nextToken() 
+	std::string nextToken() 
 	{
 		if (_buffer.empty())
 		{
@@ -58,7 +58,7 @@ public:
 		return result;
 	}
 
-    std::string peek() const 
+	std::string peek() const 
 	{
 		if (!_buffer.empty())
 		{
@@ -127,8 +127,8 @@ public:
 				// New scope, treat this as new expression
 				term = getExpression();
 
-                // Remember that this term had parentheses around it
-                term->setIsSurroundedByParentheses(true);
+				// Remember that this term had parentheses around it
+				term->setIsSurroundedByParentheses(true);
 			}
 			else if (token == ")" || token == "]")
 			{
@@ -336,13 +336,13 @@ private:
 			else
 			{
 				// Attempt to convert the token into a floating point value
-                float value;
-                if (string::tryConvertToFloat(token, value))
-                {
-                    _tokeniser.nextToken(); // valid token, exhaust
+				float value;
+				if (string::tryConvertToFloat(token, value))
+				{
+					_tokeniser.nextToken(); // valid token, exhaust
 
-                    return std::make_shared<ConstantExpression>(value);
-                }
+					return std::make_shared<ConstantExpression>(value);
+				}
 			}
 		}
 
@@ -437,22 +437,22 @@ IShaderExpression::Ptr ShaderExpression::createFromString(const std::string& exp
 
 IShaderExpression::Ptr ShaderExpression::createConstant(float constantValue)
 {
-    return std::make_shared<expressions::ConstantExpression>(constantValue);
+	return std::make_shared<expressions::ConstantExpression>(constantValue);
 }
 
 IShaderExpression::Ptr ShaderExpression::createAddition(const IShaderExpression::Ptr& a, const IShaderExpression::Ptr& b)
 {
-    return std::make_shared<expressions::AddExpression>(a, b);
+	return std::make_shared<expressions::AddExpression>(a, b);
 }
 
 IShaderExpression::Ptr ShaderExpression::createMultiplication(const IShaderExpression::Ptr& a, const IShaderExpression::Ptr& b)
 {
-    return std::make_shared<expressions::MultiplyExpression>(a, b);
+	return std::make_shared<expressions::MultiplyExpression>(a, b);
 }
 
 IShaderExpression::Ptr ShaderExpression::createTableLookup(const ITableDefinition::Ptr& table, const IShaderExpression::Ptr& lookup)
 {
-    return std::make_shared<expressions::TableLookupExpression>(table, lookup);
+	return std::make_shared<expressions::TableLookupExpression>(table, lookup);
 }
 
 } // namespace

@@ -33,15 +33,15 @@ namespace algorithm
 // Returns the union set of layer IDs of the current selection
 scene::LayerList getAllLayersOfSelection()
 {
-    scene::LayerList unionSet;
+	scene::LayerList unionSet;
 
-    GlobalSelectionSystem().foreachSelected([&](const scene::INodePtr& node)
-    {
-        const auto& layers = node->getLayers();
-        unionSet.insert(layers.begin(), layers.end());
-    });
+	GlobalSelectionSystem().foreachSelected([&](const scene::INodePtr& node)
+	{
+		const auto& layers = node->getLayers();
+		unionSet.insert(layers.begin(), layers.end());
+	});
 
-    return unionSet;
+	return unionSet;
 }
 
 void exportSelectedAsModel(const model::ModelExportOptions& options)
@@ -80,30 +80,30 @@ void exportSelectedAsModel(const model::ModelExportOptions& options)
 	if (options.exportOrigin == model::ModelExportOrigin::EntityOrigin)
 	{
 		// Find the specified entity
-        Entity* foundEntity = nullptr;
+		Entity* foundEntity = nullptr;
 
-        GlobalSelectionSystem().foreachSelected([&](const scene::INodePtr& node)
-        {
-            auto entity = Node_getEntity(node);
-            if (!foundEntity && entity && entity->getKeyValue("name") == options.entityName)
-            {
-                foundEntity = entity;
-            }
-        });
+		GlobalSelectionSystem().foreachSelected([&](const scene::INodePtr& node)
+		{
+			auto entity = Node_getEntity(node);
+			if (!foundEntity && entity && entity->getKeyValue("name") == options.entityName)
+			{
+				foundEntity = entity;
+			}
+		});
 
 		if (foundEntity == nullptr)
 		{
-            throw cmd::ExecutionFailure(fmt::format(_("Could not find the entity with name {0}"), options.entityName));
+			throw cmd::ExecutionFailure(fmt::format(_("Could not find the entity with name {0}"), options.entityName));
 		}
 
 		exporter.setOrigin(string::convert<Vector3>(foundEntity->getKeyValue("origin")));
-        exporter.setCenterObjects(true);
+		exporter.setCenterObjects(true);
 	}
-    else if (options.exportOrigin == model::ModelExportOrigin::CustomOrigin)
-    {
-        exporter.setOrigin(options.customExportOrigin);
-        exporter.setCenterObjects(true);
-    }
+	else if (options.exportOrigin == model::ModelExportOrigin::CustomOrigin)
+	{
+		exporter.setOrigin(options.customExportOrigin);
+		exporter.setCenterObjects(true);
+	}
 
 	exporter.processNodes();
 
@@ -124,67 +124,67 @@ void exportSelectedAsModel(const model::ModelExportOptions& options)
 
 	rMessage() << "Exporting selection to file " << outputPath << outputFile << std::endl;
 
-    expFormat->exportToPath(outputPath, outputFile);
+	expFormat->exportToPath(outputPath, outputFile);
 
-    std::string relativeModelPath = os::getRelativePath(absOutputPath, rootPath);
+	std::string relativeModelPath = os::getRelativePath(absOutputPath, rootPath);
 
-    if (options.replaceSelectionWithModel)
-    {
-        UndoableCommand command("replaceModel");
+	if (options.replaceSelectionWithModel)
+	{
+		UndoableCommand command("replaceModel");
 
-        // Remember the last selected entity to preserve spawnargs
-        auto lastSelectedNode = GlobalSelectionSystem().ultimateSelected();
-        auto lastSelectedEntity = Node_getEntity(lastSelectedNode);
-        auto root = lastSelectedNode->getRootNode();
+		// Remember the last selected entity to preserve spawnargs
+		auto lastSelectedNode = GlobalSelectionSystem().ultimateSelected();
+		auto lastSelectedEntity = Node_getEntity(lastSelectedNode);
+		auto root = lastSelectedNode->getRootNode();
 
-        // Remove the selection, but remember its layers first
-        auto previousLayerSet = getAllLayersOfSelection();
-        selection::algorithm::deleteSelection();
+		// Remove the selection, but remember its layers first
+		auto previousLayerSet = getAllLayersOfSelection();
+		selection::algorithm::deleteSelection();
 
-        // Create an entity of the same class in its place
-        // Place the model in the world origin, unless we set "center objects" to true
-        Vector3 modelPos(0, 0, 0);
+		// Create an entity of the same class in its place
+		// Place the model in the world origin, unless we set "center objects" to true
+		Vector3 modelPos(0, 0, 0);
 
-        if (options.exportOrigin != model::ModelExportOrigin::MapOrigin)
-        {
-            modelPos = -exporter.getCenterTransform().translation();
-        }
+		if (options.exportOrigin != model::ModelExportOrigin::MapOrigin)
+		{
+			modelPos = -exporter.getCenterTransform().translation();
+		}
 
-        auto className = lastSelectedEntity ? lastSelectedEntity->getKeyValue("classname") : "func_static";
-        auto eclass = GlobalEntityClassManager().findClass(className);
+		auto className = lastSelectedEntity ? lastSelectedEntity->getKeyValue("classname") : "func_static";
+		auto eclass = GlobalEntityClassManager().findClass(className);
 
-        if (!eclass)
-        {
-            throw cmd::ExecutionFailure(fmt::format(_("Cannot replace exported entity, class {0} not found"), className));
-        }
+		if (!eclass)
+		{
+			throw cmd::ExecutionFailure(fmt::format(_("Cannot replace exported entity, class {0} not found"), className));
+		}
 
-        auto modelNode = GlobalEntityModule().createEntity(eclass);
-        scene::addNodeToContainer(modelNode, root);
+		auto modelNode = GlobalEntityModule().createEntity(eclass);
+		scene::addNodeToContainer(modelNode, root);
 
-        auto newEntity = Node_getEntity(modelNode);
-        newEntity->setKeyValue("model", relativeModelPath);
-        newEntity->setKeyValue("origin", string::to_string(modelPos));
-        modelNode->assignToLayers(previousLayerSet);
+		auto newEntity = Node_getEntity(modelNode);
+		newEntity->setKeyValue("model", relativeModelPath);
+		newEntity->setKeyValue("origin", string::to_string(modelPos));
+		modelNode->assignToLayers(previousLayerSet);
 
-        if (lastSelectedEntity)
-        {
-            // Preserve all spawnargs of the last selected entity, except for a few
-            std::set<std::string> spawnargsToDiscard{ "model", "classname", "origin", "rotation" };
+		if (lastSelectedEntity)
+		{
+			// Preserve all spawnargs of the last selected entity, except for a few
+			std::set<std::string> spawnargsToDiscard{ "model", "classname", "origin", "rotation" };
 
-            lastSelectedEntity->forEachKeyValue([&](const std::string& key, const std::string& value)
-            {
-                if (spawnargsToDiscard.count(string::to_lower_copy(key)) > 0) return;
+			lastSelectedEntity->forEachKeyValue([&](const std::string& key, const std::string& value)
+			{
+				if (spawnargsToDiscard.count(string::to_lower_copy(key)) > 0) return;
 
-                rMessage() << "Replaced entity inherits the key " << key << " with value " << value << std::endl;
-                newEntity->setKeyValue(key, value);
-            });
-        }
+				rMessage() << "Replaced entity inherits the key " << key << " with value " << value << std::endl;
+				newEntity->setKeyValue(key, value);
+			});
+		}
 
-        Node_setSelected(modelNode, true);
-    }
+		Node_setSelected(modelNode, true);
+	}
 
-    // It's possible that the export overwrote a model we're already using in this map, refresh it
-    refreshModelsByPath(relativeModelPath);
+	// It's possible that the export overwrote a model we're already using in this map, refresh it
+	refreshModelsByPath(relativeModelPath);
 }
 
 void exportSelectedAsModelCmd(const cmd::ArgumentList& args)
@@ -192,7 +192,7 @@ void exportSelectedAsModelCmd(const cmd::ArgumentList& args)
 	if (args.size() < 2 || args.size() > 8)
 	{
 		rMessage() << "Usage: ExportSelectedAsModel <Path> <ExportFormat> [<ExportOrigin>] [<OriginEntityName>] "
-	                    "[<CustomOrigin>][<SkipCaulk>][<ReplaceSelectionWithModel>][<ExportLightsAsObjects>]" << std::endl;
+						"[<CustomOrigin>][<SkipCaulk>][<ReplaceSelectionWithModel>][<ExportLightsAsObjects>]" << std::endl;
 		rMessage() << "   <Path> must be an absolute file system path" << std::endl;
 		rMessage() << "   <ExportFormat> one of the available formats, e.g. lwo, ase, obj" << std::endl;
 		rMessage() << "   [<ExportOrigin>]: 0 = Map origin, 1 = SelectionCenter, 2 = EntityOrigin, 3 = CustomOrigin" << std::endl;
@@ -220,15 +220,15 @@ void exportSelectedAsModelCmd(const cmd::ArgumentList& args)
 		options.exportOrigin = model::getExportOriginFromString(args[2].getString());
 	}
 
-    if (args.size() >= 4)
-    {
-        options.entityName = args[3].getString();
-    }
+	if (args.size() >= 4)
+	{
+		options.entityName = args[3].getString();
+	}
 
-    if (args.size() >= 5)
-    {
-        options.customExportOrigin = args[4].getVector3();
-    }
+	if (args.size() >= 5)
+	{
+		options.customExportOrigin = args[4].getVector3();
+	}
 
 	if (args.size() >= 6)
 	{
@@ -245,7 +245,7 @@ void exportSelectedAsModelCmd(const cmd::ArgumentList& args)
 		options.exportLightsAsObjects = (args[7].getInt() != 0);
 	}
 
-    // Forward the call, leak any ExecutionFailure exceptions
+	// Forward the call, leak any ExecutionFailure exceptions
 	exportSelectedAsModel(options);
 }
 

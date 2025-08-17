@@ -68,8 +68,8 @@ void ManipulationPivot::endOperation()
 
 void ManipulationPivot::cancelOperation()
 {
-    revertToStart();
-    _operationActive = false;
+	revertToStart();
+	_operationActive = false;
 }
 
 void ManipulationPivot::applyTranslation(const Vector3& translation)

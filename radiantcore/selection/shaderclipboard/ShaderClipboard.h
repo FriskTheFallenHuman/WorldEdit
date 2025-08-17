@@ -19,7 +19,7 @@ private:
 
 	bool _updatesDisabled;
 
-    sigc::signal<void> _signalSourceChanged;
+	sigc::signal<void> _signalSourceChanged;
 
 	sigc::connection _postUndoConn;
 	sigc::connection _postRedoConn;
@@ -47,10 +47,10 @@ public:
 	 */
 	Texturable& getSource();
 
-    /**
-     * Is emitted when the shader source changes.
-     */
-    sigc::signal<void>& signal_sourceChanged() override;
+	/**
+	 * Is emitted when the shader source changes.
+	 */
+	sigc::signal<void>& signal_sourceChanged() override;
 
 	// IShaderClipboard implementation
 
@@ -84,8 +84,8 @@ private:
 	 */
 	Texturable getTexturable(SelectionTest& test);
 
-    void postModuleInitialisation();
-    void onSystemClipboardContentsChanged();
+	void postModuleInitialisation();
+	void onSystemClipboardContentsChanged();
 };
 
 } // namespace selection

@@ -50,7 +50,7 @@ public:
 		return std::make_shared<NullModelNode>(model);
 	}
 
-  	// Required function, not implemented.
+	// Required function, not implemented.
 	IModelPtr loadModelFromPath(const std::string& name) override
 	{
 		NullModelPtr model(new NullModel);

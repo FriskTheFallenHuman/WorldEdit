@@ -16,10 +16,10 @@ namespace particles
  */
 class ParticleNode :
 	public IParticleNode,
-    public scene::Node,
+	public scene::Node,
 	public ITransformNode // to compensate parent rotations
 {
-    // The actual particle system that will be rendered
+	// The actual particle system that will be rendered
 	RenderableParticlePtr _renderableParticle;
 
 	mutable Matrix4 _local2Parent;
@@ -43,10 +43,10 @@ public:
 	// ITransformNode
 	Matrix4 localToParent() const override;
 
-    void onRemoveFromScene(scene::IMapRootNode& root) override;
+	void onRemoveFromScene(scene::IMapRootNode& root) override;
 
 protected:
-    void onVisibilityChanged(bool isVisibleNow) override;
+	void onVisibilityChanged(bool isVisibleNow) override;
 
 private:
 	void update(const VolumeTest& viewVolume) const;

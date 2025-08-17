@@ -146,7 +146,7 @@ private:
 	mutable Map _cloned;
 
 	// A container, which temporarily holds the cloned nodes
-    std::shared_ptr<scene::BasicRootNode> _cloneRoot;
+	std::shared_ptr<scene::BasicRootNode> _cloneRoot;
 
 	// Map group IDs in this selection to new groups
 	typedef std::map<std::size_t, ISelectionGroupPtr> GroupMap;
@@ -271,8 +271,8 @@ void cloneSelected(const cmd::ArgumentList& args)
 {
 	// Check for the correct editing mode (don't clone components)
 	if (GlobalSelectionSystem().getSelectionMode() == SelectionMode::Component ||
-        GlobalMapModule().getEditMode() != IMap::EditMode::Normal)
-    {
+		GlobalMapModule().getEditMode() != IMap::EditMode::Normal)
+	{
 		return;
 	}
 
@@ -384,17 +384,17 @@ void nudgeSelected(ENudgeDirection direction, float amount, OrthoOrientation vie
 	Vector3 nudge(AxisBase_axisForDirection(axes, direction) * amount);
 
 	if (GlobalSelectionSystem().getActiveManipulatorType() == selection::IManipulator::Translate ||
-        GlobalSelectionSystem().getActiveManipulatorType() == selection::IManipulator::Drag ||
-        GlobalSelectionSystem().getActiveManipulatorType() == selection::IManipulator::Clip)
-    {
-        translateSelected(nudge);
+		GlobalSelectionSystem().getActiveManipulatorType() == selection::IManipulator::Drag ||
+		GlobalSelectionSystem().getActiveManipulatorType() == selection::IManipulator::Clip)
+	{
+		translateSelected(nudge);
 
-        // In clip mode, update the clipping plane
-        if (GlobalSelectionSystem().getActiveManipulatorType() == selection::IManipulator::Clip)
-        {
-            GlobalClipper().update();
-        }
-    }
+		// In clip mode, update the clipping plane
+		if (GlobalSelectionSystem().getActiveManipulatorType() == selection::IManipulator::Clip)
+		{
+			GlobalClipper().update();
+		}
+	}
 }
 
 void nudgeSelected(ENudgeDirection direction)
@@ -501,7 +501,7 @@ void moveSelectedCmd(const cmd::ArgumentList& args)
 	UndoableCommand undo("moveSelection");
 
 	auto translation = args[0].getVector3();
-    translateSelected(translation);
+	translateSelected(translation);
 }
 
 enum axis_t
@@ -560,7 +560,7 @@ void rotateSelectionX(const cmd::ArgumentList& args)
 	}
 
 	UndoableCommand undo("rotateSelected -axis x -angle -90");
-    rotateSelected(quaternion_for_axis90(eAxisX, eSignNegative));
+	rotateSelected(quaternion_for_axis90(eAxisX, eSignNegative));
 }
 
 void rotateSelectionY(const cmd::ArgumentList& args)
@@ -572,7 +572,7 @@ void rotateSelectionY(const cmd::ArgumentList& args)
 	}
 
 	UndoableCommand undo("rotateSelected -axis y -angle 90");
-    rotateSelected(quaternion_for_axis90(eAxisY, eSignPositive));
+	rotateSelected(quaternion_for_axis90(eAxisY, eSignPositive));
 }
 
 void rotateSelectionZ(const cmd::ArgumentList& args)
@@ -584,7 +584,7 @@ void rotateSelectionZ(const cmd::ArgumentList& args)
 	}
 
 	UndoableCommand undo("rotateSelected -axis z -angle -90");
-    rotateSelected(quaternion_for_axis90(eAxisZ, eSignNegative));
+	rotateSelected(quaternion_for_axis90(eAxisZ, eSignNegative));
 }
 
 void mirrorSelection(int axis)

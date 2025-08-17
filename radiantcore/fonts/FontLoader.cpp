@@ -16,13 +16,13 @@ namespace fonts
 
 namespace
 {
-    const char* MISSING_BASEPATH_NODE =
-        "Failed to find \"/game/filesystem/fonts/basepath\" node \
-        in game descriptor";
+	const char* MISSING_BASEPATH_NODE =
+		"Failed to find \"/game/filesystem/fonts/basepath\" node \
+		in game descriptor";
 
-    const char* MISSING_EXTENSION_NODE =
-        "Failed to find \"/game/filesystem/fonts/extension\" node \
-        in game descriptor";
+	const char* MISSING_EXTENSION_NODE =
+		"Failed to find \"/game/filesystem/fonts/extension\" node \
+		in game descriptor";
 }
 
 void FontLoader::loadFont(const vfs::FileInfo& fileInfo)
@@ -75,35 +75,35 @@ void FontLoader::loadFont(const vfs::FileInfo& fileInfo)
 
 std::string FontLoader::getFontPath()
 {
-    auto nlBasePath = GlobalGameManager().currentGame()->getLocalXPath("/filesystem/fonts/basepath");
+	auto nlBasePath = GlobalGameManager().currentGame()->getLocalXPath("/filesystem/fonts/basepath");
 
-    if (nlBasePath.empty())
-    {
-        throw xml::MissingXMLNodeException(MISSING_BASEPATH_NODE);
-    }
+	if (nlBasePath.empty())
+	{
+		throw xml::MissingXMLNodeException(MISSING_BASEPATH_NODE);
+	}
 
-    // Load the DAT files from the VFS
-    return os::standardPathWithSlash(nlBasePath[0].getContent()) + _manager.getCurLanguage() + "/";
+	// Load the DAT files from the VFS
+	return os::standardPathWithSlash(nlBasePath[0].getContent()) + _manager.getCurLanguage() + "/";
 }
 
 std::string FontLoader::getFontExtension()
 {
-    auto nlExt = GlobalGameManager().currentGame()->getLocalXPath("/filesystem/fonts/extension");
+	auto nlExt = GlobalGameManager().currentGame()->getLocalXPath("/filesystem/fonts/extension");
 
-    if (nlExt.empty())
-    {
-        throw xml::MissingXMLNodeException(MISSING_EXTENSION_NODE);
-    }
+	if (nlExt.empty())
+	{
+		throw xml::MissingXMLNodeException(MISSING_EXTENSION_NODE);
+	}
 
-    return nlExt[0].getContent();
+	return nlExt[0].getContent();
 }
 
 void FontLoader::loadFonts()
 {
-    GlobalFileSystem().forEachFile(getFontPath(), getFontExtension(), 
-        std::bind(&FontLoader::loadFont, this, std::placeholders::_1), 2);
+	GlobalFileSystem().forEachFile(getFontPath(), getFontExtension(), 
+		std::bind(&FontLoader::loadFont, this, std::placeholders::_1), 2);
 
-    rMessage() << _manager.getNumFonts() << " fonts registered." << std::endl;
+	rMessage() << _manager.getNumFonts() << " fonts registered." << std::endl;
 }
 
 } // namespace fonts

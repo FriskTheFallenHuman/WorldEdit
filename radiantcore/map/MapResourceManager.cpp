@@ -15,18 +15,18 @@ namespace map
 
 IMapResourcePtr MapResourceManager::createFromPath(const std::string& path)
 {
-    if (vcs::pathIsVcsUri(path))
-    {
-        return std::make_shared<VcsMapResource>(path);
-    }
+	if (vcs::pathIsVcsUri(path))
+	{
+		return std::make_shared<VcsMapResource>(path);
+	}
 
 	return std::make_shared<MapResource>(path);
 }
 
 IMapResourcePtr MapResourceManager::createFromArchiveFile(const std::string& archivePath,
-    const std::string& filePathWithinArchive)
+	const std::string& filePathWithinArchive)
 {
-    return std::make_shared<ArchivedMapResource>(archivePath, filePathWithinArchive);
+	return std::make_shared<ArchivedMapResource>(archivePath, filePathWithinArchive);
 }
 
 MapResourceManager::ExportEvent& MapResourceManager::signal_onResourceExporting()

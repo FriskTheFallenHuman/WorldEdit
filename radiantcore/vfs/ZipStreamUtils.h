@@ -257,19 +257,19 @@ inline SeekableStream::position_type findZipDiskTrailerPosition(SeekableInputStr
 	// Search for it, starting at the end of the file in backwards direction
 
 	// ZIP comments havea 2-byte size descriptor, so the maximum size of the comment is 65k
-    const SeekableStream::position_type maxCommentSize = 0x10000;
+	const SeekableStream::position_type maxCommentSize = 0x10000;
 
 	// Allocate a buffer to hold the data to be searched
-    const SeekableStream::position_type bufshift = 6;
-    const SeekableStream::position_type bufsize = maxCommentSize >> bufshift;
-    unsigned char buffer[bufsize];
+	const SeekableStream::position_type bufshift = 6;
+	const SeekableStream::position_type bufsize = maxCommentSize >> bufshift;
+	unsigned char buffer[bufsize];
 
 	// Mark the end searching point in the file
-    SeekableStream::position_type searchEndPos = (maxCommentSize < startPosition) ? startPosition - maxCommentSize : 0;
-    SeekableStream::position_type position = startPosition;
+	SeekableStream::position_type searchEndPos = (maxCommentSize < startPosition) ? startPosition - maxCommentSize : 0;
+	SeekableStream::position_type position = startPosition;
 
-    while (position != searchEndPos)
-    {
+	while (position != searchEndPos)
+	{
 		StreamBase::size_type bytesToRead = std::min(bufsize, position - searchEndPos);
 		position -= bytesToRead;
 
@@ -294,10 +294,10 @@ inline SeekableStream::position_type findZipDiskTrailerPosition(SeekableInputStr
 				return position + (p - buffer);
 			}
 		}
-    }
+	}
 
 	// Zip magic not found
-    return 0;
+	return 0;
 }
 
 } // namespace

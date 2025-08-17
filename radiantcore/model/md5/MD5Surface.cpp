@@ -91,8 +91,8 @@ bool MD5Surface::getIntersection(const Ray& ray, Vector3& intersection, const Ma
 			intersection = triIntersection;
 
 			// Test if this surface intersection is better than what we currently have
-            auto oldDistSquared = (bestIntersection - ray.origin).getLengthSquared();
-            auto newDistSquared = (triIntersection - ray.origin).getLengthSquared();
+			auto oldDistSquared = (bestIntersection - ray.origin).getLengthSquared();
+			auto newDistSquared = (triIntersection - ray.origin).getLengthSquared();
 
 			if ((oldDistSquared == 0 && newDistSquared > 0) || newDistSquared < oldDistSquared)
 			{
@@ -177,7 +177,7 @@ void MD5Surface::setActiveMaterial(const std::string& activeMaterial)
 
 const AABB& MD5Surface::getSurfaceBounds() const
 {
-    return _aabb_local;
+	return _aabb_local;
 }
 
 void MD5Surface::updateToDefaultPose(const MD5Joints& joints)
@@ -277,7 +277,7 @@ void MD5Surface::buildVertexNormals()
 	// Normalise all normal vectors
 	for (auto& vertex : _vertices)
 	{
-        vertex.normal.normalise();
+		vertex.normal.normalise();
 	}
 }
 

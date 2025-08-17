@@ -61,8 +61,8 @@ public:
 
 	void endOperation();
 
-    // Operation cancelled, this reverts the pivot to where we started
-    void cancelOperation();
+	// Operation cancelled, this reverts the pivot to where we started
+	void cancelOperation();
 
 	virtual void applyTranslation(const Vector3& translation);
 

@@ -19,7 +19,7 @@ namespace algorithm
 {
 
 class ModelFinder :
-    public selection::SelectionSystem::Visitor,
+	public selection::SelectionSystem::Visitor,
 	public scene::NodeVisitor
 {
 public:
@@ -144,24 +144,24 @@ void refreshSelectedModels(bool blockScreenUpdates)
 // The given model path denotes a VFS path, i.e. it is mod/game-relative
 void refreshModelsByPath(const std::string& relativeModelPath)
 {
-    std::size_t refreshedEntityCount = 0;
+	std::size_t refreshedEntityCount = 0;
 
-    GlobalModelCache().removeModel(relativeModelPath);
+	GlobalModelCache().removeModel(relativeModelPath);
 
-    GlobalMapModule().getRoot()->foreachNode([&](const scene::INodePtr& node)
-    {
-        auto entity = std::dynamic_pointer_cast<EntityNode>(node);
+	GlobalMapModule().getRoot()->foreachNode([&](const scene::INodePtr& node)
+	{
+		auto entity = std::dynamic_pointer_cast<EntityNode>(node);
 
-        if (entity && entity->getEntity().getKeyValue("model") == relativeModelPath)
-        {
-            entity->refreshModel();
-            ++refreshedEntityCount;
-        }
+		if (entity && entity->getEntity().getKeyValue("model") == relativeModelPath)
+		{
+			entity->refreshModel();
+			++refreshedEntityCount;
+		}
 
-        return true;
-    });
+		return true;
+	});
 
-    rMessage() << "Refreshed " << refreshedEntityCount << " entities using the model " << relativeModelPath << std::endl;
+	rMessage() << "Refreshed " << refreshedEntityCount << " entities using the model " << relativeModelPath << std::endl;
 }
 
 }

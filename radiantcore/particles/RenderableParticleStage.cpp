@@ -13,7 +13,7 @@ RenderableParticleStage::RenderableParticleStage(
 	_seeds(_numSeeds),
 	_bunches(2), // two bunches
 	_viewRotation(Matrix4::getIdentity()), // is re-calculated each update anyway
-    _localToWorld(Matrix4::getIdentity()),
+	_localToWorld(Matrix4::getIdentity()),
 	_direction(direction),
 	_entityColour(entityColour)
 {
@@ -70,45 +70,45 @@ void RenderableParticleStage::update(std::size_t time, const Matrix4& viewRotati
 
 void RenderableParticleStage::submitGeometry(const ShaderPtr& shader, const Matrix4& localToWorld)
 {
-    _localToWorld = localToWorld;
+	_localToWorld = localToWorld;
 
-    RenderableGeometry::update(shader);
+	RenderableGeometry::update(shader);
 }
 
 std::size_t RenderableParticleStage::getNumQuads() const
 {
-    return (_bunches[0] ? _bunches[0]->getNumQuads() : 0) +
-           (_bunches[1] ? _bunches[1]->getNumQuads() : 0);
+	return (_bunches[0] ? _bunches[0]->getNumQuads() : 0) +
+		   (_bunches[1] ? _bunches[1]->getNumQuads() : 0);
 }
 
 void RenderableParticleStage::updateGeometry()
 {
-    std::vector<render::RenderVertex> vertices;
-    std::vector<unsigned int> indices;
+	std::vector<render::RenderVertex> vertices;
+	std::vector<unsigned int> indices;
 
-    auto numQuads = getNumQuads();
+	auto numQuads = getNumQuads();
 
-    if (numQuads == 0)
-    {
-        updateGeometryWithData(render::GeometryType::Triangles, vertices,
-                                                   indices);
-        return;
-    }
+	if (numQuads == 0)
+	{
+		updateGeometryWithData(render::GeometryType::Triangles, vertices,
+												   indices);
+		return;
+	}
 
-    vertices.reserve(numQuads * 4);
-    indices.reserve(numQuads * 6);
+	vertices.reserve(numQuads * 4);
+	indices.reserve(numQuads * 6);
 
-    if (_bunches[0])
-    {
-        _bunches[0]->addVertexData(vertices, indices, _localToWorld);
-    }
+	if (_bunches[0])
+	{
+		_bunches[0]->addVertexData(vertices, indices, _localToWorld);
+	}
 
-    if (_bunches[1])
-    {
-        _bunches[1]->addVertexData(vertices, indices, _localToWorld);
-    }
+	if (_bunches[1])
+	{
+		_bunches[1]->addVertexData(vertices, indices, _localToWorld);
+	}
 
-    updateGeometryWithData(render::GeometryType::Triangles, vertices, indices);
+	updateGeometryWithData(render::GeometryType::Triangles, vertices, indices);
 }
 
 const AABB& RenderableParticleStage::getBounds()
@@ -142,11 +142,11 @@ void RenderableParticleStage::calculateStageViewRotation(const Matrix4& viewRota
 		// Rotate the z vector such that it faces the x axis, and use that as transform
 		// To keep the up/down orientation of the material, rotate it 90 degrees around z
 		// before applying the z-to-x tilt (issue #4792)
-        _viewRotation = Matrix4::getRotation(Vector3(0, 0, 1), Vector3(1, 0, 0))
-                                .getMultipliedBy(
-                                    Matrix4::getRotationAboutZ(math::Degrees(-90))
-                                );
-        break;
+		_viewRotation = Matrix4::getRotation(Vector3(0, 0, 1), Vector3(1, 0, 0))
+								.getMultipliedBy(
+									Matrix4::getRotationAboutZ(math::Degrees(-90))
+								);
+		break;
 
 	case IStageDef::ORIENTATION_Y:
 		// Rotate the z vector such that it faces the y axis, and use that as transform
@@ -227,7 +227,7 @@ void RenderableParticleStage::ensureBunches(std::size_t localTimeMSec)
 RenderableParticleBunchPtr RenderableParticleStage::createBunch(std::size_t cycleIndex)
 {
 	return std::make_shared<RenderableParticleBunch>(cycleIndex, getSeed(cycleIndex), 
-        _stageDef, _viewRotation, _direction, _entityColour);
+		_stageDef, _viewRotation, _direction, _entityColour);
 }
 
 Rand48::result_type RenderableParticleStage::getSeed(std::size_t cycleIndex)
@@ -242,7 +242,7 @@ RenderableParticleBunchPtr RenderableParticleStage::getExistingBunchByIndex(std:
 		return _bunches[0];
 	}
 
-    if (_bunches[1] && _bunches[1]->getIndex() == index)
+	if (_bunches[1] && _bunches[1]->getIndex() == index)
 	{
 		return _bunches[1];
 	}

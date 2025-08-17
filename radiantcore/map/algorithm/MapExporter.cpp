@@ -34,7 +34,7 @@ MapExporter::MapExporter(IMapWriter& writer, const scene::IMapRootNodePtr& root,
 	_curNodeCount(0),
 	_entityNum(0),
 	_primitiveNum(0),
-    _sendProgressMessages(true)
+	_sendProgressMessages(true)
 {
 	construct();
 }
@@ -50,7 +50,7 @@ MapExporter::MapExporter(IMapWriter& writer, const scene::IMapRootNodePtr& root,
 	_curNodeCount(0),
 	_entityNum(0),
 	_primitiveNum(0),
-    _sendProgressMessages(true)
+	_sendProgressMessages(true)
 {
 	construct();
 }
@@ -83,11 +83,11 @@ void MapExporter::construct()
 
 void MapExporter::exportMap(const scene::INodePtr& root, const GraphTraversalFunc& traverse)
 {
-    if (_sendProgressMessages)
-    {
-        FileOperation startedMsg(FileOperation::Type::Export, FileOperation::Started, _totalNodeCount > 0);
-        GlobalRadiantCore().getMessageBus().sendMessage(startedMsg);
-    }
+	if (_sendProgressMessages)
+	{
+		FileOperation startedMsg(FileOperation::Type::Export, FileOperation::Started, _totalNodeCount > 0);
+		GlobalRadiantCore().getMessageBus().sendMessage(startedMsg);
+	}
 
 	try
 	{
@@ -240,24 +240,24 @@ void MapExporter::onNodeProgress()
 		float progressFraction = _totalNodeCount > 0 ?
 			static_cast<float>(_curNodeCount) / static_cast<float>(_totalNodeCount) : 0.0f;
 
-        if (_sendProgressMessages)
-        {
-            FileOperation msg(FileOperation::Type::Export, FileOperation::Progress, _totalNodeCount > 0, progressFraction);
-            msg.setText(fmt::format(_("Writing node {0:d}"), _curNodeCount));
+		if (_sendProgressMessages)
+		{
+			FileOperation msg(FileOperation::Type::Export, FileOperation::Progress, _totalNodeCount > 0, progressFraction);
+			msg.setText(fmt::format(_("Writing node {0:d}"), _curNodeCount));
 
-            GlobalRadiantCore().getMessageBus().sendMessage(msg);
-        }
+			GlobalRadiantCore().getMessageBus().sendMessage(msg);
+		}
 	}
 }
 
 void MapExporter::enableProgressMessages()
 {
-    _sendProgressMessages = true;
+	_sendProgressMessages = true;
 }
 
 void MapExporter::disableProgressMessages()
 {
-    _sendProgressMessages = false;
+	_sendProgressMessages = false;
 }
 
 void MapExporter::prepareScene()
@@ -289,11 +289,11 @@ void MapExporter::finishScene()
 		recalculateBrushWindings();
 	}
 
-    if (_sendProgressMessages)
-    {
-        FileOperation finishedMsg(FileOperation::Type::Export, FileOperation::Finished, _totalNodeCount > 0);
-        GlobalRadiantCore().getMessageBus().sendMessage(finishedMsg);
-    }
+	if (_sendProgressMessages)
+	{
+		FileOperation finishedMsg(FileOperation::Type::Export, FileOperation::Finished, _totalNodeCount > 0);
+		GlobalRadiantCore().getMessageBus().sendMessage(finishedMsg);
+	}
 }
 
 void MapExporter::recalculateBrushWindings()

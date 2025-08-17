@@ -61,14 +61,14 @@ floatSwapUnion;
 
 int DDSLong( int src ) {
 	return ((src & 0xFF000000) >> 24) |
-	       ((src & 0x00FF0000) >> 8) |
-	       ((src & 0x0000FF00) << 8) |
-	       ((src & 0x000000FF) << 24);
+		   ((src & 0x00FF0000) >> 8) |
+		   ((src & 0x0000FF00) << 8) |
+		   ((src & 0x000000FF) << 24);
 }
 
 short DDSShort( short src ) {
 	return ((src & 0xFF00) >> 8) |
-	       ((src & 0x00FF) << 8);
+		   ((src & 0x00FF) << 8);
 }
 
 #else /*__BIG_ENDIAN__*/
@@ -84,18 +84,18 @@ short DDSShort( short src ) {
 
 std::ostream& operator<< (std::ostream& os, const DDSHeader& h)
 {
-    os << "DDSHeader { " << (h.isValid() ? "VALID" : "INVALID")
-       << " | " << h.width << "x" << h.height;
+	os << "DDSHeader { " << (h.isValid() ? "VALID" : "INVALID")
+	   << " | " << h.width << "x" << h.height;
 
-    if (h.isCompressed())
-       os << " | " << h.getCompressionFormat();
-    else
-       os << " | " << h.getRGBBits() << " bit RGB";
+	if (h.isCompressed())
+	   os << " | " << h.getCompressionFormat();
+	else
+	   os << " | " << h.getRGBBits() << " bit RGB";
 
-    os << " | " << h.mipMapCount << " mipmaps"
-       << " }";
+	os << " | " << h.mipMapCount << " mipmaps"
+	   << " }";
 
-    return os;
+	return os;
 }
 
 namespace
@@ -103,39 +103,39 @@ namespace
 
 bool fourCCEqual(const char* l, const char* r)
 {
-    return *reinterpret_cast<const uint32_t*>(l)
-        == *reinterpret_cast<const uint32_t*>(r);
+	return *reinterpret_cast<const uint32_t*>(l)
+		== *reinterpret_cast<const uint32_t*>(r);
 }
 
 }
 
 bool DDSHeader::isValid() const
 {
-    return fourCCEqual(magic, "DDS ")
-        && size == 124                  // fixed size structure
-        && pixelFormat.size == 32
-        && testFlag(DDSD_CAPS)          // required in every DDS file
-        && testFlag(DDSD_HEIGHT)        // required in every DDS file
-        && testFlag(DDSD_WIDTH)         // required in every DDS file
-        && testFlag(DDSD_PIXELFORMAT);  // required in every DDS file
+	return fourCCEqual(magic, "DDS ")
+		&& size == 124                  // fixed size structure
+		&& pixelFormat.size == 32
+		&& testFlag(DDSD_CAPS)          // required in every DDS file
+		&& testFlag(DDSD_HEIGHT)        // required in every DDS file
+		&& testFlag(DDSD_WIDTH)         // required in every DDS file
+		&& testFlag(DDSD_PIXELFORMAT);  // required in every DDS file
 }
 
 int DDSHeader::getWidth() const
 {
-    return DDSLong(width);
+	return DDSLong(width);
 }
 
 int DDSHeader::getHeight() const
 {
-    return DDSLong(height);
+	return DDSLong(height);
 }
 
 int DDSHeader::getMipMapCount() const
 {
-    if (testFlag(DDSD_MIPMAPCOUNT))
-       return mipMapCount;
-    else
-       return 1;
+	if (testFlag(DDSD_MIPMAPCOUNT))
+	   return mipMapCount;
+	else
+	   return 1;
 }
 
 /*

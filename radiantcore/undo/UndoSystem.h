@@ -46,9 +46,9 @@ private:
 
 	std::map<IUndoable*, UndoStackFiller> _undoables;
 
-    registry::CachedKey<std::size_t> _undoLevels;
+	registry::CachedKey<std::size_t> _undoLevels;
 
-    sigc::signal<void(EventType, const std::string&)> _eventSignal;
+	sigc::signal<void(EventType, const std::string&)> _eventSignal;
 
 public:
 	UndoSystem();
@@ -68,7 +68,7 @@ public:
 
 	void clear() override;
 
-    sigc::signal<void(EventType, const std::string&)>& signal_undoEvent() override;
+	sigc::signal<void(EventType, const std::string&)>& signal_undoEvent() override;
 
 private:
 	void startUndo();

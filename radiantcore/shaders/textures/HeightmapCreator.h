@@ -36,7 +36,7 @@ ImagePtr createNormalmapFromHeightmap(ImagePtr heightMap, float scale) {
 	/* // no filtering
 	const int kernelSize = 2;
 	KernelElement kernel_du[kernelSize] = {
-    		{-1, 0,-0.5f },
+			{-1, 0,-0.5f },
 		{ 1, 0, 0.5f }
 	};
 	KernelElement kernel_dv[kernelSize] = {

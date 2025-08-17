@@ -17,9 +17,9 @@ namespace
 		double cosHalfTheta = qa.w() * qb.w() + qa.x() * qb.x() + qa.y() * qb.y() + qa.z() * qb.z();
 
 		// if qa=qb or qa=-qb then theta = 0 and we can return qa
-        if (std::abs(cosHalfTheta) > 1.0)
+		if (std::abs(cosHalfTheta) > 1.0)
 		{
- 			return qb;
+			return qb;
 		}
 
 		// greebo: I spotted this fix in the D3 SDK - sometimes we run into rotations
@@ -156,7 +156,7 @@ void MD5Skeleton::update(const IMD5AnimPtr& anim, std::size_t time)
 		if (joint.animComponents & (Joint::YAW | Joint::PITCH | Joint::ROLL))
 		{
 			auto lSq = orientation.getVector3().getLengthSquared();
-            auto w = -sqrt(1.0 - lSq);
+			auto w = -sqrt(1.0 - lSq);
 
 			orientation.w() = isNaN(w) ? 0 : w;
 

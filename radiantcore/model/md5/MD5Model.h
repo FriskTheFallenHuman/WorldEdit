@@ -25,7 +25,7 @@ class MD5Model :
 private:
 	MD5Joints _joints;
 
-    std::vector<MD5SurfacePtr> _surfaces;
+	std::vector<MD5SurfacePtr> _surfaces;
 
 	AABB _aabb_local;
 
@@ -48,9 +48,9 @@ private:
 	// The current state of our animated skeleton
 	MD5Skeleton _skeleton;
 
-    sigc::signal<void> _sigModelAnimationUpdated;
+	sigc::signal<void> _sigModelAnimationUpdated;
 
-    sigc::signal<void> _sigShadersUpdated;
+	sigc::signal<void> _sigShadersUpdated;
 
 public:
 	MD5Model();
@@ -60,16 +60,16 @@ public:
 	MD5Model(const MD5Model& other);
 
 	// Const-iterate over all surfaces
-    void foreachSurface(const std::function<void(const MD5Surface&)>& functor) const;
+	void foreachSurface(const std::function<void(const MD5Surface&)>& functor) const;
 
 	/** greebo: Reads the model data from the given tokeniser.
 	 */
 	void parseFromTokens(parser::DefTokeniser& tok);
 
-    const MD5Skeleton& getSkeleton() const
-    {
-        return _skeleton;
-    }
+	const MD5Skeleton& getSkeleton() const
+	{
+		return _skeleton;
+	}
 
 	void updateAABB();
 
@@ -90,8 +90,8 @@ public:
 
 	virtual void applySkin(const decl::ISkin::Ptr& skin) override;
 
-    // Signal emitted after the captured shaders have been changed (or cleared)
-    sigc::signal<void>& signal_ShadersChanged();
+	// Signal emitted after the captured shaders have been changed (or cleared)
+	sigc::signal<void>& signal_ShadersChanged();
 
 	/** Return the number of material surfaces on this model. Each material
 	 * surface consists of a set of polygons sharing the same material.
@@ -126,7 +126,7 @@ public:
 	 */
 	static Vector3 parseVector3(parser::DefTokeniser& tok);
 
-    sigc::signal<void>& signal_ModelAnimationUpdated();
+	sigc::signal<void>& signal_ModelAnimationUpdated();
 
 private:
 

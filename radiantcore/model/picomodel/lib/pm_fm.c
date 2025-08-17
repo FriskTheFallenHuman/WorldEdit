@@ -204,7 +204,7 @@ static picoModel_t *_fm_load( PM_PARAMS_LOAD )
 	fm_vert_normal_t	*vert;
 
 	char			skinname[FM_SKINPATHSIZE];
- 	fm_t			fm;
+	fm_t			fm;
 	fm_header_t		*fm_head;
 	fm_st_t			*texCoord;
 	fm_xyz_st_t		*tri_verts;
@@ -640,9 +640,9 @@ static picoModel_t *_fm_load( PM_PARAMS_LOAD )
 		_pico_printf(PICO_WARNING, " Not all LL mallocs freed\n");
 
 	// Free malloc'ed LUTs
- 	_pico_free(p_index_LUT);
+	_pico_free(p_index_LUT);
 	_pico_free(p_index_LUT_DUPS);
-    
+	
 	/* return the new pico model */
 	return picoModel;
 

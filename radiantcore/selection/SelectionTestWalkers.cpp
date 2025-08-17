@@ -43,12 +43,12 @@ bool SelectionTestWalker::entityIsWorldspawn(const scene::INodePtr& node)
 void SelectionTestWalker::performSelectionTest(const scene::INodePtr& selectableNode,
 	const scene::INodePtr& nodeToBeTested)
 {
-    if (!nodeIsEligibleForTesting(nodeToBeTested))
-    {
-        return;
-    }
+	if (!nodeIsEligibleForTesting(nodeToBeTested))
+	{
+		return;
+	}
 
-    auto selectable = scene::node_cast<ISelectable>(selectableNode);
+	auto selectable = scene::node_cast<ISelectable>(selectableNode);
 
 	if (!selectable) return; // skip non-selectables
 
@@ -181,17 +181,17 @@ void ComponentSelector::performComponentselectionTest(const scene::INodePtr& nod
 }
 
 MergeActionSelector::MergeActionSelector(Selector& selector, SelectionTest& test) :
-    SelectionTestWalker(selector, test)
+	SelectionTestWalker(selector, test)
 {}
 
 void MergeActionSelector::testNode(const scene::INodePtr& node)
 {
-    performSelectionTest(node, node);
+	performSelectionTest(node, node);
 }
 
 bool MergeActionSelector::nodeIsEligibleForTesting(const scene::INodePtr& node)
 {
-    return node->getNodeType() == scene::INode::Type::MergeAction;
+	return node->getNodeType() == scene::INode::Type::MergeAction;
 }
 
 }

@@ -31,7 +31,7 @@ protected:
 	AABB _bounds;
 
 	Callback _boundsChanged;
-    sigc::signal<void> _sigCurveChanged;
+	sigc::signal<void> _sigCurveChanged;
 
 public:
 	Curve(const EntityNode& entity, const Callback& boundsChanged);
@@ -42,11 +42,11 @@ public:
 
 	const AABB& getBounds() const;
 
-    /// Signal emitted when curve changes
-    sigc::signal<void>& signal_curveChanged()
-    {
-        return _sigCurveChanged;
-    }
+	/// Signal emitted when curve changes
+	sigc::signal<void>& signal_curveChanged()
+	{
+		return _sigCurveChanged;
+	}
 
 	// Tesselation has to be implemented by the subclasses
 	virtual void tesselate() = 0;
@@ -78,8 +78,8 @@ public:
 	virtual void saveToEntity(Entity& target) = 0;
 
 	// Render methods
-    void onPreRender(const ShaderPtr& shader, const VolumeTest& volume);
-    void renderHighlights(IRenderableCollector& collector, const VolumeTest& volume);
+	void onPreRender(const ShaderPtr& shader, const VolumeTest& volume);
+	void renderHighlights(IRenderableCollector& collector, const VolumeTest& volume);
 
 	// Performs a selection test on the point vertices of this curve
 	void testSelect(Selector& selector, SelectionTest& test, SelectionIntersection& best);
@@ -91,8 +91,8 @@ public:
 	// Returns the string representation of this curve to store it into entity spawnargs
 	std::string getEntityKeyValue();
 
-    void clearRenderable();
-    void updateRenderable();
+	void clearRenderable();
+	void updateRenderable();
 
 protected:
 	// Clears the control points and other associated elements

@@ -19,41 +19,41 @@ class UndoStackFiller final :
 	public IUndoStateSaver
 {
 private:
-    IUndoSystem& _owner;
-    IUndoable& _undoable;
+	IUndoSystem& _owner;
+	IUndoable& _undoable;
 	UndoStack* _stack;
 
 public:
-    using Ptr = std::shared_ptr<UndoStackFiller>;
+	using Ptr = std::shared_ptr<UndoStackFiller>;
 
-    UndoStackFiller(IUndoSystem& owner, IUndoable& undoable) :
-        _owner(owner),
-        _undoable(undoable),
-        _stack(nullptr)
-    {}
+	UndoStackFiller(IUndoSystem& owner, IUndoable& undoable) :
+		_owner(owner),
+		_undoable(undoable),
+		_stack(nullptr)
+	{}
 
-    // Noncopyable
-    UndoStackFiller(const UndoStackFiller& other) = delete;
-    UndoStackFiller& operator=(const UndoStackFiller& other) = delete;
+	// Noncopyable
+	UndoStackFiller(const UndoStackFiller& other) = delete;
+	UndoStackFiller& operator=(const UndoStackFiller& other) = delete;
 
-    void saveState() override
-    {
-        // If the stack reference is empty, the associated undoable 
-        // already submitted its state this round
-        if (_stack == nullptr) return;
+	void saveState() override
+	{
+		// If the stack reference is empty, the associated undoable 
+		// already submitted its state this round
+		if (_stack == nullptr) return;
 
-        // Export the Undoable's memento
-        _stack->save(_undoable);
+		// Export the Undoable's memento
+		_stack->save(_undoable);
 
-        // Make sure the stack is dissociated after saving
-        // to make sure further saveState() calls don't have any effect
-        _stack = nullptr;
-    }
+		// Make sure the stack is dissociated after saving
+		// to make sure further saveState() calls don't have any effect
+		_stack = nullptr;
+	}
 
-    IUndoSystem& getUndoSystem() override
-    {
-        return _owner;
-    }
+	IUndoSystem& getUndoSystem() override
+	{
+		return _owner;
+	}
 
 	// Assign the stack of this class. This usually happens when starting
 	// an undo or redo operation.

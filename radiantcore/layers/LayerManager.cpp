@@ -26,7 +26,7 @@ namespace
 }
 
 LayerManager::LayerManager(INode& rootNode) :
-    _rootNode(rootNode),
+	_rootNode(rootNode),
 	_activeLayer(DEFAULT_LAYER)
 {
 	// Create the "master" layer with ID DEFAULT_LAYER
@@ -46,7 +46,7 @@ int LayerManager::createLayer(const std::string& name, int layerID)
 	auto result = _layers.emplace(layerID, name);
 
 	if (result.second == false)
-    {
+	{
 		rError() << "LayerSystem: Could not create layer!" << std::endl;
 		return -1;
 	}
@@ -60,7 +60,7 @@ int LayerManager::createLayer(const std::string& name, int layerID)
 
 	// Set the newly created layer to "visible"
 	_layerVisibility[layerID] = true;
-    _layerParentIds[layerID] = NO_PARENT_ID;
+	_layerParentIds[layerID] = NO_PARENT_ID;
 
 	// Layers have changed
 	onLayersChanged();
@@ -75,7 +75,7 @@ int LayerManager::createLayer(const std::string& name)
 	int existingID = getLayerID(name);
 
 	if (existingID != -1)
-    {
+	{
 		rError() << "Could not create layer, name already exists: " << name << std::endl;
 		return -1;
 	}
@@ -98,11 +98,11 @@ void LayerManager::deleteLayer(const std::string& name)
 		return;
 	}
 
-    if (layerID == DEFAULT_LAYER)
-    {
-        rError() << "Cannot delete the default layer" << std::endl;
-        return;
-    }
+	if (layerID == DEFAULT_LAYER)
+	{
+		rError() << "Cannot delete the default layer" << std::endl;
+		return;
+	}
 
 	// Remove all nodes from this layer first, but don't de-select them yet
 	RemoveFromLayerWalker walker(layerID);
@@ -131,10 +131,10 @@ void LayerManager::deleteLayer(const std::string& name)
 
 void LayerManager::foreachLayer(const LayerVisitFunc& visitor)
 {
-    for (const auto& pair : _layers)
-    {
-        visitor(pair.first, pair.second);
-    }
+	for (const auto& pair : _layers)
+	{
+		visitor(pair.first, pair.second);
+	}
 }
 
 void LayerManager::reset()
@@ -147,8 +147,8 @@ void LayerManager::reset()
 	_layerVisibility.resize(1);
 	_layerVisibility[DEFAULT_LAYER] = true;
 
-    _layerParentIds.resize(1);
-    _layerParentIds[DEFAULT_LAYER] = NO_PARENT_ID;
+	_layerParentIds.resize(1);
+	_layerParentIds[DEFAULT_LAYER] = NO_PARENT_ID;
 
 	// Emit all changed signals
 	_layersChangedSignal.emit();
@@ -166,7 +166,7 @@ bool LayerManager::renameLayer(int layerID, const std::string& newLayerName)
 	auto i = _layers.find(layerID);
 
 	if (i == _layers.end())
-    {
+	{
 		return false; // not found
 	}
 
@@ -214,7 +214,7 @@ bool LayerManager::layerIsVisible(int layerID)
 {
 	// Sanity check
 	if (layerID < 0 || layerID >= static_cast<int>(_layerVisibility.size()))
-    {
+	{
 		rMessage() << "LayerSystem: Querying invalid layer ID: " << layerID << std::endl;
 		return false;
 	}
@@ -224,42 +224,42 @@ bool LayerManager::layerIsVisible(int layerID)
 
 void LayerManager::setLayerVisibility(int layerId, bool visible)
 {
-    auto layerVisibilityChanged = setLayerVisibilityRecursively(layerId, visible);
+	auto layerVisibilityChanged = setLayerVisibilityRecursively(layerId, visible);
 
 	if (!visible && !_layerVisibility.at(_activeLayer))
 	{
 		// We just hid the active layer, fall back to another one
 		_activeLayer = getFirstVisibleLayer();
 	}
-    
-    // If the active layer is hidden (which can occur after "hide all")
-    // re-set the active layer to this one as it has been made visible
-    if (visible && _activeLayer < static_cast<int>(_layerVisibility.size()) && 
-        !_layerVisibility[_activeLayer])
-    {
-        _activeLayer = layerId;
-    }
+	
+	// If the active layer is hidden (which can occur after "hide all")
+	// re-set the active layer to this one as it has been made visible
+	if (visible && _activeLayer < static_cast<int>(_layerVisibility.size()) && 
+		!_layerVisibility[_activeLayer])
+	{
+		_activeLayer = layerId;
+	}
 
-    if (layerVisibilityChanged)
-    {
-	    // Fire the visibility changed event
-	    onLayerVisibilityChanged();
-    }
+	if (layerVisibilityChanged)
+	{
+		// Fire the visibility changed event
+		onLayerVisibilityChanged();
+	}
 }
 
 bool LayerManager::setLayerVisibilityRecursively(int rootLayerId, bool visible)
 {
-    bool visibilityChange = false;
+	bool visibilityChange = false;
 
-    foreachLayerInHierarchy(rootLayerId, [&](int layerId)
-    {
-        if (layerId < 0 || layerId >= _layerVisibility.size()) return;
+	foreachLayerInHierarchy(rootLayerId, [&](int layerId)
+	{
+		if (layerId < 0 || layerId >= _layerVisibility.size()) return;
 
-        visibilityChange |= _layerVisibility.at(layerId) != visible;
-        _layerVisibility.at(layerId) = visible;
-    });
+		visibilityChange |= _layerVisibility.at(layerId) != visible;
+		_layerVisibility.at(layerId) = visible;
+	});
 
-    return visibilityChange;
+	return visibilityChange;
 }
 
 void LayerManager::updateSceneGraphVisibility()
@@ -295,7 +295,7 @@ void LayerManager::onLayerVisibilityChanged()
 void LayerManager::addSelectionToLayer(int layerID)
 {
 	// Check if the layer ID exists
-    if (_layers.count(layerID) == 0) return;
+	if (_layers.count(layerID) == 0) return;
 
 	// Instantiate a Selectionwalker and traverse the selection
 	AddToLayerWalker walker(layerID);
@@ -307,7 +307,7 @@ void LayerManager::addSelectionToLayer(int layerID)
 void LayerManager::moveSelectionToLayer(int layerID)
 {
 	// Check if the layer ID exists
-    if (_layers.count(layerID) == 0) return;
+	if (_layers.count(layerID) == 0) return;
 
 	// Instantiate a Selectionwalker and traverse the selection
 	MoveToLayerWalker walker(layerID);
@@ -319,7 +319,7 @@ void LayerManager::moveSelectionToLayer(int layerID)
 void LayerManager::removeSelectionFromLayer(int layerID)
 {
 	// Check if the layer ID exists
-    if (_layers.count(layerID) == 0) return;
+	if (_layers.count(layerID) == 0) return;
 
 	// Instantiate a Selectionwalker and traverse the selection
 	RemoveFromLayerWalker walker(layerID);
@@ -330,16 +330,16 @@ void LayerManager::removeSelectionFromLayer(int layerID)
 
 bool LayerManager::updateNodeVisibility(const INodePtr& node)
 {
-    if (!node->supportsStateFlag(Node::eLayered))
-    {
-        return true; // doesn't support layers, return true for visible
-    }
+	if (!node->supportsStateFlag(Node::eLayered))
+	{
+		return true; // doesn't support layers, return true for visible
+	}
 
 	// Get the list of layers the node is associated with
 	const auto& layers = node->getLayers();
 
 	// We start with the assumption that a node is hidden
-    bool isHidden = true;
+	bool isHidden = true;
 
 	// Cycle through the Node's layers, and show the node as soon as
 	// a visible layer is found.
@@ -348,19 +348,19 @@ bool LayerManager::updateNodeVisibility(const INodePtr& node)
 		if (_layerVisibility[layerId])
 		{
 			// The layer is visible, set the visibility to true and quit
-            isHidden = false;
+			isHidden = false;
 			break;
 		}
 	}
 
-    if (isHidden)
-    {
-        node->enable(Node::eLayered);
-    }
-    else
-    {
-        node->disable(Node::eLayered);
-    }
+	if (isHidden)
+	{
+		node->enable(Node::eLayered);
+	}
+	else
+	{
+		node->disable(Node::eLayered);
+	}
 
 	// If node is hidden, return FALSE
 	return !isHidden;
@@ -368,93 +368,93 @@ bool LayerManager::updateNodeVisibility(const INodePtr& node)
 
 void LayerManager::foreachLayerInHierarchy(int rootLayerId, const std::function<void(int)>& functor)
 {
-    if (rootLayerId == -1) return;
+	if (rootLayerId == -1) return;
 
-    // Hit the root node itself
-    functor(rootLayerId);
+	// Hit the root node itself
+	functor(rootLayerId);
 
-    // Recurse into each child layer
-    // Start with index 1, as the default layer cannot have any parent
-    for (std::size_t childLayerId = 1; childLayerId < _layerParentIds.size(); ++childLayerId)
-    {
-        // If this local layer is assigned as parent to this child layer, recurse into it
-        if (_layerParentIds.at(childLayerId) == rootLayerId)
-        {
-            foreachLayerInHierarchy(static_cast<int>(childLayerId), functor);
-        }
-    }
+	// Recurse into each child layer
+	// Start with index 1, as the default layer cannot have any parent
+	for (std::size_t childLayerId = 1; childLayerId < _layerParentIds.size(); ++childLayerId)
+	{
+		// If this local layer is assigned as parent to this child layer, recurse into it
+		if (_layerParentIds.at(childLayerId) == rootLayerId)
+		{
+			foreachLayerInHierarchy(static_cast<int>(childLayerId), functor);
+		}
+	}
 }
 
 void LayerManager::setSelected(int layerId, bool selected)
 {
-    // Assemble the list of layer IDs this operation is affecting
-    std::unordered_set<int> layerIds(32);
-    foreachLayerInHierarchy(layerId, [&](int childLayerId)
-    {
-        layerIds.insert(childLayerId);
-    });
+	// Assemble the list of layer IDs this operation is affecting
+	std::unordered_set<int> layerIds(32);
+	foreachLayerInHierarchy(layerId, [&](int childLayerId)
+	{
+		layerIds.insert(childLayerId);
+	});
 
 	SetLayerSelectedWalker walker(layerIds, selected);
-    _rootNode.traverseChildren(walker);
+	_rootNode.traverseChildren(walker);
 }
 
 int LayerManager::getParentLayer(int layerId)
 {
-    return layerId == -1 ? NO_PARENT_ID : _layerParentIds.at(layerId);
+	return layerId == -1 ? NO_PARENT_ID : _layerParentIds.at(layerId);
 }
 
 void LayerManager::setParentLayer(int childLayerId, int parentLayerId)
 {
-    if (childLayerId == DEFAULT_LAYER && parentLayerId != -1)
-    {
-        throw std::invalid_argument("Cannot assign a parent to the default layer");
-    }
+	if (childLayerId == DEFAULT_LAYER && parentLayerId != -1)
+	{
+		throw std::invalid_argument("Cannot assign a parent to the default layer");
+	}
 
-    // Non-existent layer IDs will throw
-    if (!layerExists(childLayerId) || 
-        parentLayerId != -1 && !layerExists(parentLayerId))
-    {
-        throw std::invalid_argument("Invalid layer ID");
-    }
+	// Non-existent layer IDs will throw
+	if (!layerExists(childLayerId) || 
+		parentLayerId != -1 && !layerExists(parentLayerId))
+	{
+		throw std::invalid_argument("Invalid layer ID");
+	}
 
-    if (childLayerId == parentLayerId)
-    {
-        throw std::invalid_argument("Cannot assign a layer as parent of itself");
-    }
+	if (childLayerId == parentLayerId)
+	{
+		throw std::invalid_argument("Cannot assign a layer as parent of itself");
+	}
 
-    // Detect recursions, if any parent layer has this layer in its hierarchy, we should throw
-    if (layerIsChildOf(parentLayerId, childLayerId))
-    {
-        throw std::invalid_argument("This relationship change would result in a recursion");
-    }
+	// Detect recursions, if any parent layer has this layer in its hierarchy, we should throw
+	if (layerIsChildOf(parentLayerId, childLayerId))
+	{
+		throw std::invalid_argument("This relationship change would result in a recursion");
+	}
 
-    if (_layerParentIds.at(childLayerId) != parentLayerId)
-    {
-        _layerParentIds.at(childLayerId) = parentLayerId;
-        _layerHierarchyChangedSignal.emit();
-    }
+	if (_layerParentIds.at(childLayerId) != parentLayerId)
+	{
+		_layerParentIds.at(childLayerId) = parentLayerId;
+		_layerHierarchyChangedSignal.emit();
+	}
 }
 
 bool LayerManager::layerIsChildOf(int candidateLayerId, int parentLayerId)
 {
-    // Nothing is a parent of the null layer
-    if (candidateLayerId == NO_PARENT_ID || parentLayerId == NO_PARENT_ID)
-    {
-        return false;
-    }
+	// Nothing is a parent of the null layer
+	if (candidateLayerId == NO_PARENT_ID || parentLayerId == NO_PARENT_ID)
+	{
+		return false;
+	}
 
-    // Check the hierarchy of the candidate
-    for (int immediateParentId = getParentLayer(candidateLayerId); 
-         immediateParentId != NO_PARENT_ID;
-         immediateParentId = getParentLayer(immediateParentId))
-    {
-        if (immediateParentId == parentLayerId)
-        {
-            return true;
-        }
-    }
+	// Check the hierarchy of the candidate
+	for (int immediateParentId = getParentLayer(candidateLayerId); 
+		 immediateParentId != NO_PARENT_ID;
+		 immediateParentId = getParentLayer(immediateParentId))
+	{
+		if (immediateParentId == parentLayerId)
+		{
+			return true;
+		}
+	}
 
-    return false;
+	return false;
 }
 
 sigc::signal<void> LayerManager::signal_layersChanged()
@@ -480,7 +480,7 @@ sigc::signal<void> LayerManager::signal_nodeMembershipChanged()
 int LayerManager::getLayerID(const std::string& name) const
 {
 	for (const auto& [layerId, layerName] : _layers)
-    {
+	{
 		if (layerName == name) {
 			// Name found, return the ID
 			return layerId;
@@ -505,7 +505,7 @@ bool LayerManager::layerExists(int layerID) const
 int LayerManager::getHighestLayerID() const
 {
 	if (_layers.size() == 0)
-    {
+	{
 		// Empty layer map, just return DEFAULT_LAYER
 		return DEFAULT_LAYER;
 	}
@@ -517,9 +517,9 @@ int LayerManager::getHighestLayerID() const
 int LayerManager::getLowestUnusedLayerID()
 {
 	for (int i = 0; i < INT_MAX; i++)
-    {
+	{
 		if (_layers.count(i) == 0)
-        {
+		{
 			// Found a free ID
 			return i;
 		}

@@ -10,19 +10,19 @@ namespace entity
 
 namespace
 {
-    const std::string KEY_S_MAXDISTANCE("s_maxdistance");
-    const std::string KEY_S_MINDISTANCE("s_mindistance");
-    const std::string KEY_S_SHADER("s_shader");
+	const std::string KEY_S_MAXDISTANCE("s_maxdistance");
+	const std::string KEY_S_MINDISTANCE("s_mindistance");
+	const std::string KEY_S_SHADER("s_shader");
 }
 
 SpeakerNode::SpeakerNode(const IEntityClassPtr& eclass) :
 	EntityNode(eclass),
 	m_originKey(std::bind(&SpeakerNode::originChanged, this)),
-    _renderableBox(*this, m_aabb_local, worldAABB().getOrigin()),
-    _renderableRadiiWireframe(*this, m_origin, _radiiTransformed),
-    _renderableRadiiFill(*this, m_origin, _radiiTransformed),
-    _renderableRadiiFillOutline(*this, m_origin, _radiiTransformed),
-    _showRadiiWhenUnselected(EntitySettings::InstancePtr()->getShowAllSpeakerRadii()),
+	_renderableBox(*this, m_aabb_local, worldAABB().getOrigin()),
+	_renderableRadiiWireframe(*this, m_origin, _radiiTransformed),
+	_renderableRadiiFill(*this, m_origin, _radiiTransformed),
+	_renderableRadiiFillOutline(*this, m_origin, _radiiTransformed),
+	_showRadiiWhenUnselected(EntitySettings::InstancePtr()->getShowAllSpeakerRadii()),
 	_dragPlanes(std::bind(&SpeakerNode::selectedChangedComponent, this, std::placeholders::_1))
 {}
 
@@ -30,11 +30,11 @@ SpeakerNode::SpeakerNode(const SpeakerNode& other) :
 	EntityNode(other),
 	Snappable(other),
 	m_originKey(std::bind(&SpeakerNode::originChanged, this)),
-    _renderableBox(*this, m_aabb_local, worldAABB().getOrigin()),
-    _renderableRadiiWireframe(*this, m_origin, _radiiTransformed),
-    _renderableRadiiFill(*this, m_origin, _radiiTransformed),
-    _renderableRadiiFillOutline(*this, m_origin, _radiiTransformed),
-    _showRadiiWhenUnselected(EntitySettings::InstancePtr()->getShowAllSpeakerRadii()),
+	_renderableBox(*this, m_aabb_local, worldAABB().getOrigin()),
+	_renderableRadiiWireframe(*this, m_origin, _radiiTransformed),
+	_renderableRadiiFill(*this, m_origin, _radiiTransformed),
+	_renderableRadiiFillOutline(*this, m_origin, _radiiTransformed),
+	_showRadiiWhenUnselected(EntitySettings::InstancePtr()->getShowAllSpeakerRadii()),
 	_dragPlanes(std::bind(&SpeakerNode::selectedChangedComponent, this, std::placeholders::_1))
 {}
 
@@ -55,8 +55,8 @@ void SpeakerNode::construct()
 
 	observeKey("origin", sigc::mem_fun(m_originKey, &OriginKey::onKeyValueChanged));
 
-    // Observe speaker-related spawnargs
-    static_assert(std::is_base_of<sigc::trackable, SpeakerNode>::value);
+	// Observe speaker-related spawnargs
+	static_assert(std::is_base_of<sigc::trackable, SpeakerNode>::value);
 	observeKey(KEY_S_SHADER, sigc::mem_fun(this, &SpeakerNode::sShaderChanged));
 	observeKey(KEY_S_MINDISTANCE, sigc::mem_fun(this, &SpeakerNode::sMinChanged));
 	observeKey(KEY_S_MAXDISTANCE, sigc::mem_fun(this, &SpeakerNode::sMaxChanged));
@@ -129,7 +129,7 @@ void SpeakerNode::sMinChanged(const std::string& value)
 	_radiiTransformed.setMin(_radii.getMin());
 
 	updateAABB();
-    updateRenderables();
+	updateRenderables();
 }
 
 void SpeakerNode::sMaxChanged(const std::string& value)
@@ -150,7 +150,7 @@ void SpeakerNode::sMaxChanged(const std::string& value)
 	_radiiTransformed.setMax(_radii.getMax());
 
 	updateAABB();
-    updateRenderables();
+	updateRenderables();
 }
 
 void SpeakerNode::snapto(float snap)
@@ -166,7 +166,7 @@ const AABB& SpeakerNode::localAABB() const
 
 AABB SpeakerNode::getSpeakerAABB() const
 {
-    return AABB(m_originKey.get(), m_aabb_local.getExtents());
+	return AABB(m_originKey.get(), m_aabb_local.getExtents());
 }
 
 void SpeakerNode::selectPlanes(Selector& selector, SelectionTest& test, const PlaneCallback& selectedPlaneCallback)
@@ -227,65 +227,65 @@ scene::INodePtr SpeakerNode::clone() const
 {
 	SpeakerNodePtr node(new SpeakerNode(*this));
 	node->construct();
-    node->constructClone(*this);
+	node->constructClone(*this);
 
 	return node;
 }
 
 void SpeakerNode::onPreRender(const VolumeTest& volume)
 {
-    EntityNode::onPreRender(volume);
+	EntityNode::onPreRender(volume);
 
-    _renderableBox.update(getColourShader());
+	_renderableBox.update(getColourShader());
 
-    if (_showRadiiWhenUnselected || isSelected())
-    {
-        _renderableRadiiWireframe.update(getWireShader());
-        _renderableRadiiFill.update(_radiiFillShader);
-        _renderableRadiiFillOutline.update(_radiiFillOutlineShader);
-    }
-    else
-    {
-        _renderableRadiiWireframe.clear();
-        _renderableRadiiFill.clear();
-        _renderableRadiiFillOutline.clear();
-    }
+	if (_showRadiiWhenUnselected || isSelected())
+	{
+		_renderableRadiiWireframe.update(getWireShader());
+		_renderableRadiiFill.update(_radiiFillShader);
+		_renderableRadiiFillOutline.update(_radiiFillOutlineShader);
+	}
+	else
+	{
+		_renderableRadiiWireframe.clear();
+		_renderableRadiiFill.clear();
+		_renderableRadiiFillOutline.clear();
+	}
 }
 
 void SpeakerNode::renderHighlights(IRenderableCollector& collector, const VolumeTest& volume)
 {
-    collector.addHighlightRenderable(_renderableBox, Matrix4::getIdentity());
+	collector.addHighlightRenderable(_renderableBox, Matrix4::getIdentity());
 
-    if (!collector.supportsFullMaterials())
-    {
-        collector.addHighlightRenderable(_renderableRadiiWireframe, Matrix4::getIdentity());
-    }
-    else
-    {
-        collector.addHighlightRenderable(_renderableRadiiFill, Matrix4::getIdentity());
-    }
+	if (!collector.supportsFullMaterials())
+	{
+		collector.addHighlightRenderable(_renderableRadiiWireframe, Matrix4::getIdentity());
+	}
+	else
+	{
+		collector.addHighlightRenderable(_renderableRadiiFill, Matrix4::getIdentity());
+	}
 
-    EntityNode::renderHighlights(collector, volume);
+	EntityNode::renderHighlights(collector, volume);
 }
 
 void SpeakerNode::setRenderSystem(const RenderSystemPtr& renderSystem)
 {
-    EntityNode::setRenderSystem(renderSystem);
+	EntityNode::setRenderSystem(renderSystem);
 
-    // Clear the geometry from any previous shader
-    clearRenderables();
+	// Clear the geometry from any previous shader
+	clearRenderables();
 
-    if (renderSystem)
-    {
-        auto renderColour = getEntityColour();
-        _radiiFillShader = renderSystem->capture(ColourShaderType::CameraTranslucent, renderColour);
-        _radiiFillOutlineShader = renderSystem->capture(ColourShaderType::CameraOutline, renderColour);
-    }
-    else
-    {
-        _radiiFillShader.reset();
-        _radiiFillOutlineShader.reset();
-    }
+	if (renderSystem)
+	{
+		auto renderColour = getEntityColour();
+		_radiiFillShader = renderSystem->capture(ColourShaderType::CameraTranslucent, renderColour);
+		_radiiFillOutlineShader = renderSystem->capture(ColourShaderType::CameraOutline, renderColour);
+	}
+	else
+	{
+		_radiiFillShader.reset();
+		_radiiFillOutlineShader.reset();
+	}
 }
 
 void SpeakerNode::translate(const Vector3& translation)
@@ -298,7 +298,7 @@ void SpeakerNode::updateTransform()
 	setLocalToParent(Matrix4::getTranslation(m_origin));
 	transformChanged();
 
-    updateRenderables();
+	updateRenderables();
 }
 
 void SpeakerNode::updateAABB()
@@ -391,30 +391,30 @@ void SpeakerNode::revertTransform()
 
 void SpeakerNode::freezeTransform()
 {
-    m_originKey.set(m_origin);
-    m_originKey.write(_spawnArgs);
+	m_originKey.set(m_origin);
+	m_originKey.write(_spawnArgs);
 
-    _radii = _radiiTransformed;
+	_radii = _radiiTransformed;
 
-    // Write the s_mindistance/s_maxdistance keyvalues if there is a valid shader and EITHER
-    // the radii are different from the shader default, OR there were already min/max
-    // keyvalues to begin with. This means we will not create or remove spawnargs when
-    // moving a speaker.
-    if (!_spawnArgs.getKeyValue(KEY_S_SHADER).empty())
-    {
-        // Note: Write the spawnargs in meters
-        if (_radii.getMin(true) != _defaultRadii.getMin(true)
-            || !_spawnArgs.getKeyValue(KEY_S_MINDISTANCE).empty())
-        {
-            _spawnArgs.setKeyValue(KEY_S_MINDISTANCE, string::to_string(_radii.getMin(true)));
-        }
+	// Write the s_mindistance/s_maxdistance keyvalues if there is a valid shader and EITHER
+	// the radii are different from the shader default, OR there were already min/max
+	// keyvalues to begin with. This means we will not create or remove spawnargs when
+	// moving a speaker.
+	if (!_spawnArgs.getKeyValue(KEY_S_SHADER).empty())
+	{
+		// Note: Write the spawnargs in meters
+		if (_radii.getMin(true) != _defaultRadii.getMin(true)
+			|| !_spawnArgs.getKeyValue(KEY_S_MINDISTANCE).empty())
+		{
+			_spawnArgs.setKeyValue(KEY_S_MINDISTANCE, string::to_string(_radii.getMin(true)));
+		}
 
-        if (_radii.getMax(true) != _defaultRadii.getMax(true)
-            || !_spawnArgs.getKeyValue(KEY_S_MAXDISTANCE).empty())
-        {
-            _spawnArgs.setKeyValue(KEY_S_MAXDISTANCE, string::to_string(_radii.getMax(true)));
-        }
-    }
+		if (_radii.getMax(true) != _defaultRadii.getMax(true)
+			|| !_spawnArgs.getKeyValue(KEY_S_MAXDISTANCE).empty())
+		{
+			_spawnArgs.setKeyValue(KEY_S_MAXDISTANCE, string::to_string(_radii.getMax(true)));
+		}
+	}
 }
 
 void SpeakerNode::_onTransformationChanged()
@@ -433,76 +433,76 @@ void SpeakerNode::_applyTransformation()
 
 void SpeakerNode::onSelectionStatusChange(bool changeGroupStatus)
 {
-    EntityNode::onSelectionStatusChange(changeGroupStatus);
+	EntityNode::onSelectionStatusChange(changeGroupStatus);
 
-    // Radius renderable is not always prepared for rendering, queue an update
-    updateRenderables();
+	// Radius renderable is not always prepared for rendering, queue an update
+	updateRenderables();
 }
 
 
 void SpeakerNode::onEntitySettingsChanged()
 {
-    EntityNode::onEntitySettingsChanged();
+	EntityNode::onEntitySettingsChanged();
 
-    _showRadiiWhenUnselected = EntitySettings::InstancePtr()->getShowAllSpeakerRadii();
-    updateRenderables();
+	_showRadiiWhenUnselected = EntitySettings::InstancePtr()->getShowAllSpeakerRadii();
+	updateRenderables();
 }
 
 void SpeakerNode::onInsertIntoScene(scene::IMapRootNode& root)
 {
-    EntityNode::onInsertIntoScene(root);
+	EntityNode::onInsertIntoScene(root);
 
-    updateRenderables();
+	updateRenderables();
 }
 
 void SpeakerNode::onRemoveFromScene(scene::IMapRootNode& root)
 {
-    EntityNode::onRemoveFromScene(root);
+	EntityNode::onRemoveFromScene(root);
 
-    clearRenderables();
+	clearRenderables();
 }
 
 void SpeakerNode::onVisibilityChanged(bool isVisibleNow)
 {
-    EntityNode::onVisibilityChanged(isVisibleNow);
+	EntityNode::onVisibilityChanged(isVisibleNow);
 
-    if (isVisibleNow)
-    {
-        updateRenderables();
-    }
-    else
-    {
-        clearRenderables();
-    }
+	if (isVisibleNow)
+	{
+		updateRenderables();
+	}
+	else
+	{
+		clearRenderables();
+	}
 }
 
 void SpeakerNode::updateRenderables()
 {
-    _renderableBox.queueUpdate();
-    _renderableRadiiWireframe.queueUpdate();
-    _renderableRadiiFill.queueUpdate();
-    _renderableRadiiFillOutline.queueUpdate();
+	_renderableBox.queueUpdate();
+	_renderableRadiiWireframe.queueUpdate();
+	_renderableRadiiFill.queueUpdate();
+	_renderableRadiiFillOutline.queueUpdate();
 }
 
 void SpeakerNode::clearRenderables()
 {
-    _renderableBox.clear();
-    _renderableRadiiWireframe.clear();
-    _renderableRadiiFill.clear();
-    _renderableRadiiFillOutline.clear();
+	_renderableBox.clear();
+	_renderableRadiiWireframe.clear();
+	_renderableRadiiFill.clear();
+	_renderableRadiiFillOutline.clear();
 }
 
 void SpeakerNode::onRenderStateChanged()
 {
-    EntityNode::onRenderStateChanged();
+	EntityNode::onRenderStateChanged();
 
-    clearRenderables();
-    updateRenderables();
+	clearRenderables();
+	updateRenderables();
 }
 
 const Vector3& SpeakerNode::getWorldPosition() const
 {
-    return m_origin;
+	return m_origin;
 }
 
 } // namespace entity

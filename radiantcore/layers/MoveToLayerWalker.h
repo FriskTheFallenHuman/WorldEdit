@@ -6,7 +6,7 @@
 namespace scene {
 
 class MoveToLayerWalker :
-    public selection::SelectionSystem::Visitor,
+	public selection::SelectionSystem::Visitor,
 	public NodeVisitor
 {
 	int _layer;

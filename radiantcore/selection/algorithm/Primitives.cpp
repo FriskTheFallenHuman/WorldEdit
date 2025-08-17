@@ -171,8 +171,8 @@ void createCMFromSelection(const cmd::ArgumentList& args)
 
 		try
 		{
-            // Make sure the output folder exists
-            fs::create_directories(os::getDirectory(modelPath));
+			// Make sure the output folder exists
+			fs::create_directories(os::getDirectory(modelPath));
 
 			// create the new filename by changing the extension
 			fs::path cmPath = os::replaceExtension(modelPath, newExtension);
@@ -417,7 +417,7 @@ void makeVisportal()
 			}
 
 			// Calculate face area
-            double area = 0;
+			double area = 0;
 			Winding& winding = face.getWinding();
 			const Vector3& centroid = face.centroid();
 

@@ -23,20 +23,20 @@ namespace map
 
 namespace
 {
-    const Colour4b RED(255, 0, 0, 1);
+	const Colour4b RED(255, 0, 0, 1);
 }
 
 // Constructor
 PointFile::PointFile() :
 	_curPos(0),
-    _renderable(_points)
+	_renderable(_points)
 {
-    GlobalCommandSystem().addCommand(
-        "NextLeakSpot", sigc::mem_fun(*this, &PointFile::nextLeakSpot)
-    );
-    GlobalCommandSystem().addCommand(
-        "PrevLeakSpot", sigc::mem_fun(*this, &PointFile::prevLeakSpot)
-    );
+	GlobalCommandSystem().addCommand(
+		"NextLeakSpot", sigc::mem_fun(*this, &PointFile::nextLeakSpot)
+	);
+	GlobalCommandSystem().addCommand(
+		"PrevLeakSpot", sigc::mem_fun(*this, &PointFile::prevLeakSpot)
+	);
 }
 
 PointFile::~PointFile()
@@ -47,7 +47,7 @@ void PointFile::onMapEvent(IMap::MapEvent ev)
 {
 	if (ev == IMap::MapUnloading || ev == IMap::MapSaved)
 	{
-        show({});
+		show({});
 	}
 }
 
@@ -64,18 +64,18 @@ void PointFile::show(const fs::path& pointfile)
 		// Parse the pointfile from disk
 		parse(pointfile);
 
-        // Construct shader if needed, and activate rendering
-        auto renderSystem = GlobalMapModule().getRoot()->getRenderSystem();
+		// Construct shader if needed, and activate rendering
+		auto renderSystem = GlobalMapModule().getRoot()->getRenderSystem();
 
-        if (renderSystem)
-        {
-            _renderable.update(renderSystem->capture(BuiltInShaderType::PointTraceLines));
-        }
+		if (renderSystem)
+		{
+			_renderable.update(renderSystem->capture(BuiltInShaderType::PointTraceLines));
+		}
 	}
 	else if (isVisible())
-    {
-        _points.clear();
-        _renderable.clear();
+	{
+		_points.clear();
+		_renderable.clear();
 	}
 
 	// Regardless whether hide or show, we reset the current position
@@ -87,21 +87,21 @@ void PointFile::show(const fs::path& pointfile)
 
 void PointFile::parse(const fs::path& pointfile)
 {
-    // Open the first pointfile and get its input stream if possible
+	// Open the first pointfile and get its input stream if possible
 	std::ifstream inFile(pointfile);
 	if (!inFile)
 	{
-        throw cmd::ExecutionFailure(
-            fmt::format(_("Could not open pointfile: {0}"), pointfile.string())
-        );
-    }
+		throw cmd::ExecutionFailure(
+			fmt::format(_("Could not open pointfile: {0}"), pointfile.string())
+		);
+	}
 
-    // Construct vertices from parsed point data
-    PointTrace trace(inFile);
-    for (auto pos: trace.points())
-    {
-        _points.emplace_back(pos, RED);
-    }
+	// Construct vertices from parsed point data
+	PointTrace trace(inFile);
+	for (auto pos: trace.points())
+	{
+		_points.emplace_back(pos, RED);
+	}
 }
 
 // advance camera to previous point

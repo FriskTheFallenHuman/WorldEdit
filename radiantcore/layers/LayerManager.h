@@ -11,18 +11,18 @@ class LayerManager :
 	public ILayerManager
 {
 private:
-    INode& _rootNode;
+	INode& _rootNode;
 
-    // The list of named layers, indexed by an integer ID
-    std::map<int, std::string> _layers;
+	// The list of named layers, indexed by an integer ID
+	std::map<int, std::string> _layers;
 
 	// greebo: An array of booleans reflects the visibility status
 	// of all layers. Indexed by the layer id, it can be used to
 	// quickly check whether a layer is visible or not.
-    std::vector<bool> _layerVisibility;
+	std::vector<bool> _layerVisibility;
 
-    // The parent IDs of each layer (-1 for no parent)
-    std::vector<int> _layerParentIds;
+	// The parent IDs of each layer (-1 for no parent)
+	std::vector<int> _layerParentIds;
 
 	// The ID of the active layer
 	int _activeLayer;
@@ -66,7 +66,7 @@ public:
 	/**
 	 * greebo: Visits each layer using the given visitor.
 	 */
-    void foreachLayer(const LayerVisitFunc& visitor) override;
+	void foreachLayer(const LayerVisitFunc& visitor) override;
 
 	// Returns the ID of the named layer, or -1 if name doesn't exist
 	int getLayerID(const std::string& name) const override;
@@ -112,9 +112,9 @@ public:
 	// Selects/unselects an entire layer
 	void setSelected(int layerID, bool selected) override;
 
-    int getParentLayer(int layerId) override;
-    void setParentLayer(int childLayerId, int parentLayerId) override;
-    bool layerIsChildOf(int candidateLayerId, int parentLayerId) override;
+	int getParentLayer(int layerId) override;
+	void setParentLayer(int childLayerId, int parentLayerId) override;
+	bool layerIsChildOf(int candidateLayerId, int parentLayerId) override;
 
 	sigc::signal<void> signal_layersChanged() override;
 	sigc::signal<void> signal_layerVisibilityChanged() override;
@@ -122,13 +122,13 @@ public:
 	sigc::signal<void> signal_nodeMembershipChanged() override;
 
 private:
-    // Recursively sets the visibility of the given layer and updates
-    // the flags on the _layerVisibility vector.
-    // Returns true if any flag changed, false if nothing changed.
-    bool setLayerVisibilityRecursively(int layerID, bool visible);
+	// Recursively sets the visibility of the given layer and updates
+	// the flags on the _layerVisibility vector.
+	// Returns true if any flag changed, false if nothing changed.
+	bool setLayerVisibilityRecursively(int layerID, bool visible);
 
-    // Invokes the function object with each layer ID in the hierarchy, including the given root
-    void foreachLayerInHierarchy(int rootLayerId, const std::function<void(int)>& functor);
+	// Invokes the function object with each layer ID in the hierarchy, including the given root
+	void foreachLayerInHierarchy(int rootLayerId, const std::function<void(int)>& functor);
 
 	// Internal event emitter
 	void onLayersChanged();

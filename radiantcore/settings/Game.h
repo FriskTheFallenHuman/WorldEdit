@@ -33,11 +33,11 @@ public:
 	// Copy Constructor
 	Game(const Game& other);
 
-    /* IGame implementation */
-    std::string getName() const override;
-    bool hasFeature(const std::string& feature) const override;
-    std::string getKeyValue(const std::string& key) const override;
-    xml::NodeList getLocalXPath(const std::string& path) const override;
+	/* IGame implementation */
+	std::string getName() const override;
+	bool hasFeature(const std::string& feature) const override;
+	std::string getKeyValue(const std::string& key) const override;
+	xml::NodeList getLocalXPath(const std::string& path) const override;
 
 private:
 	// Return the string representing the XPath root for this game node

@@ -31,7 +31,7 @@ private:
 
 public:
 
-    /// Construct an uninitialised patch tesselation
+	/// Construct an uninitialised patch tesselation
 	PatchTesselation() :
 		numStrips(0),
 		lenStrips(0),
@@ -41,8 +41,8 @@ public:
 		_maxHeight(0)
 	{}
 
-    /// Clear all patch data
-    void clear();
+	/// Clear all patch data
+	void clear();
 
 	// Generates the tesselated mesh based on the input parameters
 	void generate(std::size_t width, std::size_t height, const PatchControlArray& controlPoints, 
@@ -56,7 +56,7 @@ private:
 	void subdivideMeshFixed(std::size_t subdivX, std::size_t subdivY);
 	void collapseMesh();
 	void expandMesh();
-    void resizeExpandedMesh(std::size_t newHeight, std::size_t newWidth);
+	void resizeExpandedMesh(std::size_t newHeight, std::size_t newWidth);
 	void putOnCurve();
 	void removeLinearColumnsRows();
 

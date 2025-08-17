@@ -10,7 +10,7 @@ namespace render
 
 RenderSystemPtr RenderSystemFactory::createRenderSystem()
 {
-    return std::make_shared<OpenGLRenderSystem>();
+	return std::make_shared<OpenGLRenderSystem>();
 }
 
 const std::string& RenderSystemFactory::getName() const

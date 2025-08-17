@@ -7,21 +7,21 @@
 namespace applog {
 
 LogStreamBuf::LogStreamBuf(LogLevel level, int bufferSize) :
-    _reserve(nullptr),
+	_reserve(nullptr),
 	_level(level)
 {
 	if (bufferSize > 0)
-    {
+	{
 		_reserve = new char[bufferSize];
 		setp(_reserve, _reserve + bufferSize);
 	}
 	else
-    {
-        setp(nullptr, nullptr);
+	{
+		setp(nullptr, nullptr);
 	}
 
 	// No input buffer, set this to NULL
-    setg(nullptr, nullptr, nullptr);
+	setg(nullptr, nullptr, nullptr);
 }
 
 LogStreamBuf::~LogStreamBuf()
@@ -30,8 +30,8 @@ LogStreamBuf::~LogStreamBuf()
 	// to sync with the buffer anymore.
 	//sync();
 
-    if (_reserve != nullptr)
-    {
+	if (_reserve != nullptr)
+	{
 		delete[] _reserve;
 	}
 }
@@ -42,17 +42,17 @@ LogStreamBuf::int_type LogStreamBuf::overflow(int_type c)
 	// Write the buffer
 	writeToBuffer();
 
-    if (c != traits_type::eof()) 
-    {
+	if (c != traits_type::eof()) 
+	{
 		if (pbase() == epptr())
-        {
+		{
 			// Write just this single character
 			int c1 = c;
 
 			LogWriter::Instance().write(reinterpret_cast<const char*>(&c1), 1, _level);
 		}
 		else
-        {
+		{
 			sputc(c);
 		}
 	}
@@ -71,7 +71,7 @@ void LogStreamBuf::writeToBuffer()
 	int_type charsToWrite = static_cast<int_type>(pptr() - pbase());
 
 	if (pbase() != pptr()) 
-    {
+	{
 		// Write the given characters to the GtkTextBuffer
 		LogWriter::Instance().write(_reserve, static_cast<std::size_t>(charsToWrite), _level);
 

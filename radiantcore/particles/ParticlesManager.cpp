@@ -25,23 +25,23 @@ constexpr const char* const PARTICLES_EXT = ".prt";
 
 sigc::signal<void>& ParticlesManager::signal_particlesReloaded()
 {
-    return _particlesReloadedSignal;
+	return _particlesReloadedSignal;
 }
 
 // Visit all of the particle defs
 void ParticlesManager::forEachParticleDef(const ParticleDefVisitor& visitor)
 {
-    GlobalDeclarationManager().foreachDeclaration(decl::Type::Particle, [&](const decl::IDeclaration::Ptr& decl)
-    {
-        visitor(*std::static_pointer_cast<IParticleDef>(decl));
-    });
+	GlobalDeclarationManager().foreachDeclaration(decl::Type::Particle, [&](const decl::IDeclaration::Ptr& decl)
+	{
+		visitor(*std::static_pointer_cast<IParticleDef>(decl));
+	});
 }
 
 IParticleDef::Ptr ParticlesManager::getDefByName(const std::string& name)
 {
-    return std::static_pointer_cast<IParticleDef>(
-        GlobalDeclarationManager().findDeclaration(decl::Type::Particle, name)
-    );
+	return std::static_pointer_cast<IParticleDef>(
+		GlobalDeclarationManager().findDeclaration(decl::Type::Particle, name)
+	);
 }
 
 IParticleNodePtr ParticlesManager::createParticleNode(const std::string& name)
@@ -54,38 +54,38 @@ IParticleNodePtr ParticlesManager::createParticleNode(const std::string& name)
 		nameCleaned = nameCleaned.substr(0, nameCleaned.length() - 4);
 	}
 
-    auto def = getDefByName(nameCleaned);
+	auto def = getDefByName(nameCleaned);
 
-    if (!def)
-    {
-        return IParticleNodePtr();
-    }
+	if (!def)
+	{
+		return IParticleNodePtr();
+	}
 
 	return std::make_shared<ParticleNode>(std::make_shared<RenderableParticle>(def));
 }
 
 IRenderableParticlePtr ParticlesManager::getRenderableParticle(const std::string& name)
 {
-    auto def = getDefByName(name);
+	auto def = getDefByName(name);
 
-    return def ? std::make_shared<RenderableParticle>(def) : IRenderableParticlePtr();
+	return def ? std::make_shared<RenderableParticle>(def) : IRenderableParticlePtr();
 }
 
 IParticleDef::Ptr ParticlesManager::findOrInsertParticleDef(const std::string& name)
 {
-    return findOrInsertParticleDefInternal(name);
+	return findOrInsertParticleDefInternal(name);
 }
 
 ParticleDefPtr ParticlesManager::findOrInsertParticleDefInternal(const std::string& name)
 {
-    return std::static_pointer_cast<ParticleDef>(
-        GlobalDeclarationManager().findOrCreateDeclaration(decl::Type::Particle, name)
-    );
+	return std::static_pointer_cast<ParticleDef>(
+		GlobalDeclarationManager().findOrCreateDeclaration(decl::Type::Particle, name)
+	);
 }
 
 void ParticlesManager::removeParticleDef(const std::string& name)
 {
-    GlobalDeclarationManager().removeDeclaration(decl::Type::Particle, name);
+	GlobalDeclarationManager().removeDeclaration(decl::Type::Particle, name);
 }
 
 const std::string& ParticlesManager::getName() const
@@ -96,44 +96,44 @@ const std::string& ParticlesManager::getName() const
 
 const StringSet& ParticlesManager::getDependencies() const
 {
-    static StringSet _dependencies
-    {
-        MODULE_DECLMANAGER,
-        MODULE_COMMANDSYSTEM,
-        MODULE_FILETYPES,
-    };
+	static StringSet _dependencies
+	{
+		MODULE_DECLMANAGER,
+		MODULE_COMMANDSYSTEM,
+		MODULE_FILETYPES,
+	};
 
 	return _dependencies;
 }
 
 void ParticlesManager::initialiseModule(const IApplicationContext& ctx)
 {
-    GlobalDeclarationManager().registerDeclType("particle", std::make_shared<decl::DeclarationCreator<ParticleDef>>(decl::Type::Particle));
-    GlobalDeclarationManager().registerDeclFolder(decl::Type::Particle, PARTICLES_DIR, PARTICLES_EXT);
+	GlobalDeclarationManager().registerDeclType("particle", std::make_shared<decl::DeclarationCreator<ParticleDef>>(decl::Type::Particle));
+	GlobalDeclarationManager().registerDeclFolder(decl::Type::Particle, PARTICLES_DIR, PARTICLES_EXT);
 
 	// Register the particle file extension
 	GlobalFiletypes().registerPattern("particle", FileTypePattern(_("Particle File"), "prt", "*.prt"));
 
-    _defsReloadedConn = GlobalDeclarationManager().signal_DeclsReloaded(decl::Type::Particle).connect(
-        [this]() { _particlesReloadedSignal.emit(); }
-    );
+	_defsReloadedConn = GlobalDeclarationManager().signal_DeclsReloaded(decl::Type::Particle).connect(
+		[this]() { _particlesReloadedSignal.emit(); }
+	);
 }
 
 void ParticlesManager::shutdownModule()
 {
-    _defsReloadedConn.disconnect();
+	_defsReloadedConn.disconnect();
 }
 
 void ParticlesManager::saveParticleDef(const std::string& particleName)
 {
-    auto decl = getDefByName(particleName);
+	auto decl = getDefByName(particleName);
 
-    if (!decl)
-    {
-        throw std::runtime_error(_("Cannot save particle, it has not been registered yet."));
-    }
+	if (!decl)
+	{
+		throw std::runtime_error(_("Cannot save particle, it has not been registered yet."));
+	}
 
-    GlobalDeclarationManager().saveDeclaration(decl);
+	GlobalDeclarationManager().saveDeclaration(decl);
 }
 
 module::StaticModuleRegistration<ParticlesManager> particlesManagerModule;

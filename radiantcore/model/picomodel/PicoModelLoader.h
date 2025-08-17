@@ -19,17 +19,17 @@ private:
 public:
 	PicoModelLoader(const picoModule_t* module, const std::string& extension);
 
-  	// Load the given model from the path, VFS or absolute
+	// Load the given model from the path, VFS or absolute
 	IModelPtr loadModelFromPath(const std::string& name) override;
 
 public:
-    static std::vector<StaticModelSurfacePtr> CreateSurfaces(picoModel_t* picoModel, const std::string& extension);
+	static std::vector<StaticModelSurfacePtr> CreateSurfaces(picoModel_t* picoModel, const std::string& extension);
 
-    static std::string DetermineDefaultMaterial(picoSurface_t* picoSurface, const std::string& extension);
-    static std::string CleanupShaderName(const std::string& inName);
+	static std::string DetermineDefaultMaterial(picoSurface_t* picoSurface, const std::string& extension);
+	static std::string CleanupShaderName(const std::string& inName);
 
 private:
-    static StaticModelSurfacePtr CreateSurface(picoSurface_t* picoSurface, const std::string& extension);
+	static StaticModelSurfacePtr CreateSurface(picoSurface_t* picoSurface, const std::string& extension);
 };
 
 } // namespace model

@@ -22,7 +22,7 @@ ModelCache::ModelCache() :
 scene::INodePtr ModelCache::getModelNode(const std::string& modelPath)
 {
 	// Get the extension of this model
-    auto extension = os::getExtension(modelPath);
+	auto extension = os::getExtension(modelPath);
 
 	if (extension == "prt")
 	{
@@ -36,8 +36,8 @@ scene::INodePtr ModelCache::getModelNode(const std::string& modelPath)
 	// Try to construct a model node using the suitable loader
 	auto node =  modelLoader->loadModel(modelPath);
 
-    // In case the model load failed, let's return a NullModel
-    return node ? node : loadNullModel(modelPath);
+	// In case the model load failed, let's return a NullModel
+	return node ? node : loadNullModel(modelPath);
 }
 
 IModelPtr ModelCache::getModel(const std::string& modelPath)
@@ -71,25 +71,25 @@ IModelPtr ModelCache::getModel(const std::string& modelPath)
 
 scene::INodePtr ModelCache::getModelNodeForStaticResource(const std::string& resourcePath)
 {
-    // Get the extension of this model
-    auto extension = os::getExtension(resourcePath);
+	// Get the extension of this model
+	auto extension = os::getExtension(resourcePath);
 
-    // Find a suitable model loader
-    auto modelLoader = GlobalModelFormatManager().getImporter(extension);
+	// Find a suitable model loader
+	auto modelLoader = GlobalModelFormatManager().getImporter(extension);
 
-    auto fullPath = module::GlobalModuleRegistry().getApplicationContext().getRuntimeDataPath();
-    fullPath += "resources/" + resourcePath;
+	auto fullPath = module::GlobalModuleRegistry().getApplicationContext().getRuntimeDataPath();
+	fullPath += "resources/" + resourcePath;
 
-    auto node = modelLoader->loadModel(fullPath);
+	auto node = modelLoader->loadModel(fullPath);
 
-    return node ? node : loadNullModel(resourcePath);
+	return node ? node : loadNullModel(resourcePath);
 }
 
 scene::INodePtr ModelCache::loadNullModel(const std::string& modelPath)
 {
-    auto nullModelLoader = GlobalModelFormatManager().getImporter("");
+	auto nullModelLoader = GlobalModelFormatManager().getImporter("");
 
-    return nullModelLoader->loadModel(modelPath);
+	return nullModelLoader->loadModel(modelPath);
 }
 
 void ModelCache::removeModel(const std::string& modelPath)

@@ -17,7 +17,7 @@ public:
 	// Returns the uppercase file extension this exporter is suitable for
 	const std::string& getExtension() const override;
 
-    void exportToPath(const std::string& outputPath, const std::string& filename) override;
+	void exportToPath(const std::string& outputPath, const std::string& filename) override;
 
 private:
 	// Export the model file to the given stream

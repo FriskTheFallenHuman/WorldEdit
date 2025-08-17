@@ -7,14 +7,14 @@ namespace shaders
 {
 
 TableDefinition::TableDefinition(const std::string& name) :
-    DeclarationBase<ITableDefinition>(decl::Type::Table, name),
+	DeclarationBase<ITableDefinition>(decl::Type::Table, name),
 	_snap(false),
 	_clamp(false)
 {}
 
 float TableDefinition::getValue(float index)
 {
-    ensureParsed();
+	ensureParsed();
 
 	// Don't bother if we don't have any values to look up
 	if (_values.empty())
@@ -22,7 +22,7 @@ float TableDefinition::getValue(float index)
 		return 0.0f;
 	}
 
-    auto numValues = _values.size();
+	auto numValues = _values.size();
 
 	if (numValues == 1)
 	{
@@ -48,21 +48,21 @@ float TableDefinition::getValue(float index)
 		// Only take the fractional part of the index
 		index = std::fmod(index, 1.0f);
 
-        // Mirror negative indices to the positive range (catch negative -0.0f)
-        if (index < 0 && index != 0.0f)
-        {
-            index += 1.0f;
-        }
+		// Mirror negative indices to the positive range (catch negative -0.0f)
+		if (index < 0 && index != 0.0f)
+		{
+			index += 1.0f;
+		}
 
 		// Map the index to the [0..N) interval
 		index *= numValues;
 	}
 
-    auto leftIdx = static_cast<std::size_t>(std::floor(index)) % numValues;
+	auto leftIdx = static_cast<std::size_t>(std::floor(index)) % numValues;
 
 	if (_snap)
 	{
-	    // If snap is active, just use the left-bound index
+		// If snap is active, just use the left-bound index
 		return _values[leftIdx];
 	}
 
@@ -76,9 +76,9 @@ float TableDefinition::getValue(float index)
 
 void TableDefinition::onBeginParsing()
 {
-    _snap = false;
-    _clamp = false;
-    _values.clear();
+	_snap = false;
+	_clamp = false;
+	_values.clear();
 }
 
 void TableDefinition::parseFromTokens(parser::DefTokeniser& tokeniser)

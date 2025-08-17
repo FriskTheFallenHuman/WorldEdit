@@ -866,7 +866,6 @@
     <ClInclude Include="..\..\radiantcore\map\MapResource.h" />
     <ClInclude Include="..\..\radiantcore\map\MapResourceLoader.h" />
     <ClInclude Include="..\..\radiantcore\map\MapResourceManager.h" />
-    <ClInclude Include="..\..\radiantcore\map\ModelBreakdown.h" />
     <ClInclude Include="..\..\radiantcore\map\mru\MRU.h" />
     <ClInclude Include="..\..\radiantcore\map\mru\MRUList.h" />
     <ClInclude Include="..\..\radiantcore\map\namespace\ComplexName.h" />
@@ -879,7 +878,6 @@
     <ClInclude Include="..\..\radiantcore\map\RegionWalkers.h" />
     <ClInclude Include="..\..\radiantcore\map\RenderablePointFile.h" />
     <ClInclude Include="..\..\radiantcore\map\RootNode.h" />
-    <ClInclude Include="..\..\radiantcore\map\ShaderBreakdown.h" />
     <ClInclude Include="..\..\radiantcore\map\VcsMapResource.h" />
     <ClInclude Include="..\..\radiantcore\model\export\AseExporter.h" />
     <ClInclude Include="..\..\radiantcore\model\export\Lwo2Chunk.h" />
@@ -953,14 +951,10 @@
     <ClInclude Include="..\..\radiantcore\commandsystem\Executable.h" />
     <ClInclude Include="..\..\radiantcore\commandsystem\Statement.h" />
     <ClInclude Include="..\..\radiantcore\log\COutRedirector.h" />
-    <ClInclude Include="..\..\radiantcore\log\LogDevice.h" />
     <ClInclude Include="..\..\radiantcore\log\LogFile.h" />
-    <ClInclude Include="..\..\radiantcore\log\LogLevels.h" />
     <ClInclude Include="..\..\radiantcore\log\LogStream.h" />
     <ClInclude Include="..\..\radiantcore\log\LogStreamBuf.h" />
     <ClInclude Include="..\..\radiantcore\log\LogWriter.h" />
-    <ClInclude Include="..\..\radiantcore\log\PIDFile.h" />
-    <ClInclude Include="..\..\radiantcore\log\PopupErrorHandler.h" />
     <ClInclude Include="..\..\radiantcore\log\StringLogDevice.h" />
     <ClInclude Include="..\..\radiantcore\messagebus\MessageBus.h" />
     <ClInclude Include="..\..\radiantcore\modulesystem\ModuleLoader.h" />
@@ -997,7 +991,6 @@
     <ClInclude Include="..\..\radiantcore\rendersystem\backend\TextRenderer.h" />
     <ClInclude Include="..\..\radiantcore\rendersystem\debug\SpacePartitionRenderer.h" />
     <ClInclude Include="..\..\radiantcore\rendersystem\GLFont.h" />
-    <ClInclude Include="..\..\radiantcore\rendersystem\LightingModeRenderResult.h" />
     <ClInclude Include="..\..\radiantcore\rendersystem\OpenGLModule.h" />
     <ClInclude Include="..\..\radiantcore\rendersystem\OpenGLRenderSystem.h" />
     <ClInclude Include="..\..\radiantcore\rendersystem\RenderSystemFactory.h" />

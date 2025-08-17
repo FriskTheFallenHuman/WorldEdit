@@ -24,7 +24,7 @@ class PatchNode final :
 	public PlaneSelectable,
 	public Transformable,
 	public ITraceable,
-    public scene::IComparableNode
+	public scene::IComparableNode
 {
 	selection::DragPlanes m_dragPlanes;
 
@@ -38,18 +38,18 @@ class PatchNode final :
 	mutable AABB m_aabb_component;
 
 	ShaderPtr _ctrlPointShader;
-    ShaderPtr _ctrlLatticeShader;
-    ShaderPtr _inactiveShader;
+	ShaderPtr _ctrlLatticeShader;
+	ShaderPtr _inactiveShader;
 
-    // For pivoted rotations, we need a copy of this lying around
-    Vector3 _untransformedOrigin;
-    // If true, the _untransformedOrigin member needs an update
-    bool _untransformedOriginChanged;
+	// For pivoted rotations, we need a copy of this lying around
+	Vector3 _untransformedOrigin;
+	// If true, the _untransformedOrigin member needs an update
+	bool _untransformedOriginChanged;
 
-    RenderablePatchTesselation<TesselationIndexer_Triangles> _renderableSurfaceSolid;
-    RenderablePatchTesselation<TesselationIndexer_Quads> _renderableSurfaceWireframe;
-    RenderablePatchLattice _renderableCtrlLattice; // Wireframe connecting the control points
-    RenderablePatchControlPoints _renderableCtrlPoints; // the coloured control points
+	RenderablePatchTesselation<TesselationIndexer_Triangles> _renderableSurfaceSolid;
+	RenderablePatchTesselation<TesselationIndexer_Quads> _renderableSurfaceWireframe;
+	RenderablePatchLattice _renderableCtrlLattice; // Wireframe connecting the control points
+	RenderablePatchControlPoints _renderableCtrlPoints; // the coloured control points
 
 public:
 	PatchNode(patch::PatchDefType type);
@@ -60,8 +60,8 @@ public:
 	std::string name() const override;
 	Type getNodeType() const override;
 
-    // IComparableNode implementation
-    std::string getFingerprint() override;
+	// IComparableNode implementation
+	std::string getFingerprint() override;
 
 	// Bounded implementation
 	const AABB& localAABB() const override;
@@ -78,7 +78,7 @@ public:
 
 	// Check if the drag planes pass the given selection test (and select them of course and call the callback)
 	void selectPlanes(Selector& selector, SelectionTest& test, const PlaneCallback& selectedPlaneCallback) override;
-  	void selectReversedPlanes(Selector& selector, const SelectedPlanes& selectedPlanes) override;
+	void selectReversedPlanes(Selector& selector, const SelectedPlanes& selectedPlanes) override;
 
 	// Returns true if any of the patch components is selected
 	bool isSelectedComponents() const override;
@@ -90,8 +90,8 @@ public:
 	void testSelectComponents(Selector& selector, SelectionTest& test, selection::ComponentSelectionMode mode) override;
 
 	// override scene::Inode::onRemoveFromScene to deselect the child components
-    void onInsertIntoScene(scene::IMapRootNode& root) override;
-    void onRemoveFromScene(scene::IMapRootNode& root) override;
+	void onInsertIntoScene(scene::IMapRootNode& root) override;
+	void onRemoveFromScene(scene::IMapRootNode& root) override;
 
 	// Traceable implementation
 	bool getIntersection(const Ray& ray, Vector3& intersection) override;
@@ -100,7 +100,7 @@ public:
 	const AABB& getSelectedComponentsBounds() const override;
 
 	// Sets all Control Instances to selected = <selected>
-  	void selectCtrl(bool selected);
+	void selectCtrl(bool selected);
 
 	// Returns true if this patch can be rendered
 	bool isVisible() const;
@@ -125,39 +125,39 @@ public:
 
 	// Render functions, these make sure that all things get rendered properly. The calls are also passed on
 	// to the contained patch <m_patch>
-    void onPreRender(const VolumeTest& volume) override;
+	void onPreRender(const VolumeTest& volume) override;
 	void renderHighlights(IRenderableCollector& collector, const VolumeTest& volume) override;
 	void setRenderSystem(const RenderSystemPtr& renderSystem) override;
 
 	void evaluateTransform();
 	std::size_t getHighlightFlags() override;
 
-    // Returns the center of the untransformed world AABB
-    const Vector3& getUntransformedOrigin() override;
+	// Returns the center of the untransformed world AABB
+	const Vector3& getUntransformedOrigin() override;
 
-    void onControlPointsChanged();
-    void onMaterialChanged();
-    void onTesselationChanged();
-    void updateSelectableControls();
+	void onControlPointsChanged();
+	void onMaterialChanged();
+	void onTesselationChanged();
+	void updateSelectableControls();
 
 protected:
 	// Gets called by the Transformable implementation whenever
 	// scale, rotation or translation is changed.
-    void _onTransformationChanged() override;
+	void _onTransformationChanged() override;
 
 	// Called by the Transformable implementation before freezing
 	// or when reverting transformations.
-    void _applyTransformation() override;
+	void _applyTransformation() override;
 
-    void onVisibilityChanged(bool isVisibleNow) override;
-    void onRenderStateChanged() override;
+	void onVisibilityChanged(bool isVisibleNow) override;
+	void onRenderStateChanged() override;
 
 private:
 	// Transforms the patch components with the given transformation matrix
 	void transformComponents(const Matrix4& matrix);
 
-    void updateAllRenderables();
-    void hideAllRenderables();
-    void clearAllRenderables();
+	void updateAllRenderables();
+	void hideAllRenderables();
+	void clearAllRenderables();
 };
 typedef std::shared_ptr<PatchNode> PatchNodePtr;

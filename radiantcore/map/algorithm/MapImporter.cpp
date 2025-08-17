@@ -109,7 +109,7 @@ const NodeIndexMap& MapImporter::getNodeMap() const
 
 NodeIndexMap& MapImporter::getNodeMap()
 {
-    return _nodes;
+	return _nodes;
 }
 
 float MapImporter::getProgressFraction()

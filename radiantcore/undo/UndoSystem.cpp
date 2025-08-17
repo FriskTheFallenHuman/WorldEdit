@@ -22,7 +22,7 @@ UndoSystem::~UndoSystem()
 
 IUndoStateSaver* UndoSystem::getStateSaver(IUndoable& undoable)
 {
-    auto result = _undoables.try_emplace(&undoable, *this, undoable);
+	auto result = _undoables.try_emplace(&undoable, *this, undoable);
 
 	// If we're in the middle of an active undo operation, assign this to the tracker (#4861)
 	if (_activeUndoStack != nullptr)
@@ -30,7 +30,7 @@ IUndoStateSaver* UndoSystem::getStateSaver(IUndoable& undoable)
 		result.first->second.setStack(_activeUndoStack);
 	}
 
-    return &(result.first->second);
+	return &(result.first->second);
 }
 
 void UndoSystem::releaseStateSaver(IUndoable& undoable)
@@ -55,19 +55,19 @@ bool UndoSystem::operationStarted() const
 
 void UndoSystem::cancel()
 {
-    if (_activeUndoStack != nullptr)
-    {
-        _activeUndoStack->cancel();
-        setActiveUndoStack(nullptr);
-    }
+	if (_activeUndoStack != nullptr)
+	{
+		_activeUndoStack->cancel();
+		setActiveUndoStack(nullptr);
+	}
 }
 
 void UndoSystem::finish(const std::string& command)
 {
 	if (finishUndo(command))
-    {
+	{
 		rMessage() << command << std::endl;
-        _eventSignal.emit(EventType::OperationRecorded, command);
+		_eventSignal.emit(EventType::OperationRecorded, command);
 	}
 }
 
@@ -79,21 +79,21 @@ void UndoSystem::undo()
 		return;
 	}
 
-    if (operationStarted())
-    {
-        rWarning() << "Undo not available while an operation is still in progress" << std::endl;
-        return;
-    }
+	if (operationStarted())
+	{
+		rWarning() << "Undo not available while an operation is still in progress" << std::endl;
+		return;
+	}
 		
 	const auto& operation = _undoStack.back();
-    auto operationName = operation->getName(); // copy this name, we need it after op destruction
+	auto operationName = operation->getName(); // copy this name, we need it after op destruction
 	rMessage() << "Undo: " << operationName << std::endl;
 
 	startRedo();
 	operation->restoreSnapshot();
 	finishRedo(operationName);
 	_undoStack.pop_back();
-    _eventSignal.emit(EventType::OperationUndone, operationName);
+	_eventSignal.emit(EventType::OperationUndone, operationName);
 }
 
 void UndoSystem::redo()
@@ -104,21 +104,21 @@ void UndoSystem::redo()
 		return;
 	}
 
-    if (operationStarted())
-    {
-        rWarning() << "Redo not available while an operation is still in progress" << std::endl;
-        return;
-    }
+	if (operationStarted())
+	{
+		rWarning() << "Redo not available while an operation is still in progress" << std::endl;
+		return;
+	}
 		
 	const auto& operation = _redoStack.back();
-    auto operationName = operation->getName(); // copy this name, we need it after op destruction
+	auto operationName = operation->getName(); // copy this name, we need it after op destruction
 	rMessage() << "Redo: " << operationName << std::endl;
 
 	startUndo();
 	operation->restoreSnapshot();
 	finishUndo(operationName);
 	_redoStack.pop_back();
-    _eventSignal.emit(EventType::OperationRedone, operationName);
+	_eventSignal.emit(EventType::OperationRedone, operationName);
 }
 
 void UndoSystem::clear()
@@ -126,7 +126,7 @@ void UndoSystem::clear()
 	setActiveUndoStack(nullptr);
 	_undoStack.clear();
 	_redoStack.clear();
-    _eventSignal.emit(EventType::AllOperationsCleared, std::string());
+	_eventSignal.emit(EventType::AllOperationsCleared, std::string());
 
 	// greebo: This is called on map shutdown, so don't clear the observers,
 	// there are some "persistent" observers like EntityInspector and ShaderClipboard
@@ -134,7 +134,7 @@ void UndoSystem::clear()
 
 sigc::signal<void(IUndoSystem::EventType, const std::string&)>& UndoSystem::signal_undoEvent()
 {
-    return _eventSignal;
+	return _eventSignal;
 }
 
 void UndoSystem::startUndo()

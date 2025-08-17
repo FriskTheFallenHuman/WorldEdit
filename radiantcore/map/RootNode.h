@@ -28,9 +28,9 @@ namespace map
  */
 class RootNode :
 	public scene::Node,
-    public scene::IMapRootNode,
+	public scene::IMapRootNode,
 	public IdentityTransform,
-    public UndoFileChangeTracker,
+	public UndoFileChangeTracker,
 	public KeyValueStore
 {
 private:
@@ -40,19 +40,19 @@ private:
 	// The namespace this node belongs to
 	INamespacePtr _namespace;
 
-    ITargetManagerPtr _targetManager;
+	ITargetManagerPtr _targetManager;
 
-    selection::ISelectionGroupManager::Ptr _selectionGroupManager;
+	selection::ISelectionGroupManager::Ptr _selectionGroupManager;
 
-    selection::ISelectionSetManager::Ptr _selectionSetManager;
+	selection::ISelectionSetManager::Ptr _selectionSetManager;
 
-    scene::ILayerManager::Ptr _layerManager;
+	scene::ILayerManager::Ptr _layerManager;
 
-    IUndoSystem::Ptr _undoSystem;
+	IUndoSystem::Ptr _undoSystem;
 
 	AABB _emptyAABB;
 
-    sigc::connection _undoEventHandler;
+	sigc::connection _undoEventHandler;
 
 public:
 	// Constructor, pass the name of the map to it
@@ -62,19 +62,19 @@ public:
 
 	void setName(const std::string& name) override;
 	// Returns the reference to the Namespace of this rootnode
-    const INamespacePtr& getNamespace() override;
-    IMapFileChangeTracker& getUndoChangeTracker() override;
-    ITargetManager& getTargetManager() override;
-    selection::ISelectionGroupManager& getSelectionGroupManager() override;
-    selection::ISelectionSetManager& getSelectionSetManager() override;
-    scene::ILayerManager& getLayerManager() override;
-    IUndoSystem& getUndoSystem() override;
+	const INamespacePtr& getNamespace() override;
+	IMapFileChangeTracker& getUndoChangeTracker() override;
+	ITargetManager& getTargetManager() override;
+	selection::ISelectionGroupManager& getSelectionGroupManager() override;
+	selection::ISelectionSetManager& getSelectionSetManager() override;
+	scene::ILayerManager& getLayerManager() override;
+	IUndoSystem& getUndoSystem() override;
 
 	// Renderable implementation (empty)
-    void onPreRender(const VolumeTest& volume) override
-    {}
-    void renderHighlights(IRenderableCollector& collector, const VolumeTest& volume) override
-    {}
+	void onPreRender(const VolumeTest& volume) override
+	{}
+	void renderHighlights(IRenderableCollector& collector, const VolumeTest& volume) override
+	{}
 
 	std::size_t getHighlightFlags() override
 	{
@@ -93,12 +93,12 @@ public:
 		return _emptyAABB;
 	}
 
-    RenderSystemPtr getRenderSystem() const override
-    {
-        return Node::getRenderSystem();
-    }
+	RenderSystemPtr getRenderSystem() const override
+	{
+		return Node::getRenderSystem();
+	}
 
-    void onFiltersChanged() override;
+	void onFiltersChanged() override;
 };
 typedef std::shared_ptr<RootNode> RootNodePtr;
 

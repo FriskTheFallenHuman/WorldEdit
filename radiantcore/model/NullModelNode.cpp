@@ -8,12 +8,12 @@ namespace model
 
 NullModelNode::NullModelNode() :
 	_nullModel(new NullModel),
-    _boxSurface(localAABB(), localToWorld())
+	_boxSurface(localAABB(), localToWorld())
 {}
 
 NullModelNode::NullModelNode(const NullModelPtr& nullModel) :
 	_nullModel(nullModel),
-    _boxSurface(localAABB(), localToWorld())
+	_boxSurface(localAABB(), localToWorld())
 {}
 
 std::string NullModelNode::name() const
@@ -43,28 +43,28 @@ Vector3 NullModelNode::getModelScale()
 
 void NullModelNode::testSelect(Selector& selector, SelectionTest& test)
 {
-    test.BeginMesh(localToWorld());
+	test.BeginMesh(localToWorld());
 
-    SelectionIntersection best;
-    aabb_testselect(_nullModel->localAABB(), test, best);
+	SelectionIntersection best;
+	aabb_testselect(_nullModel->localAABB(), test, best);
 
-    if (best.isValid())
-    {
-        selector.addIntersection(best);
-    }
+	if (best.isValid())
+	{
+		selector.addIntersection(best);
+	}
 }
 
 void NullModelNode::createRenderableSurfaces()
 {
-    emplaceRenderableSurface(std::make_shared<NullModelBoxSurface>(_boxSurface, _renderEntity, localToWorld()));
+	emplaceRenderableSurface(std::make_shared<NullModelBoxSurface>(_boxSurface, _renderEntity, localToWorld()));
 }
 
 void NullModelNode::setRenderSystem(const RenderSystemPtr& renderSystem)
 {
-    ModelNodeBase::setRenderSystem(renderSystem);
+	ModelNodeBase::setRenderSystem(renderSystem);
 
-    // Detach renderables on render system change
-    detachFromShaders();
+	// Detach renderables on render system change
+	detachFromShaders();
 }
 
 const AABB& NullModelNode::localAABB() const
@@ -74,10 +74,10 @@ const AABB& NullModelNode::localAABB() const
 
 void NullModelNode::onInsertIntoScene(scene::IMapRootNode& root)
 {
-    ModelNodeBase::onInsertIntoScene(root);
+	ModelNodeBase::onInsertIntoScene(root);
 
-    // When inserted into the scene, the localToWorld matrix has to be re-evaluated
-    transformChanged();
+	// When inserted into the scene, the localToWorld matrix has to be re-evaluated
+	transformChanged();
 }
 
 } // namespace

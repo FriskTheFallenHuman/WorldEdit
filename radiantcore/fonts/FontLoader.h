@@ -11,7 +11,7 @@ namespace fonts
 class FontManager;
 
 class FontLoader :
-    public parser::ThreadedDefLoader<void>
+	public parser::ThreadedDefLoader<void>
 {
 private:
 	// The manager for registering the fonts
@@ -19,16 +19,16 @@ private:
 
 public:
 	FontLoader(FontManager& manager) :
-        parser::ThreadedDefLoader<void>(std::bind(&FontLoader::loadFonts, this)),
+		parser::ThreadedDefLoader<void>(std::bind(&FontLoader::loadFonts, this)),
 		_manager(manager)
 	{}
 
 private:
-    void loadFonts();
-    void loadFont(const vfs::FileInfo& fileInfo);
+	void loadFonts();
+	void loadFont(const vfs::FileInfo& fileInfo);
 
-    std::string getFontPath();
-    std::string getFontExtension();
+	std::string getFontPath();
+	std::string getFontExtension();
 };
 
 } // namespace fonts

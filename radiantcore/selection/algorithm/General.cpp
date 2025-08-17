@@ -174,11 +174,11 @@ inline void hideSubgraph(const scene::INodePtr& node, bool hide)
 {
 	if (hide)
 	{
-        scene::hideSubgraph(node);
+		scene::hideSubgraph(node);
 	}
 	else
 	{
-        scene::showSubgraph(node);
+		scene::showSubgraph(node);
 	}
 }
 
@@ -306,7 +306,7 @@ class InvertSelectionWalker :
 	public scene::NodeVisitor
 {
 private:
-    SelectionMode _mode;
+	SelectionMode _mode;
 
 public:
 	InvertSelectionWalker(SelectionMode mode) :
@@ -380,7 +380,7 @@ public:
 class InvertComponentSelectionWalker :
 	public scene::NodeVisitor
 {
-    selection::ComponentSelectionMode _mode;
+	selection::ComponentSelectionMode _mode;
 	ComponentSelectionTestablePtr _selectable;
 public:
 	InvertComponentSelectionWalker(selection::ComponentSelectionMode mode) :
@@ -453,7 +453,7 @@ void deleteSelection()
 	{
 		// Check for selected nodes whose parent is not NULL and are not root
 		if (node->getParent() != NULL && !node->isRoot())
-        {
+		{
 			// Found a candidate
 			eraseList.insert(node);
 		}
@@ -463,19 +463,19 @@ void deleteSelection()
 	{
 		scene::INodePtr parent = node->getParent();
 
-        // Check for NULL parents. It's possible that both parent and child are in the eraseList
-        // and the parent has been deleted already.
-        if (parent)
-        {
-            // Remove the childnodes
-            scene::removeNodeFromParent(node);
+		// Check for NULL parents. It's possible that both parent and child are in the eraseList
+		// and the parent has been deleted already.
+		if (parent)
+		{
+			// Remove the childnodes
+			scene::removeNodeFromParent(node);
 
-            if (!parent->hasChildNodes())
-            {
-                // Remove the parent as well
-                scene::removeNodeFromParent(parent);
-            }
-        }
+			if (!parent->hasChildNodes())
+			{
+				// Remove the parent as well
+				scene::removeNodeFromParent(parent);
+			}
+		}
 	});
 
 	SceneChangeNotify();
@@ -496,7 +496,7 @@ template<class TSelectionPolicy>
 class SelectByBounds :
 	public scene::NodeVisitor
 {
-    const std::vector<AABB>& _aabbs;	// selection aabbs
+	const std::vector<AABB>& _aabbs;	// selection aabbs
 	TSelectionPolicy policy;	// type that contains a custom intersection method aabb<->aabb
 
 public:
@@ -505,29 +505,29 @@ public:
 	{}
 
 	bool pre(const scene::INodePtr& node) override
-    {
+	{
 		// Don't traverse hidden nodes
 		if (!node->visible()) return false;
 
 		ISelectablePtr selectable = scene::node_cast<ISelectable>(node);
 
 		// ignore worldspawn
-        Entity* entity = Node_getEntity(node);
+		Entity* entity = Node_getEntity(node);
 
 		if (entity != NULL && entity->isWorldspawn())
-        {
+		{
 			return true;
 		}
 
-    	bool selected = false;
+		bool selected = false;
 
 		if (selectable && node->getParent() && !node->isRoot())
-        {
+		{
 			for (const auto& aabb : _aabbs)
-            {
+			{
 				// Check if the selectable passes the AABB test
 				if (policy.evaluate(aabb, node))
-                {
+				{
 					selectable->setSelected(true);
 					selected = true;
 					break;
@@ -553,7 +553,7 @@ public:
 
 		// Loops over all selected brushes and stores their
 		// world AABBs in the specified array.
-        std::vector<AABB> aabbs;
+		std::vector<AABB> aabbs;
 
 		GlobalSelectionSystem().foreachSelected([&] (const scene::INodePtr& node)
 		{
@@ -576,67 +576,67 @@ public:
 			deleteSelection();
 		}
 
-        DoSelection(aabbs);
+		DoSelection(aabbs);
 	}
 
-    static void DoSelection(const std::vector<AABB>& aabbs)
-    {
-        SelectByBounds<TSelectionPolicy> walker(aabbs);
-        GlobalSceneGraph().root()->traverse(walker);
+	static void DoSelection(const std::vector<AABB>& aabbs)
+	{
+		SelectByBounds<TSelectionPolicy> walker(aabbs);
+		GlobalSceneGraph().root()->traverse(walker);
 
-        SceneChangeNotify();
-    }
+		SceneChangeNotify();
+	}
 
-    static void DoSelection(const AABB& bounds)
-    {
-        DoSelection(std::vector<AABB>{ bounds });
-    }
+	static void DoSelection(const AABB& bounds)
+	{
+		DoSelection(std::vector<AABB>{ bounds });
+	}
 };
 
 void selectInside(const cmd::ArgumentList& args)
 {
-    if (args.size() == 2)
-    {
-        auto bounds = AABB::createFromMinMax(args[0].getVector3(), args[1].getVector3());
-        SelectByBounds<SelectionPolicy_Inside>::DoSelection(bounds);
-        return;
-    }
+	if (args.size() == 2)
+	{
+		auto bounds = AABB::createFromMinMax(args[0].getVector3(), args[1].getVector3());
+		SelectByBounds<SelectionPolicy_Inside>::DoSelection(bounds);
+		return;
+	}
 
 	SelectByBounds<SelectionPolicy_Inside>::DoSelection();
 }
 
 void selectFullyInside(const cmd::ArgumentList& args)
 {
-    if (args.size() == 2)
-    {
-        auto bounds = AABB::createFromMinMax(args[0].getVector3(), args[1].getVector3());
-        SelectByBounds<SelectionPolicy_FullyInside>::DoSelection(bounds);
-        return;
-    }
+	if (args.size() == 2)
+	{
+		auto bounds = AABB::createFromMinMax(args[0].getVector3(), args[1].getVector3());
+		SelectByBounds<SelectionPolicy_FullyInside>::DoSelection(bounds);
+		return;
+	}
 
-    SelectByBounds<SelectionPolicy_FullyInside>::DoSelection();
+	SelectByBounds<SelectionPolicy_FullyInside>::DoSelection();
 }
 
 void selectTouching(const cmd::ArgumentList& args)
 {
-    if (args.size() == 2)
-    {
-        auto bounds = AABB::createFromMinMax(args[0].getVector3(), args[1].getVector3());
-        SelectByBounds<SelectionPolicy_Touching>::DoSelection(bounds);
-        return;
-    }
+	if (args.size() == 2)
+	{
+		auto bounds = AABB::createFromMinMax(args[0].getVector3(), args[1].getVector3());
+		SelectByBounds<SelectionPolicy_Touching>::DoSelection(bounds);
+		return;
+	}
 
 	SelectByBounds<SelectionPolicy_Touching>::DoSelection(false);
 }
 
 void selectCompleteTall(const cmd::ArgumentList& args)
 {
-    if (args.size() == 2)
-    {
-        auto bounds = AABB::createFromMinMax(args[0].getVector3(), args[1].getVector3());
-        SelectByBounds<SelectionPolicy_Complete_Tall>::DoSelection(bounds);
-        return;
-    }
+	if (args.size() == 2)
+	{
+		auto bounds = AABB::createFromMinMax(args[0].getVector3(), args[1].getVector3());
+		SelectByBounds<SelectionPolicy_Complete_Tall>::DoSelection(bounds);
+		return;
+	}
 
 	SelectByBounds<SelectionPolicy_Complete_Tall>::DoSelection();
 }
@@ -698,8 +698,8 @@ AABB getCurrentSelectionBounds()
 // Snap vector components to whole numbers
 Vector3 snapToInt(const Vector3& v)
 {
-    return Vector3(float_to_integer(v.x()), float_to_integer(v.y()),
-                   float_to_integer(v.z()));
+	return Vector3(float_to_integer(v.x()), float_to_integer(v.y()),
+				   float_to_integer(v.z()));
 }
 
 Vector3 getCurrentSelectionCenter()
@@ -709,14 +709,14 @@ Vector3 getCurrentSelectionCenter()
 
 void snapSelectionToGrid(const cmd::ArgumentList& args)
 {
-    // Send out the event in case other views want that event
-    GridSnapRequest request;
-    GlobalRadiantCore().getMessageBus().sendMessage(request);
+	// Send out the event in case other views want that event
+	GridSnapRequest request;
+	GlobalRadiantCore().getMessageBus().sendMessage(request);
 
-    if (request.isHandled())
-    {
-        return; // done here
-    }
+	if (request.isHandled())
+	{
+		return; // done here
+	}
 
 	auto gridSize = GlobalGrid().getGridSize();
 	UndoableCommand undo("snapSelected -grid " + string::to_string(gridSize));
@@ -729,7 +729,7 @@ void snapSelectionToGrid(const cmd::ArgumentList& args)
 			// Don't do anything with hidden nodes
 			if (!node->visible()) return;
 
-    		// Check if the visited instance is componentSnappable
+			// Check if the visited instance is componentSnappable
 			if (auto componentSnappable = Node_getComponentSnappable(node); componentSnappable)
 			{
 				componentSnappable->snapComponents(gridSize);
@@ -751,8 +751,8 @@ void snapSelectionToGrid(const cmd::ArgumentList& args)
 		});
 	}
 
-    // Remove all degenerated brushes after this operation
-    GlobalSelectionSystem().foreachSelected(RemoveDegenerateBrushWalker());
+	// Remove all degenerated brushes after this operation
+	GlobalSelectionSystem().foreachSelected(RemoveDegenerateBrushWalker());
 }
 
 class IntersectionFinder :
@@ -906,8 +906,8 @@ void floorNode(const scene::INodePtr& node)
 
 		if (transformable)
 		{
-    		transformable->setType(TRANSFORM_PRIMITIVE);
-    		transformable->setTranslation(translation);
+			transformable->setType(TRANSFORM_PRIMITIVE);
+			transformable->setTranslation(translation);
 			transformable->freezeTransform();
 		}
 	}
@@ -929,20 +929,20 @@ void floorSelection(const cmd::ArgumentList& args)
 
 void registerCommands()
 {
-    GlobalCommandSystem().addCommand("CloneSelection", cloneSelected);
-    GlobalCommandSystem().addCommand("DeleteSelection", deleteSelectionCmd);
-    GlobalCommandSystem().addCommand("ParentSelection", parentSelection);
-    GlobalCommandSystem().addCommand("ParentSelectionToWorldspawn", parentSelectionToWorldspawn);
+	GlobalCommandSystem().addCommand("CloneSelection", cloneSelected);
+	GlobalCommandSystem().addCommand("DeleteSelection", deleteSelectionCmd);
+	GlobalCommandSystem().addCommand("ParentSelection", parentSelection);
+	GlobalCommandSystem().addCommand("ParentSelectionToWorldspawn", parentSelectionToWorldspawn);
 
-    GlobalCommandSystem().addCommand("InvertSelection", invertSelection);
-    GlobalCommandSystem().addCommand("SelectInside", selectInside,
-        { cmd::ARGTYPE_VECTOR3 | cmd::ARGTYPE_OPTIONAL, cmd::ARGTYPE_VECTOR3 | cmd::ARGTYPE_OPTIONAL });
-    GlobalCommandSystem().addCommand("SelectFullyInside", selectFullyInside,
-        { cmd::ARGTYPE_VECTOR3 | cmd::ARGTYPE_OPTIONAL, cmd::ARGTYPE_VECTOR3 | cmd::ARGTYPE_OPTIONAL });
+	GlobalCommandSystem().addCommand("InvertSelection", invertSelection);
+	GlobalCommandSystem().addCommand("SelectInside", selectInside,
+		{ cmd::ARGTYPE_VECTOR3 | cmd::ARGTYPE_OPTIONAL, cmd::ARGTYPE_VECTOR3 | cmd::ARGTYPE_OPTIONAL });
+	GlobalCommandSystem().addCommand("SelectFullyInside", selectFullyInside,
+		{ cmd::ARGTYPE_VECTOR3 | cmd::ARGTYPE_OPTIONAL, cmd::ARGTYPE_VECTOR3 | cmd::ARGTYPE_OPTIONAL });
 	GlobalCommandSystem().addCommand("SelectTouching", selectTouching,
-        { cmd::ARGTYPE_VECTOR3 | cmd::ARGTYPE_OPTIONAL, cmd::ARGTYPE_VECTOR3 | cmd::ARGTYPE_OPTIONAL });
+		{ cmd::ARGTYPE_VECTOR3 | cmd::ARGTYPE_OPTIONAL, cmd::ARGTYPE_VECTOR3 | cmd::ARGTYPE_OPTIONAL });
 	GlobalCommandSystem().addCommand("SelectCompleteTall", selectCompleteTall,
-        { cmd::ARGTYPE_VECTOR3 | cmd::ARGTYPE_OPTIONAL, cmd::ARGTYPE_VECTOR3 | cmd::ARGTYPE_OPTIONAL });
+		{ cmd::ARGTYPE_VECTOR3 | cmd::ARGTYPE_OPTIONAL, cmd::ARGTYPE_VECTOR3 | cmd::ARGTYPE_OPTIONAL });
 	GlobalCommandSystem().addCommand("ExpandSelectionToSiblings", expandSelectionToSiblings);
 	GlobalCommandSystem().addCommand("SelectParentEntities", selectParentEntitiesOfSelected);
 	GlobalCommandSystem().addCommand("MergeSelectedEntities", mergeSelectedEntities);
@@ -988,14 +988,14 @@ void registerCommands()
 	GlobalCommandSystem().addCommand("SelectItemsByShader", selectItemsByShaderCmd, { cmd::ARGTYPE_STRING });
 	GlobalCommandSystem().addCommand("DeselectItemsByShader", deselectItemsByShaderCmd, { cmd::ARGTYPE_STRING });
 
-    GlobalCommandSystem().addCommand("SelectItemsByModel", selectItemsByModelCmd, { cmd::ARGTYPE_STRING });
-    GlobalCommandSystem().addCommand("DeselectItemsByModel", deselectItemsByModelCmd, { cmd::ARGTYPE_STRING });
+	GlobalCommandSystem().addCommand("SelectItemsByModel", selectItemsByModelCmd, { cmd::ARGTYPE_STRING });
+	GlobalCommandSystem().addCommand("DeselectItemsByModel", deselectItemsByModelCmd, { cmd::ARGTYPE_STRING });
 
 	GlobalCommandSystem().addCommand("FlipTextureX", flipTextureS);
 	GlobalCommandSystem().addCommand("FlipTextureY", flipTextureT);
 
 	GlobalCommandSystem().addCommand("MoveSelectionVertically", moveSelectedVerticallyCmd, { cmd::ARGTYPE_STRING });
-    GlobalCommandSystem().addCommand("MoveSelection", moveSelectedCmd, { cmd::ARGTYPE_VECTOR3 });
+	GlobalCommandSystem().addCommand("MoveSelection", moveSelectedCmd, { cmd::ARGTYPE_VECTOR3 });
 
 	GlobalCommandSystem().addCommand("CurveAppendControlPoint", appendCurveControlPoint);
 	GlobalCommandSystem().addCommand("CurveRemoveControlPoint", removeCurveControlPoints);
@@ -1004,37 +1004,37 @@ void registerCommands()
 
 	GlobalCommandSystem().addCommand("ExportSelectedAsCollisionModel", createCMFromSelection, { cmd::ARGTYPE_STRING });
 
-    GlobalCommandSystem().addWithCheck(
-        "CreateDecalsForFaces", [](const cmd::ArgumentList&) { createDecalsForSelectedFaces(); },
-        [] { return !FaceInstance::Selection().empty(); }
-    );
+	GlobalCommandSystem().addWithCheck(
+		"CreateDecalsForFaces", [](const cmd::ArgumentList&) { createDecalsForSelectedFaces(); },
+		[] { return !FaceInstance::Selection().empty(); }
+	);
 
-    GlobalCommandSystem().addCommand("Copy", clipboard::copy);
+	GlobalCommandSystem().addCommand("Copy", clipboard::copy);
 	GlobalCommandSystem().addCommand("Cut", clipboard::cut);
 	GlobalCommandSystem().addCommand("Paste", clipboard::paste);
 	GlobalCommandSystem().addCommand("PasteToCamera", clipboard::pasteToCamera);
 
-    GlobalCommandSystem().addWithCheck("ConnectSelection", cmd::noArgs(connectSelectedEntities),
-                                       [] { return selection::pred::haveEntitiesExact(2); });
-    GlobalCommandSystem().addWithCheck("BindSelection", cmd::noArgs(bindEntities),
-                                       [] { return selection::pred::haveEntitiesExact(2); });
+	GlobalCommandSystem().addWithCheck("ConnectSelection", cmd::noArgs(connectSelectedEntities),
+									   [] { return selection::pred::haveEntitiesExact(2); });
+	GlobalCommandSystem().addWithCheck("BindSelection", cmd::noArgs(bindEntities),
+									   [] { return selection::pred::haveEntitiesExact(2); });
 
-    GlobalCommandSystem().addCommand("PlacePlayerStart", placePlayerStart, { cmd::ARGTYPE_VECTOR3 });
+	GlobalCommandSystem().addCommand("PlacePlayerStart", placePlayerStart, { cmd::ARGTYPE_VECTOR3 });
 	GlobalCommandSystem().addCommand("SetEntityKeyValue", setEntityKeyValueOnSelection, { cmd::ARGTYPE_STRING, cmd::ARGTYPE_STRING });
-    GlobalCommandSystem().addCommand("CreateCurveNURBS", createCurveNURBS);
-    GlobalCommandSystem().addCommand("CreateCurveCatmullRom", createCurveCatmullRom);
+	GlobalCommandSystem().addCommand("CreateCurveNURBS", createCurveNURBS);
+	GlobalCommandSystem().addCommand("CreateCurveCatmullRom", createCurveCatmullRom);
 
-    GlobalCommandSystem().addCommand("FloorSelection", floorSelection);
-    GlobalCommandSystem().addWithCheck("BrushSetDetailFlag", brushSetDetailFlag,
-                                       [] { return selection::pred::haveBrush(); },
-                                       {cmd::ARGTYPE_STRING});
-    GlobalCommandSystem().addStatement("BrushMakeDetail", "BrushSetDetailFlag detail",
-                                       false);
-    GlobalCommandSystem().addStatement("BrushMakeStructural", "BrushSetDetailFlag structural",
-                                       false);
+	GlobalCommandSystem().addCommand("FloorSelection", floorSelection);
+	GlobalCommandSystem().addWithCheck("BrushSetDetailFlag", brushSetDetailFlag,
+									   [] { return selection::pred::haveBrush(); },
+									   {cmd::ARGTYPE_STRING});
+	GlobalCommandSystem().addStatement("BrushMakeDetail", "BrushSetDetailFlag detail",
+									   false);
+	GlobalCommandSystem().addStatement("BrushMakeStructural", "BrushSetDetailFlag structural",
+									   false);
 
-    GlobalCommandSystem().addCommand(scene::SELECT_NODE_BY_INDEX_CMD, scene::selectNodeByIndexCmd,
-                                     {cmd::ARGTYPE_INT, cmd::ARGTYPE_INT});
+	GlobalCommandSystem().addCommand(scene::SELECT_NODE_BY_INDEX_CMD, scene::selectNodeByIndexCmd,
+									 {cmd::ARGTYPE_INT, cmd::ARGTYPE_INT});
 }
 
 	} // namespace algorithm

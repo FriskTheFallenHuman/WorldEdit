@@ -12,16 +12,16 @@ namespace entity {
 			SelectionTest& test, SelectionIntersection& best)
 		{
 			test.TestLineStrip(
-			    VertexPointer(&first->vertex, sizeof(VertexCb)),
-			    IndexPointer::index_type(count),
-			    best
+				VertexPointer(&first->vertex, sizeof(VertexCb)),
+				IndexPointer::index_type(count),
+				best
 			);
 		}
 
 	} // namespace
 
 Curve::Curve(const EntityNode& entity, const Callback& boundsChanged) :
-    _renderCurve(entity),
+	_renderCurve(entity),
 	_boundsChanged(boundsChanged)
 {}
 
@@ -72,20 +72,20 @@ ControlPoints& Curve::getControlPoints() {
 
 void Curve::onPreRender(const ShaderPtr& shader, const VolumeTest& volume)
 {
-    if (_renderCurve.m_vertices.empty())
-    {
-        _renderCurve.clear();
-        return;
-    }
+	if (_renderCurve.m_vertices.empty())
+	{
+		_renderCurve.clear();
+		return;
+	}
 
-    _renderCurve.update(shader);
+	_renderCurve.update(shader);
 }
 
 void Curve::renderHighlights(IRenderableCollector& collector, const VolumeTest& volume)
 {
-    if (isEmpty()) return;
+	if (isEmpty()) return;
 
-    collector.addHighlightRenderable(_renderCurve, Matrix4::getIdentity());
+	collector.addHighlightRenderable(_renderCurve, Matrix4::getIdentity());
 }
 
 const AABB& Curve::getBounds() const {
@@ -133,13 +133,13 @@ void Curve::curveChanged()
 {
 	// Recalculate the tesselation
 	tesselate();
-    updateRenderable();
+	updateRenderable();
 
 	// Recalculate bounds
-    _bounds = AABB();
-    for (ControlPoints::iterator i = _controlPointsTransformed.begin();
-    	 i != _controlPointsTransformed.end();
-    	 ++i)
+	_bounds = AABB();
+	for (ControlPoints::iterator i = _controlPointsTransformed.begin();
+		 i != _controlPointsTransformed.end();
+		 ++i)
 	{
 		_bounds.includePoint(*i);
 	}
@@ -244,12 +244,12 @@ void Curve::insertControlPointsAt(IteratorList iterators) {
 
 void Curve::clearRenderable()
 {
-    _renderCurve.clear();
+	_renderCurve.clear();
 }
 
 void Curve::updateRenderable()
 {
-    _renderCurve.queueUpdate();
+	_renderCurve.queueUpdate();
 }
 
 } // namespace entity

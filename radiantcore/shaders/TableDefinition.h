@@ -13,7 +13,7 @@ namespace shaders
 // table <tablename> { [snap] [clamp] { <data>, <data>, ... } }
 
 class TableDefinition :
-    public decl::DeclarationBase<ITableDefinition>
+	public decl::DeclarationBase<ITableDefinition>
 {
 private:
 	// Whether to prevent value interpolation
@@ -32,8 +32,8 @@ public:
 	float getValue(float index) override;
 
 protected:
-    void onBeginParsing() override;
-    void parseFromTokens(parser::DefTokeniser& tokeniser) override;
+	void onBeginParsing() override;
+	void parseFromTokens(parser::DefTokeniser& tokeniser) override;
 };
 
 } // namespace

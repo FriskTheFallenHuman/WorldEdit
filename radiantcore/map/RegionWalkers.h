@@ -10,13 +10,13 @@ namespace map {
  */
 inline void excludeNode(scene::INodePtr node, bool exclude) 
 {
-    if (!node->supportsStateFlag(scene::Node::eExcluded))
-    {
-        return;
-    }
+	if (!node->supportsStateFlag(scene::Node::eExcluded))
+	{
+		return;
+	}
 
 	if (exclude) 
-    {
+	{
 		node->enable(scene::Node::eExcluded);
 	}
 	else {

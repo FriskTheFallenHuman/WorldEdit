@@ -258,14 +258,14 @@ void importMap(const scene::INodePtr& node)
 
 void prepareNamesForImport(const scene::IMapRootNodePtr& targetRoot, const scene::INodePtr& foreignRoot)
 {
-    const auto& nspace = targetRoot->getNamespace();
+	const auto& nspace = targetRoot->getNamespace();
 
-    if (nspace)
-    {
-        // Prepare all names, but do not import them into the namespace. This
-        // will happen when nodes are added to the target root later by the caller.
-        nspace->ensureNoConflicts(foreignRoot);
-    }
+	if (nspace)
+	{
+		// Prepare all names, but do not import them into the namespace. This
+		// will happen when nodes are added to the target root later by the caller.
+		nspace->ensureNoConflicts(foreignRoot);
+	}
 }
 
 MapFormatPtr determineMapFormat(std::istream& stream, const std::string& type)
@@ -302,76 +302,76 @@ MapFormatPtr determineMapFormat(std::istream& stream)
 }
 
 class SimpleMapImportFilter :
-    public IMapImportFilter
+	public IMapImportFilter
 {
 private:
-    scene::IMapRootNodePtr _root;
+	scene::IMapRootNodePtr _root;
 
 public:
-    SimpleMapImportFilter() :
-        _root(std::make_shared<scene::BasicRootNode>())
-    {}
+	SimpleMapImportFilter() :
+		_root(std::make_shared<scene::BasicRootNode>())
+	{}
 
-    const scene::IMapRootNodePtr& getRootNode() const
-    {
-        return _root;
-    }
+	const scene::IMapRootNodePtr& getRootNode() const
+	{
+		return _root;
+	}
 
-    bool addEntity(const scene::INodePtr& entityNode)
-    {
-        _root->addChildNode(entityNode);
-        return true;
-    }
+	bool addEntity(const scene::INodePtr& entityNode)
+	{
+		_root->addChildNode(entityNode);
+		return true;
+	}
 
-    bool addPrimitiveToEntity(const scene::INodePtr& primitive, const scene::INodePtr& entity)
-    {
-        if (Node_getEntity(entity)->isContainer())
-        {
-            entity->addChildNode(primitive);
-            return true;
-        }
+	bool addPrimitiveToEntity(const scene::INodePtr& primitive, const scene::INodePtr& entity)
+	{
+		if (Node_getEntity(entity)->isContainer())
+		{
+			entity->addChildNode(primitive);
+			return true;
+		}
 
-        return false;
-    }
+		return false;
+	}
 };
 
 void importFromStream(std::istream& stream)
 {
 	GlobalSelectionSystem().setSelectedAll(false);
 
-    // Instantiate the default import filter
-    SimpleMapImportFilter importFilter;
+	// Instantiate the default import filter
+	SimpleMapImportFilter importFilter;
 
-    try
-    {
-        auto format = determineMapFormat(stream);
+	try
+	{
+		auto format = determineMapFormat(stream);
 
-        if (!format)
-        {
-            throw IMapReader::FailureException(_("Unknown map format"));
-        }
+		if (!format)
+		{
+			throw IMapReader::FailureException(_("Unknown map format"));
+		}
 
-        auto reader = format->getMapReader(importFilter);
+		auto reader = format->getMapReader(importFilter);
 
-        // Start parsing
-        reader->readFromStream(stream);
+		// Start parsing
+		reader->readFromStream(stream);
 
-        // Prepare child primitives
-        scene::addOriginToChildPrimitives(importFilter.getRootNode());
+		// Prepare child primitives
+		scene::addOriginToChildPrimitives(importFilter.getRootNode());
 
-        // Adjust all new names to fit into the existing map namespace
-        prepareNamesForImport(GlobalMap().getRoot(), importFilter.getRootNode());
+		// Adjust all new names to fit into the existing map namespace
+		prepareNamesForImport(GlobalMap().getRoot(), importFilter.getRootNode());
 
-        importMap(importFilter.getRootNode());
-    }
-    catch (IMapReader::FailureException& ex)
-    {
-        // Clear out the root node, otherwise we end up with half a map
-        scene::NodeRemover remover;
-        importFilter.getRootNode()->traverseChildren(remover);
+		importMap(importFilter.getRootNode());
+	}
+	catch (IMapReader::FailureException& ex)
+	{
+		// Clear out the root node, otherwise we end up with half a map
+		scene::NodeRemover remover;
+		importFilter.getRootNode()->traverseChildren(remover);
 
 		throw cmd::ExecutionFailure(fmt::format(_("Failure reading map from clipboard:\n{0}"), ex.what()));
-    }
+	}
 }
 
 }

@@ -16,14 +16,14 @@ public:
 	class ControlPointFunctor
 	{
 	public:
-	    virtual ~ControlPointFunctor() {}
+		virtual ~ControlPointFunctor() {}
 		virtual void operator()(Vector3& point, const Vector3& original) = 0;
 	};
 
 	class ControlPointConstFunctor
 	{
 	public:
-	    virtual ~ControlPointConstFunctor() {}
+		virtual ~ControlPointConstFunctor() {}
 		virtual void operator()(const Vector3& point, const Vector3& original) = 0;
 	};
 
@@ -44,7 +44,7 @@ public:
 	// Traversal functions, these cycle through all (selected) control points
 	void forEach(ControlPointFunctor& functor);
 
-    // Iterate all (transformed) control points and their selection status
+	// Iterate all (transformed) control points and their selection status
 	void forEachControlPoint(const std::function<void(const Vector3&, bool)>& functor) const;
 
 	void forEachSelected(ControlPointFunctor& functor);

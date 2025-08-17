@@ -15,10 +15,10 @@ namespace shaders
 {
 
 class IShaderTemplate :
-    public decl::IDeclaration
+	public decl::IDeclaration
 {
 public:
-    virtual ~IShaderTemplate() {}
+	virtual ~IShaderTemplate() {}
 };
 
 /**
@@ -27,7 +27,7 @@ public:
  * internally, for later use by a CShader.
  */
 class ShaderTemplate final :
-    public decl::EditableDeclaration<IShaderTemplate>
+	public decl::EditableDeclaration<IShaderTemplate>
 {
 private:
 	static const int SORT_UNDEFINED = -99999;	// undefined sort number, will be replaced after parsing
@@ -38,20 +38,20 @@ private:
 	// Temporary current layer (used by the parsing functions)
 	Doom3ShaderLayer::Ptr _currentLayer;
 
-    sigc::signal<void> _sigTemplateChanged;
-    bool _suppressChangeSignal;
+	sigc::signal<void> _sigTemplateChanged;
+	bool _suppressChangeSignal;
 
 public:
-    using Ptr = std::shared_ptr<ShaderTemplate>;
+	using Ptr = std::shared_ptr<ShaderTemplate>;
 
-    // Shared parsing constants
-    constexpr static const char* DiscardedDelimiters = parser::WHITESPACE;
-    constexpr static const char* KeptDelimiters = "{}(),"; // add the comma character to the kept delimiters
+	// Shared parsing constants
+	constexpr static const char* DiscardedDelimiters = parser::WHITESPACE;
+	constexpr static const char* KeptDelimiters = "{}(),"; // add the comma character to the kept delimiters
 
-  	// Vector of LayerTemplates representing each stage in the material
-    std::vector<Doom3ShaderLayer::Ptr> _layers;
+	// Vector of LayerTemplates representing each stage in the material
+	std::vector<Doom3ShaderLayer::Ptr> _layers;
 
-    // Editorimage texture
+	// Editorimage texture
 	MapExpressionPtr _editorTex;
 
 	// Map expressions
@@ -80,69 +80,69 @@ public:
 	Material::SurfaceType _surfaceType;
 
 	Material::DeformType _deformType;
-    std::vector<IShaderExpression::Ptr> _deformExpressions;
-    std::string _deformDeclName;
+	std::vector<IShaderExpression::Ptr> _deformExpressions;
+	std::string _deformDeclName;
 
-    // Sort position (e.g. sort decal == 2)
-    float _sortReq;
+	// Sort position (e.g. sort decal == 2)
+	float _sortReq;
 
-    // Polygon offset
-    float _polygonOffset;
+	// Polygon offset
+	float _polygonOffset;
 
 	Material::DecalInfo _decalInfo;
 
 	// Whether this material renders opaque, perforated, etc.
 	Material::Coverage _coverage;
 
-    std::string _renderBumpArguments;
-    std::string _renderBumpFlatArguments;
+	std::string _renderBumpArguments;
+	std::string _renderBumpFlatArguments;
 
-    int _parseFlags;
+	int _parseFlags;
 
-    // The string value specified by the guisurf keyword, if other than entity[2]3]
-    std::string _guiDeclName;
+	// The string value specified by the guisurf keyword, if other than entity[2]3]
+	std::string _guiDeclName;
 
-    // Private copy ctor, used for cloning
-    ShaderTemplate(const ShaderTemplate& other);
+	// Private copy ctor, used for cloning
+	ShaderTemplate(const ShaderTemplate& other);
 
 public:
 
-    /**
-     * \brief
-     * Construct a ShaderTemplate.
-     */
+	/**
+	 * \brief
+	 * Construct a ShaderTemplate.
+	 */
 	ShaderTemplate(const std::string& name) :
-        decl::EditableDeclaration<IShaderTemplate>(decl::Type::Material, name),
-        _name(name),
-        _suppressChangeSignal(false),
-        fogLight(false),
-        ambientLight(false),
-        blendLight(false),
-        _materialFlags(0),
-        _cullType(Material::CULL_BACK),
-        _clampType(CLAMP_REPEAT),
-        _surfaceFlags(0),
-        _surfaceType(Material::SURFTYPE_DEFAULT),
-        _deformType(Material::DEFORM_NONE),
-        _sortReq(SORT_UNDEFINED),	// will be set to default values after the shader has been parsed
-        _polygonOffset(0.0f),
-        _coverage(Material::MC_UNDETERMINED),
-        _parseFlags(0)
+		decl::EditableDeclaration<IShaderTemplate>(decl::Type::Material, name),
+		_name(name),
+		_suppressChangeSignal(false),
+		fogLight(false),
+		ambientLight(false),
+		blendLight(false),
+		_materialFlags(0),
+		_cullType(Material::CULL_BACK),
+		_clampType(CLAMP_REPEAT),
+		_surfaceFlags(0),
+		_surfaceType(Material::SURFTYPE_DEFAULT),
+		_deformType(Material::DEFORM_NONE),
+		_sortReq(SORT_UNDEFINED),	// will be set to default values after the shader has been parsed
+		_polygonOffset(0.0f),
+		_coverage(Material::MC_UNDETERMINED),
+		_parseFlags(0)
 	{
-        clear();
+		clear();
 	}
 
-    void clear();
+	void clear();
 
-    // Clone a new instance from this template
-    std::shared_ptr<ShaderTemplate> clone();
+	// Clone a new instance from this template
+	std::shared_ptr<ShaderTemplate> clone();
 
 	/**
 	 * Get the name of this shader template.
 	 */
 	const std::string& getName() const
 	{
-    	return _name;
+		return _name;
 	}
 
 	/**
@@ -159,12 +159,12 @@ public:
 		return description;
 	}
 
-    void setDescription(const std::string& newDescription)
+	void setDescription(const std::string& newDescription)
 	{
 		ensureParsed();
 		description = newDescription;
 
-        onTemplateChanged();
+		onTemplateChanged();
 	}
 
 	int getMaterialFlags()
@@ -173,47 +173,47 @@ public:
 		return _materialFlags;
 	}
 
-    void setMaterialFlag(Material::Flags flag)
-    {
-        ensureParsed();
-        _materialFlags |= flag;
-        evaluateMacroUsage(); // material flags influence macro usage
+	void setMaterialFlag(Material::Flags flag)
+	{
+		ensureParsed();
+		_materialFlags |= flag;
+		evaluateMacroUsage(); // material flags influence macro usage
 
-        if (flag & Material::FLAG_TRANSLUCENT)
-        {
-            // Translucent implies noshadows
-            _materialFlags |= Material::FLAG_NOSHADOWS;
+		if (flag & Material::FLAG_TRANSLUCENT)
+		{
+			// Translucent implies noshadows
+			_materialFlags |= Material::FLAG_NOSHADOWS;
 
-            // Re-evaluate the material coverage
-            _coverage = Material::MC_UNDETERMINED;
-            determineCoverage();
-        }
+			// Re-evaluate the material coverage
+			_coverage = Material::MC_UNDETERMINED;
+			determineCoverage();
+		}
 
-        onTemplateChanged();
-    }
+		onTemplateChanged();
+	}
 
-    void clearMaterialFlag(Material::Flags flag)
-    {
-        ensureParsed();
+	void clearMaterialFlag(Material::Flags flag)
+	{
+		ensureParsed();
 
-        // It's not possible to clear the noshadows flag as long as translucent is active
-        if (flag == Material::FLAG_NOSHADOWS && _materialFlags & Material::FLAG_TRANSLUCENT)
-        {
-            return;
-        }
+		// It's not possible to clear the noshadows flag as long as translucent is active
+		if (flag == Material::FLAG_NOSHADOWS && _materialFlags & Material::FLAG_TRANSLUCENT)
+		{
+			return;
+		}
 
-        _materialFlags &= ~flag;
-        evaluateMacroUsage(); // material flags influence macro usage
+		_materialFlags &= ~flag;
+		evaluateMacroUsage(); // material flags influence macro usage
 
-        if (flag & Material::FLAG_TRANSLUCENT)
-        {
-            // Re-evaluate the material coverage
-            _coverage = Material::MC_UNDETERMINED;
-            determineCoverage();
-        }
+		if (flag & Material::FLAG_TRANSLUCENT)
+		{
+			// Re-evaluate the material coverage
+			_coverage = Material::MC_UNDETERMINED;
+			determineCoverage();
+		}
 
-        onTemplateChanged();
-    }
+		onTemplateChanged();
+	}
 
 	Material::CullType getCullType()
 	{
@@ -221,13 +221,13 @@ public:
 		return _cullType;
 	}
 
-    void setCullType(Material::CullType type)
-    {
-        ensureParsed();
-        _cullType = type;
+	void setCullType(Material::CullType type)
+	{
+		ensureParsed();
+		_cullType = type;
 
-        onTemplateChanged();
-    }
+		onTemplateChanged();
+	}
 
 	ClampType getClampType()
 	{
@@ -235,13 +235,13 @@ public:
 		return _clampType;
 	}
 
-    void setClampType(ClampType type)
-    {
-        ensureParsed();
-        _clampType = type;
+	void setClampType(ClampType type)
+	{
+		ensureParsed();
+		_clampType = type;
 
-        onTemplateChanged();
-    }
+		onTemplateChanged();
+	}
 
 	int getSurfaceFlags()
 	{
@@ -249,21 +249,21 @@ public:
 		return _surfaceFlags;
 	}
 
-    void setSurfaceFlag(Material::SurfaceFlags flag)
-    {
-        ensureParsed();
-        _surfaceFlags |= flag;
-        evaluateMacroUsage(); // surface flags influence macro usage
-        onTemplateChanged();
-    }
+	void setSurfaceFlag(Material::SurfaceFlags flag)
+	{
+		ensureParsed();
+		_surfaceFlags |= flag;
+		evaluateMacroUsage(); // surface flags influence macro usage
+		onTemplateChanged();
+	}
 
-    void clearSurfaceFlag(Material::SurfaceFlags flag)
-    {
-        ensureParsed();
-        _surfaceFlags &= ~flag;
-        evaluateMacroUsage(); // surface flags influence macro usage
-        onTemplateChanged();
-    }
+	void clearSurfaceFlag(Material::SurfaceFlags flag)
+	{
+		ensureParsed();
+		_surfaceFlags &= ~flag;
+		evaluateMacroUsage(); // surface flags influence macro usage
+		onTemplateChanged();
+	}
 
 	Material::SurfaceType getSurfaceType()
 	{
@@ -271,12 +271,12 @@ public:
 		return _surfaceType;
 	}
 
-    void setSurfaceType(Material::SurfaceType type)
-    {
-        ensureParsed();
-        _surfaceType = type;
-        onTemplateChanged();
-    }
+	void setSurfaceType(Material::SurfaceType type)
+	{
+		ensureParsed();
+		_surfaceType = type;
+		onTemplateChanged();
+	}
 
 	Material::DeformType getDeformType()
 	{
@@ -284,19 +284,19 @@ public:
 		return _deformType;
 	}
 
-    IShaderExpression::Ptr getDeformExpression(std::size_t index)
-    {
-        ensureParsed();
+	IShaderExpression::Ptr getDeformExpression(std::size_t index)
+	{
+		ensureParsed();
 
-        assert(index >= 0 && index < 3);
-        return index < _deformExpressions.size() ? _deformExpressions[index] : IShaderExpression::Ptr();
-    }
+		assert(index >= 0 && index < 3);
+		return index < _deformExpressions.size() ? _deformExpressions[index] : IShaderExpression::Ptr();
+	}
 
-    std::string getDeformDeclName()
-    {
-        ensureParsed();
-        return _deformDeclName;
-    }
+	std::string getDeformDeclName()
+	{
+		ensureParsed();
+		return _deformDeclName;
+	}
 
 	const Material::DecalInfo& getDecalInfo()
 	{
@@ -304,7 +304,7 @@ public:
 		return _decalInfo;
 	}
 
-    void setDecalInfo(const Material::DecalInfo& info);
+	void setDecalInfo(const Material::DecalInfo& info);
 
 	Material::Coverage getCoverage()
 	{
@@ -336,98 +336,98 @@ public:
 		return blendLight;
 	}
 
-    void setIsAmbientLight(bool newValue)
-    {
-        ensureParsed();
-        ambientLight = newValue;
-
-        onTemplateChanged();
-    }
-
-    void setIsBlendLight(bool newValue)
-    {
-        ensureParsed();
-        blendLight = newValue;
-
-        onTemplateChanged();
-    }
-
-    void setIsFogLight(bool newValue)
-    {
-        ensureParsed();
-        fogLight = newValue;
-
-        onTemplateChanged();
-    }
-
-    float getSortRequest()
-    {
-		ensureParsed();
-        return _sortReq;
-    }
-
-    void setSortRequest(float sortRequest)
-    {
-        ensureParsed();
-
-        _materialFlags |= Material::FLAG_HAS_SORT_DEFINED;
-        _sortReq = sortRequest;
-        evaluateMacroUsage(); // sort request influences macro usage
-
-        onTemplateChanged();
-    }
-
-    void resetSortRequest()
-    {
-        ensureParsed();
-
-        _materialFlags &= ~Material::FLAG_HAS_SORT_DEFINED;
-
-        // Translucent materials need to be drawn after opaque ones, if not explicitly specified otherwise
-        if (_materialFlags & Material::FLAG_TRANSLUCENT)
-        {
-            _sortReq = Material::SORT_MEDIUM;
-        }
-        else
-        {
-            _sortReq = Material::SORT_OPAQUE;
-        }
-
-        evaluateMacroUsage(); // sort request influences macro usage
-
-        onTemplateChanged();
-    }
-
-    float getPolygonOffset()
-    {
-		ensureParsed();
-        return _polygonOffset;
-    }
-
-    void setPolygonOffset(float offset)
-    {
-        ensureParsed();
-        setMaterialFlag(Material::FLAG_POLYGONOFFSET);
-        _polygonOffset = offset;
-
-        evaluateMacroUsage(); // polygon offset influences macro usage
-
-        onTemplateChanged();
-    }
-
-    const std::string& getBlockContents()
+	void setIsAmbientLight(bool newValue)
 	{
-        return getBlockSyntax().contents;
+		ensureParsed();
+		ambientLight = newValue;
+
+		onTemplateChanged();
 	}
 
-    /**
-     * \brief
-     * Return the named bindable corresponding to the editor preview texture
-     * (qer_editorimage).
-     */
+	void setIsBlendLight(bool newValue)
+	{
+		ensureParsed();
+		blendLight = newValue;
+
+		onTemplateChanged();
+	}
+
+	void setIsFogLight(bool newValue)
+	{
+		ensureParsed();
+		fogLight = newValue;
+
+		onTemplateChanged();
+	}
+
+	float getSortRequest()
+	{
+		ensureParsed();
+		return _sortReq;
+	}
+
+	void setSortRequest(float sortRequest)
+	{
+		ensureParsed();
+
+		_materialFlags |= Material::FLAG_HAS_SORT_DEFINED;
+		_sortReq = sortRequest;
+		evaluateMacroUsage(); // sort request influences macro usage
+
+		onTemplateChanged();
+	}
+
+	void resetSortRequest()
+	{
+		ensureParsed();
+
+		_materialFlags &= ~Material::FLAG_HAS_SORT_DEFINED;
+
+		// Translucent materials need to be drawn after opaque ones, if not explicitly specified otherwise
+		if (_materialFlags & Material::FLAG_TRANSLUCENT)
+		{
+			_sortReq = Material::SORT_MEDIUM;
+		}
+		else
+		{
+			_sortReq = Material::SORT_OPAQUE;
+		}
+
+		evaluateMacroUsage(); // sort request influences macro usage
+
+		onTemplateChanged();
+	}
+
+	float getPolygonOffset()
+	{
+		ensureParsed();
+		return _polygonOffset;
+	}
+
+	void setPolygonOffset(float offset)
+	{
+		ensureParsed();
+		setMaterialFlag(Material::FLAG_POLYGONOFFSET);
+		_polygonOffset = offset;
+
+		evaluateMacroUsage(); // polygon offset influences macro usage
+
+		onTemplateChanged();
+	}
+
+	const std::string& getBlockContents()
+	{
+		return getBlockSyntax().contents;
+	}
+
+	/**
+	 * \brief
+	 * Return the named bindable corresponding to the editor preview texture
+	 * (qer_editorimage).
+	 */
 	const MapExpressionPtr& getEditorTexture();
 
-    void setEditorImageExpressionFromString(const std::string& expression);
+	void setEditorImageExpressionFromString(const std::string& expression);
 
 	const MapExpressionPtr& getLightFalloff()
 	{
@@ -435,19 +435,19 @@ public:
 		return _lightFalloff;
 	}
 
-    void setLightFalloffExpressionFromString(const std::string& expressionString)
-    {
-        ensureParsed();
-        _lightFalloff = !expressionString.empty() ? 
-            MapExpression::createForString(expressionString) : MapExpressionPtr();
+	void setLightFalloffExpressionFromString(const std::string& expressionString)
+	{
+		ensureParsed();
+		_lightFalloff = !expressionString.empty() ? 
+			MapExpression::createForString(expressionString) : MapExpressionPtr();
 
-        onTemplateChanged();
-    }
+		onTemplateChanged();
+	}
 
-    std::size_t addLayer(IShaderLayer::Type type);
-    void removeLayer(std::size_t index);
-    void swapLayerPosition(std::size_t first, std::size_t second);
-    std::size_t duplicateLayer(std::size_t index);
+	std::size_t addLayer(IShaderLayer::Type type);
+	void removeLayer(std::size_t index);
+	void swapLayerPosition(std::size_t first, std::size_t second);
+	std::size_t duplicateLayer(std::size_t index);
 
 	// Add a specific layer to this template
 	void addLayer(IShaderLayer::Type type, const MapExpressionPtr& mapExpr);
@@ -455,86 +455,86 @@ public:
 	// Returns true if this shader template includes a diffusemap stage
 	bool hasDiffusemap();
 
-    // Parser hints
-    int getParseFlags();
+	// Parser hints
+	int getParseFlags();
 
-    // renderbump argument string
-    std::string getRenderBumpArguments();
-    
-    // renderbumpflat argument string
-    std::string getRenderBumpFlatArguments();
+	// renderbump argument string
+	std::string getRenderBumpArguments();
+	
+	// renderbumpflat argument string
+	std::string getRenderBumpFlatArguments();
 
-    const std::string& getGuiSurfArgument()
-    {
-        ensureParsed();
-        return _guiDeclName;
-    }
+	const std::string& getGuiSurfArgument()
+	{
+		ensureParsed();
+		return _guiDeclName;
+	}
 
-    void onTemplateChanged()
-    {
-        if (_suppressChangeSignal) return;
+	void onTemplateChanged()
+	{
+		if (_suppressChangeSignal) return;
 
-        onParsedContentsChanged();
-        _sigTemplateChanged.emit();
-    }
+		onParsedContentsChanged();
+		_sigTemplateChanged.emit();
+	}
 
-    // Invoked when one of the shader layers has been modified
-    void onLayerChanged()
-    {
-        onTemplateChanged();
-    }
+	// Invoked when one of the shader layers has been modified
+	void onLayerChanged()
+	{
+		onTemplateChanged();
+	}
 
-    sigc::signal<void>& sig_TemplateChanged()
-    {
-        return _sigTemplateChanged;
-    }
+	sigc::signal<void>& sig_TemplateChanged()
+	{
+		return _sigTemplateChanged;
+	}
 
 protected:
-    const char* getKeptDelimiters() const override
-    {
-        return KeptDelimiters;
-    }
+	const char* getKeptDelimiters() const override
+	{
+		return KeptDelimiters;
+	}
 
-    void onBeginParsing() override;
+	void onBeginParsing() override;
 
-    /**
-     * Parse a Doom 3 material decl. This is the master parse function, it
-     * returns no value but exceptions may be thrown at any stage of the
-     * parsing.
-     */
-    void parseFromTokens(parser::DefTokeniser& tokeniser) override;
+	/**
+	 * Parse a Doom 3 material decl. This is the master parse function, it
+	 * returns no value but exceptions may be thrown at any stage of the
+	 * parsing.
+	 */
+	void parseFromTokens(parser::DefTokeniser& tokeniser) override;
 
-    void onSyntaxBlockAssigned(const decl::DeclarationBlockSyntax& block) override;
+	void onSyntaxBlockAssigned(const decl::DeclarationBlockSyntax& block) override;
 
-    std::string generateSyntax() override;
+	std::string generateSyntax() override;
 
 private:
-    // Add the given layer and assigns editor preview layer if applicable
+	// Add the given layer and assigns editor preview layer if applicable
 	void addLayer(const Doom3ShaderLayer::Ptr& layer);
 
-    // Parse helpers. These scan for possible matches, this is not a
-    // recursive-descent parser. Each of these helpers return true 
+	// Parse helpers. These scan for possible matches, this is not a
+	// recursive-descent parser. Each of these helpers return true 
 	// if the token was recognised and parsed
 	bool parseShaderFlags(parser::DefTokeniser&, const std::string&);
 	bool parseLightKeywords(parser::DefTokeniser&, const std::string&);
 	bool parseBlendShortcuts(parser::DefTokeniser&, const std::string&);
 	bool parseBlendType(parser::DefTokeniser&, const std::string&);
 	bool parseBlendMaps(parser::DefTokeniser&, const std::string&);
-    bool parseStageModifiers(parser::DefTokeniser&, const std::string&);
+	bool parseStageModifiers(parser::DefTokeniser&, const std::string&);
 	bool parseSurfaceFlags(parser::DefTokeniser&, const std::string&);
 	bool parseMaterialType(parser::DefTokeniser&, const std::string&);
 	bool parseCondition(parser::DefTokeniser&, const std::string&);
 
-    // Parses a vector3 "(x y z)" into Vector3(x,y,z) or a single float "x" into a Vector3(x,x,x)
+	// Parses a vector3 "(x y z)" into Vector3(x,y,z) or a single float "x" into a Vector3(x,x,x)
 	Vector3 parseScalarOrVector3(parser::DefTokeniser&);
 	IShaderExpression::Ptr parseSingleExpressionTerm(parser::DefTokeniser& tokeniser);
 	void parseRenderMapSize(parser::DefTokeniser&, bool optional);
 
 	bool saveLayer();
-    void determineCoverage();
-    // Checks if the settings of this material justify the use of any macro keywords like DECAL_MACRO
-    // Returns true if a macro flag changed, in which case a changed signal should be emitted
-    bool evaluateMacroUsage();
+	void determineCoverage();
+	// Checks if the settings of this material justify the use of any macro keywords like DECAL_MACRO
+	// Returns true if a macro flag changed, in which case a changed signal should be emitted
+	bool evaluateMacroUsage();
 };
 
 }

@@ -14,23 +14,23 @@ namespace model
 {
 
 StaticModelSurface::StaticModelSurface(std::vector<MeshVertex>&& vertices, std::vector<unsigned int>&& indices) :
-    _vertices(vertices),
-    _indices(indices)
+	_vertices(vertices),
+	_indices(indices)
 {
-    // Expand the local AABB to include all vertices
-    for (const auto& vertex : _vertices)
-    {
-        _localAABB.includePoint(vertex.vertex);
-    }
+	// Expand the local AABB to include all vertices
+	for (const auto& vertex : _vertices)
+	{
+		_localAABB.includePoint(vertex.vertex);
+	}
 
-    calculateTangents();
+	calculateTangents();
 }
 
 StaticModelSurface::StaticModelSurface(const StaticModelSurface& other) :
-    _defaultMaterial(other._defaultMaterial),
-    _vertices(other._vertices),
-    _indices(other._indices),
-    _localAABB(other._localAABB)
+	_defaultMaterial(other._defaultMaterial),
+	_vertices(other._vertices),
+	_indices(other._indices),
+	_localAABB(other._localAABB)
 {}
 
 void StaticModelSurface::calculateTangents()
@@ -59,7 +59,7 @@ void StaticModelSurface::calculateTangents()
 
 // Perform selection test for this surface
 void StaticModelSurface::testSelect(Selector& selector, SelectionTest& test,
-    const Matrix4& localToWorld, bool twoSided) const
+	const Matrix4& localToWorld, bool twoSided) const
 {
 	if (!_vertices.empty() && !_indices.empty())
 	{
@@ -69,8 +69,8 @@ void StaticModelSurface::testSelect(Selector& selector, SelectionTest& test,
 
 		test.TestTriangles(
 			VertexPointer(&_vertices[0].vertex, sizeof(MeshVertex)),
-      		IndexPointer(&_indices[0],
-      					 IndexPointer::index_type(_indices.size())),
+			IndexPointer(&_indices[0],
+						 IndexPointer::index_type(_indices.size())),
 			result
 		);
 
@@ -136,7 +136,7 @@ void StaticModelSurface::setDefaultMaterial(const std::string& defaultMaterial)
 
 const std::string& StaticModelSurface::getActiveMaterial() const
 {
-    return !_activeMaterial.empty() ? _activeMaterial : _defaultMaterial;
+	return !_activeMaterial.empty() ? _activeMaterial : _defaultMaterial;
 }
 
 void StaticModelSurface::setActiveMaterial(const std::string& activeMaterial)
@@ -146,7 +146,7 @@ void StaticModelSurface::setActiveMaterial(const std::string& activeMaterial)
 
 const AABB& StaticModelSurface::getSurfaceBounds() const
 {
-    return getAABB();
+	return getAABB();
 }
 
 bool StaticModelSurface::getIntersection(const Ray& ray, Vector3& intersection, const Matrix4& localToWorld)

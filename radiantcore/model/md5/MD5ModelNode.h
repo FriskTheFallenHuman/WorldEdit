@@ -27,19 +27,19 @@ class MD5ModelNode :
 	// The name of this model's skin
 	std::string _skin;
 
-    // The default skin in case _skin is set to an empty string
+	// The default skin in case _skin is set to an empty string
 	std::string _defaultSkin;
 
-    sigc::connection _animationUpdateConnection;
-    sigc::connection _modelShadersChangedConnection;
+	sigc::connection _animationUpdateConnection;
+	sigc::connection _modelShadersChangedConnection;
 
-    registry::CachedKey<bool> _showSkeleton;
+	registry::CachedKey<bool> _showSkeleton;
 
-    RenderableMD5Skeleton _renderableSkeleton;
+	RenderableMD5Skeleton _renderableSkeleton;
 
 public:
 	MD5ModelNode(const MD5ModelPtr& model);
-    ~MD5ModelNode() override;
+	~MD5ModelNode() override;
 
 	// ModelNode implementation
 	const model::IModel& getIModel() const override;
@@ -63,19 +63,19 @@ public:
 	bool getIntersection(const Ray& ray, Vector3& intersection) override;
 
 	// Renderable implementation
-    void onPreRender(const VolumeTest& volume) override;
+	void onPreRender(const VolumeTest& volume) override;
 
 	// Returns the name of the currently active skin
 	std::string getSkin() const override;
 	void skinChanged(const std::string& newSkinName) override;
-    void setDefaultSkin(const std::string& defaultSkin) override;
+	void setDefaultSkin(const std::string& defaultSkin) override;
 
 protected:
-    void createRenderableSurfaces() override;
+	void createRenderableSurfaces() override;
 
 private:
-    void onModelAnimationUpdated();
-    void onModelShadersChanged();
+	void onModelAnimationUpdated();
+	void onModelShadersChanged();
 };
 
 } // namespace

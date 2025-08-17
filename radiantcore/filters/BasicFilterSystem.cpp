@@ -156,7 +156,7 @@ void BasicFilterSystem::initialiseModule(const IApplicationContext& ctx)
 	xml::NodeList filters = game->getLocalXPath(RKEY_GAME_FILTERS);
 	xml::NodeList userFilters = GlobalRegistry().findXPath(RKEY_USER_FILTERS);
 
-    rMessage() << "[filters] Loaded " << (filters.size() + userFilters.size())
+	rMessage() << "[filters] Loaded " << (filters.size() + userFilters.size())
 			  << " filters from registry." << std::endl;
 
 	// Read-only filters
@@ -334,7 +334,7 @@ void BasicFilterSystem::shutdownModule()
 
 sigc::signal<void> BasicFilterSystem::filterConfigChangedSignal() const
 {
-    return _filterConfigChangedSignal;
+	return _filterConfigChangedSignal;
 }
 
 sigc::signal<void> BasicFilterSystem::filterCollectionChangedSignal() const
@@ -630,28 +630,28 @@ void BasicFilterSystem::updateSubgraph(const scene::INodePtr& root)
 // Update scenegraph instances with filtered status
 void BasicFilterSystem::updateScene()
 {
-    auto rootNode = GlobalSceneGraph().root();
+	auto rootNode = GlobalSceneGraph().root();
 
-    if (!rootNode) return;
+	if (!rootNode) return;
 
 	// pass scenegraph root to specialised routine
 	updateSubgraph(rootNode);
 
-    // Invoke onFiltersChanged on the root node
-    rootNode->onFiltersChanged();
+	// Invoke onFiltersChanged on the root node
+	rootNode->onFiltersChanged();
 }
 
 // Update scenegraph instances with filtered status
 void BasicFilterSystem::updateShaders()
 {
 	// Construct a ShaderVisitor to traverse the shaders
-    GlobalMaterialManager().foreachMaterial([this] (const MaterialPtr& material)
-    {
-        // Set the shader's visibility based on the current filter settings
-        material->setVisible(
-            isVisible(FilterRule::TYPE_TEXTURE, material->getName())
-        );
-    });
+	GlobalMaterialManager().foreachMaterial([this] (const MaterialPtr& material)
+	{
+		// Set the shader's visibility based on the current filter settings
+		material->setVisible(
+			isVisible(FilterRule::TYPE_TEXTURE, material->getName())
+		);
+	});
 }
 
 // RegisterableModule implementation

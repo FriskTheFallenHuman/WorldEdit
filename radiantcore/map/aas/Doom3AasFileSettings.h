@@ -12,9 +12,9 @@ namespace map
 class Doom3AasFileSettings
 {
 public:
-    Doom3AasFileSettings();
+	Doom3AasFileSettings();
 
-    int         numBoundingBoxes;
+	int         numBoundingBoxes;
 	AABB        boundingBoxes[MAX_AAS_BOUNDING_BOXES];
 	bool        usePatches;
 	bool        writeBrushMap;
@@ -34,14 +34,14 @@ public:
 	float       maxFallHeight;
 	float       minFloorCos;
 			
-    // fixed travel times
+	// fixed travel times
 	int		    tt_barrierJump;
 	int		    tt_startCrouching;
 	int		    tt_waterJump;
 	int		    tt_startWalkOffLedge;
 
-    // Parse from token stream. The opening "settings" token should already have been consumed
-    void parseFromTokens(parser::DefTokeniser& tok);
+	// Parse from token stream. The opening "settings" token should already have been consumed
+	void parseFromTokens(parser::DefTokeniser& tok);
 };
 
 }

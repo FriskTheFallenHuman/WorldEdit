@@ -11,9 +11,9 @@
 namespace selection
 {
 	namespace algorithm
-    {
+	{
 
-    const char* const RKEY_FREE_OBJECT_ROTATION = "user/ui/rotateObjectsIndependently";
+	const char* const RKEY_FREE_OBJECT_ROTATION = "user/ui/rotateObjectsIndependently";
 
 	typedef std::list<std::string> ClassnameList;
 

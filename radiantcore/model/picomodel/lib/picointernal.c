@@ -163,7 +163,7 @@ char *_pico_clone_alloc( const char *str )
 
 	/* sanity check */
 	if (str == NULL)
-    return NULL;
+	return NULL;
 
 	/* allocate memory */
 	cloned = _pico_alloc( strlen(str) + 1 );
@@ -308,7 +308,7 @@ char *_pico_strrtrim( char *str )
 				*str1-- = '\0';
 		}
 	}
-    return str;
+	return str;
 }
 
 /* _pico_strlwr:
@@ -971,7 +971,7 @@ int _pico_parse_check( picoParser_t *p, int allowLFs, const char *str )
 		return 0;
 	if (!strcmp(p->token,str))
 		return 1;
-    return 0;
+	return 0;
 }
 
 int _pico_parse_checki( picoParser_t *p, int allowLFs, const char *str )
@@ -980,7 +980,7 @@ int _pico_parse_checki( picoParser_t *p, int allowLFs, const char *str )
 		return 0;
 	if (!_pico_stricmp(p->token,str))
 		return 1;
-    return 0;
+	return 0;
 }
 
 int _pico_parse_int( picoParser_t *p, int *out )

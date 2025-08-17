@@ -8,36 +8,36 @@ namespace entity {
 
 CurveEditInstance::CurveEditInstance(Curve& curve, const SelectionChangedSlot& selectionChanged) :
 	_curve(curve),
-    _selectionChanged(selectionChanged),
-    _controlPointsTransformed(_curve.getTransformedControlPoints()),
-    _controlPoints(_curve.getControlPoints())
+	_selectionChanged(selectionChanged),
+	_controlPointsTransformed(_curve.getTransformedControlPoints()),
+	_controlPoints(_curve.getControlPoints())
 {}
 
 void CurveEditInstance::testSelect(Selector& selector, SelectionTest& test)
 {
-    ASSERT_MESSAGE(_controlPointsTransformed.size() == _selectables.size(), "curve instance mismatch");
+	ASSERT_MESSAGE(_controlPointsTransformed.size() == _selectables.size(), "curve instance mismatch");
 
-    ControlPoints::const_iterator p = _controlPointsTransformed.begin();
+	ControlPoints::const_iterator p = _controlPointsTransformed.begin();
 
-    for(Selectables::iterator i = _selectables.begin(); i != _selectables.end(); ++i, ++p)
-    {
-    	SelectionIntersection best;
+	for(Selectables::iterator i = _selectables.begin(); i != _selectables.end(); ++i, ++p)
+	{
+		SelectionIntersection best;
 		test.TestPoint(*p, best);
 		if (best.isValid())
 		{
 			selector.addWithIntersection(*i, best);
 		}
-    }
+	}
 }
 
 bool CurveEditInstance::isSelected() const {
-    for(Selectables::const_iterator i = _selectables.begin(); i != _selectables.end(); ++i)
-    {
-      if (i->isSelected()) {
-        return true;
-      }
-    }
-    return false;
+	for(Selectables::const_iterator i = _selectables.begin(); i != _selectables.end(); ++i)
+	{
+	  if (i->isSelected()) {
+		return true;
+	  }
+	}
+	return false;
 }
 
 void CurveEditInstance::invertSelected()
@@ -63,7 +63,7 @@ unsigned int CurveEditInstance::numSelected() const {
 		}
 	}
 
-    return returnValue;
+	return returnValue;
 }
 
 Curve::IteratorList CurveEditInstance::getSelected() {
@@ -71,15 +71,15 @@ Curve::IteratorList CurveEditInstance::getSelected() {
 	Curve::IteratorList iterators;
 
 	ControlPoints::iterator p = _controlPointsTransformed.begin();
-    for (Selectables::const_iterator i = _selectables.begin(); i != _selectables.end(); ++i, ++p)
-    {
-    	if (i->isSelected()) {
-    		// This control vertex should be removed, add it to the list
-    		iterators.push_back(p);
-    	}
-    }
+	for (Selectables::const_iterator i = _selectables.begin(); i != _selectables.end(); ++i, ++p)
+	{
+		if (i->isSelected()) {
+			// This control vertex should be removed, add it to the list
+			iterators.push_back(p);
+		}
+	}
 
-    return iterators;
+	return iterators;
 }
 
 void CurveEditInstance::removeSelectedControlPoints() {
@@ -100,10 +100,10 @@ void CurveEditInstance::removeSelectedControlPoints() {
 	Curve::IteratorList iterators = getSelected();
 
 	// De-select everything before removal
-    setSelected(false);
+	setSelected(false);
 
-    // Now remove the points
-    _curve.removeControlPoints(iterators);
+	// Now remove the points
+	_curve.removeControlPoints(iterators);
 }
 
 void CurveEditInstance::insertControlPointsAtSelected() {
@@ -117,11 +117,11 @@ void CurveEditInstance::insertControlPointsAtSelected() {
 	// This is the list of insert points
 	Curve::IteratorList iterators = getSelected();
 
-    // De-select everything before removal
-    setSelected(false);
+	// De-select everything before removal
+	setSelected(false);
 
-    // Now remove the points
-    _curve.insertControlPointsAt(iterators);
+	// Now remove the points
+	_curve.insertControlPointsAt(iterators);
 }
 
 void CurveEditInstance::write(const std::string& key, Entity& entity) {
@@ -132,22 +132,22 @@ void CurveEditInstance::write(const std::string& key, Entity& entity) {
 void CurveEditInstance::transform(const Matrix4& matrix, bool selectedOnly) {
 	ControlPointTransformator transformator(matrix);
 
-  	if (selectedOnly) {
-    	forEachSelected(transformator);
-  	}
-  	else {
-  		forEach(transformator);
-  	}
+	if (selectedOnly) {
+		forEachSelected(transformator);
+	}
+	else {
+		forEach(transformator);
+	}
 }
 
 void CurveEditInstance::snapto(float snap) {
 	ControlPointSnapper snapper(snap);
-    forEachSelected(snapper);
+	forEachSelected(snapper);
 }
 
 void CurveEditInstance::curveChanged()
 {
-    _selectables.resize(_controlPointsTransformed.size(), _selectionChanged);
+	_selectables.resize(_controlPointsTransformed.size(), _selectionChanged);
 }
 
 void CurveEditInstance::forEachSelected(ControlPointFunctor& functor) {
@@ -160,21 +160,21 @@ void CurveEditInstance::forEachSelected(ControlPointFunctor& functor) {
 		 ++i, ++transformed, ++original)
 	{
 		if (i->isSelected()) {
-    		functor(*transformed, *original);
-  		}
+			functor(*transformed, *original);
+		}
 	}
 }
 
 void CurveEditInstance::forEachControlPoint(const std::function<void(const Vector3&, bool)>& functor) const
 {
-    ASSERT_MESSAGE(_controlPointsTransformed.size() == _selectables.size(), "curve instance mismatch");
+	ASSERT_MESSAGE(_controlPointsTransformed.size() == _selectables.size(), "curve instance mismatch");
 
-    auto transformed = _controlPointsTransformed.begin();
+	auto transformed = _controlPointsTransformed.begin();
 
-    for (auto i = _selectables.begin(); i != _selectables.end(); ++i, ++transformed)
-    {
-        functor(*transformed, i->isSelected());
-    }
+	for (auto i = _selectables.begin(); i != _selectables.end(); ++i, ++transformed)
+	{
+		functor(*transformed, i->isSelected());
+	}
 }
 
 void CurveEditInstance::forEachSelected(ControlPointConstFunctor& functor) const {
@@ -187,19 +187,19 @@ void CurveEditInstance::forEachSelected(ControlPointConstFunctor& functor) const
 		 ++i, ++transformed, ++original)
 	{
 		if (i->isSelected()) {
-    		functor(*transformed, *original);
-  		}
+			functor(*transformed, *original);
+		}
 	}
 }
 
 void CurveEditInstance::forEach(ControlPointFunctor& functor) {
 	ControlPoints::const_iterator original = _controlPoints.begin();
 	for (ControlPoints::iterator i = _controlPointsTransformed.begin();
-    	i != _controlPointsTransformed.end();
-    	++i, ++original)
-    {
+		i != _controlPointsTransformed.end();
+		++i, ++original)
+	{
 		functor(*i, *original);
-    }
+	}
 }
 
 } // namespace entity

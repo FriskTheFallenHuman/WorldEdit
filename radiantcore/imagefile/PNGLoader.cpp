@@ -123,16 +123,16 @@ RGBAImagePtr LoadPNGBuff(unsigned char* fbuffer)
 		png_set_filler(png_ptr, 0xff, PNG_FILLER_AFTER);
 	}
 
-    // Since the RGBA image supports 8-bit only, tell PNG to scale it down if the file is 16 bits
+	// Since the RGBA image supports 8-bit only, tell PNG to scale it down if the file is 16 bits
 #ifdef PNG_READ_SCALE_16_TO_8_SUPPORTED
-    png_set_scale_16(png_ptr);
+	png_set_scale_16(png_ptr);
 #else
-    png_set_strip_16(png_ptr);
+	png_set_strip_16(png_ptr);
 #endif
 
 #ifdef PNG_READ_GRAY_TO_RGB_SUPPORTED
-    // This converts Grey and Grey+Alpha to RGBA
-    png_set_gray_to_rgb(png_ptr);
+	// This converts Grey and Grey+Alpha to RGBA
+	png_set_gray_to_rgb(png_ptr);
 #endif
 
 	// read the sucker in one chunk
@@ -141,20 +141,20 @@ RGBAImagePtr LoadPNGBuff(unsigned char* fbuffer)
 	color_type = png_get_color_type(png_ptr, info_ptr);
 	bit_depth = png_get_bit_depth(png_ptr, info_ptr);
 
-    auto width = png_get_image_width(png_ptr, info_ptr);
+	auto width = png_get_image_width(png_ptr, info_ptr);
 	auto height = png_get_image_height(png_ptr, info_ptr);
 
 	// allocate the pixel buffer, and the row pointers
 	RGBAImagePtr image(new RGBAImage(width, height));
 
-    // Allocate a set of row pointers
-    std::vector<png_byte*> rowPointers(height);
-    auto pixelBuffer = image->getPixels();
-    constexpr auto bytesPerPixel = sizeof(RGBAPixel) / sizeof(uint8_t);
+	// Allocate a set of row pointers
+	std::vector<png_byte*> rowPointers(height);
+	auto pixelBuffer = image->getPixels();
+	constexpr auto bytesPerPixel = sizeof(RGBAPixel) / sizeof(uint8_t);
 
-    for (decltype(height) i = 0; i < height; ++i)
+	for (decltype(height) i = 0; i < height; ++i)
 	{
-        rowPointers[i] = static_cast<png_byte*>(pixelBuffer + i * width * bytesPerPixel);
+		rowPointers[i] = static_cast<png_byte*>(pixelBuffer + i * width * bytesPerPixel);
 	}
 
 	// actual read
@@ -171,16 +171,16 @@ RGBAImagePtr LoadPNGBuff(unsigned char* fbuffer)
 
 ImagePtr PNGLoader::load(ArchiveFile& file) const
 {
-    archive::ScopedArchiveBuffer buffer(file);
+	archive::ScopedArchiveBuffer buffer(file);
 
-    return LoadPNGBuff(buffer.buffer);
+	return LoadPNGBuff(buffer.buffer);
 }
 
 ImageTypeLoader::Extensions PNGLoader::getExtensions() const
 {
-    Extensions extensions;
-    extensions.push_back("png");
-    return extensions;
+	Extensions extensions;
+	extensions.push_back("png");
+	return extensions;
 }
 
 }

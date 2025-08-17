@@ -98,28 +98,28 @@ void ModuleLoader::processModuleFile(const fs::path& file)
 #if 0
 void ModuleLoader::loadModules(const std::string& libraryPath)
 {
-    // Get standardised paths
-    std::string stdRoot = os::standardPathWithSlash(libraryPath);
+	// Get standardised paths
+	std::string stdRoot = os::standardPathWithSlash(libraryPath);
 
 #if defined(DR_MODULES_NEXT_TO_APP)
-    // Xcode output goes to the application folder right now
-    std::string modulesPath = stdRoot;
-    std::string pluginsPath = stdRoot;
+	// Xcode output goes to the application folder right now
+	std::string modulesPath = stdRoot;
+	std::string pluginsPath = stdRoot;
 #else
-    std::string modulesPath = stdRoot + MODULES_DIR;
-    std::string pluginsPath = stdRoot + PLUGINS_DIR;
+	std::string modulesPath = stdRoot + MODULES_DIR;
+	std::string pluginsPath = stdRoot + PLUGINS_DIR;
 #endif
 
-    rMessage() << "ModuleLoader: loading modules from " << libraryPath << std::endl;
+	rMessage() << "ModuleLoader: loading modules from " << libraryPath << std::endl;
 
-    // Load modules first, then plugins
+	// Load modules first, then plugins
 	loadModulesFromPath(modulesPath);
 
 	// Plugins are optional
-    if (pluginsPath != modulesPath)
-    {
+	if (pluginsPath != modulesPath)
+	{
 		loadModulesFromPath(pluginsPath);
-    }
+	}
 }
 #endif
 

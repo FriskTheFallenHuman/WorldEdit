@@ -29,8 +29,8 @@ private:
 	// The progress dialog text for the current entity
 	std::string _dlgEntityText;
 
-    // Event rate limiter for the progress dialog
-    EventRateLimiter _dialogEventLimiter;
+	// Event rate limiter for the progress dialog
+	EventRateLimiter _dialogEventLimiter;
 
 	// Current entity/primitive number for progress display
 	std::size_t _entityCount;

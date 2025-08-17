@@ -52,7 +52,7 @@ private:
 	void calculateTangents();
 
 public:
-    // Move-construct this static model surface from the given vertex- and index array
+	// Move-construct this static model surface from the given vertex- and index array
 	StaticModelSurface(std::vector<MeshVertex>&& vertices, std::vector<unsigned int>&& indices);
 
 	// Copy-constructor. All vertices and indices will be copied from 'other'.
@@ -68,7 +68,7 @@ public:
 	 * Perform a selection test on this surface.
 	 */
 	void testSelect(Selector& selector, SelectionTest& test, 
-        const Matrix4& localToWorld, bool twoSided) const;
+		const Matrix4& localToWorld, bool twoSided) const;
 
 	// IModelSurface implementation
 	int getNumVertices() const override;
@@ -86,7 +86,7 @@ public:
 	const std::string& getActiveMaterial() const override;
 	void setActiveMaterial(const std::string& activeMaterial);
 
-    const AABB& getSurfaceBounds() const override;
+	const AABB& getSurfaceBounds() const override;
 
 	// Returns true if the given ray intersects this surface geometry and fills in
 	// the exact point in the given Vector3, returns false if no intersection was found.

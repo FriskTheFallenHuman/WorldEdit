@@ -96,12 +96,12 @@ void MD5Anim::parseBaseFrame(parser::DefTokeniser& tok)
 
 		// Calculate the fourth component of the quaternion
 		auto lSq = rawRotation.getLengthSquared();
-        auto w = -sqrt(1.0 - lSq);
+		auto w = -sqrt(1.0 - lSq);
 
-	    if (isNaN(w))
+		if (isNaN(w))
 		{
-	    	w = 0;
-	    }
+			w = 0;
+		}
 
 		_baseFrame[i].orientation = Quaternion(rawRotation, w);
 

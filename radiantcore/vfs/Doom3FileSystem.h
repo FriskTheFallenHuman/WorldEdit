@@ -17,7 +17,7 @@ private:
 	SearchPaths _vfsSearchPaths;
 
 	std::vector<std::string> _directories;
-    std::set<std::string> _allowedExtensions;
+	std::set<std::string> _allowedExtensions;
 	std::set<std::string> _allowedExtensionsDir;
 
 	struct ArchiveDescriptor
@@ -27,16 +27,16 @@ private:
 		bool is_pakfile;
 	};
 
-    std::list<ArchiveDescriptor> _archives;
+	std::list<ArchiveDescriptor> _archives;
 
-    sigc::signal<void> _sigInitialised;
+	sigc::signal<void> _sigInitialised;
 
 public:
 	void initialise(const SearchPaths& vfsSearchPaths, const std::set<std::string>& allowedExtensions) override;
-    bool isInitialised() const override;
+	bool isInitialised() const override;
 	void shutdown() override;
 
-    const std::set<std::string>& getArchiveExtensions() const override;
+	const std::set<std::string>& getArchiveExtensions() const override;
 
 	int getFileCount(const std::string& filename) override;
 	ArchiveFilePtr openFile(const std::string& filename) override;
@@ -44,7 +44,7 @@ public:
 
 	ArchiveFilePtr openFileInAbsolutePath(const std::string& filename) override;
 	ArchiveTextFilePtr openTextFileInAbsolutePath(const std::string& filename) override;
-    IArchive::Ptr openArchiveInAbsolutePath(const std::string& pathToArchive) override;
+	IArchive::Ptr openArchiveInAbsolutePath(const std::string& pathToArchive) override;
 
 	// Call the specified callback function for each file matching extension
 	// inside basedir.
@@ -56,18 +56,18 @@ public:
 		const VisitorFunc& visitorFunc,
 		std::size_t depth = 1) override;
 
-    void forEachFileInArchive(const std::string& absoluteArchivePath,
-        const std::string& extension,
-        const VisitorFunc& visitorFunc,
-        std::size_t depth = 1) override;
+	void forEachFileInArchive(const std::string& absoluteArchivePath,
+		const std::string& extension,
+		const VisitorFunc& visitorFunc,
+		std::size_t depth = 1) override;
 
 	std::string findFile(const std::string& name) override;
 	std::string findRoot(const std::string& name) override;
 
-    sigc::signal<void>& signal_Initialised() override;
+	sigc::signal<void>& signal_Initialised() override;
 
 	const SearchPaths& getVfsSearchPaths() override;
-    FileInfo getFileInfo(const std::string& vfsRelativePath) override;
+	FileInfo getFileInfo(const std::string& vfsRelativePath) override;
 
 	// RegisterableModule implementation
 	const std::string& getName() const override;
@@ -79,7 +79,7 @@ private:
 	void initDirectory(const std::string& path);
 	void initPakFile(const std::string& filename);
 
-    std::shared_ptr<AssetsList> findAssetsList(const std::string& topLevelPath);
+	std::shared_ptr<AssetsList> findAssetsList(const std::string& topLevelPath);
 };
 
 }

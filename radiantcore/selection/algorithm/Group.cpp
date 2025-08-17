@@ -43,7 +43,7 @@ void revertGroupToWorldSpawn(const cmd::ArgumentList& args)
 	GlobalSelectionSystem().foreachSelected(walker);
 
 	if (walker.getList().empty())
-    {
+	{
 		return; // nothing to do!
 	}
 
@@ -56,7 +56,7 @@ void revertGroupToWorldSpawn(const cmd::ArgumentList& args)
 	Entity* worldspawn = Node_getEntity(worldspawnNode);
 
 	if (!worldspawn)
-    {
+	{
 		return; // worldspawn not an entity?
 	}
 

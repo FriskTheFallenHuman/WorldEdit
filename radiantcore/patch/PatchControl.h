@@ -25,9 +25,9 @@ inline void PatchControlArray_invert(PatchControlArray& ctrl, std::size_t width,
 
   for(std::size_t h = 0; h != ((height - 1) >> 1); ++h, to += width, from -= width)
   {
-    copy_ctrl(tmp.begin(), to, to + width);
-    copy_ctrl(to, from, from + width);
-    copy_ctrl(from, tmp.begin(), tmp.begin() + width);
+	copy_ctrl(tmp.begin(), to, to + width);
+	copy_ctrl(to, from, from + width);
+	copy_ctrl(from, tmp.begin(), tmp.begin() + width);
   }
 }
 

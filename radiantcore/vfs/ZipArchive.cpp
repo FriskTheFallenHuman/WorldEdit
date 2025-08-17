@@ -122,13 +122,13 @@ ArchiveTextFilePtr ZipArchive::openTextFile(const std::string& name)
 		{
 		case ZipRecord::eStored:
 			return std::make_shared<StoredArchiveTextFile>(
-                name, _fullPath, _containingFolder, _istream.tell(), file->stream_size
-            );
+				name, _fullPath, _containingFolder, _istream.tell(), file->stream_size
+			);
 
 		case ZipRecord::eDeflated:
 			return std::make_shared<DeflatedArchiveTextFile>(
-                name, _fullPath, _containingFolder, _istream.tell(), file->stream_size
-            );
+				name, _fullPath, _containingFolder, _istream.tell(), file->stream_size
+			);
 		}
 	}
 
@@ -148,19 +148,19 @@ void ZipArchive::traverse(Visitor& visitor, const std::string& root)
 
 std::size_t ZipArchive::getFileSize(const std::string& relativePath)
 {
-    auto i = _filesystem.find(relativePath);
-    return i != _filesystem.end() ? i->second.getRecord()->file_size : 0;
+	auto i = _filesystem.find(relativePath);
+	return i != _filesystem.end() ? i->second.getRecord()->file_size : 0;
 }
 
 bool ZipArchive::getIsPhysical(const std::string& relativePath)
 {
-    // this archive is a ZIP file, so no physicality here
-    return false;
+	// this archive is a ZIP file, so no physicality here
+	return false;
 }
 
 std::string ZipArchive::getArchivePath(const std::string& relativePath)
 {
-    return _fullPath;
+	return _fullPath;
 }
 
 void ZipArchive::readZipRecord()

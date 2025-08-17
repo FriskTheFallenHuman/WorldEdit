@@ -11,7 +11,7 @@ class PatchDef2Parser :
 public:
 	const std::string& getKeyword() const;
 
-    scene::INodePtr parse(parser::DefTokeniser& tok) const;
+	scene::INodePtr parse(parser::DefTokeniser& tok) const;
 
 protected:
 	virtual void setShader(IPatch& patch, const std::string& shader) const;

@@ -16,7 +16,7 @@ public:
 	bool m_patchDef3;
 	std::size_t m_subdivisions_x;
 	std::size_t m_subdivisions_y;
-    std::string _materialName;
+	std::string _materialName;
 
 	// Constructor
 	SavedState(
@@ -26,7 +26,7 @@ public:
 		bool patchDef3,
 		std::size_t subdivisions_x,
 		std::size_t subdivisions_y,
-        const std::string& materialName
+		const std::string& materialName
 	) :
 		m_width(width),
 		m_height(height),
@@ -34,6 +34,6 @@ public:
 		m_patchDef3(patchDef3),
 		m_subdivisions_x(subdivisions_x),
 		m_subdivisions_y(subdivisions_y),
-        _materialName(materialName)
-    {}
+		_materialName(materialName)
+	{}
 };

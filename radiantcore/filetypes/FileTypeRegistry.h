@@ -29,7 +29,7 @@ public:
 
 	FileTypePatterns getPatternsForType(const std::string& fileType) override;
 
-    std::string getIconForExtension(const std::string& extension) override;
+	std::string getIconForExtension(const std::string& extension) override;
 	
 	// RegisterableModule implementation
 	const std::string& getName() const override;

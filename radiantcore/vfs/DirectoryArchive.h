@@ -28,8 +28,8 @@ public:
 	bool containsFile(const std::string& name) override;
 	void traverse(Visitor& visitor, const std::string& root) override;
 
-    std::size_t getFileSize(const std::string& relativePath) override;
-    bool getIsPhysical(const std::string& relativePath) override;
-    std::string getArchivePath(const std::string& relativePath) override;
+	std::size_t getFileSize(const std::string& relativePath) override;
+	bool getIsPhysical(const std::string& relativePath) override;
+	std::string getArchivePath(const std::string& relativePath) override;
 };
 typedef std::shared_ptr<DirectoryArchive> DirectoryArchivePtr;

@@ -431,11 +431,11 @@ static int _mdc_canload( PM_PARAMS_CANLOAD )
 	mdc	= (mdc_t*) buffer;
 
 	/* check mdc magic */
-    if (mdc->magic[0] != MDC_MAGIC[0] || mdc->magic[1] != MDC_MAGIC[1] ||
+	if (mdc->magic[0] != MDC_MAGIC[0] || mdc->magic[1] != MDC_MAGIC[1] ||
 		mdc->magic[2] != MDC_MAGIC[2] || mdc->magic[3] != MDC_MAGIC[3])
-    {
+	{
 		return PICO_PMV_ERROR_IDENT;
-    }
+	}
 
 	/* check mdc version */
 	if( _pico_little_long( mdc->version ) != MDC_VERSION )
@@ -486,7 +486,7 @@ static picoModel_t *_mdc_load( PM_PARAMS_LOAD )
 	mdc	= (mdc_t*) buffer;
 
 	/* check ident and version */
-    if (mdc->magic[0] != MDC_MAGIC[0] || mdc->magic[1] != MDC_MAGIC[1] ||
+	if (mdc->magic[0] != MDC_MAGIC[0] || mdc->magic[1] != MDC_MAGIC[1] ||
 		mdc->magic[2] != MDC_MAGIC[2] || mdc->magic[3] != MDC_MAGIC[3] || 
 		_pico_little_long( mdc->version ) != MDC_VERSION)
 	{
@@ -674,7 +674,7 @@ static picoModel_t *_mdc_load( PM_PARAMS_LOAD )
 
 		/* copy vertexes */
 		texCoord = (mdcTexCoord_t*) ((picoByte_t *) surface + surface->ofsSt);
-    mdcShort = (short *) ((picoByte_t *) surface + surface->ofsXyzNormals) + ((int)*((short *) ((picoByte_t *) surface + surface->ofsFrameBaseFrames) + frameNum) * surface->numVerts * 4);
+	mdcShort = (short *) ((picoByte_t *) surface + surface->ofsXyzNormals) + ((int)*((short *) ((picoByte_t *) surface + surface->ofsFrameBaseFrames) + frameNum) * surface->numVerts * 4);
 		if( surface->numCompFrames > 0 )
 		{
 			mdcCompVert = (short *) ((picoByte_t *) surface + surface->ofsFrameCompFrames) + frameNum;

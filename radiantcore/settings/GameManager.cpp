@@ -36,7 +36,7 @@ namespace
 {
 	const char* const GKEY_PREFAB_FOLDER = "/mapFormat/prefabFolder";
 	const char* const GKEY_MAPS_FOLDER = "/mapFormat/mapFolder";
-    const char* const PAK_ICON = "package.png";
+	const char* const PAK_ICON = "package.png";
 }
 
 Manager::Manager()
@@ -179,7 +179,7 @@ void Manager::initialiseGameType()
 
 	// The game type should be selected now
 	if (!_config.gameType.empty())
-    {
+	{
 		rMessage() << "GameManager: Selected game type: " << _config.gameType << std::endl;
 	}
 	else
@@ -193,28 +193,28 @@ std::string Manager::getUserEnginePath()
 {
 #if defined(POSIX)
 
-    // First check for a local copy of the game tree, e.g. ~/.doom3
-    std::string localGamePrefix = currentGame()->getKeyValue("prefix");
-    if (!localGamePrefix.empty())
-    {
-        std::string homeDir = getenv("HOME");
-        fs::path localPath = fs::path(homeDir) / localGamePrefix;
+	// First check for a local copy of the game tree, e.g. ~/.doom3
+	std::string localGamePrefix = currentGame()->getKeyValue("prefix");
+	if (!localGamePrefix.empty())
+	{
+		std::string homeDir = getenv("HOME");
+		fs::path localPath = fs::path(homeDir) / localGamePrefix;
 
-        if (fs::exists(localPath))
-        {
-            return os::standardPathWithSlash(localPath);
-        }
-    }
+		if (fs::exists(localPath))
+		{
+			return os::standardPathWithSlash(localPath);
+		}
+	}
 
 #endif
 
-    // Otherwise (Windows, or no local mod path found) return the regular engine path
-    return _config.enginePath;
+	// Otherwise (Windows, or no local mod path found) return the regular engine path
+	return _config.enginePath;
 }
 
 const GameConfiguration& Manager::getConfig() const
 {
-    return _config;
+	return _config;
 }
 
 void Manager::applyConfig(const GameConfiguration& config)
@@ -267,7 +267,7 @@ void Manager::setMapAndPrefabPaths(const std::string& baseGamePath)
    std::string mapFolder = currentGame()->getLocalXPath(GKEY_MAPS_FOLDER)[0].getAttributeValue("value");
    if (mapFolder.empty())
    {
-      mapFolder = "maps/";
+	  mapFolder = "maps/";
    }
 
    if (_config.modPath.empty() && _config.modBasePath.empty())
@@ -307,12 +307,12 @@ void Manager::initialiseVfs()
 	std::set<std::string> extensions;
 	string::split(extensions, currentGame()->getKeyValue("archivetypes"), " ");
 
-    for (const auto& extension : extensions)
-    {
-        auto extLower = string::to_lower_copy(extension);
-        GlobalFiletypes().registerPattern(filetype::TYPE_PAK,
-            FileTypePattern(fmt::format(_("{0} File"), string::to_upper_copy(extension)), extLower, "*." + extLower, PAK_ICON));
-    }
+	for (const auto& extension : extensions)
+	{
+		auto extLower = string::to_lower_copy(extension);
+		GlobalFiletypes().registerPattern(filetype::TYPE_PAK,
+			FileTypePattern(fmt::format(_("{0} File"), string::to_upper_copy(extension)), extLower, "*." + extLower, PAK_ICON));
+	}
 
 	if (!_config.modPath.empty())
 	{
@@ -389,8 +389,8 @@ void Manager::loadGameFiles(const std::string& appPath)
 	std::string gamePath = appPath + "games/";
 	rMessage() << "GameManager: Scanning for game description files: " << gamePath << std::endl;
 
-    try
-    {
+	try
+	{
 		// Invoke a functor on every file in the games/ dir,
 		// function gets called with the file (without path)
 		os::forEachItemInDirectory(gamePath, [&](const fs::path& file)
@@ -412,12 +412,12 @@ void Manager::loadGameFiles(const std::string& appPath)
 			}
 		});
 
-        rMessage() << "GameManager: Found game definitions: " << std::endl;
+		rMessage() << "GameManager: Found game definitions: " << std::endl;
 
-        for (GameMap::value_type& pair : _games)
-        {
-            rMessage() << "  " << pair.first << std::endl;
-        }
+		for (GameMap::value_type& pair : _games)
+		{
+			rMessage() << "  " << pair.first << std::endl;
+		}
 
 		// Populate the sorted games list
 		_sortedGames.clear();
@@ -436,12 +436,12 @@ void Manager::loadGameFiles(const std::string& appPath)
 			_sortedGames.push_back(pair.second);
 		}
 
-        rMessage() << std::endl;
-    }
-    catch (os::DirectoryNotFoundException&)
-    {
-        rError() << "Could not find directory with game files in " << gamePath << std::endl;
-    }
+		rMessage() << std::endl;
+	}
+	catch (os::DirectoryNotFoundException&)
+	{
+		rError() << "Could not find directory with game files in " << gamePath << std::endl;
+	}
 }
 
 // The static module definition (self-registers)

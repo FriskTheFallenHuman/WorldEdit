@@ -26,7 +26,7 @@ private:
 
 public:
 	BestSelector() :
-        _selectable(nullptr)
+		_selectable(nullptr)
 	{}
 
 	void pushSelectable(ISelectable& selectable) override
@@ -62,17 +62,17 @@ public:
 		return _bestSelectables;
 	}
 
-    bool empty() const override
-    {
-        return _bestSelectables.empty();
-    }
-
-    void foreachSelectable(const std::function<void(ISelectable*)>& functor) override
+	bool empty() const override
 	{
-	    for (auto selectable : _bestSelectables)
-	    {
-            functor(selectable);
-	    }
+		return _bestSelectables.empty();
+	}
+
+	void foreachSelectable(const std::function<void(ISelectable*)>& functor) override
+	{
+		for (auto selectable : _bestSelectables)
+		{
+			functor(selectable);
+		}
 	}
 };
 

@@ -12,7 +12,7 @@ class BrushDef3Parser :
 public:
 	const std::string& getKeyword() const;
 
-    virtual scene::INodePtr parse(parser::DefTokeniser& tok) const;
+	virtual scene::INodePtr parse(parser::DefTokeniser& tok) const;
 };
 typedef std::shared_ptr<BrushDef3Parser> BrushDef3ParserPtr;
 
@@ -21,7 +21,7 @@ class BrushDef3ParserQuake4 :
 	public BrushDef3Parser
 {
 public:
-    virtual scene::INodePtr parse(parser::DefTokeniser& tok) const;
+	virtual scene::INodePtr parse(parser::DefTokeniser& tok) const;
 };
 typedef std::shared_ptr<BrushDef3ParserQuake4> BrushDef3ParserQuake4Ptr;
 

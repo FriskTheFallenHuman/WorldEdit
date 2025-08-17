@@ -7,35 +7,35 @@ namespace map
 {
 
 class AasFileManager :
-    public IAasFileManager
+	public IAasFileManager
 {
 private:
-    // A mapping between extensions and format modules
+	// A mapping between extensions and format modules
 	// Multiple modules can register themselves for a single extension
 	typedef std::set<IAasFileLoaderPtr> Loaders;
 	Loaders _loaders;
 
-    AasTypeList _typeList;
-    bool _typesLoaded;
+	AasTypeList _typeList;
+	bool _typesLoaded;
 
 public:
-    AasFileManager();
+	AasFileManager();
 
-    // IAasFileManager implementation
-    void registerLoader(const IAasFileLoaderPtr& loader) override;
-    void unregisterLoader(const IAasFileLoaderPtr& loader) override;
-    IAasFileLoaderPtr getLoaderForStream(std::istream& stream) override;
-    AasTypeList getAasTypes() override;
-    AasType getAasTypeByName(const std::string& typeName) override;
-    std::list<AasFileInfo> getAasFilesForMap(const std::string& mapPath) override;
+	// IAasFileManager implementation
+	void registerLoader(const IAasFileLoaderPtr& loader) override;
+	void unregisterLoader(const IAasFileLoaderPtr& loader) override;
+	IAasFileLoaderPtr getLoaderForStream(std::istream& stream) override;
+	AasTypeList getAasTypes() override;
+	AasType getAasTypeByName(const std::string& typeName) override;
+	std::list<AasFileInfo> getAasFilesForMap(const std::string& mapPath) override;
 
-    // RegisterableModule implementation
+	// RegisterableModule implementation
 	const std::string& getName() const override;
 	const StringSet& getDependencies() const override;
 	void initialiseModule(const IApplicationContext& ctx) override;
 
 private:
-    void ensureAasTypesLoaded();
+	void ensureAasTypesLoaded();
 };
 
 } // namespace

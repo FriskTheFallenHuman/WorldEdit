@@ -11,7 +11,7 @@ LogWriter::LogWriter()
 {
 	for (auto level : AllLogLevels)
 	{
-        _streams.emplace(level, std::make_unique<LogStream>(level));
+		_streams.emplace(level, std::make_unique<LogStream>(level));
 	}
 }
 
@@ -22,7 +22,7 @@ void LogWriter::write(const char* p, std::size_t length, LogLevel level)
 
 	// Visit all the logfiles and write the string
 	for (auto device : _devices)
-    {
+	{
 		device->writeLog(output, level);
 	}
 }

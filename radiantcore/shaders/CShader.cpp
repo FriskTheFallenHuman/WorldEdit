@@ -24,96 +24,96 @@ namespace shaders
 /* Constructor. Sets the name and the ShaderTemplate to use.
  */
 CShader::CShader(const std::string& name, const ShaderTemplate::Ptr& declaration) :
-    CShader(name, declaration, false)
+	CShader(name, declaration, false)
 {}
 
 CShader::CShader(const std::string& name, const ShaderTemplate::Ptr& declaration, bool isInternal) :
-    _isInternal(isInternal),
-    _originalTemplate(declaration),
-    _template(declaration),
-    _name(name),
-    m_bInUse(false),
-    _visible(true)
+	_isInternal(isInternal),
+	_originalTemplate(declaration),
+	_template(declaration),
+	_name(name),
+	m_bInUse(false),
+	_visible(true)
 {
-    subscribeToTemplateChanges();
+	subscribeToTemplateChanges();
 
-    // Realise the shader
-    realise();
+	// Realise the shader
+	realise();
 }
 
 CShader::~CShader()
 {
-    _templateChanged.disconnect();
+	_templateChanged.disconnect();
 	unrealise();
 	GetTextureManager().checkBindings();
 }
 
 float CShader::getSortRequest() const
 {
-    return _template->getSortRequest();
+	return _template->getSortRequest();
 }
 
 void CShader::setSortRequest(float sortRequest)
 {
-    ensureTemplateCopy();
-    _template->setSortRequest(sortRequest);
+	ensureTemplateCopy();
+	_template->setSortRequest(sortRequest);
 }
 
 void CShader::resetSortRequest()
 {
-    ensureTemplateCopy();
-    _template->resetSortRequest();
+	ensureTemplateCopy();
+	_template->resetSortRequest();
 }
 
 float CShader::getPolygonOffset() const
 {
-    return _template->getPolygonOffset();
+	return _template->getPolygonOffset();
 }
 
 void CShader::setPolygonOffset(float offset)
 {
-    ensureTemplateCopy();
-    _template->setPolygonOffset(offset);
+	ensureTemplateCopy();
+	_template->setPolygonOffset(offset);
 }
 
 TexturePtr CShader::getEditorImage()
 {
-    if (!_editorTexture)
-    {
-        auto editorTex = _template->getEditorTexture();
+	if (!_editorTexture)
+	{
+		auto editorTex = _template->getEditorTexture();
 
-        if (!editorTex)
-        {
-            // If there is no editor expression defined, use the an image from a layer, but no Bump or speculars
-            for (const auto& layer : _template->getLayers())
-            {
-                if (layer->getType() != IShaderLayer::BUMP && layer->getType() != IShaderLayer::SPECULAR &&
-                    std::dynamic_pointer_cast<MapExpression>(layer->getMapExpression()))
-                {
-                    editorTex = std::static_pointer_cast<MapExpression>(layer->getMapExpression());
-                    break;
-                }
-            }
-        }
+		if (!editorTex)
+		{
+			// If there is no editor expression defined, use the an image from a layer, but no Bump or speculars
+			for (const auto& layer : _template->getLayers())
+			{
+				if (layer->getType() != IShaderLayer::BUMP && layer->getType() != IShaderLayer::SPECULAR &&
+					std::dynamic_pointer_cast<MapExpression>(layer->getMapExpression()))
+				{
+					editorTex = std::static_pointer_cast<MapExpression>(layer->getMapExpression());
+					break;
+				}
+			}
+		}
 
-        // Pass the call to the GLTextureManager to realise this image
-        _editorTexture = GetTextureManager().getBinding(editorTex);
-    }
+		// Pass the call to the GLTextureManager to realise this image
+		_editorTexture = GetTextureManager().getBinding(editorTex);
+	}
 
-    return _editorTexture;
+	return _editorTexture;
 }
 
 IMapExpression::Ptr CShader::getEditorImageExpression()
 {
-    return _template->getEditorTexture();
+	return _template->getEditorTexture();
 }
 
 void CShader::setEditorImageExpressionFromString(const std::string& editorImagePath)
 {
-    ensureTemplateCopy();
+	ensureTemplateCopy();
 
-    _editorTexture.reset();
-    _template->setEditorImageExpressionFromString(editorImagePath);
+	_editorTexture.reset();
+	_template->setEditorImageExpressionFromString(editorImagePath);
 }
 
 bool CShader::isEditorImageNoTex()
@@ -128,8 +128,8 @@ IMapExpression::Ptr CShader::getLightFalloffExpression()
 
 void CShader::setLightFalloffExpressionFromString(const std::string& expressionString)
 {
-    ensureTemplateCopy();
-    _template->setLightFalloffExpressionFromString(expressionString);
+	ensureTemplateCopy();
+	_template->setLightFalloffExpressionFromString(expressionString);
 }
 
 /*
@@ -176,8 +176,8 @@ std::string CShader::getDescription() const
 
 void CShader::setDescription(const std::string& description)
 {
-    ensureTemplateCopy();
-    _template->setDescription(description);
+	ensureTemplateCopy();
+	_template->setDescription(description);
 }
 
 bool CShader::IsInUse() const {
@@ -196,14 +196,14 @@ int CShader::getMaterialFlags() const
 
 void CShader::setMaterialFlag(Flags flag)
 {
-    ensureTemplateCopy();
-    _template->setMaterialFlag(flag);
+	ensureTemplateCopy();
+	_template->setMaterialFlag(flag);
 }
 
 void CShader::clearMaterialFlag(Flags flag)
 {
-    ensureTemplateCopy();
-    _template->clearMaterialFlag(flag);
+	ensureTemplateCopy();
+	_template->clearMaterialFlag(flag);
 }
 
 bool CShader::IsDefault() const
@@ -219,8 +219,8 @@ Material::CullType CShader::getCullType() const
 
 void CShader::setCullType(CullType type)
 {
-    ensureTemplateCopy();
-    _template->setCullType(type);
+	ensureTemplateCopy();
+	_template->setCullType(type);
 }
 
 ClampType CShader::getClampType() const
@@ -230,8 +230,8 @@ ClampType CShader::getClampType() const
 
 void CShader::setClampType(ClampType type)
 {
-    ensureTemplateCopy();
-    _template->setClampType(type);
+	ensureTemplateCopy();
+	_template->setClampType(type);
 }
 
 int CShader::getSurfaceFlags() const
@@ -241,14 +241,14 @@ int CShader::getSurfaceFlags() const
 
 void CShader::setSurfaceFlag(Material::SurfaceFlags flag)
 {
-    ensureTemplateCopy();
-    _template->setSurfaceFlag(flag);
+	ensureTemplateCopy();
+	_template->setSurfaceFlag(flag);
 }
 
 void CShader::clearSurfaceFlag(Material::SurfaceFlags flag)
 {
-    ensureTemplateCopy();
-    _template->clearSurfaceFlag(flag);
+	ensureTemplateCopy();
+	_template->clearSurfaceFlag(flag);
 }
 
 Material::SurfaceType CShader::getSurfaceType() const
@@ -258,8 +258,8 @@ Material::SurfaceType CShader::getSurfaceType() const
 
 void CShader::setSurfaceType(SurfaceType type)
 {
-    ensureTemplateCopy();
-    _template->setSurfaceType(type);
+	ensureTemplateCopy();
+	_template->setSurfaceType(type);
 }
 
 Material::DeformType CShader::getDeformType() const
@@ -269,12 +269,12 @@ Material::DeformType CShader::getDeformType() const
 
 IShaderExpression::Ptr CShader::getDeformExpression(std::size_t index)
 {
-    return _template->getDeformExpression(index);
+	return _template->getDeformExpression(index);
 }
 
 std::string CShader::getDeformDeclName()
 {
-    return _template->getDeformDeclName();
+	return _template->getDeformDeclName();
 }
 
 Material::DecalInfo CShader::getDecalInfo() const
@@ -284,8 +284,8 @@ Material::DecalInfo CShader::getDecalInfo() const
 
 void CShader::setDecalInfo(const DecalInfo& info)
 {
-    ensureTemplateCopy();
-    return _template->setDecalInfo(info);
+	ensureTemplateCopy();
+	return _template->setDecalInfo(info);
 }
 
 Material::Coverage CShader::getCoverage() const
@@ -301,15 +301,15 @@ const char* CShader::getShaderFileName() const
 
 void CShader::setShaderFileName(const std::string& fullPath)
 {
-    auto materialsFolder = getMaterialsFolderName();
-    auto pathRelativeToMaterialsFolder = decl::geRelativeDeclSavePath(fullPath, getMaterialsFolderName(), getMaterialFileExtension());
+	auto materialsFolder = getMaterialsFolderName();
+	auto pathRelativeToMaterialsFolder = decl::geRelativeDeclSavePath(fullPath, getMaterialsFolderName(), getMaterialFileExtension());
 
-    _template->setFileInfo(vfs::FileInfo(materialsFolder, pathRelativeToMaterialsFolder, vfs::Visibility::NORMAL));
+	_template->setFileInfo(vfs::FileInfo(materialsFolder, pathRelativeToMaterialsFolder, vfs::Visibility::NORMAL));
 }
 
 const vfs::FileInfo& CShader::getShaderFileInfo() const
 {
-    return _template->getBlockSyntax().fileInfo;
+	return _template->getBlockSyntax().fileInfo;
 }
 
 std::string CShader::getDefinition()
@@ -319,50 +319,50 @@ std::string CShader::getDefinition()
 
 int CShader::getParseFlags() const
 {
-    return _template->getParseFlags();
+	return _template->getParseFlags();
 }
 
 bool CShader::isModified()
 {
-    return _template != _originalTemplate;
+	return _template != _originalTemplate;
 }
 
 void CShader::setIsModified()
 {
-    ensureTemplateCopy();
+	ensureTemplateCopy();
 }
 
 void CShader::revertModifications()
 {
-    _template = _originalTemplate;
+	_template = _originalTemplate;
 
-    subscribeToTemplateChanges();
+	subscribeToTemplateChanges();
 
-    // We need to update that layer reference vector on change
-    unrealise();
-    realise();
+	// We need to update that layer reference vector on change
+	unrealise();
+	realise();
 
-    _sigMaterialModified.emit();
+	_sigMaterialModified.emit();
 }
 
 sigc::signal<void>& CShader::sig_materialChanged()
 {
-    return _sigMaterialModified;
+	return _sigMaterialModified;
 }
 
 std::string CShader::getRenderBumpArguments()
 {
-    return _template->getRenderBumpArguments();
+	return _template->getRenderBumpArguments();
 }
 
 std::string CShader::getRenderBumpFlatArguments()
 {
-    return _template->getRenderBumpFlatArguments();
+	return _template->getRenderBumpFlatArguments();
 }
 
 const std::string& CShader::getGuiSurfArgument()
 {
-    return _template->getGuiSurfArgument();
+	return _template->getGuiSurfArgument();
 }
 
 // -----------------------------------------
@@ -372,94 +372,94 @@ void CShader::realise() {
 
 void CShader::unrealise()
 {
-    _editorTexture.reset();
-    _texLightFalloff.reset();
+	_editorTexture.reset();
+	_texLightFalloff.reset();
 }
 
 void CShader::setName(const std::string& name)
 {
 	_name = name;
-    _sigMaterialModified.emit();
+	_sigMaterialModified.emit();
 }
 
 IShaderLayer* CShader::firstLayer()
 {
-    const auto& layers = _template->getLayers();
+	const auto& layers = _template->getLayers();
 
 	return layers.empty() ? nullptr : layers.front().get();
 }
 
 std::size_t CShader::getNumLayers()
 {
-    return _template->getLayers().size();
+	return _template->getLayers().size();
 }
 
 IShaderLayer::Ptr CShader::getLayer(std::size_t index)
 {
-    return _template->getLayers().at(index);
+	return _template->getLayers().at(index);
 }
 
 void CShader::foreachLayer(const std::function<bool(const IShaderLayer::Ptr&)>& functor)
 {
-    for (const auto& layer : _template->getLayers())
-    {
-        // Abort traversal when the functor returns false
-        if (!functor(layer)) break;
-    }
+	for (const auto& layer : _template->getLayers())
+	{
+		// Abort traversal when the functor returns false
+		if (!functor(layer)) break;
+	}
 }
 
 std::size_t CShader::addLayer(IShaderLayer::Type type)
 {
-    ensureTemplateCopy();
+	ensureTemplateCopy();
 
-    auto newIndex = _template->addLayer(type);
+	auto newIndex = _template->addLayer(type);
 
-    // We need another signal after the realiseLighting call
-    _sigMaterialModified.emit();
+	// We need another signal after the realiseLighting call
+	_sigMaterialModified.emit();
 
-    return newIndex;
+	return newIndex;
 }
 
 void CShader::removeLayer(std::size_t index)
 {
-    ensureTemplateCopy();
+	ensureTemplateCopy();
 
-    _template->removeLayer(index);
+	_template->removeLayer(index);
 
-    // We need another signal after the realiseLighting call
-    _sigMaterialModified.emit();
+	// We need another signal after the realiseLighting call
+	_sigMaterialModified.emit();
 }
 
 void CShader::swapLayerPosition(std::size_t first, std::size_t second)
 {
-    ensureTemplateCopy();
+	ensureTemplateCopy();
 
-    _template->swapLayerPosition(first, second);
+	_template->swapLayerPosition(first, second);
 
-    // We need another signal after the realiseLighting call
-    _sigMaterialModified.emit();
+	// We need another signal after the realiseLighting call
+	_sigMaterialModified.emit();
 }
 
 std::size_t CShader::duplicateLayer(std::size_t index)
 {
-    ensureTemplateCopy();
+	ensureTemplateCopy();
 
-    auto newIndex = _template->duplicateLayer(index);
+	auto newIndex = _template->duplicateLayer(index);
 
-    // We need another signal after the realiseLighting call
-    _sigMaterialModified.emit();
+	// We need another signal after the realiseLighting call
+	_sigMaterialModified.emit();
 
-    return newIndex;
+	return newIndex;
 }
 
 IEditableShaderLayer::Ptr CShader::getEditableLayer(std::size_t index)
 {
-    ensureTemplateCopy();
+	ensureTemplateCopy();
 
-    const auto& layers = _template->getLayers();
-    assert(index >= 0 && index < layers.size());
+	const auto& layers = _template->getLayers();
+	assert(index >= 0 && index < layers.size());
 
-    return layers[index];
+	return layers[index];
 }
 
 /* Required Material light type predicates */
@@ -478,20 +478,20 @@ bool CShader::isFogLight() const {
 
 void CShader::setIsAmbientLight(bool newValue)
 {
-    ensureTemplateCopy();
-    _template->setIsAmbientLight(newValue);
+	ensureTemplateCopy();
+	_template->setIsAmbientLight(newValue);
 }
 
 void CShader::setIsBlendLight(bool newValue)
 {
-    ensureTemplateCopy();
-    _template->setIsBlendLight(newValue);
+	ensureTemplateCopy();
+	_template->setIsBlendLight(newValue);
 }
 
 void CShader::setIsFogLight(bool newValue)
 {
-    ensureTemplateCopy();
-    _template->setIsFogLight(newValue);
+	ensureTemplateCopy();
+	_template->setIsFogLight(newValue);
 }
 
 bool CShader::lightCastsShadows() const
@@ -530,111 +530,111 @@ void CShader::setVisible(bool visible)
 
 void CShader::ensureTemplateCopy()
 {
-    if (_template != _originalTemplate)
-    {
-        return; // copy is already in place
-    }
+	if (_template != _originalTemplate)
+	{
+		return; // copy is already in place
+	}
 
-    // Create a clone of the original template
-    _template = _originalTemplate->clone();
+	// Create a clone of the original template
+	_template = _originalTemplate->clone();
 
-    subscribeToTemplateChanges();
+	subscribeToTemplateChanges();
 
-    // We need to update that layer reference vector
-    // as long as it's there
-    unrealise();
-    realise();
+	// We need to update that layer reference vector
+	// as long as it's there
+	unrealise();
+	realise();
 }
 
 void CShader::commitModifications()
 {
-    if (_template == _originalTemplate) return;
+	if (_template == _originalTemplate) return;
 
-    // Replace the contents with our working copy
-    _originalTemplate->setBlockSyntax(_template->getBlockSyntax());
+	// Replace the contents with our working copy
+	_originalTemplate->setBlockSyntax(_template->getBlockSyntax());
 
-    // Overwrite the working template reference, the material is now unmodified again
-    _template = _originalTemplate;
+	// Overwrite the working template reference, the material is now unmodified again
+	_template = _originalTemplate;
 }
 
 const ShaderTemplate::Ptr& CShader::getTemplate()
 {
-    return _template;
+	return _template;
 }
 
 void CShader::subscribeToTemplateChanges()
 {
-    // Disconnect from any signal first
-    _templateChanged.disconnect();
+	// Disconnect from any signal first
+	_templateChanged.disconnect();
 
-    _templateChanged = _template->sig_TemplateChanged().connect([this]
-    {
-        // Check if the editor image needs an update, do this before firing the handler
-        updateEditorImage();
+	_templateChanged = _template->sig_TemplateChanged().connect([this]
+	{
+		// Check if the editor image needs an update, do this before firing the handler
+		updateEditorImage();
 
-        _sigMaterialModified.emit();
-    });
+		_sigMaterialModified.emit();
+	});
 }
 
 void CShader::updateEditorImage()
 {
-    // In case the editor tex is pointing to the fallback "shader not found"
-    // check if we have some possible replacements
-    if (!_editorTexture) return;
+	// In case the editor tex is pointing to the fallback "shader not found"
+	// check if we have some possible replacements
+	if (!_editorTexture) return;
 
-    if (isEditorImageNoTex() || !_template->getEditorTexture())
-    {
-        // The editor image is "shader not found", but we might have layers and/or an qer_editorImage defined
-        // In case we don't have an editor texture expression, remove it from the slot
-        // we will update it again as soon as it will be requested
-        _editorTexture.reset();
-    }
+	if (isEditorImageNoTex() || !_template->getEditorTexture())
+	{
+		// The editor image is "shader not found", but we might have layers and/or an qer_editorImage defined
+		// In case we don't have an editor texture expression, remove it from the slot
+		// we will update it again as soon as it will be requested
+		_editorTexture.reset();
+	}
 }
 
 void CShader::refreshImageMaps()
 {
-    if (_template->getEditorTexture())
-    {
-        GetTextureManager().clearCacheForBindable(_template->getEditorTexture());
-    }
+	if (_template->getEditorTexture())
+	{
+		GetTextureManager().clearCacheForBindable(_template->getEditorTexture());
+	}
 
-    if (_template->getLightFalloff())
-    {
-        GetTextureManager().clearCacheForBindable(_template->getLightFalloff());
-    }
+	if (_template->getLightFalloff())
+	{
+		GetTextureManager().clearCacheForBindable(_template->getLightFalloff());
+	}
 
-    for (const auto& layer : _template->getLayers())
-    {
-        layer->refreshImageMaps();
-    }
+	for (const auto& layer : _template->getLayers())
+	{
+		layer->refreshImageMaps();
+	}
 
-    _editorTexture.reset();
-    _texLightFalloff.reset();
+	_editorTexture.reset();
+	_texLightFalloff.reset();
 
-    _sigMaterialModified.emit();
+	_sigMaterialModified.emit();
 }
 
 Material::ParseResult CShader::updateFromSourceText(const std::string& sourceText)
 {
-    ensureTemplateCopy();
+	ensureTemplateCopy();
 
-    // Attempt to parse the template (separately from the active one)
-    auto newTemplate= std::make_shared<ShaderTemplate>(getName());
+	// Attempt to parse the template (separately from the active one)
+	auto newTemplate= std::make_shared<ShaderTemplate>(getName());
 
-    // Only replace the contents of the block syntax, leave the rest unchanged
-    auto syntax = _template->getBlockSyntax();
-    syntax.contents = sourceText;
-    newTemplate->setBlockSyntax(syntax);
+	// Only replace the contents of the block syntax, leave the rest unchanged
+	auto syntax = _template->getBlockSyntax();
+	syntax.contents = sourceText;
+	newTemplate->setBlockSyntax(syntax);
 
-    const auto& error = newTemplate->getParseErrors();
+	const auto& error = newTemplate->getParseErrors();
 
-    if (error.empty())
-    {
-        // Parse seems to be successful, assign the text to the actual template
-        _template->setBlockSyntax(syntax);
-    }
+	if (error.empty())
+	{
+		// Parse seems to be successful, assign the text to the actual template
+		_template->setBlockSyntax(syntax);
+	}
 
-    return ParseResult{ error.empty(), error };
+	return ParseResult{ error.empty(), error };
 }
 
 } // namespace shaders

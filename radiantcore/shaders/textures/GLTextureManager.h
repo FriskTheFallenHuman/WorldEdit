@@ -25,26 +25,26 @@ private:
 
 public:
 
-    /// Construct a bound texture from a generic named bindable.
-    TexturePtr getBinding(const NamedBindablePtr& bindable,
-                          BindableTexture::Role role = BindableTexture::Role::COLOUR);
+	/// Construct a bound texture from a generic named bindable.
+	TexturePtr getBinding(const NamedBindablePtr& bindable,
+						  BindableTexture::Role role = BindableTexture::Role::COLOUR);
 
 	/** greebo: This loads a texture directly from the disk using the
 	 * 			specified <fullPath>.
 	 *
 	 * \param fullPath
-     * The path to the file (no VFS paths).
+	 * The path to the file (no VFS paths).
 	 */
 	TexturePtr getBinding(const std::string& fullPath);
 
-    // Removes any Texture references held in the cache referring to this bindable's ID.
-    // The next call to getBinding() will produce a new TexturePtr object.
-    void clearCacheForBindable(const NamedBindablePtr& bindable);
+	// Removes any Texture references held in the cache referring to this bindable's ID.
+	// The next call to getBinding() will produce a new TexturePtr object.
+	void clearCacheForBindable(const NamedBindablePtr& bindable);
 
 	/**
-     * \brief
-     * Get the "shader not found" texture.
-     */
+	 * \brief
+	 * Get the "shader not found" texture.
+	 */
 	TexturePtr getShaderNotFound();
 
 	/* greebo: This is some sort of "cleanup" call, which causes

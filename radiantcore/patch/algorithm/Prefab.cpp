@@ -248,84 +248,84 @@ void createSimplePatch(const cmd::ArgumentList& args)
 
 scene::INodePtr constructCap(const IPatch& sourcePatch, CapType capType, bool front, const std::string& material)
 {
-    auto cap = GlobalPatchModule().createPatch(PatchDefType::Def2);
+	auto cap = GlobalPatchModule().createPatch(PatchDefType::Def2);
 
-    auto& capPatch = *Node_getPatch(cap);
+	auto& capPatch = *Node_getPatch(cap);
 
-    auto width = sourcePatch.getWidth();
-    auto height = sourcePatch.getHeight();
+	auto width = sourcePatch.getWidth();
+	auto height = sourcePatch.getHeight();
 
-    std::vector<Vector3> points(sourcePatch.getWidth());
+	std::vector<Vector3> points(sourcePatch.getWidth());
 
-    auto row = front ? 0 : height - 1;
+	auto row = front ? 0 : height - 1;
 
-    for (auto i = 0; i < width; i++)
-    {
-        const auto& ctrl = sourcePatch.ctrlAt(row, i);
-        points[front ? i : width - 1 - i] = ctrl.vertex;
-    }
+	for (auto i = 0; i < width; i++)
+	{
+		const auto& ctrl = sourcePatch.ctrlAt(row, i);
+		points[front ? i : width - 1 - i] = ctrl.vertex;
+	}
 
-    // Inherit the same fixed tesselation as the source patch
-    if (sourcePatch.subdivisionsFixed())
-    {
-        const auto& subdivisions = sourcePatch.getSubdivisions();
+	// Inherit the same fixed tesselation as the source patch
+	if (sourcePatch.subdivisionsFixed())
+	{
+		const auto& subdivisions = sourcePatch.getSubdivisions();
 
-        if (capType == CapType::InvertedEndCap)
-        {
-            capPatch.setFixedSubdivisions(true, subdivisions);
-        }
-        else
-        {
-            // Flip the subdivision X/Y values for all other cap types
-            capPatch.setFixedSubdivisions(true, { subdivisions.y(), subdivisions.x() });
-        }
-    }
+		if (capType == CapType::InvertedEndCap)
+		{
+			capPatch.setFixedSubdivisions(true, subdivisions);
+		}
+		else
+		{
+			// Flip the subdivision X/Y values for all other cap types
+			capPatch.setFixedSubdivisions(true, { subdivisions.y(), subdivisions.x() });
+		}
+	}
 
-    capPatch.constructSeam(capType, points, width);
+	capPatch.constructSeam(capType, points, width);
 
-    // greebo: Avoid creating "degenerate" patches (all vertices merged in one 3D point)
-    if (capPatch.isDegenerate())
-    {
-        return {};
-    }
+	// greebo: Avoid creating "degenerate" patches (all vertices merged in one 3D point)
+	if (capPatch.isDegenerate())
+	{
+		return {};
+	}
 
-    // greebo: Apply natural texture to that patch, to fix the texcoord==1.#INF bug.
-    capPatch.setShader(material);
-    capPatch.scaleTextureNaturally();
+	// greebo: Apply natural texture to that patch, to fix the texcoord==1.#INF bug.
+	capPatch.setShader(material);
+	capPatch.scaleTextureNaturally();
 
-    return cap;
+	return cap;
 }
 
 void createCaps(const IPatch& patch, const scene::INodePtr& parent, CapType type, const std::string& shader)
 {
-    if ((type == CapType::EndCap || type == CapType::InvertedEndCap) && patch.getWidth() != 5)
-    {
-        throw cmd::ExecutionFailure(_("Cannot create end-cap, patch must have a width of 5."));
-    }
+	if ((type == CapType::EndCap || type == CapType::InvertedEndCap) && patch.getWidth() != 5)
+	{
+		throw cmd::ExecutionFailure(_("Cannot create end-cap, patch must have a width of 5."));
+	}
 
-    if ((type == CapType::Bevel || type == CapType::InvertedBevel) && patch.getWidth() != 3)
-    {
-        throw cmd::ExecutionFailure(_("Cannot create bevel-cap, patch must have a width of 3."));
-    }
+	if ((type == CapType::Bevel || type == CapType::InvertedBevel) && patch.getWidth() != 3)
+	{
+		throw cmd::ExecutionFailure(_("Cannot create bevel-cap, patch must have a width of 3."));
+	}
 
-    if (type == CapType::Cylinder && patch.getWidth() != 9)
-    {
-        throw cmd::ExecutionFailure(_("Cannot create cylinder-cap, patch must have a width of 9."));
-    }
+	if (type == CapType::Cylinder && patch.getWidth() != 9)
+	{
+		throw cmd::ExecutionFailure(_("Cannot create cylinder-cap, patch must have a width of 9."));
+	}
 
-    assert(parent);
+	assert(parent);
 
-    // We do this once for the front and once for the back patch
-    for (auto front : { true, false })
-    {
-        auto cap = constructCap(patch, type, front, shader);
+	// We do this once for the front and once for the back patch
+	for (auto front : { true, false })
+	{
+		auto cap = constructCap(patch, type, front, shader);
 
-        if (cap)
-        {
-            parent->addChildNode(cap);
-            Node_setSelected(cap, true);
-        }
-    }
+		if (cap)
+		{
+			parent->addChildNode(cap);
+			Node_setSelected(cap, true);
+		}
+	}
 }
 
 }

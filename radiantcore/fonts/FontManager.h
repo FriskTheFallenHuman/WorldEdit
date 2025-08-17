@@ -21,16 +21,16 @@ private:
 	typedef std::map<std::string, FontInfoPtr> FontMap;
 	FontMap _fonts;
 
-    std::unique_ptr<FontLoader> _loader;
+	std::unique_ptr<FontLoader> _loader;
 
 public:
 	FontManager();
 
 	// RegisterableModule implementation
-    const std::string& getName() const override;
-    const StringSet& getDependencies() const override;
-    void initialiseModule(const IApplicationContext& ctx) override;
-    void shutdownModule() override;
+	const std::string& getName() const override;
+	const StringSet& getDependencies() const override;
+	void initialiseModule(const IApplicationContext& ctx) override;
+	void shutdownModule() override;
 
 	// Returns the info structure of a specific font (current language),
 	// returns NULL if no font info is available yet
@@ -43,15 +43,15 @@ public:
 	// Returns the current language (e.g. "english")
 	const std::string& getCurLanguage();
 
-    std::size_t getNumFonts();
+	std::size_t getNumFonts();
 
 private:
-    void ensureFontsLoaded();
+	void ensureFontsLoaded();
 
 	void reloadFonts();
 
-    std::string getFontPath();
-    std::string getFontExtension();
+	std::string getFontPath();
+	std::string getFontExtension();
 };
 typedef std::shared_ptr<FontManager> FontManagerPtr;
 

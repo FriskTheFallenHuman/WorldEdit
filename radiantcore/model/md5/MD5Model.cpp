@@ -41,10 +41,10 @@ MD5Model::MD5Model(const MD5Model& other) :
 
 void MD5Model::foreachSurface(const std::function<void(const MD5Surface&)>& functor) const
 {
-    for (const auto& surface : _surfaces)
-    {
-        functor(*surface);
-    }
+	for (const auto& surface : _surfaces)
+	{
+		functor(*surface);
+	}
 }
 
 MD5Surface& MD5Model::createNewSurface()
@@ -70,7 +70,7 @@ const AABB& MD5Model::localAABB() const
 
 void MD5Model::testSelect(Selector& selector, SelectionTest& test, const Matrix4& localToWorld)
 {
-    for (const auto& surface : _surfaces)
+	for (const auto& surface : _surfaces)
 	{
 		if (test.getVolume().TestAABB(surface->localAABB(), localToWorld) != VOLUME_OUTSIDE)
 		{
@@ -84,7 +84,7 @@ bool MD5Model::getIntersection(const Ray& ray, Vector3& intersection, const Matr
 	Vector3 bestIntersection = ray.origin;
 
 	// Test each surface and take the nearest point to the ray origin
-    for (const auto& surface : _surfaces)
+	for (const auto& surface : _surfaces)
 	{
 		Vector3 surfaceIntersection;
 
@@ -131,7 +131,7 @@ void MD5Model::setModelPath(const std::string& modelPath) {
 void MD5Model::applySkin(const decl::ISkin::Ptr& skin)
 {
 	// Apply the skin to each surface, then try to capture shaders
-    for (const auto& surface : _surfaces)
+	for (const auto& surface : _surfaces)
 	{
 		const std::string& defaultMaterial = surface->getDefaultMaterial();
 		const std::string& activeMaterial = surface->getActiveMaterial();
@@ -154,12 +154,12 @@ void MD5Model::applySkin(const decl::ISkin::Ptr& skin)
 
 	updateMaterialList();
 
-    _sigShadersUpdated.emit();
+	_sigShadersUpdated.emit();
 }
 
 sigc::signal<void>& MD5Model::signal_ShadersChanged()
 {
-    return _sigShadersUpdated;
+	return _sigShadersUpdated;
 }
 
 int MD5Model::getSurfaceCount() const
@@ -181,7 +181,7 @@ void MD5Model::updateMaterialList()
 {
 	_surfaceNames.clear();
 
-    for (const auto& surface : _surfaces)
+	for (const auto& surface : _surfaces)
 	{
 		_surfaceNames.push_back(surface->getActiveMaterial());
 	}
@@ -241,20 +241,20 @@ void MD5Model::parseFromTokens(parser::DefTokeniser& tok)
 		// Joint's position vector
 		i->position = parseVector3(tok);
 
-	    // Parse joint's rotation
+		// Parse joint's rotation
 		Vector3 rawRotation = parseVector3(tok);
 
-	    // Calculate the W value. If it is NaN (due to underflow in the sqrt),
-	    // set it to 0.
-	    auto lSq = rawRotation.getLengthSquared();
+		// Calculate the W value. If it is NaN (due to underflow in the sqrt),
+		// set it to 0.
+		auto lSq = rawRotation.getLengthSquared();
 
-	    auto w = -sqrt(1.0 - lSq);
-	    if (isNaN(w)) {
-	    	w = 0;
-	    }
+		auto w = -sqrt(1.0 - lSq);
+		if (isNaN(w)) {
+			w = 0;
+		}
 
 		// Set the Vector4 rotation on the joint
-	    i->rotation = Quaternion(rawRotation, w);
+		i->rotation = Quaternion(rawRotation, w);
 	}
 
 	// End of joints datablock
@@ -305,7 +305,7 @@ void MD5Model::setAnim(const IMD5AnimPtr& anim)
 
 	if (!_anim)
 	{
-        for (const auto& surface : _surfaces)
+		for (const auto& surface : _surfaces)
 		{
 			surface->updateToDefaultPose(_joints);
 		}
@@ -324,19 +324,19 @@ void MD5Model::updateAnim(std::size_t time)
 	// Update our joint hierarchy first
 	_skeleton.update(_anim, time);
 
-    for (const auto& surface : _surfaces)
+	for (const auto& surface : _surfaces)
 	{
 		surface->updateToSkeleton(_skeleton);
 	}
 
-    updateAABB();
+	updateAABB();
 
-    signal_ModelAnimationUpdated().emit();
+	signal_ModelAnimationUpdated().emit();
 }
 
 sigc::signal<void>& MD5Model::signal_ModelAnimationUpdated()
 {
-    return _sigModelAnimationUpdated;
+	return _sigModelAnimationUpdated;
 }
 
 } // namespace

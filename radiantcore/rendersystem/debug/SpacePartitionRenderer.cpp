@@ -14,7 +14,7 @@ namespace
 
 void SpacePartitionRenderer::toggle(const cmd::ArgumentList& args)
 {
-    registry::setValue(
+	registry::setValue(
 		RKEY_RENDER_SPACE_PARTITION,
 		!registry::getValue<bool>(RKEY_RENDER_SPACE_PARTITION)
 	);
@@ -43,11 +43,11 @@ const StringSet& SpacePartitionRenderer::getDependencies() const
 
 void SpacePartitionRenderer::initialiseModule(const IApplicationContext& ctx)
 {
-    registry::observeBooleanKey(
-        RKEY_RENDER_SPACE_PARTITION,
-        sigc::mem_fun(this, &SpacePartitionRenderer::installRenderer),
-        sigc::mem_fun(this, &SpacePartitionRenderer::uninstallRenderer)
-    );
+	registry::observeBooleanKey(
+		RKEY_RENDER_SPACE_PARTITION,
+		sigc::mem_fun(this, &SpacePartitionRenderer::installRenderer),
+		sigc::mem_fun(this, &SpacePartitionRenderer::uninstallRenderer)
+	);
 
 	if (registry::getValue<bool>(RKEY_RENDER_SPACE_PARTITION))
 	{

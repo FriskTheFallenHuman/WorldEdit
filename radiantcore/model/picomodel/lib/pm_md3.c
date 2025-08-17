@@ -159,11 +159,11 @@ static int _md3_canload( PM_PARAMS_CANLOAD )
 	md3	= (md3_t*) buffer;
 
 	/* check md3 magic */
-    if (md3->magic[0] != MD3_MAGIC[0] || md3->magic[1] != MD3_MAGIC[1] ||
+	if (md3->magic[0] != MD3_MAGIC[0] || md3->magic[1] != MD3_MAGIC[1] ||
 		md3->magic[2] != MD3_MAGIC[2] || md3->magic[3] != MD3_MAGIC[3])
-    {
+	{
 		return PICO_PMV_ERROR_IDENT;
-    }
+	}
 
 	/* check md3 version */
 	if( _pico_little_long( md3->version ) != MD3_VERSION )
@@ -211,7 +211,7 @@ static picoModel_t *_md3_load( PM_PARAMS_LOAD )
 	md3	= (md3_t*) buffer;
 
 	/* check ident and version */
-    if (md3->magic[0] != MD3_MAGIC[0] || md3->magic[1] != MD3_MAGIC[1] ||
+	if (md3->magic[0] != MD3_MAGIC[0] || md3->magic[1] != MD3_MAGIC[1] ||
 		md3->magic[2] != MD3_MAGIC[2] || md3->magic[3] != MD3_MAGIC[3] || 
 		_pico_little_long( md3->version ) != MD3_VERSION)
 	{

@@ -27,7 +27,7 @@ class StaticModelNode final :
 	public SelectionTestable,
 	public SkinnedModel,
 	public ITraceable,
-    public Transformable
+	public Transformable
 {
 private:
 	// The actual model
@@ -38,11 +38,11 @@ private:
 	// The name of this model's skin
 	std::string _skin;
 
-    // The default skin used when no skin has otherwise been set from the outside
+	// The default skin used when no skin has otherwise been set from the outside
 	std::string _defaultSkin;
 
 public:
-    typedef std::shared_ptr<StaticModelNode> Ptr;
+	typedef std::shared_ptr<StaticModelNode> Ptr;
 
 	// Construct a StaticModelNode with a reference to the loaded StaticModel.
 	StaticModelNode(const StaticModelPtr& picoModel);
@@ -61,7 +61,7 @@ public:
 	void skinChanged(const std::string& newSkinName) override;
 	// Returns the name of the currently active skin
 	std::string getSkin() const override;
-    void setDefaultSkin(const std::string& defaultSkin) override;
+	void setDefaultSkin(const std::string& defaultSkin) override;
 
 	// Bounded implementation
 	const AABB& localAABB() const override;
@@ -80,18 +80,18 @@ public:
 	// Traceable implementation
 	bool getIntersection(const Ray& ray, Vector3& intersection) override;
 
-    // Called when the contained model has applied the scale to its surfaces
-    // The Node listens to this and queues a renderable update
-    void onModelScaleApplied();
+	// Called when the contained model has applied the scale to its surfaces
+	// The Node listens to this and queues a renderable update
+	void onModelScaleApplied();
 
 protected:
-    void createRenderableSurfaces() override;
+	void createRenderableSurfaces() override;
 
 	void _onTransformationChanged() override;
 	void _applyTransformation() override;
 
 private:
-    void onModelShadersChanged();
+	void onModelShadersChanged();
 };
 
 } // namespace model

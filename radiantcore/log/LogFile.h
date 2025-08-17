@@ -12,8 +12,8 @@ class LogFile :
 	// The log file name including path
 	std::string _logFilePath;
 
-    // We write line by line
-    std::string _buffer;
+	// We write line by line
+	std::string _buffer;
 
 	// The file stream which will be filled with bytes
 	std::ofstream _logStream;

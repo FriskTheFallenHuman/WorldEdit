@@ -601,7 +601,7 @@ void PicoFreeSurface( picoSurface_t *surface )
 	_pico_free( surface->faceNormal );
 
   if( surface->name )
-    _pico_free( surface->name );
+	_pico_free( surface->name );
 
 	/* free arrays */
 	for( i = 0; i < surface->numSTArrays; i++ )
@@ -1411,11 +1411,11 @@ unsigned int calculateHash(unsigned char* str, size_t len)
 	int c;
 	size_t i;
 
-    for (i = 0; i < len; ++i)
-    {
-        c = str[i];
-        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
-    }
+	for (i = 0; i < len; ++i)
+	{
+		c = str[i];
+		hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+	}
 
 	return hash;
 }
@@ -1548,15 +1548,15 @@ picoVertexCombinationHash_t *PicoFindVertexCombinationInHashTable( picoVertexCom
 #endif
 
 		/* check color */
-        if (vertexCombinationHash->vcd.color[0] != color[0] ||
-            vertexCombinationHash->vcd.color[1] != color[1] ||
-            vertexCombinationHash->vcd.color[2] != color[2] ||
-            vertexCombinationHash->vcd.color[3] != color[3])
+		if (vertexCombinationHash->vcd.color[0] != color[0] ||
+			vertexCombinationHash->vcd.color[1] != color[1] ||
+			vertexCombinationHash->vcd.color[2] != color[2] ||
+			vertexCombinationHash->vcd.color[3] != color[3])
 		/* greebo: Old code:
-           if( *((int*) vertexCombinationHash->vcd.color) != *((int*) color) )*/
-        {
+		   if( *((int*) vertexCombinationHash->vcd.color) != *((int*) color) )*/
+		{
 			continue;
-        }
+		}
 
 		/* gotcha */
 		return vertexCombinationHash;
@@ -1627,7 +1627,7 @@ int PicoFindSurfaceVertexNum( picoSurface_t *surface, picoVec3_t xyz, picoVec3_t
 		if( surface->smoothingGroup[ i ] != smoothingGroup )
 			continue;
 
-    /* check st */
+	/* check st */
 		if( numSTs > 0 && st != NULL )
 		{
 			for( j = 0; j < numSTs; j++ )
@@ -1810,7 +1810,7 @@ picoIndex_t UniqueIndices_insert(UniqueIndices* self, picoIndex_t value)
 		binarytree_extend(&self->tree);
 		indexarray_push_back(&self->indices, value);
 		return 0;
-    }
+	}
 	else
 	{
 		return UniqueIndices_find_or_insert(self, value);

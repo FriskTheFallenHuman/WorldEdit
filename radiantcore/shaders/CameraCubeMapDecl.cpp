@@ -15,94 +15,94 @@ CameraCubeMapDecl::CameraCubeMapDecl(const std::string& prefix)
 // Public construction method
 NamedBindablePtr CameraCubeMapDecl::createForPrefix(const std::string& prefix)
 {
-    return NamedBindablePtr(new CameraCubeMapDecl(prefix));
+	return NamedBindablePtr(new CameraCubeMapDecl(prefix));
 }
 
 // Bind directional image
 void CameraCubeMapDecl::bindDirection(const std::string& dir,
-                                      GLuint glDir) const
+									  GLuint glDir) const
 {
-    // Load the image
-    ImagePtr img = GlobalImageLoader().imageFromVFS(_prefix + dir);
-    if (!img)
-    {
-        throw std::runtime_error(
-            "Camera cube map directional image not found: "
-            + _prefix + dir
-        );
-    }
+	// Load the image
+	ImagePtr img = GlobalImageLoader().imageFromVFS(_prefix + dir);
+	if (!img)
+	{
+		throw std::runtime_error(
+			"Camera cube map directional image not found: "
+			+ _prefix + dir
+		);
+	}
 
-    // Bind the image to OpenGL
-    glTexImage2D(
-        glDir,
-        0,                    //level
-        GL_RGBA,              //internal format
-        static_cast<GLsizei>(img->getWidth()),   //width
-        static_cast<GLsizei>(img->getHeight()),  //height
-        0,                    //border
-        GL_RGBA,               //format
-        GL_UNSIGNED_BYTE,     //type
-        img->getPixels()
-    );
-    debug::assertNoGlErrors();
+	// Bind the image to OpenGL
+	glTexImage2D(
+		glDir,
+		0,                    //level
+		GL_RGBA,              //internal format
+		static_cast<GLsizei>(img->getWidth()),   //width
+		static_cast<GLsizei>(img->getHeight()),  //height
+		0,                    //border
+		GL_RGBA,               //format
+		GL_UNSIGNED_BYTE,     //type
+		img->getPixels()
+	);
+	debug::assertNoGlErrors();
 }
 
 /* NamedBindable implementation */
 
 std::string CameraCubeMapDecl::getIdentifier() const
 {
-    return "_cameraCubeMap_" + _prefix;
+	return "_cameraCubeMap_" + _prefix;
 }
 
 std::string CameraCubeMapDecl::getExpressionString()
 {
-    return _prefix;
+	return _prefix;
 }
 
 TexturePtr CameraCubeMapDecl::bindTexture(const std::string& name,
-                                          Role /* role */) const
+										  Role /* role */) const
 {
-    // Load the six images from the prefix
-    try
-    {
-        // Allocate the GL texture
-        GLuint texnum;
-        glGenTextures(1, &texnum);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, texnum);
+	// Load the six images from the prefix
+	try
+	{
+		// Allocate the GL texture
+		GLuint texnum;
+		glGenTextures(1, &texnum);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, texnum);
 
-        // Set filtering and mipmapping
+		// Set filtering and mipmapping
 		glTexParameteri(
-            GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR
-        );
+			GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR
+		);
 		glTexParameteri(
-            GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR
-        );
+			GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR
+		);
 		glTexParameteri(
-            GL_TEXTURE_CUBE_MAP, GL_GENERATE_MIPMAP, GL_TRUE
-        );
+			GL_TEXTURE_CUBE_MAP, GL_GENERATE_MIPMAP, GL_TRUE
+		);
 
-        // Bind the images
-        bindDirection("_right", GL_TEXTURE_CUBE_MAP_POSITIVE_X);
-        bindDirection("_left", GL_TEXTURE_CUBE_MAP_NEGATIVE_X);
-        bindDirection("_up", GL_TEXTURE_CUBE_MAP_POSITIVE_Y);
-        bindDirection("_down", GL_TEXTURE_CUBE_MAP_NEGATIVE_Y);
-        bindDirection("_forward", GL_TEXTURE_CUBE_MAP_POSITIVE_Z);
-        bindDirection("_back", GL_TEXTURE_CUBE_MAP_NEGATIVE_Z);
+		// Bind the images
+		bindDirection("_right", GL_TEXTURE_CUBE_MAP_POSITIVE_X);
+		bindDirection("_left", GL_TEXTURE_CUBE_MAP_NEGATIVE_X);
+		bindDirection("_up", GL_TEXTURE_CUBE_MAP_POSITIVE_Y);
+		bindDirection("_down", GL_TEXTURE_CUBE_MAP_NEGATIVE_Y);
+		bindDirection("_forward", GL_TEXTURE_CUBE_MAP_POSITIVE_Z);
+		bindDirection("_back", GL_TEXTURE_CUBE_MAP_NEGATIVE_Z);
 
-        rMessage() << "[shaders] bound cubemap texture " << texnum << std::endl;
+		rMessage() << "[shaders] bound cubemap texture " << texnum << std::endl;
 
-        // Unbind and create texture object
-        glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+		// Unbind and create texture object
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
-        return TexturePtr(new CubeMapTexture(texnum, name));
-    }
-    catch (const std::runtime_error& e)
-    {
-        rError() << "[shaders] Unable to bind camera cubemap '"
-                  << name << "': " << e.what() << std::endl;
+		return TexturePtr(new CubeMapTexture(texnum, name));
+	}
+	catch (const std::runtime_error& e)
+	{
+		rError() << "[shaders] Unable to bind camera cubemap '"
+				  << name << "': " << e.what() << std::endl;
 
-        return TexturePtr();
-    }
+		return TexturePtr();
+	}
 }
 
 }

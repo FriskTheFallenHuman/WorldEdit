@@ -4,7 +4,7 @@
 
 void PatchTesselation::clear()
 {
-    *this = PatchTesselation();
+	*this = PatchTesselation();
 }
 
 #define	COPLANAR_EPSILON	0.1f
@@ -837,7 +837,7 @@ void PatchTesselation::generateIndices()
 
 void PatchTesselation::generate(std::size_t patchWidth, std::size_t patchHeight,
 	const PatchControlArray& controlPoints, bool subdivionsFixed, const Subdivisions& subdivs,
-    IRenderEntity* renderEntity)
+	IRenderEntity* renderEntity)
 {
 	width = patchWidth;
 	height = patchHeight;
@@ -869,19 +869,19 @@ void PatchTesselation::generate(std::size_t patchWidth, std::size_t patchHeight,
 		subdivideMesh();
 	}
 
-    // Final update: assign colours and normalise normals
-    auto colour = renderEntity ? renderEntity->getEntityColour() : Vector4(1, 1, 1, 1);
+	// Final update: assign colours and normalise normals
+	auto colour = renderEntity ? renderEntity->getEntityColour() : Vector4(1, 1, 1, 1);
 
 	for (MeshVertex& vertex : vertices)
 	{
-	    // normalize all the lerped normals
+		// normalize all the lerped normals
 		if (vertex.normal.getLengthSquared() > 0)
 		{
 			vertex.normal.normalise();
 		}
 
-        // Assign vertex colours using the colour of the entity
-        vertex.colour = colour;
+		// Assign vertex colours using the colour of the entity
+		vertex.colour = colour;
 	}
 
 	// Build the strip indices for rendering the quads

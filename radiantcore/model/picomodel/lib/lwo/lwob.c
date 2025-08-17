@@ -72,14 +72,14 @@ static int add_clip( char *s, lwClip **clist, int *nclips )
    clip->gamma.val = 1.0f;
 
    if ( (p = strstr( s, "(sequence)" )) != NULL ) {
-      p[ -1 ] = 0;
-      clip->type = ID_ISEQ;
-      clip->source.seq.prefix = s;
-      clip->source.seq.digits = 3;
+	  p[ -1 ] = 0;
+	  clip->type = ID_ISEQ;
+	  clip->source.seq.prefix = s;
+	  clip->source.seq.digits = 3;
    }
    else {
-      clip->type = ID_STIL;
-      clip->source.still.name = s;
+	  clip->type = ID_STIL;
+	  clip->source.still.name = s;
    }
 
    (*nclips)++;
@@ -106,32 +106,32 @@ static int add_tvel( float pos[], float vel[], lwEnvelope **elist, int *nenvs )
    int i;
 
    for ( i = 0; i < 3; i++ ) {
-      env = _pico_calloc( 1, sizeof( lwEnvelope ));
-      key0 = _pico_calloc( 1, sizeof( lwKey ));
-      key1 = _pico_calloc( 1, sizeof( lwKey ));
-      if ( !env || !key0 || !key1 ) return 0;
+	  env = _pico_calloc( 1, sizeof( lwEnvelope ));
+	  key0 = _pico_calloc( 1, sizeof( lwKey ));
+	  key1 = _pico_calloc( 1, sizeof( lwKey ));
+	  if ( !env || !key0 || !key1 ) return 0;
 
-      key0->next = key1;
-      key0->value = pos[ i ];
-      key0->time = 0.0f;
-      key1->prev = key0;
-      key1->value = pos[ i ] + vel[ i ] * 30.0f;
-      key1->time = 1.0f;
-      key0->shape = key1->shape = ID_LINE;
+	  key0->next = key1;
+	  key0->value = pos[ i ];
+	  key0->time = 0.0f;
+	  key1->prev = key0;
+	  key1->value = pos[ i ] + vel[ i ] * 30.0f;
+	  key1->time = 1.0f;
+	  key0->shape = key1->shape = ID_LINE;
 
-      env->index = *nenvs + i + 1;
-      env->type = 0x0301 + i;
-      env->name = _pico_alloc( 11 );
-      if ( env->name ) {
-         strcpy( env->name, "Position.X" );
-         env->name[ 9 ] += (char)i;
-      }
-      env->key = key0;
-      env->nkeys = 2;
-      env->behavior[ 0 ] = BEH_LINEAR;
-      env->behavior[ 1 ] = BEH_LINEAR;
+	  env->index = *nenvs + i + 1;
+	  env->type = 0x0301 + i;
+	  env->name = _pico_alloc( 11 );
+	  if ( env->name ) {
+		 strcpy( env->name, "Position.X" );
+		 env->name[ 9 ] += (char)i;
+	  }
+	  env->key = key0;
+	  env->nkeys = 2;
+	  env->behavior[ 0 ] = BEH_LINEAR;
+	  env->behavior[ 1 ] = BEH_LINEAR;
 
-      lwListAdd( (void *) elist, env );
+	  lwListAdd( (void *) elist, env );
    }
 
    *nenvs += 3;
@@ -160,19 +160,19 @@ static lwTexture *get_texture( char *s )
    tex->enabled = 1;
 
    if ( strstr( s, "Image Map" )) {
-      tex->type = ID_IMAP;
-      if ( strstr( s, "Planar" ))           tex->param.imap.projection = 0;
-      else if ( strstr( s, "Cylindrical" )) tex->param.imap.projection = 1;
-      else if ( strstr( s, "Spherical" ))   tex->param.imap.projection = 2;
-      else if ( strstr( s, "Cubic" ))       tex->param.imap.projection = 3;
-      else if ( strstr( s, "Front" ))       tex->param.imap.projection = 4;
-      tex->param.imap.aa_strength = 1.0f;
-      tex->param.imap.amplitude.val = 1.0f;
-      _pico_free( s );
+	  tex->type = ID_IMAP;
+	  if ( strstr( s, "Planar" ))           tex->param.imap.projection = 0;
+	  else if ( strstr( s, "Cylindrical" )) tex->param.imap.projection = 1;
+	  else if ( strstr( s, "Spherical" ))   tex->param.imap.projection = 2;
+	  else if ( strstr( s, "Cubic" ))       tex->param.imap.projection = 3;
+	  else if ( strstr( s, "Front" ))       tex->param.imap.projection = 4;
+	  tex->param.imap.aa_strength = 1.0f;
+	  tex->param.imap.amplitude.val = 1.0f;
+	  _pico_free( s );
    }
    else {
-      tex->type = ID_PROC;
-      tex->param.proc.name = s;
+	  tex->type = ID_PROC;
+	  tex->param.proc.name = s;
    }
 
    return tex;
@@ -234,251 +234,251 @@ lwSurface *lwGetSurface5( picoMemStream_t *fp, int cksize, lwObject *obj )
    /* process subchunks as they're encountered */
 
    while ( 1 ) {
-      sz += sz & 1;
-      set_flen( 0 );
+	  sz += sz & 1;
+	  set_flen( 0 );
 
-      switch ( id ) {
-         case ID_COLR:
-            surf->color.rgb[ 0 ] = getU1( fp ) / 255.0f;
-            surf->color.rgb[ 1 ] = getU1( fp ) / 255.0f;
-            surf->color.rgb[ 2 ] = getU1( fp ) / 255.0f;
-            break;
+	  switch ( id ) {
+		 case ID_COLR:
+			surf->color.rgb[ 0 ] = getU1( fp ) / 255.0f;
+			surf->color.rgb[ 1 ] = getU1( fp ) / 255.0f;
+			surf->color.rgb[ 2 ] = getU1( fp ) / 255.0f;
+			break;
 
-         case ID_FLAG:
-            flags = getU2( fp );
-            if ( flags &   4 ) surf->smooth = 1.56207f;
-            if ( flags &   8 ) surf->color_hilite.val = 1.0f;
-            if ( flags &  16 ) surf->color_filter.val = 1.0f;
-            if ( flags & 128 ) surf->dif_sharp.val = 0.5f;
-            if ( flags & 256 ) surf->sideflags = 3;
-            if ( flags & 512 ) surf->add_trans.val = 1.0f;
-            break;
+		 case ID_FLAG:
+			flags = getU2( fp );
+			if ( flags &   4 ) surf->smooth = 1.56207f;
+			if ( flags &   8 ) surf->color_hilite.val = 1.0f;
+			if ( flags &  16 ) surf->color_filter.val = 1.0f;
+			if ( flags & 128 ) surf->dif_sharp.val = 0.5f;
+			if ( flags & 256 ) surf->sideflags = 3;
+			if ( flags & 512 ) surf->add_trans.val = 1.0f;
+			break;
 
-         case ID_LUMI:
-            surf->luminosity.val = getI2( fp ) / 256.0f;
-            break;
+		 case ID_LUMI:
+			surf->luminosity.val = getI2( fp ) / 256.0f;
+			break;
 
-         case ID_VLUM:
-            surf->luminosity.val = getF4( fp );
-            break;
+		 case ID_VLUM:
+			surf->luminosity.val = getF4( fp );
+			break;
 
-         case ID_DIFF:
-            surf->diffuse.val = getI2( fp ) / 256.0f;
-            break;
+		 case ID_DIFF:
+			surf->diffuse.val = getI2( fp ) / 256.0f;
+			break;
 
-         case ID_VDIF:
-            surf->diffuse.val = getF4( fp );
-            break;
+		 case ID_VDIF:
+			surf->diffuse.val = getF4( fp );
+			break;
 
-         case ID_SPEC:
-            surf->specularity.val = getI2( fp ) / 256.0f;
-            break;
+		 case ID_SPEC:
+			surf->specularity.val = getI2( fp ) / 256.0f;
+			break;
 
-         case ID_VSPC:
-            surf->specularity.val = getF4( fp );
-            break;
+		 case ID_VSPC:
+			surf->specularity.val = getF4( fp );
+			break;
 
-         case ID_GLOS:
-            surf->glossiness.val = ( float ) log( getU2( fp )) / 20.7944f;
-            break;
+		 case ID_GLOS:
+			surf->glossiness.val = ( float ) log( getU2( fp )) / 20.7944f;
+			break;
 
-         case ID_SMAN:
-            surf->smooth = getF4( fp );
-            break;
+		 case ID_SMAN:
+			surf->smooth = getF4( fp );
+			break;
 
-         case ID_REFL:
-            surf->reflection.val.val = getI2( fp ) / 256.0f;
-            break;
+		 case ID_REFL:
+			surf->reflection.val.val = getI2( fp ) / 256.0f;
+			break;
 
-         case ID_RFLT:
-            surf->reflection.options = getU2( fp );
-            break;
+		 case ID_RFLT:
+			surf->reflection.options = getU2( fp );
+			break;
 
-         case ID_RIMG:
-            s = getS0( fp );
-            surf->reflection.cindex = add_clip( s, &obj->clip, &obj->nclips );
-            surf->reflection.options = 3;
-            break;
+		 case ID_RIMG:
+			s = getS0( fp );
+			surf->reflection.cindex = add_clip( s, &obj->clip, &obj->nclips );
+			surf->reflection.options = 3;
+			break;
 
-         case ID_RSAN:
-            surf->reflection.seam_angle = getF4( fp );
-            break;
+		 case ID_RSAN:
+			surf->reflection.seam_angle = getF4( fp );
+			break;
 
-         case ID_TRAN:
-            surf->transparency.val.val = getI2( fp ) / 256.0f;
-            break;
+		 case ID_TRAN:
+			surf->transparency.val.val = getI2( fp ) / 256.0f;
+			break;
 
-         case ID_RIND:
-            surf->eta.val = getF4( fp );
-            break;
+		 case ID_RIND:
+			surf->eta.val = getF4( fp );
+			break;
 
-         case ID_BTEX:
-            s = getbytes( fp, sz );
-            tex = get_texture( s );
-            lwListAdd( (void *) &surf->bump.tex, tex );
-            break;
+		 case ID_BTEX:
+			s = getbytes( fp, sz );
+			tex = get_texture( s );
+			lwListAdd( (void *) &surf->bump.tex, tex );
+			break;
 
-         case ID_CTEX:
-            s = getbytes( fp, sz );
-            tex = get_texture( s );
-            lwListAdd( (void *) &surf->color.tex, tex );
-            break;
+		 case ID_CTEX:
+			s = getbytes( fp, sz );
+			tex = get_texture( s );
+			lwListAdd( (void *) &surf->color.tex, tex );
+			break;
 
-         case ID_DTEX:
-            s = getbytes( fp, sz );
-            tex = get_texture( s );
-            lwListAdd( (void *) &surf->diffuse.tex, tex );
-            break;
+		 case ID_DTEX:
+			s = getbytes( fp, sz );
+			tex = get_texture( s );
+			lwListAdd( (void *) &surf->diffuse.tex, tex );
+			break;
 
-         case ID_LTEX:
-            s = getbytes( fp, sz );
-            tex = get_texture( s );
-            lwListAdd( (void *) &surf->luminosity.tex, tex );
-            break;
+		 case ID_LTEX:
+			s = getbytes( fp, sz );
+			tex = get_texture( s );
+			lwListAdd( (void *) &surf->luminosity.tex, tex );
+			break;
 
-         case ID_RTEX:
-            s = getbytes( fp, sz );
-            tex = get_texture( s );
-            lwListAdd( (void *) &surf->reflection.val.tex, tex );
-            break;
+		 case ID_RTEX:
+			s = getbytes( fp, sz );
+			tex = get_texture( s );
+			lwListAdd( (void *) &surf->reflection.val.tex, tex );
+			break;
 
-         case ID_STEX:
-            s = getbytes( fp, sz );
-            tex = get_texture( s );
-            lwListAdd( (void *) &surf->specularity.tex, tex );
-            break;
+		 case ID_STEX:
+			s = getbytes( fp, sz );
+			tex = get_texture( s );
+			lwListAdd( (void *) &surf->specularity.tex, tex );
+			break;
 
-         case ID_TTEX:
-            s = getbytes( fp, sz );
-            tex = get_texture( s );
-            lwListAdd( (void *) &surf->transparency.val.tex, tex );
-            break;
+		 case ID_TTEX:
+			s = getbytes( fp, sz );
+			tex = get_texture( s );
+			lwListAdd( (void *) &surf->transparency.val.tex, tex );
+			break;
 
-         case ID_TFLG:
-            flags = getU2( fp );
+		 case ID_TFLG:
+			flags = getU2( fp );
 
 			i = 0; // greebo: initialise to fix compiler warnings
 
-            if ( flags & 1 ) i = 0;
-            if ( flags & 2 ) i = 1;
-            if ( flags & 4 ) i = 2;
-            tex->axis = (short)i;
-            if ( tex->type == ID_IMAP )
-               tex->param.imap.axis = i;
-            else
-               tex->param.proc.axis = i;
+			if ( flags & 1 ) i = 0;
+			if ( flags & 2 ) i = 1;
+			if ( flags & 4 ) i = 2;
+			tex->axis = (short)i;
+			if ( tex->type == ID_IMAP )
+			   tex->param.imap.axis = i;
+			else
+			   tex->param.proc.axis = i;
 
-            if ( flags &  8 ) tex->tmap.coord_sys = 1;
-            if ( flags & 16 ) tex->negative = 1;
-            if ( flags & 32 ) tex->param.imap.pblend = 1;
-            if ( flags & 64 ) {
-               tex->param.imap.aa_strength = 1.0f;
-               tex->param.imap.aas_flags = 1;
-            }
-            break;
+			if ( flags &  8 ) tex->tmap.coord_sys = 1;
+			if ( flags & 16 ) tex->negative = 1;
+			if ( flags & 32 ) tex->param.imap.pblend = 1;
+			if ( flags & 64 ) {
+			   tex->param.imap.aa_strength = 1.0f;
+			   tex->param.imap.aas_flags = 1;
+			}
+			break;
 
-         case ID_TSIZ:
-            for ( i = 0; i < 3; i++ )
-               tex->tmap.size.val[ i ] = getF4( fp );
-            break;
+		 case ID_TSIZ:
+			for ( i = 0; i < 3; i++ )
+			   tex->tmap.size.val[ i ] = getF4( fp );
+			break;
 
-         case ID_TCTR:
-            for ( i = 0; i < 3; i++ )
-               tex->tmap.center.val[ i ] = getF4( fp );
-            break;
+		 case ID_TCTR:
+			for ( i = 0; i < 3; i++ )
+			   tex->tmap.center.val[ i ] = getF4( fp );
+			break;
 
-         case ID_TFAL:
-            for ( i = 0; i < 3; i++ )
-               tex->tmap.falloff.val[ i ] = getF4( fp );
-            break;
+		 case ID_TFAL:
+			for ( i = 0; i < 3; i++ )
+			   tex->tmap.falloff.val[ i ] = getF4( fp );
+			break;
 
-         case ID_TVEL:
-            for ( i = 0; i < 3; i++ )
-               v[ i ] = getF4( fp );
-            tex->tmap.center.eindex = add_tvel( tex->tmap.center.val, v,
-               &obj->env, &obj->nenvs );
-            break;
+		 case ID_TVEL:
+			for ( i = 0; i < 3; i++ )
+			   v[ i ] = getF4( fp );
+			tex->tmap.center.eindex = add_tvel( tex->tmap.center.val, v,
+			   &obj->env, &obj->nenvs );
+			break;
 
-         case ID_TCLR:
-            if ( tex->type == ID_PROC )
-               for ( i = 0; i < 3; i++ )
-                  tex->param.proc.value[ i ] = getU1( fp ) / 255.0f;
-            break;
+		 case ID_TCLR:
+			if ( tex->type == ID_PROC )
+			   for ( i = 0; i < 3; i++ )
+				  tex->param.proc.value[ i ] = getU1( fp ) / 255.0f;
+			break;
 
-         case ID_TVAL:
-            tex->param.proc.value[ 0 ] = getI2( fp ) / 256.0f;
-            break;
+		 case ID_TVAL:
+			tex->param.proc.value[ 0 ] = getI2( fp ) / 256.0f;
+			break;
 
-         case ID_TAMP:
-            if ( tex->type == ID_IMAP )
-               tex->param.imap.amplitude.val = getF4( fp );
-            break;
+		 case ID_TAMP:
+			if ( tex->type == ID_IMAP )
+			   tex->param.imap.amplitude.val = getF4( fp );
+			break;
 
-         case ID_TIMG:
-            s = getS0( fp );
-            tex->param.imap.cindex = add_clip( s, &obj->clip, &obj->nclips );
-            break;
+		 case ID_TIMG:
+			s = getS0( fp );
+			tex->param.imap.cindex = add_clip( s, &obj->clip, &obj->nclips );
+			break;
 
-         case ID_TAAS:
-            tex->param.imap.aa_strength = getF4( fp );
-            tex->param.imap.aas_flags = 1;
-            break;
+		 case ID_TAAS:
+			tex->param.imap.aa_strength = getF4( fp );
+			tex->param.imap.aas_flags = 1;
+			break;
 
-         case ID_TREF:
-            tex->tmap.ref_object = getbytes( fp, sz );
-            break;
+		 case ID_TREF:
+			tex->tmap.ref_object = getbytes( fp, sz );
+			break;
 
-         case ID_TOPC:
-            tex->opacity.val = getF4( fp );
-            break;
+		 case ID_TOPC:
+			tex->opacity.val = getF4( fp );
+			break;
 
-         case ID_TFP0:
-            if ( tex->type == ID_IMAP )
-               tex->param.imap.wrapw.val = getF4( fp );
-            break;
+		 case ID_TFP0:
+			if ( tex->type == ID_IMAP )
+			   tex->param.imap.wrapw.val = getF4( fp );
+			break;
 
-         case ID_TFP1:
-            if ( tex->type == ID_IMAP )
-               tex->param.imap.wraph.val = getF4( fp );
-            break;
+		 case ID_TFP1:
+			if ( tex->type == ID_IMAP )
+			   tex->param.imap.wraph.val = getF4( fp );
+			break;
 
-         case ID_SHDR:
-            shdr = _pico_calloc( 1, sizeof( lwPlugin ));
-            if ( !shdr ) goto Fail;
-            shdr->name = getbytes( fp, sz );
-            lwListAdd( (void *) &surf->shader, shdr );
-            surf->nshaders++;
-            break;
+		 case ID_SHDR:
+			shdr = _pico_calloc( 1, sizeof( lwPlugin ));
+			if ( !shdr ) goto Fail;
+			shdr->name = getbytes( fp, sz );
+			lwListAdd( (void *) &surf->shader, shdr );
+			surf->nshaders++;
+			break;
 
-         case ID_SDAT:
-            shdr->data = getbytes( fp, sz );
-            break;
+		 case ID_SDAT:
+			shdr->data = getbytes( fp, sz );
+			break;
 
-         default:
-            break;
-      }
+		 default:
+			break;
+	  }
 
-      /* error while reading current subchunk? */
+	  /* error while reading current subchunk? */
 
-      rlen = get_flen();
-      if ( rlen < 0 || rlen > sz ) goto Fail;
+	  rlen = get_flen();
+	  if ( rlen < 0 || rlen > sz ) goto Fail;
 
-      /* skip unread parts of the current subchunk */
+	  /* skip unread parts of the current subchunk */
 
-      if ( rlen < sz )
-         _pico_memstream_seek( fp, sz - rlen, PICO_SEEK_CUR );
+	  if ( rlen < sz )
+		 _pico_memstream_seek( fp, sz - rlen, PICO_SEEK_CUR );
 
-      /* end of the SURF chunk? */
+	  /* end of the SURF chunk? */
 
-      if ( cksize <= _pico_memstream_tell( fp ) - pos )
-         break;
+	  if ( cksize <= _pico_memstream_tell( fp ) - pos )
+		 break;
 
-      /* get the next subchunk header */
+	  /* get the next subchunk header */
 
-      set_flen( 0 );
-      id = getU4( fp );
-      sz = getU2( fp );
-      if ( 6 != get_flen() ) goto Fail;
+	  set_flen( 0 );
+	  id = getU4( fp );
+	  sz = getU2( fp );
+	  if ( 6 != get_flen() ) goto Fail;
    }
 
    return surf;
@@ -520,16 +520,16 @@ int lwGetPolygons5( picoMemStream_t *fp, int cksize, lwPolygonList *plist, int p
    bp = buf;
 
    while ( bp < buf + cksize ) {
-      nv = sgetU2( &bp );
-      nverts += nv;
-      npols++;
-      bp += 2 * nv;
-      i = sgetI2( &bp );
-      if ( i < 0 ) bp += 2;      /* detail polygons */
+	  nv = sgetU2( &bp );
+	  nverts += nv;
+	  npols++;
+	  bp += 2 * nv;
+	  i = sgetI2( &bp );
+	  if ( i < 0 ) bp += 2;      /* detail polygons */
    }
 
    if ( !lwAllocPolygons( plist, npols, nverts ))
-      goto Fail;
+	  goto Fail;
 
    /* fill in the new polygons */
 
@@ -538,23 +538,23 @@ int lwGetPolygons5( picoMemStream_t *fp, int cksize, lwPolygonList *plist, int p
    pv = plist->pol[ 0 ].v + plist->voffset;
 
    for ( i = 0; i < npols; i++ ) {
-      nv = sgetU2( &bp );
+	  nv = sgetU2( &bp );
 
-      pp->nverts = nv;
-      pp->type = ID_FACE;
-      if ( !pp->v ) pp->v = pv;
-      for ( j = 0; j < nv; j++ )
-         pv[ j ].index = sgetU2( &bp ) + ptoffset;
-      j = sgetI2( &bp );
-      if ( j < 0 ) {
-         j = -j;
-         bp += 2;
-      }
-      j -= 1;
-      pp->surf = ( lwSurface * ) (intptr_t) j;
+	  pp->nverts = nv;
+	  pp->type = ID_FACE;
+	  if ( !pp->v ) pp->v = pv;
+	  for ( j = 0; j < nv; j++ )
+		 pv[ j ].index = sgetU2( &bp ) + ptoffset;
+	  j = sgetI2( &bp );
+	  if ( j < 0 ) {
+		 j = -j;
+		 bp += 2;
+	  }
+	  j -= 1;
+	  pp->surf = ( lwSurface * ) (intptr_t) j;
 
-      pp++;
-      pv += nv;
+	  pp++;
+	  pv += nv;
    }
 
    _pico_free( buf );
@@ -576,14 +576,14 @@ file couldn't be loaded.  On failure, failID and failpos can be used
 to diagnose the cause.
 
 1.  If the file isn't an LWOB, failpos will contain 12 and failID will
-    be unchanged.
+	be unchanged.
 
 2.  If an error occurs while reading an LWOB, failID will contain the
-    most recently read IFF chunk ID, and failpos will contain the
-    value returned by _pico_memstream_tell() at the time of the failure.
+	most recently read IFF chunk ID, and failpos will contain the
+	value returned by _pico_memstream_tell() at the time of the failure.
 
 3.  If the file couldn't be opened, or an error occurs while reading
-    the first 12 bytes, both failID and failpos will be unchanged.
+	the first 12 bytes, both failID and failpos will be unchanged.
 
 If you don't need this information, failID and failpos can be NULL.
 ====================================================================== */
@@ -607,14 +607,14 @@ lwObject *lwGetObject5( char *filename, picoMemStream_t *fp, unsigned int *failI
    formsize = getU4( fp );
    type     = getU4( fp );
    if ( 12 != get_flen() ) {
-      return NULL;
+	  return NULL;
    }
 
    /* LWOB? */
 
    if ( id != ID_FORM || type != ID_LWOB ) {
-      if ( failpos ) *failpos = 12;
-      return NULL;
+	  if ( failpos ) *failpos = 12;
+	  return NULL;
    }
 
    /* allocate an object and a default layer */
@@ -636,55 +636,55 @@ lwObject *lwGetObject5( char *filename, picoMemStream_t *fp, unsigned int *failI
    /* process chunks as they're encountered */
 
    while ( 1 ) {
-      cksize += cksize & 1;
+	  cksize += cksize & 1;
 
-      switch ( id )
-      {
-         case ID_PNTS:
-            if ( !lwGetPoints( fp, cksize, &layer->point ))
-               goto Fail;
-            break;
+	  switch ( id )
+	  {
+		 case ID_PNTS:
+			if ( !lwGetPoints( fp, cksize, &layer->point ))
+			   goto Fail;
+			break;
 
-         case ID_POLS:
-            if ( !lwGetPolygons5( fp, cksize, &layer->polygon,
-               layer->point.offset ))
-               goto Fail;
-            break;
+		 case ID_POLS:
+			if ( !lwGetPolygons5( fp, cksize, &layer->polygon,
+			   layer->point.offset ))
+			   goto Fail;
+			break;
 
-         case ID_SRFS:
-            if ( !lwGetTags( fp, cksize, &object->taglist ))
-               goto Fail;
-            break;
+		 case ID_SRFS:
+			if ( !lwGetTags( fp, cksize, &object->taglist ))
+			   goto Fail;
+			break;
 
-         case ID_SURF:
-            node = ( lwNode * ) lwGetSurface5( fp, cksize, object );
-            if ( !node ) goto Fail;
-            lwListAdd( (void *) &object->surf, node );
-            object->nsurfs++;
-            break;
+		 case ID_SURF:
+			node = ( lwNode * ) lwGetSurface5( fp, cksize, object );
+			if ( !node ) goto Fail;
+			lwListAdd( (void *) &object->surf, node );
+			object->nsurfs++;
+			break;
 
-         default:
-            _pico_memstream_seek( fp, cksize, PICO_SEEK_CUR );
-            break;
-      }
+		 default:
+			_pico_memstream_seek( fp, cksize, PICO_SEEK_CUR );
+			break;
+	  }
 
-      /* end of the file? */
+	  /* end of the file? */
 
-      if ( formsize <= _pico_memstream_tell( fp ) - 8 ) break;
+	  if ( formsize <= _pico_memstream_tell( fp ) - 8 ) break;
 
-      /* get the next chunk header */
+	  /* get the next chunk header */
 
-      set_flen( 0 );
-      id = getU4( fp );
-      cksize = getU4( fp );
-      if ( 8 != get_flen() ) goto Fail;
+	  set_flen( 0 );
+	  id = getU4( fp );
+	  cksize = getU4( fp );
+	  if ( 8 != get_flen() ) goto Fail;
    }
 
    lwGetBoundingBox( &layer->point, layer->bbox );
    lwGetPolyNormals( &layer->point, &layer->polygon );
    if ( !lwGetPointPolygons( &layer->point, &layer->polygon )) goto Fail;
    if ( !lwResolvePolySurfaces( &layer->polygon, &object->taglist,
-      &object->surf, &object->nsurfs )) goto Fail;
+	  &object->surf, &object->nsurfs )) goto Fail;
    lwGetVertNormals( &layer->point, &layer->polygon );
 
    return object;
@@ -692,7 +692,7 @@ lwObject *lwGetObject5( char *filename, picoMemStream_t *fp, unsigned int *failI
 Fail:
    if ( failID ) *failID = id;
    if ( fp ) {
-      if ( failpos ) *failpos = (int)_pico_memstream_tell( fp );
+	  if ( failpos ) *failpos = (int)_pico_memstream_tell( fp );
    }
    lwFreeObject( object );
    return NULL;
@@ -714,15 +714,15 @@ int lwValidateObject5( char *filename, picoMemStream_t *fp, unsigned int *failID
    formsize = getU4( fp );
    type     = getU4( fp );
    if ( 12 != get_flen() ) {
-      return PICO_PMV_ERROR_SIZE;
+	  return PICO_PMV_ERROR_SIZE;
    }
 
    /* LWOB? */
 
    if ( id != ID_FORM || type != ID_LWOB ) {
-      if ( failpos ) *failpos = 12;
-      formsize++; /* silence compiler warning about unused variable */
-      return PICO_PMV_ERROR_IDENT;
+	  if ( failpos ) *failpos = 12;
+	  formsize++; /* silence compiler warning about unused variable */
+	  return PICO_PMV_ERROR_IDENT;
    }
 
    return PICO_PMV_OK;

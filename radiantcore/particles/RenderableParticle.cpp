@@ -16,7 +16,7 @@ RenderableParticle::RenderableParticle(const IParticleDef::Ptr& particleDef) :
 RenderableParticle::~RenderableParticle()
 {
 	// Clear the particle def reference (remove this class as observer)
-    setParticleDef({});
+	setParticleDef({});
 }
 
 // Time is in msecs
@@ -43,40 +43,40 @@ void RenderableParticle::update(const Matrix4& viewRotation, const Matrix4& loca
 	{
 		for (const auto& stage : pair.second.stages)
 		{
-            if (!stage->getDef().isVisible())
-            {
-                stage->clear();
-                continue;
-            }
+			if (!stage->getDef().isVisible())
+			{
+				stage->clear();
+				continue;
+			}
 
-            // Update the particle quads
-            stage->update(time, invViewRotation);
+			// Update the particle quads
+			stage->update(time, invViewRotation);
 
-            // Check if the stage is empty, otherwise remove any geometry
-            if (stage->getNumQuads() == 0)
-            {
-                stage->clear();
-                continue;
-            }
+			// Check if the stage is empty, otherwise remove any geometry
+			if (stage->getNumQuads() == 0)
+			{
+				stage->clear();
+				continue;
+			}
 
-            // Attach the geometry to the shader
-            stage->submitGeometry(pair.second.shader, localToWorld);
+			// Attach the geometry to the shader
+			stage->submitGeometry(pair.second.shader, localToWorld);
 
-            // Attach to the parent entity for lighting mode
-            stage->attachToEntity(entity);
+			// Attach to the parent entity for lighting mode
+			stage->attachToEntity(entity);
 		}
 	}
 }
 
 void RenderableParticle::clearRenderables()
 {
-    for (const auto& pair : _shaderMap)
-    {
-        for (const auto& stage : pair.second.stages)
-        {
-            stage->clear();
-        }
-    }
+	for (const auto& pair : _shaderMap)
+	{
+		for (const auto& stage : pair.second.stages)
+		{
+			stage->clear();
+		}
+	}
 }
 
 void RenderableParticle::onPreRender(const VolumeTest& volume)
@@ -101,7 +101,7 @@ void RenderableParticle::setParticleDef(const IParticleDef::Ptr& def)
 {
 	if (_particleDef)
 	{
-        _defConnection.disconnect();
+		_defConnection.disconnect();
 	}
 
 	_particleDef = def;
@@ -110,8 +110,8 @@ void RenderableParticle::setParticleDef(const IParticleDef::Ptr& def)
 	{
 		// Start monitoring this particle for reload events
 		_defConnection = _particleDef->signal_changed().connect(
-            sigc::mem_fun(this, &RenderableParticle::setupStages)
-        );
+			sigc::mem_fun(this, &RenderableParticle::setupStages)
+		);
 	}
 
 	// Re-construct our stage information

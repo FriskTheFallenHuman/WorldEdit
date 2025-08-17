@@ -15,13 +15,13 @@ namespace particles
 
 /// Implementation of IRenderableParticle
 class RenderableParticle : public IRenderableParticle,
-                           public sigc::trackable
+						   public sigc::trackable
 {
 	// The particle definition containing the stage info
 	IParticleDef::Ptr _particleDef;
 
-    // Signal connection from the particle def
-    sigc::connection _defConnection;
+	// Signal connection from the particle def
+	sigc::connection _defConnection;
 
 	typedef std::vector<RenderableParticleStagePtr> RenderableParticleStageList;
 
@@ -59,13 +59,13 @@ public:
 
 	~RenderableParticle();
 
-    void clearRenderables();
+	void clearRenderables();
 
 	// Time is in msecs
 	void update(const Matrix4& viewRotation, const Matrix4& localToWorld, IRenderEntity* entity) override;
 
-    void onPreRender(const VolumeTest& volume) override;
-    void renderHighlights(IRenderableCollector& collector, const VolumeTest& volume) override;
+	void onPreRender(const VolumeTest& volume) override;
+	void renderHighlights(IRenderableCollector& collector, const VolumeTest& volume) override;
 
 	void setRenderSystem(const RenderSystemPtr& renderSystem) override;
 

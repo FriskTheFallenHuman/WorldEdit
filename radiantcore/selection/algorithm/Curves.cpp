@@ -21,9 +21,9 @@ namespace algorithm
 
 namespace
 {
-    const char* const GKEY_DEFAULT_CURVE_ENTITY = "/defaults/defaultCurveEntity";
-    const char* const GKEY_CURVE_NURBS_KEY = "/defaults/curveNurbsKey";
-    const char* const GKEY_CURVE_CATMULLROM_KEY = "/defaults/curveCatmullRomKey";
+	const char* const GKEY_DEFAULT_CURVE_ENTITY = "/defaults/defaultCurveEntity";
+	const char* const GKEY_CURVE_NURBS_KEY = "/defaults/curveNurbsKey";
+	const char* const GKEY_CURVE_CATMULLROM_KEY = "/defaults/curveCatmullRomKey";
 }
 
 /**
@@ -33,65 +33,65 @@ namespace
  */
 void createCurve(const std::string& key)
 {
-    UndoableCommand undo(std::string("createCurve: ") + key);
+	UndoableCommand undo(std::string("createCurve: ") + key);
 
-    // De-select everything before we proceed
-    GlobalSelectionSystem().setSelectedAll(false);
-    GlobalSelectionSystem().setSelectedAllComponents(false);
+	// De-select everything before we proceed
+	GlobalSelectionSystem().setSelectedAll(false);
+	GlobalSelectionSystem().setSelectedAllComponents(false);
 
-    std::string curveEClass = game::current::getValue<std::string>(GKEY_DEFAULT_CURVE_ENTITY);
+	std::string curveEClass = game::current::getValue<std::string>(GKEY_DEFAULT_CURVE_ENTITY);
 
-    // Fallback to func_static, if nothing defined in the registry
-    if (curveEClass.empty()) {
-        curveEClass = "func_static";
-    }
+	// Fallback to func_static, if nothing defined in the registry
+	if (curveEClass.empty()) {
+		curveEClass = "func_static";
+	}
 
-    // Find the default curve entity
-    IEntityClassPtr entityClass = GlobalEntityClassManager().findOrInsert(
-        curveEClass,
-        true
-    );
+	// Find the default curve entity
+	IEntityClassPtr entityClass = GlobalEntityClassManager().findOrInsert(
+		curveEClass,
+		true
+	);
 
-    // Create a new entity node deriving from this entityclass
-    EntityNodePtr curve(GlobalEntityModule().createEntity(entityClass));
+	// Create a new entity node deriving from this entityclass
+	EntityNodePtr curve(GlobalEntityModule().createEntity(entityClass));
 
-    // Insert this new node into the scenegraph root
-    GlobalSceneGraph().root()->addChildNode(curve);
+	// Insert this new node into the scenegraph root
+	GlobalSceneGraph().root()->addChildNode(curve);
 
-    auto workZoneOrigin = GlobalSelectionSystem().getWorkZone().bounds.getOrigin();
+	auto workZoneOrigin = GlobalSelectionSystem().getWorkZone().bounds.getOrigin();
 
-    // Select this new curve node
-    Node_setSelected(curve, true);
+	// Select this new curve node
+	Node_setSelected(curve, true);
 
-    // Initialise the curve using three pre-defined points
-    curve->getEntity().setKeyValue(
-        key,
-        "3 ( 0 0 0  50 50 0  50 100 0 )"
-    );
+	// Initialise the curve using three pre-defined points
+	curve->getEntity().setKeyValue(
+		key,
+		"3 ( 0 0 0  50 50 0  50 100 0 )"
+	);
 
-    if (auto transformable = scene::node_cast<ITransformable>(curve); transformable)
-    {
-        // Translate the entity to the center of the workzone before the spline was created
-        transformable->setTranslation(workZoneOrigin);
-        transformable->freezeTransform();
-    }
+	if (auto transformable = scene::node_cast<ITransformable>(curve); transformable)
+	{
+		// Translate the entity to the center of the workzone before the spline was created
+		transformable->setTranslation(workZoneOrigin);
+		transformable->freezeTransform();
+	}
 }
 
 void createCurveNURBS(const cmd::ArgumentList& args)
 {
-    createCurve(game::current::getValue<std::string>(GKEY_CURVE_NURBS_KEY));
+	createCurve(game::current::getValue<std::string>(GKEY_CURVE_NURBS_KEY));
 }
 
 void createCurveCatmullRom(const cmd::ArgumentList& args)
 {
-    createCurve(game::current::getValue<std::string>(GKEY_CURVE_CATMULLROM_KEY));
+	createCurve(game::current::getValue<std::string>(GKEY_CURVE_CATMULLROM_KEY));
 }
 
 // A basic functor doing an action to the curve
 class CurveNodeProcessor
 {
 public:
-    virtual ~CurveNodeProcessor() {}
+	virtual ~CurveNodeProcessor() {}
 	virtual void operator() (CurveNode& curve) = 0;
 };
 

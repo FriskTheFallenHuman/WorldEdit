@@ -218,11 +218,11 @@ void GridManager::gridUp()
 
 void GridManager::setGridSize(GridSize gridSize)
 {
-    if (_activeGridSize != gridSize)
-    {
-        _activeGridSize = gridSize;
-        gridChangeNotify();
-    }
+	if (_activeGridSize != gridSize)
+	{
+		_activeGridSize = gridSize;
+		gridChangeNotify();
+	}
 }
 
 float GridManager::getGridSize(grid::Space space) const
@@ -232,24 +232,24 @@ float GridManager::getGridSize(grid::Space space) const
 
 int GridManager::getGridPower(grid::Space space) const
 {
-    int power = static_cast<int>(_activeGridSize);
+	int power = static_cast<int>(_activeGridSize);
 
-    // Texture space is using smaller grid sizes, since it doesn't make much
-    // sense to have grid spacing greater than 1.0
-    if (space == grid::Space::Texture)
-    {
-        power -= 7;
+	// Texture space is using smaller grid sizes, since it doesn't make much
+	// sense to have grid spacing greater than 1.0
+	if (space == grid::Space::Texture)
+	{
+		power -= 7;
 
-        if (power < -10) power = -10;
-        if (power > 0) power = 0;
-    }
+		if (power < -10) power = -10;
+		if (power > 0) power = 0;
+	}
 
-    return power;
+	return power;
 }
 
 int GridManager::getGridBase(grid::Space space) const
 {
-    return 2;
+	return 2;
 }
 
 GridLook GridManager::getLookFromNumber(int i)

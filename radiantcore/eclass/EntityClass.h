@@ -52,8 +52,8 @@ private:
 	// Does this entity have a fixed size?
 	bool _fixedSize;
 
-    // Ligth type defined on the game
-    std::string _ligthtype;
+	// Ligth type defined on the game
+	std::string _ligthtype;
 
 	// Map of named EntityAttribute structures. EntityAttributes are picked
 	// up from the DEF file during parsing. Ignores key case.

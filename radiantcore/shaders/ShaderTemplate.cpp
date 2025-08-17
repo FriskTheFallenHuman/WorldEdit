@@ -25,85 +25,85 @@ namespace shaders
 {
 
 ShaderTemplate::ShaderTemplate(const ShaderTemplate& other) :
-    decl::EditableDeclaration<shaders::IShaderTemplate>(other),
-    _name(other._name),
-    _currentLayer(new Doom3ShaderLayer(*this)),
-    _suppressChangeSignal(false),
-    _lightFalloff(other._lightFalloff),
-    fogLight(other.fogLight),
-    ambientLight(other.ambientLight),
-    blendLight(other.blendLight),
-    description(other.description),
-    _materialFlags(other._materialFlags),
-    _cullType(other._cullType),
-    _clampType(other._clampType),
-    _surfaceFlags(other._surfaceFlags),
-    _surfaceType(other._surfaceType),
-    _deformType(other._deformType),
-    _deformExpressions(other._deformExpressions),
-    _deformDeclName(other._deformDeclName),
-    _sortReq(other._sortReq),
-    _polygonOffset(other._polygonOffset),
-    _decalInfo(other._decalInfo),
-    _coverage(other._coverage),
-    _renderBumpArguments(other._renderBumpArguments),
-    _renderBumpFlatArguments(other._renderBumpFlatArguments),
-    _parseFlags(other._parseFlags),
-    _guiDeclName(other._guiDeclName)
+	decl::EditableDeclaration<shaders::IShaderTemplate>(other),
+	_name(other._name),
+	_currentLayer(new Doom3ShaderLayer(*this)),
+	_suppressChangeSignal(false),
+	_lightFalloff(other._lightFalloff),
+	fogLight(other.fogLight),
+	ambientLight(other.ambientLight),
+	blendLight(other.blendLight),
+	description(other.description),
+	_materialFlags(other._materialFlags),
+	_cullType(other._cullType),
+	_clampType(other._clampType),
+	_surfaceFlags(other._surfaceFlags),
+	_surfaceType(other._surfaceType),
+	_deformType(other._deformType),
+	_deformExpressions(other._deformExpressions),
+	_deformDeclName(other._deformDeclName),
+	_sortReq(other._sortReq),
+	_polygonOffset(other._polygonOffset),
+	_decalInfo(other._decalInfo),
+	_coverage(other._coverage),
+	_renderBumpArguments(other._renderBumpArguments),
+	_renderBumpFlatArguments(other._renderBumpFlatArguments),
+	_parseFlags(other._parseFlags),
+	_guiDeclName(other._guiDeclName)
 {
-    _editorTex = other._editorTex ? MapExpression::createForString(other._editorTex->getExpressionString()) : MapExpressionPtr();
+	_editorTex = other._editorTex ? MapExpression::createForString(other._editorTex->getExpressionString()) : MapExpressionPtr();
 
-    // Clone the layers
-    for (const auto& otherLayer : other._layers)
-    {
-        _layers.emplace_back(std::make_shared<Doom3ShaderLayer>(*otherLayer, *this));
-    }
+	// Clone the layers
+	for (const auto& otherLayer : other._layers)
+	{
+		_layers.emplace_back(std::make_shared<Doom3ShaderLayer>(*otherLayer, *this));
+	}
 }
 
 std::shared_ptr<ShaderTemplate> ShaderTemplate::clone()
 {
-    ensureParsed();
+	ensureParsed();
 
-    return std::make_shared<ShaderTemplate>(*this);
+	return std::make_shared<ShaderTemplate>(*this);
 }
 
 const MapExpressionPtr& ShaderTemplate::getEditorTexture()
 {
-    ensureParsed();
+	ensureParsed();
 
-    return _editorTex;
+	return _editorTex;
 }
 
 void ShaderTemplate::setEditorImageExpressionFromString(const std::string& expression)
 {
-    ensureParsed();
+	ensureParsed();
 
-    _editorTex = !expression.empty() ? MapExpression::createForString(expression) : MapExpressionPtr();
-    onTemplateChanged();
+	_editorTex = !expression.empty() ? MapExpression::createForString(expression) : MapExpressionPtr();
+	onTemplateChanged();
 }
 
 void ShaderTemplate::setDecalInfo(const Material::DecalInfo& info)
 {
-    ensureParsed();
+	ensureParsed();
 
-    _decalInfo = info;
+	_decalInfo = info;
 
-    // Check if this decal info is empty, if yes: clear the flag 
-    Material::DecalInfo emptyInfo;
+	// Check if this decal info is empty, if yes: clear the flag 
+	Material::DecalInfo emptyInfo;
 
-    if (_decalInfo.stayMilliSeconds == emptyInfo.stayMilliSeconds &&
-        _decalInfo.fadeMilliSeconds == emptyInfo.fadeMilliSeconds &&
-        _decalInfo.startColour == emptyInfo.startColour &&
-        _decalInfo.endColour == emptyInfo.endColour)
-    {
-        _parseFlags &= ~Material::PF_HasDecalInfo;
-    }
-    else
-    {
-        _parseFlags |= Material::PF_HasDecalInfo;
-    }
+	if (_decalInfo.stayMilliSeconds == emptyInfo.stayMilliSeconds &&
+		_decalInfo.fadeMilliSeconds == emptyInfo.fadeMilliSeconds &&
+		_decalInfo.startColour == emptyInfo.startColour &&
+		_decalInfo.endColour == emptyInfo.endColour)
+	{
+		_parseFlags &= ~Material::PF_HasDecalInfo;
+	}
+	else
+	{
+		_parseFlags |= Material::PF_HasDecalInfo;
+	}
 
-    onTemplateChanged();
+	onTemplateChanged();
 }
 
 IShaderExpression::Ptr ShaderTemplate::parseSingleExpressionTerm(parser::DefTokeniser& tokeniser)
@@ -145,67 +145,67 @@ IShaderExpression::Ptr ShaderTemplate::parseSingleExpressionTerm(parser::DefToke
  *  Note: input "token" has to be lowercase for the keywords to be recognized
  */
 bool ShaderTemplate::parseShaderFlags(parser::DefTokeniser& tokeniser,
-                                      const std::string& token)
+									  const std::string& token)
 {
-    if (token == "translucent")
+	if (token == "translucent")
 	{
-        _materialFlags |= Material::FLAG_TRANSLUCENT | Material::FLAG_NOSHADOWS;
+		_materialFlags |= Material::FLAG_TRANSLUCENT | Material::FLAG_NOSHADOWS;
 		_coverage = Material::MC_TRANSLUCENT;
-    }
-    else if (token == "decal_macro")
+	}
+	else if (token == "decal_macro")
 	{
-        _parseFlags |= Material::PF_HasDecalMacro;
+		_parseFlags |= Material::PF_HasDecalMacro;
 
-        _materialFlags |= Material::FLAG_TRANSLUCENT|Material::FLAG_NOSHADOWS;
-        _materialFlags |= Material::FLAG_HAS_SORT_DEFINED;
-        _materialFlags |= Material::FLAG_POLYGONOFFSET;
-        _sortReq = Material::SORT_DECAL;
-        _polygonOffset = 1.0f;
+		_materialFlags |= Material::FLAG_TRANSLUCENT|Material::FLAG_NOSHADOWS;
+		_materialFlags |= Material::FLAG_HAS_SORT_DEFINED;
+		_materialFlags |= Material::FLAG_POLYGONOFFSET;
+		_sortReq = Material::SORT_DECAL;
+		_polygonOffset = 1.0f;
 		_surfaceFlags |= Material::SURF_DISCRETE | Material::SURF_NONSOLID;
-    }
-    else if (token == "glass_macro")
-    {
-        _parseFlags |= Material::PF_HasGlassMacro;
-
-        _cullType = Material::CULL_NONE;
-        _materialFlags |= Material::FLAG_NOSHADOWS | Material::FLAG_NOSELFSHADOW;
-        _coverage = Material::MC_TRANSLUCENT;
-    }
-    else if (token == "twosided")
+	}
+	else if (token == "glass_macro")
 	{
-        _cullType = Material::CULL_NONE;
-    }
+		_parseFlags |= Material::PF_HasGlassMacro;
+
+		_cullType = Material::CULL_NONE;
+		_materialFlags |= Material::FLAG_NOSHADOWS | Material::FLAG_NOSELFSHADOW;
+		_coverage = Material::MC_TRANSLUCENT;
+	}
+	else if (token == "twosided")
+	{
+		_cullType = Material::CULL_NONE;
+	}
 	else if (token == "backsided")
 	{
-        _cullType = Material::CULL_FRONT;
-    }
-    else if (token == "description")
+		_cullType = Material::CULL_FRONT;
+	}
+	else if (token == "description")
 	{
-        // greebo: Parse description token, this should be the next one
-        description = tokeniser.nextToken();
-    }
+		// greebo: Parse description token, this should be the next one
+		description = tokeniser.nextToken();
+	}
 	else if (token == "polygonoffset")
 	{
-        _materialFlags |= Material::FLAG_POLYGONOFFSET;
+		_materialFlags |= Material::FLAG_POLYGONOFFSET;
 
-        // The value argument is optional, try to parse the next token
-        if (tokeniser.hasMoreTokens())
-        {
-            try
-            {
-                _polygonOffset = std::stof(tokeniser.peek());
-                // success, exhaust the token
-                tokeniser.skipTokens(1);
-            }
-            catch (const std::logic_error&) // logic_error is base of invalid_argument out_of_range exceptions
-            {
-                _polygonOffset = 1.0f;
-            }
-        }
-        else
-        {
-            _polygonOffset = 1.0f;
-        }
+		// The value argument is optional, try to parse the next token
+		if (tokeniser.hasMoreTokens())
+		{
+			try
+			{
+				_polygonOffset = std::stof(tokeniser.peek());
+				// success, exhaust the token
+				tokeniser.skipTokens(1);
+			}
+			catch (const std::logic_error&) // logic_error is base of invalid_argument out_of_range exceptions
+			{
+				_polygonOffset = 1.0f;
+			}
+		}
+		else
+		{
+			_polygonOffset = 1.0f;
+		}
 	}
 	else if (token == "clamp")
 	{
@@ -221,20 +221,20 @@ bool ShaderTemplate::parseShaderFlags(parser::DefTokeniser& tokeniser,
 	}
 	else if (token == "sort")
 	{
-        _parseFlags |= Material::PF_HasSortDefined;
-        _materialFlags |= Material::FLAG_HAS_SORT_DEFINED;
+		_parseFlags |= Material::PF_HasSortDefined;
+		_materialFlags |= Material::FLAG_HAS_SORT_DEFINED;
 
 		auto sortVal = tokeniser.nextToken();
-        string::to_lower(sortVal);
+		string::to_lower(sortVal);
 
-        for (const auto& predefinedSortValue : shaders::PredefinedSortValues)
-        {
-            if (sortVal == predefinedSortValue.first)
-            {
-                _sortReq = static_cast<float>(predefinedSortValue.second);
-                return true;
-            }
-        }
+		for (const auto& predefinedSortValue : shaders::PredefinedSortValues)
+		{
+			if (sortVal == predefinedSortValue.first)
+			{
+				_sortReq = static_cast<float>(predefinedSortValue.second);
+				return true;
+			}
+		}
 
 		// no special sort keyword, try to parse the numeric value
 		//  Strip any quotes
@@ -286,7 +286,7 @@ bool ShaderTemplate::parseShaderFlags(parser::DefTokeniser& tokeniser,
 	}
 	else if (token == "decalinfo")
 	{
-        _parseFlags |= Material::PF_HasDecalInfo;
+		_parseFlags |= Material::PF_HasDecalInfo;
 
 		// Syntax: decalInfo <staySeconds> <fadeSeconds> [start rgb] [end rgb]
 		// Example: decalInfo 10 5 ( 1 1 1 1 ) ( 0 0 0 0 )
@@ -330,29 +330,29 @@ bool ShaderTemplate::parseShaderFlags(parser::DefTokeniser& tokeniser,
 		{
 			_deformType = Material::DEFORM_FLARE;
 
-            _deformExpressions.emplace_back(parseSingleExpressionTerm(tokeniser)); // skip size info
+			_deformExpressions.emplace_back(parseSingleExpressionTerm(tokeniser)); // skip size info
 		}
 		else if (type == "expand")
 		{
 			_deformType = Material::DEFORM_EXPAND;
 
-            _deformExpressions.emplace_back(parseSingleExpressionTerm(tokeniser)); // skip amount
+			_deformExpressions.emplace_back(parseSingleExpressionTerm(tokeniser)); // skip amount
 		}
 		else if (type == "move")
 		{
 			_deformType = Material::DEFORM_MOVE;
 
-            _deformExpressions.emplace_back(parseSingleExpressionTerm(tokeniser)); // skip amount
+			_deformExpressions.emplace_back(parseSingleExpressionTerm(tokeniser)); // skip amount
 		}
 		else if (type == "turbulent")
 		{
 			_deformType = Material::DEFORM_TURBULENT;
 
-            _deformDeclName = tokeniser.nextToken(); // table name
+			_deformDeclName = tokeniser.nextToken(); // table name
 
 			_deformExpressions.emplace_back(parseSingleExpressionTerm(tokeniser)); // range
 			_deformExpressions.emplace_back(parseSingleExpressionTerm(tokeniser)); // timeoffset
-            _deformExpressions.emplace_back(parseSingleExpressionTerm(tokeniser)); // domain
+			_deformExpressions.emplace_back(parseSingleExpressionTerm(tokeniser)); // domain
 		}
 		else if (type == "eyeball")
 		{
@@ -361,12 +361,12 @@ bool ShaderTemplate::parseShaderFlags(parser::DefTokeniser& tokeniser,
 		else if (type == "particle")
 		{
 			_deformType = Material::DEFORM_PARTICLE;
-            _deformDeclName = tokeniser.nextToken();
+			_deformDeclName = tokeniser.nextToken();
 		}
 		else if (type == "particle2")
 		{
 			_deformType = Material::DEFORM_PARTICLE2;
-            _deformDeclName = tokeniser.nextToken();
+			_deformDeclName = tokeniser.nextToken();
 		}
 	}
 	else if (token == "renderbump")
@@ -381,23 +381,23 @@ bool ShaderTemplate::parseShaderFlags(parser::DefTokeniser& tokeniser,
 		{
 			if (next == "-size")
 			{
-                // Store -size argument in the command arguments
-                _renderBumpArguments += !_renderBumpArguments.empty() ? " " : "";
-                auto width = tokeniser.nextToken();
-                auto height = tokeniser.nextToken();
-                _renderBumpArguments += fmt::format("{0} {1} {2}", next, width, height);
+				// Store -size argument in the command arguments
+				_renderBumpArguments += !_renderBumpArguments.empty() ? " " : "";
+				auto width = tokeniser.nextToken();
+				auto height = tokeniser.nextToken();
+				_renderBumpArguments += fmt::format("{0} {1} {2}", next, width, height);
 			}
 			else if (next == "-aa")
 			{
-                // Store -aa argument in the command arguments
-                _renderBumpArguments += !_renderBumpArguments.empty() ? " " : "";
-                _renderBumpArguments += fmt::format("{0} {1}", next, tokeniser.nextToken());
+				// Store -aa argument in the command arguments
+				_renderBumpArguments += !_renderBumpArguments.empty() ? " " : "";
+				_renderBumpArguments += fmt::format("{0} {1}", next, tokeniser.nextToken());
 			}
 			else if (next == "-trace")
 			{
-                // Store -trace argument in the command arguments
-                _renderBumpArguments += !_renderBumpArguments.empty() ? " " : "";
-                _renderBumpArguments += fmt::format("{0} {1}", next, tokeniser.nextToken());
+				// Store -trace argument in the command arguments
+				_renderBumpArguments += !_renderBumpArguments.empty() ? " " : "";
+				_renderBumpArguments += fmt::format("{0} {1}", next, tokeniser.nextToken());
 			}
 
 			next = tokeniser.nextToken();
@@ -405,9 +405,9 @@ bool ShaderTemplate::parseShaderFlags(parser::DefTokeniser& tokeniser,
 		}
 
 		// The map token is already loaded in "next", add the highpoly model name
-        _renderBumpArguments += !_renderBumpArguments.empty() ? " " : "";
-        _renderBumpArguments += fmt::format("{0} {1}", next, tokeniser.nextToken());
-        string::trim(_renderBumpArguments);
+		_renderBumpArguments += !_renderBumpArguments.empty() ? " " : "";
+		_renderBumpArguments += fmt::format("{0} {1}", next, tokeniser.nextToken());
+		string::trim(_renderBumpArguments);
 	}
 	else if (token == "renderbumpflat")
 	{
@@ -419,17 +419,17 @@ bool ShaderTemplate::parseShaderFlags(parser::DefTokeniser& tokeniser,
 		// Skip over the optional args
 		if (next == "-size")
 		{
-            auto width = tokeniser.nextToken();
-            auto height = tokeniser.nextToken();
-            _renderBumpFlatArguments += fmt::format("{0} {1} {2}", next, width, height);
+			auto width = tokeniser.nextToken();
+			auto height = tokeniser.nextToken();
+			_renderBumpFlatArguments += fmt::format("{0} {1} {2}", next, width, height);
 
-            next = tokeniser.nextToken();
+			next = tokeniser.nextToken();
 		}
 
-        // The highpoly model token is already loaded in "next"
-        _renderBumpFlatArguments += !_renderBumpFlatArguments.empty() ? " " : "";
-        _renderBumpFlatArguments += next;
-        string::trim(_renderBumpFlatArguments);
+		// The highpoly model token is already loaded in "next"
+		_renderBumpFlatArguments += !_renderBumpFlatArguments.empty() ? " " : "";
+		_renderBumpFlatArguments += next;
+		string::trim(_renderBumpFlatArguments);
 	}
 	else
 	{
@@ -443,22 +443,22 @@ bool ShaderTemplate::parseShaderFlags(parser::DefTokeniser& tokeniser,
  */
 bool ShaderTemplate::parseLightKeywords(parser::DefTokeniser& tokeniser, const std::string& token)
 {
-    if (token == "ambientlight")
+	if (token == "ambientlight")
 	{
-        ambientLight = true;
-    }
-    else if (token == "blendlight")
+		ambientLight = true;
+	}
+	else if (token == "blendlight")
 	{
-        blendLight = true;
-    }
-    else if (token == "foglight")
+		blendLight = true;
+	}
+	else if (token == "foglight")
 	{
-        fogLight = true;
-    }
-    else if (!fogLight && token == "lightfalloffimage")
+		fogLight = true;
+	}
+	else if (!fogLight && token == "lightfalloffimage")
 	{
-        _lightFalloff = MapExpression::createForToken(tokeniser);
-    }
+		_lightFalloff = MapExpression::createForToken(tokeniser);
+	}
 	else
 	{
 		return false; // unrecognised token, return false
@@ -469,24 +469,24 @@ bool ShaderTemplate::parseLightKeywords(parser::DefTokeniser& tokeniser, const s
 
 // Parse any single-line stages (such as "diffusemap x/y/z")
 bool ShaderTemplate::parseBlendShortcuts(parser::DefTokeniser& tokeniser,
-                                         const std::string& token)
+										 const std::string& token)
 {
-    if (token == "qer_editorimage")
-    {
-        _editorTex = MapExpression::createForToken(tokeniser);
-    }
-    else if (token == "diffusemap")
-    {
-        addLayer(IShaderLayer::DIFFUSE, MapExpression::createForToken(tokeniser));
-    }
-    else if (token == "specularmap")
-    {
+	if (token == "qer_editorimage")
+	{
+		_editorTex = MapExpression::createForToken(tokeniser);
+	}
+	else if (token == "diffusemap")
+	{
+		addLayer(IShaderLayer::DIFFUSE, MapExpression::createForToken(tokeniser));
+	}
+	else if (token == "specularmap")
+	{
 		addLayer(IShaderLayer::SPECULAR, MapExpression::createForToken(tokeniser));
-    }
-    else if (token == "bumpmap")
-    {
+	}
+	else if (token == "bumpmap")
+	{
 		addLayer(IShaderLayer::BUMP, MapExpression::createForToken(tokeniser));
-    }
+	}
 	else
 	{
 		return false; // unrecognised token, return false
@@ -501,53 +501,53 @@ bool ShaderTemplate::parseBlendShortcuts(parser::DefTokeniser& tokeniser,
  */
 bool ShaderTemplate::parseBlendType(parser::DefTokeniser& tokeniser, const std::string& token)
 {
-    if (token == "blend")
-    {
-        // Special blend type, either predefined like "add" or "modulate",
-        // or an explicit combination of GL blend modes
-        StringPair blendFuncStrings;
-        blendFuncStrings.first = string::to_lower_copy(tokeniser.nextToken());
+	if (token == "blend")
+	{
+		// Special blend type, either predefined like "add" or "modulate",
+		// or an explicit combination of GL blend modes
+		StringPair blendFuncStrings;
+		blendFuncStrings.first = string::to_lower_copy(tokeniser.nextToken());
 
-        if (blendFuncStrings.first.substr(0, 3) == "gl_")
-        {
-            // This is an explicit GL blend mode
-            tokeniser.assertNextToken(",");
-            blendFuncStrings.second = string::to_lower_copy(tokeniser.nextToken());
-        }
-        else
-        {
-            blendFuncStrings.second = "";
-        }
+		if (blendFuncStrings.first.substr(0, 3) == "gl_")
+		{
+			// This is an explicit GL blend mode
+			tokeniser.assertNextToken(",");
+			blendFuncStrings.second = string::to_lower_copy(tokeniser.nextToken());
+		}
+		else
+		{
+			blendFuncStrings.second = "";
+		}
 
-        _currentLayer->setBlendFuncStrings(blendFuncStrings);
-	    return true;
-    }
+		_currentLayer->setBlendFuncStrings(blendFuncStrings);
+		return true;
+	}
 	
-    return false; // unrecognised token, return false
+	return false; // unrecognised token, return false
 }
 
 /* Searches for the map keyword in stage 2, expects token to be lowercase
  */
 bool ShaderTemplate::parseBlendMaps(parser::DefTokeniser& tokeniser, const std::string& token)
 {
-    if (token == "map")
-    {
-        _currentLayer->setBindableTexture(MapExpression::createForToken(tokeniser));
-        // Don't reset the map type of this layer, "map" can occur in multiple scenarios
-    }
-    else if (token == "cameracubemap")
-    {
-        std::string cubeMapPrefix = tokeniser.nextToken();
-        _currentLayer->setBindableTexture(
-            CameraCubeMapDecl::createForPrefix(cubeMapPrefix)
-        );
-        _currentLayer->setMapType(IShaderLayer::MapType::CameraCubeMap);
-        _currentLayer->setCubeMapMode(IShaderLayer::CUBE_MAP_CAMERA);
-    }
+	if (token == "map")
+	{
+		_currentLayer->setBindableTexture(MapExpression::createForToken(tokeniser));
+		// Don't reset the map type of this layer, "map" can occur in multiple scenarios
+	}
+	else if (token == "cameracubemap")
+	{
+		std::string cubeMapPrefix = tokeniser.nextToken();
+		_currentLayer->setBindableTexture(
+			CameraCubeMapDecl::createForPrefix(cubeMapPrefix)
+		);
+		_currentLayer->setMapType(IShaderLayer::MapType::CameraCubeMap);
+		_currentLayer->setCubeMapMode(IShaderLayer::CUBE_MAP_CAMERA);
+	}
 	else if (token == "texgen")
 	{
 		std::string type = tokeniser.nextToken();
-        _currentLayer->setParseFlag(IShaderLayer::PF_HasTexGenKeyword);
+		_currentLayer->setParseFlag(IShaderLayer::PF_HasTexGenKeyword);
 
 		if (type == "skybox")
 		{
@@ -566,42 +566,42 @@ bool ShaderTemplate::parseBlendMaps(parser::DefTokeniser& tokeniser, const std::
 			_currentLayer->setTexGenType(IShaderLayer::TEXGEN_WOBBLESKY);
 
 			// Parse the 3 wobblesky expressions
-            _currentLayer->setTexGenExpression(0, parseSingleExpressionTerm(tokeniser));
-            _currentLayer->setTexGenExpression(1, parseSingleExpressionTerm(tokeniser));
-            _currentLayer->setTexGenExpression(2, parseSingleExpressionTerm(tokeniser));
+			_currentLayer->setTexGenExpression(0, parseSingleExpressionTerm(tokeniser));
+			_currentLayer->setTexGenExpression(1, parseSingleExpressionTerm(tokeniser));
+			_currentLayer->setTexGenExpression(2, parseSingleExpressionTerm(tokeniser));
 		}
 	}
 	else if (token == "cubemap")
-    {
+	{
 		// Parse the cubemap expression, but don't do anything with it for now
-        _currentLayer->setBindableTexture(MapExpression::createForToken(tokeniser));
-        _currentLayer->setMapType(IShaderLayer::MapType::CubeMap);
-        _currentLayer->setCubeMapMode(IShaderLayer::CUBE_MAP_OBJECT);
-    }
+		_currentLayer->setBindableTexture(MapExpression::createForToken(tokeniser));
+		_currentLayer->setMapType(IShaderLayer::MapType::CubeMap);
+		_currentLayer->setCubeMapMode(IShaderLayer::CUBE_MAP_OBJECT);
+	}
 	else if (token == "videomap")
-    {
-        _currentLayer->setMapType(IShaderLayer::MapType::VideoMap);
-        _currentLayer->setBindableTexture(
-            VideoMapExpression::CreateForTokens(tokeniser)
-        );
-    }
+	{
+		_currentLayer->setMapType(IShaderLayer::MapType::VideoMap);
+		_currentLayer->setBindableTexture(
+			VideoMapExpression::CreateForTokens(tokeniser)
+		);
+	}
 	else if (token == "soundmap")
 	{
-        _currentLayer->setMapType(IShaderLayer::MapType::SoundMap);
-        _currentLayer->setBindableTexture(
-            SoundMapExpression::CreateForTokens(tokeniser)
-        );
+		_currentLayer->setMapType(IShaderLayer::MapType::SoundMap);
+		_currentLayer->setBindableTexture(
+			SoundMapExpression::CreateForTokens(tokeniser)
+		);
 	}
 	else if (token == "remoterendermap")
 	{
-        _currentLayer->setMapType(IShaderLayer::MapType::RemoteRenderMap);
-        parseRenderMapSize(tokeniser, true); // remoteRenderMap dimension is mandatory
+		_currentLayer->setMapType(IShaderLayer::MapType::RemoteRenderMap);
+		parseRenderMapSize(tokeniser, true); // remoteRenderMap dimension is mandatory
 	}
 	else if (token == "mirrorrendermap")
 	{
-        _currentLayer->setMapType(IShaderLayer::MapType::MirrorRenderMap);
-        _currentLayer->setTexGenType(IShaderLayer::TexGenType::TEXGEN_SCREEN);
-        parseRenderMapSize(tokeniser, true); // mirrorRenderMap dimension is optional
+		_currentLayer->setMapType(IShaderLayer::MapType::MirrorRenderMap);
+		_currentLayer->setTexGenType(IShaderLayer::TexGenType::TEXGEN_SCREEN);
+		parseRenderMapSize(tokeniser, true); // mirrorRenderMap dimension is optional
 	}
 	else
 	{
@@ -613,48 +613,48 @@ bool ShaderTemplate::parseBlendMaps(parser::DefTokeniser& tokeniser, const std::
 
 void ShaderTemplate::parseRenderMapSize(parser::DefTokeniser& tokeniser, bool optional)
 {
-    // Parse the dimensions without immediately exhausting the upcoming token
-    // Will not exhaust the tokens that are not convertible to an integer
-    int width;
-    if (string::tryConvertToInt(tokeniser.peek(), width))
-    {
-        tokeniser.nextToken(); // exhaust
-    }
-    else if (!optional)
-    {
-        rWarning() << "Error parsing render map width. Expected two integers." << std::endl;
-        return;
-    }
+	// Parse the dimensions without immediately exhausting the upcoming token
+	// Will not exhaust the tokens that are not convertible to an integer
+	int width;
+	if (string::tryConvertToInt(tokeniser.peek(), width))
+	{
+		tokeniser.nextToken(); // exhaust
+	}
+	else if (!optional)
+	{
+		rWarning() << "Error parsing render map width. Expected two integers." << std::endl;
+		return;
+	}
 
-    int height;
-    if (string::tryConvertToInt(tokeniser.peek(), height))
-    {
-        tokeniser.nextToken(); // exhaust
-    }
-    else if (!optional)
-    {
-        rWarning() << "Error parsing render map height. Expected two integers." << std::endl;
-        return;
-    }
+	int height;
+	if (string::tryConvertToInt(tokeniser.peek(), height))
+	{
+		tokeniser.nextToken(); // exhaust
+	}
+	else if (!optional)
+	{
+		rWarning() << "Error parsing render map height. Expected two integers." << std::endl;
+		return;
+	}
 
-    _currentLayer->setRenderMapSize({ width, height });
+	_currentLayer->setRenderMapSize({ width, height });
 }
 
 bool ShaderTemplate::parseStageModifiers(parser::DefTokeniser& tokeniser,
-                                         const std::string& token)
+										 const std::string& token)
 {
-    if (token == "vertexcolor")
-    {
-        _currentLayer->setVertexColourMode(
-            IShaderLayer::VERTEX_COLOUR_MULTIPLY
-        );
-    }
-    else if (token == "inversevertexcolor")
-    {
-        _currentLayer->setVertexColourMode(
-            IShaderLayer::VERTEX_COLOUR_INVERSE_MULTIPLY
-        );
-    }
+	if (token == "vertexcolor")
+	{
+		_currentLayer->setVertexColourMode(
+			IShaderLayer::VERTEX_COLOUR_MULTIPLY
+		);
+	}
+	else if (token == "inversevertexcolor")
+	{
+		_currentLayer->setVertexColourMode(
+			IShaderLayer::VERTEX_COLOUR_INVERSE_MULTIPLY
+		);
+	}
 	else if (token == "red")
 	{
 		IShaderExpression::Ptr expr = ShaderExpression::createFromTokens(tokeniser);
@@ -773,38 +773,38 @@ bool ShaderTemplate::parseStageModifiers(parser::DefTokeniser& tokeniser,
 	}
 	else if (token == "vertexparm")
 	{
-        IShaderLayer::VertexParm parm;
+		IShaderLayer::VertexParm parm;
 
 		// vertexParm		<parmNum>		<parm1> [,<parm2>] [,<parm3>] [,<parm4>]
 		parm.index = string::convert<int>(tokeniser.nextToken());
 
-        if (parm.index < 0 || parm.index >= NUM_MAX_VERTEX_PARMS)
-        {
-            throw parser::ParseException(fmt::format("A material stage can have {0} vertex parameters at most", NUM_MAX_VERTEX_PARMS));
-        }
+		if (parm.index < 0 || parm.index >= NUM_MAX_VERTEX_PARMS)
+		{
+			throw parser::ParseException(fmt::format("A material stage can have {0} vertex parameters at most", NUM_MAX_VERTEX_PARMS));
+		}
 
-        parm.expressions[0] = ShaderExpression::createFromTokens(tokeniser);
+		parm.expressions[0] = ShaderExpression::createFromTokens(tokeniser);
 
-        for (int i = 1; i < 4 && tokeniser.peek() == ","; ++i)
-        {
-            tokeniser.nextToken();
+		for (int i = 1; i < 4 && tokeniser.peek() == ","; ++i)
+		{
+			tokeniser.nextToken();
 
-            parm.expressions[i] = ShaderExpression::createFromTokens(tokeniser);
-        }
+			parm.expressions[i] = ShaderExpression::createFromTokens(tokeniser);
+		}
 
-        _currentLayer->addVertexParm(parm);
+		_currentLayer->addVertexParm(parm);
 	}
 	else if (token == "fragmentmap")
 	{
-        IShaderLayer::FragmentMap map;
+		IShaderLayer::FragmentMap map;
 
 		// fragmentMap <index> [options] <map>
-        map.index = string::convert<int>(tokeniser.nextToken());
+		map.index = string::convert<int>(tokeniser.nextToken());
 
-        if (map.index < 0 || map.index >= NUM_MAX_FRAGMENT_MAPS)
-        {
-            throw parser::ParseException(fmt::format("A material stage can have {0} fragment maps at most", NUM_MAX_FRAGMENT_MAPS));
-        }
+		if (map.index < 0 || map.index >= NUM_MAX_FRAGMENT_MAPS)
+		{
+			throw parser::ParseException(fmt::format("A material stage can have {0} fragment maps at most", NUM_MAX_FRAGMENT_MAPS));
+		}
 
 		std::string next = tokeniser.peek();
 		string::to_lower(next);
@@ -815,19 +815,19 @@ bool ShaderTemplate::parseStageModifiers(parser::DefTokeniser& tokeniser,
 			next == "zeroclamp" || next == "alphazeroclamp" || next == "forcehighquality" ||
 			next == "uncompressed" || next == "highquality" || next == "nopicmip")
 		{
-            map.options.emplace_back(tokeniser.nextToken());
+			map.options.emplace_back(tokeniser.nextToken());
 
 			next = tokeniser.peek();
 			string::to_lower(next);
 		}
 
 		// Get the map expression and add the fragment map to the stage
-        map.map = MapExpression::createForToken(tokeniser);
+		map.map = MapExpression::createForToken(tokeniser);
 
 		_currentLayer->addFragmentMap(map);
 	}
-    else if (token == "alphatest")
-    {
+	else if (token == "alphatest")
+	{
 		// Get the alphatest expression
 		IShaderExpression::Ptr expr = ShaderExpression::createFromTokens(tokeniser);
 		   
@@ -841,7 +841,7 @@ bool ShaderTemplate::parseStageModifiers(parser::DefTokeniser& tokeniser,
 		}
 
 		_coverage = Material::MC_PERFORATED;
-    }
+	}
 	else if (token == "scale")
 	{
 		auto xScaleExpr = ShaderExpression::createFromTokens(tokeniser);
@@ -850,12 +850,12 @@ bool ShaderTemplate::parseStageModifiers(parser::DefTokeniser& tokeniser,
 
 		if (xScaleExpr && yScaleExpr)
 		{
-            _currentLayer->appendTransformation(IShaderLayer::Transformation
-            {
-                IShaderLayer::TransformType::Scale, 
-                xScaleExpr, 
-                yScaleExpr
-            });
+			_currentLayer->appendTransformation(IShaderLayer::Transformation
+			{
+				IShaderLayer::TransformType::Scale, 
+				xScaleExpr, 
+				yScaleExpr
+			});
 		}
 		else
 		{
@@ -870,12 +870,12 @@ bool ShaderTemplate::parseStageModifiers(parser::DefTokeniser& tokeniser,
 
 		if (xScaleExpr && yScaleExpr)
 		{
-            _currentLayer->appendTransformation(IShaderLayer::Transformation
-            {
-                IShaderLayer::TransformType::CenterScale,
-                xScaleExpr,
-                yScaleExpr
-            });
+			_currentLayer->appendTransformation(IShaderLayer::Transformation
+			{
+				IShaderLayer::TransformType::CenterScale,
+				xScaleExpr,
+				yScaleExpr
+			});
 		}
 		else
 		{
@@ -890,12 +890,12 @@ bool ShaderTemplate::parseStageModifiers(parser::DefTokeniser& tokeniser,
 
 		if (xTranslateExpr && yTranslateExpr)
 		{
-            _currentLayer->appendTransformation(IShaderLayer::Transformation
-                {
-                    IShaderLayer::TransformType::Translate,
-                    xTranslateExpr,
-                    yTranslateExpr
-                });
+			_currentLayer->appendTransformation(IShaderLayer::Transformation
+				{
+					IShaderLayer::TransformType::Translate,
+					xTranslateExpr,
+					yTranslateExpr
+				});
 		}
 		else
 		{
@@ -910,12 +910,12 @@ bool ShaderTemplate::parseStageModifiers(parser::DefTokeniser& tokeniser,
 
 		if (xShearExpr && yShearExpr)
 		{
-            _currentLayer->appendTransformation(IShaderLayer::Transformation
-            {
-                IShaderLayer::TransformType::Shear,
-                xShearExpr,
-                yShearExpr
-            });
+			_currentLayer->appendTransformation(IShaderLayer::Transformation
+			{
+				IShaderLayer::TransformType::Shear,
+				xShearExpr,
+				yShearExpr
+			});
 		}
 		else
 		{
@@ -928,11 +928,11 @@ bool ShaderTemplate::parseStageModifiers(parser::DefTokeniser& tokeniser,
 
 		if (rotationExpr)
 		{
-            _currentLayer->appendTransformation(IShaderLayer::Transformation
-            {
-                IShaderLayer::TransformType::Rotate,
-                rotationExpr
-            });
+			_currentLayer->appendTransformation(IShaderLayer::Transformation
+			{
+				IShaderLayer::TransformType::Rotate,
+				rotationExpr
+			});
 		}
 		else
 		{
@@ -945,7 +945,7 @@ bool ShaderTemplate::parseStageModifiers(parser::DefTokeniser& tokeniser,
 	}
 	else if (token == "colored")
 	{
-        _currentLayer->setParseFlag(IShaderLayer::PF_HasColoredKeyword);
+		_currentLayer->setParseFlag(IShaderLayer::PF_HasColoredKeyword);
 		_currentLayer->setColourExpression(Doom3ShaderLayer::COMP_RED, ShaderExpression::createFromString("parm0"));
 		_currentLayer->setColourExpression(Doom3ShaderLayer::COMP_GREEN, ShaderExpression::createFromString("parm1"));
 		_currentLayer->setColourExpression(Doom3ShaderLayer::COMP_BLUE, ShaderExpression::createFromString("parm2"));
@@ -966,7 +966,7 @@ bool ShaderTemplate::parseStageModifiers(parser::DefTokeniser& tokeniser,
 	else if (token == "noclamp")
 	{
 		_currentLayer->setClampType(CLAMP_REPEAT);
-        _currentLayer->setParseFlag(IShaderLayer::PF_HasNoclampKeyword);
+		_currentLayer->setParseFlag(IShaderLayer::PF_HasNoclampKeyword);
 	}
 	else if (token == "uncompressed" || token == "highquality")
 	{
@@ -1028,77 +1028,77 @@ bool ShaderTemplate::parseStageModifiers(parser::DefTokeniser& tokeniser,
 
 bool ShaderTemplate::parseMaterialType(parser::DefTokeniser& tokeniser, const std::string& token)
 {
-    for (const auto& pair : SurfaceTypeMapping)
-    {
-        if (token == pair.first)
-        {
-            _surfaceType = pair.second;
-            return true;
-        }
-    }
+	for (const auto& pair : SurfaceTypeMapping)
+	{
+		if (token == pair.first)
+		{
+			_surfaceType = pair.second;
+			return true;
+		}
+	}
 
-    return false;
+	return false;
 }
 
 Vector3 ShaderTemplate::parseScalarOrVector3(parser::DefTokeniser& tokeniser)
 {
-    auto token = tokeniser.nextToken();
+	auto token = tokeniser.nextToken();
 
-    if (token == "(") // vector
-    {
-        auto x = string::convert<Vector3::ElementType>(tokeniser.nextToken());
-        auto y = string::convert<Vector3::ElementType>(tokeniser.nextToken());
-        auto z = string::convert<Vector3::ElementType>(tokeniser.nextToken());
-        tokeniser.assertNextToken(")");
+	if (token == "(") // vector
+	{
+		auto x = string::convert<Vector3::ElementType>(tokeniser.nextToken());
+		auto y = string::convert<Vector3::ElementType>(tokeniser.nextToken());
+		auto z = string::convert<Vector3::ElementType>(tokeniser.nextToken());
+		tokeniser.assertNextToken(")");
 
-        return Vector3(x, y, z);
-    }
+		return Vector3(x, y, z);
+	}
 
-    // scalar
-    auto value = string::convert<Vector3::ElementType>(token);
-    return Vector3(value, value, value);
+	// scalar
+	auto value = string::convert<Vector3::ElementType>(token);
+	return Vector3(value, value, value);
 }
 
 bool ShaderTemplate::parseSurfaceFlags(parser::DefTokeniser& tokeniser,
-                                       const std::string& token)
+									   const std::string& token)
 {
-    for (const auto& pair : SurfaceFlags)
-    {
-        if (token == pair.first)
-        {
-            _surfaceFlags |= pair.second;
-            return true;
-        }
-    }
+	for (const auto& pair : SurfaceFlags)
+	{
+		if (token == pair.first)
+		{
+			_surfaceFlags |= pair.second;
+			return true;
+		}
+	}
 
 	if (token == "guisurf")
 	{
 		// "guisurf blah.gui" or "guisurf entity[2|3]"
 		_surfaceFlags |= Material::SURF_GUISURF;
 
-        auto argument = tokeniser.nextToken();
+		auto argument = tokeniser.nextToken();
 
-        if (string::to_lower_copy(argument) == "entity")
-        {
-            _surfaceFlags |= Material::SURF_ENTITYGUI;
-        }
-        else if (string::to_lower_copy(argument) == "entity2")
-        {
-            _surfaceFlags |= Material::SURF_ENTITYGUI2;
-        }
-        else if (string::to_lower_copy(argument) == "entity3")
-        {
-            _surfaceFlags |= Material::SURF_ENTITYGUI3;
-        }
-        else
-        {
-            _guiDeclName = argument;
-        }
+		if (string::to_lower_copy(argument) == "entity")
+		{
+			_surfaceFlags |= Material::SURF_ENTITYGUI;
+		}
+		else if (string::to_lower_copy(argument) == "entity2")
+		{
+			_surfaceFlags |= Material::SURF_ENTITYGUI2;
+		}
+		else if (string::to_lower_copy(argument) == "entity3")
+		{
+			_surfaceFlags |= Material::SURF_ENTITYGUI3;
+		}
+		else
+		{
+			_guiDeclName = argument;
+		}
 
-        return true;
+		return true;
 	}
 	
-    return false; // unrecognised token, return false
+	return false; // unrecognised token, return false
 }
 
 bool ShaderTemplate::parseCondition(parser::DefTokeniser& tokeniser, const std::string& token)
@@ -1122,109 +1122,109 @@ bool ShaderTemplate::parseCondition(parser::DefTokeniser& tokeniser, const std::
  */
 bool ShaderTemplate::saveLayer()
 {
-    // Append layer to list of all layers
-    if (_currentLayer->getBindableTexture() || 
-        _currentLayer->getMapType() == IShaderLayer::MapType::RemoteRenderMap ||
-        _currentLayer->getMapType() == IShaderLayer::MapType::MirrorRenderMap ||
-        !_currentLayer->getVertexProgram().empty() || !_currentLayer->getFragmentProgram().empty())
-    {
+	// Append layer to list of all layers
+	if (_currentLayer->getBindableTexture() || 
+		_currentLayer->getMapType() == IShaderLayer::MapType::RemoteRenderMap ||
+		_currentLayer->getMapType() == IShaderLayer::MapType::MirrorRenderMap ||
+		!_currentLayer->getVertexProgram().empty() || !_currentLayer->getFragmentProgram().empty())
+	{
 		addLayer(_currentLayer);
-    }
+	}
 
-    // Clear the currentLayer structure for possible future layers
-    _currentLayer = std::make_shared<Doom3ShaderLayer>(*this);
+	// Clear the currentLayer structure for possible future layers
+	_currentLayer = std::make_shared<Doom3ShaderLayer>(*this);
 
-    return true;
+	return true;
 }
 
 void ShaderTemplate::clear()
 {
-    _layers.clear();
-    _currentLayer.reset(new Doom3ShaderLayer(*this));
+	_layers.clear();
+	_currentLayer.reset(new Doom3ShaderLayer(*this));
 
-    description.clear();
-    _suppressChangeSignal = false;
-    fogLight = false;
-    ambientLight = false;
-    blendLight = false;
-    _materialFlags = 0;
-    _cullType = Material::CULL_BACK;
-    _clampType = CLAMP_REPEAT;
-    _surfaceFlags = 0;
-    _surfaceType = Material::SURFTYPE_DEFAULT;
-    _deformType = Material::DEFORM_NONE;
-    _sortReq = SORT_UNDEFINED;	// will be set to default values after the shader has been parsed
-    _polygonOffset = 0.0f;
-    _coverage = Material::MC_UNDETERMINED;
-    _parseFlags = 0;
-    
-    _decalInfo.stayMilliSeconds = 0;
-    _decalInfo.fadeMilliSeconds = 0;
-    _decalInfo.startColour = Vector4(1, 1, 1, 1);
-    _decalInfo.endColour = Vector4(0, 0, 0, 0);
+	description.clear();
+	_suppressChangeSignal = false;
+	fogLight = false;
+	ambientLight = false;
+	blendLight = false;
+	_materialFlags = 0;
+	_cullType = Material::CULL_BACK;
+	_clampType = CLAMP_REPEAT;
+	_surfaceFlags = 0;
+	_surfaceType = Material::SURFTYPE_DEFAULT;
+	_deformType = Material::DEFORM_NONE;
+	_sortReq = SORT_UNDEFINED;	// will be set to default values after the shader has been parsed
+	_polygonOffset = 0.0f;
+	_coverage = Material::MC_UNDETERMINED;
+	_parseFlags = 0;
+	
+	_decalInfo.stayMilliSeconds = 0;
+	_decalInfo.fadeMilliSeconds = 0;
+	_decalInfo.startColour = Vector4(1, 1, 1, 1);
+	_decalInfo.endColour = Vector4(0, 0, 0, 0);
 }
 
 void ShaderTemplate::onBeginParsing()
 {
-    clear();
+	clear();
 }
 
 void ShaderTemplate::parseFromTokens(parser::DefTokeniser& tokeniser)
 {
-    util::ScopedBoolLock parseLock(_suppressChangeSignal);
+	util::ScopedBoolLock parseLock(_suppressChangeSignal);
 
-    int level = 1;  // we always start at top level
+	int level = 1;  // we always start at top level
 
-    while (level > 0 && tokeniser.hasMoreTokens())
-    {
-        auto token = tokeniser.nextToken();
-        
-        if (token == "}")
-        {
-            if (--level == 1)
-            {
-                saveLayer();
-            }
-        }
-        else if (token == "{")
-        {
-            ++level;
-        }
-        else
-        {
-            string::to_lower(token);
+	while (level > 0 && tokeniser.hasMoreTokens())
+	{
+		auto token = tokeniser.nextToken();
+		
+		if (token == "}")
+		{
+			if (--level == 1)
+			{
+				saveLayer();
+			}
+		}
+		else if (token == "{")
+		{
+			++level;
+		}
+		else
+		{
+			string::to_lower(token);
 
-            switch (level)
-            {
-                case 1: // global level
-                    if (parseShaderFlags(tokeniser, token)) continue;
-                    if (parseLightKeywords(tokeniser, token)) continue;
-                    if (parseBlendShortcuts(tokeniser, token)) continue;
-                    if (parseSurfaceFlags(tokeniser, token)) continue;
-                    if (parseMaterialType(tokeniser, token)) continue;
+			switch (level)
+			{
+				case 1: // global level
+					if (parseShaderFlags(tokeniser, token)) continue;
+					if (parseLightKeywords(tokeniser, token)) continue;
+					if (parseBlendShortcuts(tokeniser, token)) continue;
+					if (parseSurfaceFlags(tokeniser, token)) continue;
+					if (parseMaterialType(tokeniser, token)) continue;
 
-                    rWarning() << "Material keyword not recognised: " << token << std::endl;
+					rWarning() << "Material keyword not recognised: " << token << std::endl;
 
-                    break;
-                case 2: // stage level
-                    if (parseCondition(tokeniser, token)) continue;
-                    if (parseBlendType(tokeniser, token)) continue;
-                    if (parseBlendMaps(tokeniser, token)) continue;
-                    if (parseStageModifiers(tokeniser, token)) continue;
+					break;
+				case 2: // stage level
+					if (parseCondition(tokeniser, token)) continue;
+					if (parseBlendType(tokeniser, token)) continue;
+					if (parseBlendMaps(tokeniser, token)) continue;
+					if (parseStageModifiers(tokeniser, token)) continue;
 
-                    rWarning() << "Stage keyword not recognised: " << token << std::endl;
+					rWarning() << "Stage keyword not recognised: " << token << std::endl;
 
-                    break;
-            }
-        }
-    }
+					break;
+			}
+		}
+	}
 
 	// greebo: It appears that D3 is applying default sort values for material without
 	// an explicitly defined sort value, depending on a couple of things I didn't really investigate
 	// Some blend materials get SORT_MEDIUM applied by default, diffuses get OPAQUE assigned, but lights do not, etc.
 	if (_sortReq == SORT_UNDEFINED)
 	{
-        resetSortRequest();
+		resetSortRequest();
 	}
 
 	determineCoverage();
@@ -1232,97 +1232,97 @@ void ShaderTemplate::parseFromTokens(parser::DefTokeniser& tokeniser)
 
 void ShaderTemplate::determineCoverage()
 {
-    // An explicit translucent keyword makes it clear
-    if (_materialFlags & Material::FLAG_TRANSLUCENT)
-    {
-        _coverage = Material::MC_TRANSLUCENT;
-        return;
-    }
+	// An explicit translucent keyword makes it clear
+	if (_materialFlags & Material::FLAG_TRANSLUCENT)
+	{
+		_coverage = Material::MC_TRANSLUCENT;
+		return;
+	}
 
-    // Determine coverage if not yet done
-    if (_coverage == Material::MC_UNDETERMINED)
-    {
-        std::size_t numAmbientStages = 0;
+	// Determine coverage if not yet done
+	if (_coverage == Material::MC_UNDETERMINED)
+	{
+		std::size_t numAmbientStages = 0;
 
-        for (const auto& layer : _layers)
-        {
-            if (layer->getType() == IShaderLayer::BLEND)
-            {
-                numAmbientStages++;
-            }
-        }
+		for (const auto& layer : _layers)
+		{
+			if (layer->getType() == IShaderLayer::BLEND)
+			{
+				numAmbientStages++;
+			}
+		}
 
-        // automatically set MC_TRANSLUCENT if we don't have any interaction stages and 
-        // the first stage is blended and not an alpha test mask or a subview
-        if (_layers.empty())
-        {
-            // non-visible
-            _coverage = Material::MC_TRANSLUCENT;
-        }
-        else if (_layers.size() != numAmbientStages)
-        {
-            // we have an interaction draw
-            _coverage = Material::MC_OPAQUE;
+		// automatically set MC_TRANSLUCENT if we don't have any interaction stages and 
+		// the first stage is blended and not an alpha test mask or a subview
+		if (_layers.empty())
+		{
+			// non-visible
+			_coverage = Material::MC_TRANSLUCENT;
+		}
+		else if (_layers.size() != numAmbientStages)
+		{
+			// we have an interaction draw
+			_coverage = Material::MC_OPAQUE;
 
-            // Check if we have alpha-tested layers
-            for (const auto& layer : _layers)
-            {
-                if (layer->hasAlphaTest())
-                {
-                    _coverage = Material::MC_PERFORATED;
-                    break;
-                }
-            }
-        }
-        else
-        {
-            const Doom3ShaderLayer& firstLayer = **_layers.begin();
+			// Check if we have alpha-tested layers
+			for (const auto& layer : _layers)
+			{
+				if (layer->hasAlphaTest())
+				{
+					_coverage = Material::MC_PERFORATED;
+					break;
+				}
+			}
+		}
+		else
+		{
+			const Doom3ShaderLayer& firstLayer = **_layers.begin();
 
-            BlendFunc blend = firstLayer.getBlendFunc();
+			BlendFunc blend = firstLayer.getBlendFunc();
 
-            // If the layers are blended with the destination, we consider it translucent
-            if (blend.dest != GL_ZERO ||
-                blend.src == GL_DST_COLOR ||
-                blend.src == GL_ONE_MINUS_DST_COLOR ||
-                blend.src == GL_DST_ALPHA ||
-                blend.src == GL_ONE_MINUS_DST_ALPHA)
-            {
-                _coverage = Material::MC_TRANSLUCENT;
-            }
-            else
-            {
-                _coverage = Material::MC_OPAQUE;
-            }
-        }
-    }
+			// If the layers are blended with the destination, we consider it translucent
+			if (blend.dest != GL_ZERO ||
+				blend.src == GL_DST_COLOR ||
+				blend.src == GL_ONE_MINUS_DST_COLOR ||
+				blend.src == GL_DST_ALPHA ||
+				blend.src == GL_ONE_MINUS_DST_ALPHA)
+			{
+				_coverage = Material::MC_TRANSLUCENT;
+			}
+			else
+			{
+				_coverage = Material::MC_OPAQUE;
+			}
+		}
+	}
 
-    // translucent automatically implies noshadows
-    if (_coverage == Material::MC_TRANSLUCENT)
-    {
-        _materialFlags |= Material::FLAG_NOSHADOWS;
-    }
-    else
-    {
-        // mark the contents as opaque
-        _surfaceFlags |= Material::SURF_OPAQUE;
-    }
+	// translucent automatically implies noshadows
+	if (_coverage == Material::MC_TRANSLUCENT)
+	{
+		_materialFlags |= Material::FLAG_NOSHADOWS;
+	}
+	else
+	{
+		// mark the contents as opaque
+		_surfaceFlags |= Material::SURF_OPAQUE;
+	}
 }
 
 void ShaderTemplate::addLayer(const Doom3ShaderLayer::Ptr& layer)
 {
-    ensureParsed();
+	ensureParsed();
 
-    // Add the layer
-    _layers.emplace_back(layer);
+	// Add the layer
+	_layers.emplace_back(layer);
 
-    // If this is our first layer, redetermine the coverage
-    if (_layers.size() == 1)
-    {
-        _coverage = Material::MC_UNDETERMINED;
-        determineCoverage();
-    }
+	// If this is our first layer, redetermine the coverage
+	if (_layers.size() == 1)
+	{
+		_coverage = Material::MC_UNDETERMINED;
+		determineCoverage();
+	}
 
-    onTemplateChanged();
+	onTemplateChanged();
 }
 
 void ShaderTemplate::addLayer(IShaderLayer::Type type, const MapExpressionPtr& mapExpr)
@@ -1333,66 +1333,66 @@ void ShaderTemplate::addLayer(IShaderLayer::Type type, const MapExpressionPtr& m
 
 std::size_t ShaderTemplate::addLayer(IShaderLayer::Type type)
 {
-    // Determine the default map expression to use for this type
-    std::shared_ptr<MapExpression> map;
+	// Determine the default map expression to use for this type
+	std::shared_ptr<MapExpression> map;
 
-    switch (type)
-    {
-    case IShaderLayer::BUMP:
-        map = MapExpression::createForString("_flat");
-        break;
-    case IShaderLayer::SPECULAR:
-        map = MapExpression::createForString("_black");
-        break;
-    case IShaderLayer::DIFFUSE:
-        map = MapExpression::createForString("_white");
-    case IShaderLayer::BLEND:
-    default:
-        break;
-    }
+	switch (type)
+	{
+	case IShaderLayer::BUMP:
+		map = MapExpression::createForString("_flat");
+		break;
+	case IShaderLayer::SPECULAR:
+		map = MapExpression::createForString("_black");
+		break;
+	case IShaderLayer::DIFFUSE:
+		map = MapExpression::createForString("_white");
+	case IShaderLayer::BLEND:
+	default:
+		break;
+	}
 
-    addLayer(std::make_shared<Doom3ShaderLayer>(*this, type, map));
+	addLayer(std::make_shared<Doom3ShaderLayer>(*this, type, map));
 
-    return _layers.size() - 1;
+	return _layers.size() - 1;
 }
 
 void ShaderTemplate::removeLayer(std::size_t index)
 {
-    _layers.erase(_layers.begin() + index);
+	_layers.erase(_layers.begin() + index);
 
-    if (_layers.empty())
-    {
-        _coverage = Material::MC_UNDETERMINED;
-        determineCoverage();
-    }
+	if (_layers.empty())
+	{
+		_coverage = Material::MC_UNDETERMINED;
+		determineCoverage();
+	}
 
-    onTemplateChanged();
+	onTemplateChanged();
 }
 
 void ShaderTemplate::swapLayerPosition(std::size_t first, std::size_t second)
 {
-    if (first >= _layers.size() || second >= _layers.size())
-    {
-        return;
-    }
+	if (first >= _layers.size() || second >= _layers.size())
+	{
+		return;
+	}
 
-    _layers[first].swap(_layers[second]);
+	_layers[first].swap(_layers[second]);
 
-    onTemplateChanged();
+	onTemplateChanged();
 }
 
 std::size_t ShaderTemplate::duplicateLayer(std::size_t index)
 {
-    if (index >= _layers.size())
-    {
-        throw std::runtime_error("Cannot duplicate this stage, index invalid");
-    }
+	if (index >= _layers.size())
+	{
+		throw std::runtime_error("Cannot duplicate this stage, index invalid");
+	}
 
-    _layers.emplace_back(std::make_shared<Doom3ShaderLayer>(*_layers[index], *this));
+	_layers.emplace_back(std::make_shared<Doom3ShaderLayer>(*_layers[index], *this));
 
-    onTemplateChanged();
+	onTemplateChanged();
 
-    return _layers.size() - 1;
+	return _layers.size() - 1;
 }
 
 bool ShaderTemplate::hasDiffusemap()
@@ -1400,71 +1400,71 @@ bool ShaderTemplate::hasDiffusemap()
 	ensureParsed();
 
 	for (const auto& layer : _layers)
-    {
-        if (layer->getType() == IShaderLayer::DIFFUSE)
-        {
-            return true;
-        }
-    }
+	{
+		if (layer->getType() == IShaderLayer::DIFFUSE)
+		{
+			return true;
+		}
+	}
 
 	return false; // no diffuse found
 }
 
 int ShaderTemplate::getParseFlags()
 {
-    ensureParsed();
+	ensureParsed();
 
-    return _parseFlags;
+	return _parseFlags;
 }
 
 std::string ShaderTemplate::getRenderBumpArguments()
 {
-    ensureParsed();
+	ensureParsed();
 
-    return _renderBumpArguments;
+	return _renderBumpArguments;
 }
 
 std::string ShaderTemplate::getRenderBumpFlatArguments()
 {
-    ensureParsed();
+	ensureParsed();
 
-    return _renderBumpFlatArguments;
+	return _renderBumpFlatArguments;
 }
 
 bool ShaderTemplate::evaluateMacroUsage()
 {
-    ensureParsed();
+	ensureParsed();
 
-    auto oldDecalMacroFlag = _parseFlags & Material::PF_HasDecalMacro;
+	auto oldDecalMacroFlag = _parseFlags & Material::PF_HasDecalMacro;
 
-    // Reset the decal_macro flag and evaluate
-    _parseFlags &= ~Material::PF_HasDecalMacro;
+	// Reset the decal_macro flag and evaluate
+	_parseFlags &= ~Material::PF_HasDecalMacro;
 
-    if (getPolygonOffset() == 1.0f &&
-        getSortRequest() == Material::SORT_DECAL &&
-        (getSurfaceFlags() & Material::SURF_DISCRETE) != 0 &&
-        (getMaterialFlags() & Material::FLAG_NOSHADOWS) != 0)
-    {
-        _parseFlags |= Material::PF_HasDecalMacro;
-    }
+	if (getPolygonOffset() == 1.0f &&
+		getSortRequest() == Material::SORT_DECAL &&
+		(getSurfaceFlags() & Material::SURF_DISCRETE) != 0 &&
+		(getMaterialFlags() & Material::FLAG_NOSHADOWS) != 0)
+	{
+		_parseFlags |= Material::PF_HasDecalMacro;
+	}
 
-    // If the flag changed => return true
-    return oldDecalMacroFlag != (_parseFlags & Material::PF_HasDecalMacro);
+	// If the flag changed => return true
+	return oldDecalMacroFlag != (_parseFlags & Material::PF_HasDecalMacro);
 }
 
 std::string ShaderTemplate::generateSyntax()
 {
-    return MaterialSourceGenerator::GenerateDefinitionBlock(*this);
+	return MaterialSourceGenerator::GenerateDefinitionBlock(*this);
 }
 
 void ShaderTemplate::onSyntaxBlockAssigned(const decl::DeclarationBlockSyntax& block)
 {
-    EditableDeclaration<IShaderTemplate>::onSyntaxBlockAssigned(block);
+	EditableDeclaration<IShaderTemplate>::onSyntaxBlockAssigned(block);
 
-    // Don't call onTemplateChanged() since that is meant is to be used
-    // when the template is modified after parsing
-    // Just emit the template changed signal
-    _sigTemplateChanged.emit();
+	// Don't call onTemplateChanged() since that is meant is to be used
+	// when the template is modified after parsing
+	// Just emit the template changed signal
+	_sigTemplateChanged.emit();
 }
 
 } // namespace

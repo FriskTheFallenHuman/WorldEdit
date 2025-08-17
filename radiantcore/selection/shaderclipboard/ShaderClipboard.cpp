@@ -159,7 +159,7 @@ Texturable& ShaderClipboard::getSource()
 
 sigc::signal<void>& ShaderClipboard::signal_sourceChanged()
 {
-    return _signalSourceChanged;
+	return _signalSourceChanged;
 }
 
 void ShaderClipboard::onMapEvent(IMap::MapEvent ev)
@@ -207,7 +207,7 @@ const std::string& ShaderClipboard::getName() const
 
 const StringSet& ShaderClipboard::getDependencies() const
 {
-    static StringSet _dependencies{ MODULE_MAP };
+	static StringSet _dependencies{ MODULE_MAP };
 	return _dependencies;
 }
 
@@ -223,9 +223,9 @@ void ShaderClipboard::initialiseModule(const IApplicationContext& ctx)
 
 	clear();
 
-    module::GlobalModuleRegistry().signal_allModulesInitialised().connect(
-        sigc::mem_fun(this, &ShaderClipboard::postModuleInitialisation)
-    );
+	module::GlobalModuleRegistry().signal_allModulesInitialised().connect(
+		sigc::mem_fun(this, &ShaderClipboard::postModuleInitialisation)
+	);
 }
 
 void ShaderClipboard::shutdownModule()
@@ -233,31 +233,31 @@ void ShaderClipboard::shutdownModule()
 	_postUndoConn.disconnect();
 	_postRedoConn.disconnect();
 	_mapEventConn.disconnect();
-    _clipboardContentsChangedConn.disconnect();
+	_clipboardContentsChangedConn.disconnect();
 }
 
 void ShaderClipboard::postModuleInitialisation()
 {
-    if (module::GlobalModuleRegistry().moduleExists(MODULE_CLIPBOARD))
-    {
-        // Subscribe to clipboard changes to check for copied material names
-        _clipboardContentsChangedConn = GlobalClipboard().signal_clipboardContentChanged().connect(
-            sigc::mem_fun(this, &ShaderClipboard::onSystemClipboardContentsChanged)
-        );
-    }
+	if (module::GlobalModuleRegistry().moduleExists(MODULE_CLIPBOARD))
+	{
+		// Subscribe to clipboard changes to check for copied material names
+		_clipboardContentsChangedConn = GlobalClipboard().signal_clipboardContentChanged().connect(
+			sigc::mem_fun(this, &ShaderClipboard::onSystemClipboardContentsChanged)
+		);
+	}
 }
 
 void ShaderClipboard::onSystemClipboardContentsChanged()
 {
-    if (_updatesDisabled) return;
+	if (_updatesDisabled) return;
 
-    auto candidate = clipboard::getMaterialNameFromClipboard();
+	auto candidate = clipboard::getMaterialNameFromClipboard();
 
-    if (!candidate.empty())
-    {
-        rMessage() << "Found a valid material name in the system clipboard: " << candidate << std::endl;
-        setSourceShader(candidate);
-    }
+	if (!candidate.empty())
+	{
+		rMessage() << "Found a valid material name in the system clipboard: " << candidate << std::endl;
+		setSourceShader(candidate);
+	}
 }
 
 // Define the static module

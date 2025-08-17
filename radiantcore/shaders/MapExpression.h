@@ -24,30 +24,30 @@ typedef std::shared_ptr<MapExpression> MapExpressionPtr;
  * "heightmap(addnormals(blah, bleh), 1).
  */
 class MapExpression :
-    public IMapExpression,
-    public NamedBindable
+	public IMapExpression,
+	public NamedBindable
 {
 public: /* INTERFACE METHODS */
 
-    virtual bool isCubeMap() const override
-    {
-        return false;
-    }
+	virtual bool isCubeMap() const override
+	{
+		return false;
+	}
 
 public:
 
-    /* BindableTexture interface */
-    TexturePtr bindTexture(const std::string& name, Role role) const override
-    {
-        ImagePtr img = getImage();
-        if (img)
-            return img->bindTexture(name, role);
-        else
-            return TexturePtr();
-    }
+	/* BindableTexture interface */
+	TexturePtr bindTexture(const std::string& name, Role role) const override
+	{
+		ImagePtr img = getImage();
+		if (img)
+			return img->bindTexture(name, role);
+		else
+			return TexturePtr();
+	}
 
-    // Abstract method to be implemented
-    virtual ImagePtr getImage() const = 0;
+	// Abstract method to be implemented
+	virtual ImagePtr getImage() const = 0;
 
 public: /* STATIC CONSTRUCTION METHODS */
 
@@ -74,7 +74,7 @@ protected:
 
 // the specific MapExpressions
 class HeightMapExpression :
-    public MapExpression
+	public MapExpression
 {
 	MapExpressionPtr heightMapExp;
 	float scale;
@@ -82,11 +82,11 @@ public:
 	HeightMapExpression(DefTokeniser& token);
 	ImagePtr getImage() const override;
 	std::string getIdentifier() const override;
-    std::string getExpressionString() override;
+	std::string getExpressionString() override;
 };
 
 class AddNormalsExpression :
-    public MapExpression
+	public MapExpression
 {
 	MapExpressionPtr mapExpOne;
 	MapExpressionPtr mapExpTwo;
@@ -94,18 +94,18 @@ public:
 	AddNormalsExpression(DefTokeniser& token);
 	ImagePtr getImage() const override;
 	std::string getIdentifier() const override;
-    std::string getExpressionString() override;
+	std::string getExpressionString() override;
 };
 
 class SmoothNormalsExpression :
-    public MapExpression
+	public MapExpression
 {
 	MapExpressionPtr mapExp;
 public:
 	SmoothNormalsExpression(DefTokeniser& token);
 	ImagePtr getImage() const override;
 	std::string getIdentifier() const override;
-    std::string getExpressionString() override;
+	std::string getExpressionString() override;
 };
 
 class AddExpression : public MapExpression {
@@ -115,11 +115,11 @@ public:
 	AddExpression(DefTokeniser& token);
 	ImagePtr getImage() const override;
 	std::string getIdentifier() const override;
-    std::string getExpressionString() override;
+	std::string getExpressionString() override;
 };
 
 class ScaleExpression :
-    public MapExpression
+	public MapExpression
 {
 	MapExpressionPtr mapExp;
 	float scaleRed;
@@ -130,51 +130,51 @@ public:
 	ScaleExpression(DefTokeniser& token);
 	ImagePtr getImage() const override;
 	std::string getIdentifier() const override;
-    std::string getExpressionString() override;
+	std::string getExpressionString() override;
 };
 
 class InvertAlphaExpression :
-    public MapExpression
+	public MapExpression
 {
 	MapExpressionPtr mapExp;
 public:
 	InvertAlphaExpression(DefTokeniser& token);
 	ImagePtr getImage() const override;
 	std::string getIdentifier() const override;
-    std::string getExpressionString() override;
+	std::string getExpressionString() override;
 };
 
 class InvertColorExpression :
-    public MapExpression
+	public MapExpression
 {
 	MapExpressionPtr mapExp;
 public:
 	InvertColorExpression(DefTokeniser& token);
 	ImagePtr getImage() const;
 	std::string getIdentifier() const;
-    std::string getExpressionString() override;
+	std::string getExpressionString() override;
 };
 
 class MakeIntensityExpression :
-    public MapExpression
+	public MapExpression
 {
 	MapExpressionPtr mapExp;
 public:
 	MakeIntensityExpression(DefTokeniser& token);
 	ImagePtr getImage() const override;
 	std::string getIdentifier() const override;
-    std::string getExpressionString() override;
+	std::string getExpressionString() override;
 };
 
 class MakeAlphaExpression :
-    public MapExpression
+	public MapExpression
 {
 	MapExpressionPtr mapExp;
 public:
 	MakeAlphaExpression(DefTokeniser& token);
 	ImagePtr getImage() const override;
 	std::string getIdentifier() const override;
-    std::string getExpressionString() override;
+	std::string getExpressionString() override;
 };
 
 /**
@@ -194,7 +194,7 @@ public:
 
 	ImagePtr getImage() const override;
 	std::string getIdentifier() const override;
-    std::string getExpressionString() override;
+	std::string getExpressionString() override;
 };
 
 } // namespace shaders

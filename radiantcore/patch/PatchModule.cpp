@@ -81,77 +81,77 @@ void PatchModule::registerPatchCommands()
 	GlobalCommandSystem().addCommand("CreateSimplePatchMesh", patch::algorithm::createSimplePatch,
 		{ cmd::ARGTYPE_INT, cmd::ARGTYPE_INT | cmd::ARGTYPE_OPTIONAL, cmd::ARGTYPE_INT | cmd::ARGTYPE_OPTIONAL }); // dimX, dimY, removeSelectedBrush
 
-    GlobalCommandSystem().addWithCheck(
-        "PatchInsertColumnEnd",
-        cmd::noArgs(selection::algorithm::insertPatchColumnsAtEnd),
-        selection::pred::havePatch
-    );
-    GlobalCommandSystem().addWithCheck(
-        "PatchInsertColumnBeginning",
-        cmd::noArgs(selection::algorithm::insertPatchColumnsAtBeginning),
-        selection::pred::havePatch);
-    GlobalCommandSystem().addWithCheck(
-        "PatchInsertRowEnd",
-        cmd::noArgs(selection::algorithm::insertPatchRowsAtEnd),
-        selection::pred::havePatch
-    );
-    GlobalCommandSystem().addWithCheck(
-        "PatchInsertRowBeginning",
-        cmd::noArgs(selection::algorithm::insertPatchRowsAtBeginning),
-        selection::pred::havePatch
-    );
+	GlobalCommandSystem().addWithCheck(
+		"PatchInsertColumnEnd",
+		cmd::noArgs(selection::algorithm::insertPatchColumnsAtEnd),
+		selection::pred::havePatch
+	);
+	GlobalCommandSystem().addWithCheck(
+		"PatchInsertColumnBeginning",
+		cmd::noArgs(selection::algorithm::insertPatchColumnsAtBeginning),
+		selection::pred::havePatch);
+	GlobalCommandSystem().addWithCheck(
+		"PatchInsertRowEnd",
+		cmd::noArgs(selection::algorithm::insertPatchRowsAtEnd),
+		selection::pred::havePatch
+	);
+	GlobalCommandSystem().addWithCheck(
+		"PatchInsertRowBeginning",
+		cmd::noArgs(selection::algorithm::insertPatchRowsAtBeginning),
+		selection::pred::havePatch
+	);
 
-    GlobalCommandSystem().addWithCheck("PatchDeleteColumnBeginning",
-                                       selection::algorithm::deletePatchColumnsFromBeginning,
-                                       selection::pred::havePatch);
-    GlobalCommandSystem().addWithCheck("PatchDeleteColumnEnd",
-                                       selection::algorithm::deletePatchColumnsFromEnd,
-                                       selection::pred::havePatch);
-    GlobalCommandSystem().addWithCheck("PatchDeleteRowBeginning",
-                                       selection::algorithm::deletePatchRowsFromBeginning,
-                                       selection::pred::havePatch);
-    GlobalCommandSystem().addWithCheck("PatchDeleteRowEnd",
-                                       selection::algorithm::deletePatchRowsFromEnd,
-                                       selection::pred::havePatch);
+	GlobalCommandSystem().addWithCheck("PatchDeleteColumnBeginning",
+									   selection::algorithm::deletePatchColumnsFromBeginning,
+									   selection::pred::havePatch);
+	GlobalCommandSystem().addWithCheck("PatchDeleteColumnEnd",
+									   selection::algorithm::deletePatchColumnsFromEnd,
+									   selection::pred::havePatch);
+	GlobalCommandSystem().addWithCheck("PatchDeleteRowBeginning",
+									   selection::algorithm::deletePatchRowsFromBeginning,
+									   selection::pred::havePatch);
+	GlobalCommandSystem().addWithCheck("PatchDeleteRowEnd",
+									   selection::algorithm::deletePatchRowsFromEnd,
+									   selection::pred::havePatch);
 
-    GlobalCommandSystem().addWithCheck("PatchAppendColumnBeginning",
-                                       selection::algorithm::appendPatchColumnsAtBeginning,
-                                       selection::pred::havePatch);
-    GlobalCommandSystem().addWithCheck("PatchAppendColumnEnd",
-                                       selection::algorithm::appendPatchColumnsAtEnd,
-                                       selection::pred::havePatch);
-    GlobalCommandSystem().addWithCheck("PatchAppendRowBeginning",
-                                       selection::algorithm::appendPatchRowsAtBeginning,
-                                       selection::pred::havePatch);
-    GlobalCommandSystem().addWithCheck("PatchAppendRowEnd",
-                                       selection::algorithm::appendPatchRowsAtEnd,
-                                       selection::pred::havePatch);
+	GlobalCommandSystem().addWithCheck("PatchAppendColumnBeginning",
+									   selection::algorithm::appendPatchColumnsAtBeginning,
+									   selection::pred::havePatch);
+	GlobalCommandSystem().addWithCheck("PatchAppendColumnEnd",
+									   selection::algorithm::appendPatchColumnsAtEnd,
+									   selection::pred::havePatch);
+	GlobalCommandSystem().addWithCheck("PatchAppendRowBeginning",
+									   selection::algorithm::appendPatchRowsAtBeginning,
+									   selection::pred::havePatch);
+	GlobalCommandSystem().addWithCheck("PatchAppendRowEnd",
+									   selection::algorithm::appendPatchRowsAtEnd,
+									   selection::pred::havePatch);
 
-    GlobalCommandSystem().addWithCheck("InvertCurve", selection::algorithm::invertPatch,
-                                       selection::pred::havePatch);
-    GlobalCommandSystem().addWithCheck("RedisperseRows",
-                                       selection::algorithm::redispersePatchRows,
-                                       selection::pred::havePatch);
-    GlobalCommandSystem().addWithCheck("RedisperseCols",
-                                       selection::algorithm::redispersePatchCols,
-                                       selection::pred::havePatch);
-    GlobalCommandSystem().addWithCheck("MatrixTranspose", selection::algorithm::transposePatch,
-                                       selection::pred::havePatch);
-    GlobalCommandSystem().addWithCheck("CapSelectedPatches", selection::algorithm::capPatch,
-                                       selection::pred::havePatch, {cmd::ARGTYPE_STRING});
-    GlobalCommandSystem().addWithCheck(
-        "ThickenSelectedPatches", selection::algorithm::thickenPatches,
-        selection::pred::havePatch,
-        {cmd::ARGTYPE_DOUBLE, cmd::ARGTYPE_INT, cmd::ARGTYPE_INT} // thickness, create_seams, axis
-    );
-    GlobalCommandSystem().addWithCheck("StitchPatchTexture",
-                                       cmd::noArgs(patch::algorithm::stitchTextures),
-                                       [] { return selection::pred::havePatchesExact(2); });
-    GlobalCommandSystem().addWithCheck("BulgePatch", patch::algorithm::bulge,
-                                       selection::pred::havePatch, {cmd::ARGTYPE_DOUBLE});
-    GlobalCommandSystem().addWithCheck("WeldSelectedPatches",
-                                       patch::algorithm::weldSelectedPatches,
-                                       [] { return selection::pred::havePatchesAtLeast(2); });
+	GlobalCommandSystem().addWithCheck("InvertCurve", selection::algorithm::invertPatch,
+									   selection::pred::havePatch);
+	GlobalCommandSystem().addWithCheck("RedisperseRows",
+									   selection::algorithm::redispersePatchRows,
+									   selection::pred::havePatch);
+	GlobalCommandSystem().addWithCheck("RedisperseCols",
+									   selection::algorithm::redispersePatchCols,
+									   selection::pred::havePatch);
+	GlobalCommandSystem().addWithCheck("MatrixTranspose", selection::algorithm::transposePatch,
+									   selection::pred::havePatch);
+	GlobalCommandSystem().addWithCheck("CapSelectedPatches", selection::algorithm::capPatch,
+									   selection::pred::havePatch, {cmd::ARGTYPE_STRING});
+	GlobalCommandSystem().addWithCheck(
+		"ThickenSelectedPatches", selection::algorithm::thickenPatches,
+		selection::pred::havePatch,
+		{cmd::ARGTYPE_DOUBLE, cmd::ARGTYPE_INT, cmd::ARGTYPE_INT} // thickness, create_seams, axis
+	);
+	GlobalCommandSystem().addWithCheck("StitchPatchTexture",
+									   cmd::noArgs(patch::algorithm::stitchTextures),
+									   [] { return selection::pred::havePatchesExact(2); });
+	GlobalCommandSystem().addWithCheck("BulgePatch", patch::algorithm::bulge,
+									   selection::pred::havePatch, {cmd::ARGTYPE_DOUBLE});
+	GlobalCommandSystem().addWithCheck("WeldSelectedPatches",
+									   patch::algorithm::weldSelectedPatches,
+									   [] { return selection::pred::havePatchesAtLeast(2); });
 }
 
 module::StaticModuleRegistration<PatchModule> patchModule;

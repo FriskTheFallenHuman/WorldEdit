@@ -68,12 +68,12 @@ class StaticGeometryNode :
 
 	VertexInstance _originInstance;
 
-    ShaderPtr _pivotShader;
-    ShaderPtr _pointShader;
+	ShaderPtr _pivotShader;
+	ShaderPtr _pointShader;
 
-    RenderableCurveVertices _nurbsVertices;
-    RenderableCurveVertices _catmullRomVertices;
-    RenderableVertex _renderableOriginVertex;
+	RenderableCurveVertices _nurbsVertices;
+	RenderableCurveVertices _catmullRomVertices;
+	RenderableVertex _renderableOriginVertex;
 
 private:
 	// Constructor
@@ -82,7 +82,7 @@ private:
 	StaticGeometryNode(const StaticGeometryNode& other);
 
 public:
-    using Ptr = std::shared_ptr<StaticGeometryNode>;
+	using Ptr = std::shared_ptr<StaticGeometryNode>;
 
 	static StaticGeometryNode::Ptr Create(const IEntityClassPtr& eclass);
 
@@ -133,25 +133,25 @@ public:
 	void removeOriginFromChildren() override;
 
 	// Renderable implementation
-    void onPreRender(const VolumeTest& volume) override;
-    void renderHighlights(IRenderableCollector& collector, const VolumeTest& volume) override;
+	void onPreRender(const VolumeTest& volume) override;
+	void renderHighlights(IRenderableCollector& collector, const VolumeTest& volume) override;
 	void setRenderSystem(const RenderSystemPtr& renderSystem) override;
 
 	void transformComponents(const Matrix4& matrix);
 
-    // Returns the original "origin" value
-    const Vector3& getUntransformedOrigin() override;
+	// Returns the original "origin" value
+	const Vector3& getUntransformedOrigin() override;
 
-    const Vector3& getWorldPosition() const override;
+	const Vector3& getWorldPosition() const override;
 
 protected:
 	// Gets called by the Transformable implementation whenever
 	// scale, rotation or translation is changed.
-    void _onTransformationChanged() override;
+	void _onTransformationChanged() override;
 
 	// Called by the Transformable implementation before freezing
 	// or when reverting transformations.
-    void _applyTransformation() override;
+	void _applyTransformation() override;
 
 	// Model Key changed signal
 	void onModelKeyChanged(const std::string& value) override;
@@ -159,15 +159,15 @@ protected:
 	// Override EntityNode::construct()
 	virtual void construct() override;
 
-    void onVisibilityChanged(bool isVisibleNow) override;
+	void onVisibilityChanged(bool isVisibleNow) override;
 
-    void onSelectionStatusChange(bool changeGroupStatus) override;
+	void onSelectionStatusChange(bool changeGroupStatus) override;
 
 private:
 	void evaluateTransform();
 
-    // ------------------------------------------------------------------------
-    // Doom3Group methods
+	// ------------------------------------------------------------------------
+	// Doom3Group methods
 
 	void destroy();
 	void setIsModel(bool newValue);

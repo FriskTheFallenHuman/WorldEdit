@@ -74,8 +74,8 @@ public:
 	const StringSet& getDependencies() const override;
 	void initialiseModule(const IApplicationContext& ctx) override;
 
-    const GameConfiguration& getConfig() const override;
-    void applyConfig(const GameConfiguration& config) override;
+	const GameConfiguration& getConfig() const override;
+	void applyConfig(const GameConfiguration& config) override;
 
 private:
 	/**

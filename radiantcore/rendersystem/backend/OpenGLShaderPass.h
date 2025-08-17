@@ -37,11 +37,11 @@ protected:
 	 */
 	struct TransformedRenderable
 	{
-    	// The renderable object
-    	const OpenGLRenderable* renderable;
+		// The renderable object
+		const OpenGLRenderable* renderable;
 
-    	// The modelview transform for this renderable
-    	const Matrix4 transform;
+		// The modelview transform for this renderable
+		const Matrix4 transform;
 
 		// Constructor
 		TransformedRenderable(const OpenGLRenderable& r,
@@ -52,7 +52,7 @@ protected:
 	};
 
 	// Vector of transformed renderables using this state
-    std::vector<TransformedRenderable> _transformedRenderables;
+	std::vector<TransformedRenderable> _transformedRenderables;
 
 protected:
 
@@ -65,17 +65,17 @@ public:
 		_owner(owner)
 	{}
 
-    OpenGLShader& getShader()
-    {
-        return _owner;
-    }
+	OpenGLShader& getShader()
+	{
+		return _owner;
+	}
 
-    // Returns true if the stage associated to this pass is active and should be rendered
-    bool stateIsActive();
+	// Returns true if the stage associated to this pass is active and should be rendered
+	bool stateIsActive();
 
 	/**
-     * \brief
-     * Add a renderable to this shader pass the given object transform matrix.
+	 * \brief
+	 * Add a renderable to this shader pass the given object transform matrix.
 	 */
 	void addRenderable(const OpenGLRenderable& renderable, const Matrix4& modelview);
 
@@ -83,7 +83,7 @@ public:
 	 * Return the OpenGL state associated with this bucket.
 	 */
 	OpenGLState& state()
-    {
+	{
 		return _glState;
 	}
 
@@ -99,50 +99,50 @@ public:
 
 	/**
 	 * \brief
-     * Render the renderables attached to this shader pass.
-     *
-     * \param view
-     * The render view used to cull surfaces
-     */
+	 * Render the renderables attached to this shader pass.
+	 *
+	 * \param view
+	 * The render view used to cull surfaces
+	 */
 	void submitSurfaces(const VolumeTest& view);
 
-    /**
-     * \brief
-     * Render the renderables attached to this shader pass.
-     * Their geometry might not be stored in the central buffer objects.
-     */
-    void submitRenderables(OpenGLState& current);
+	/**
+	 * \brief
+	 * Render the renderables attached to this shader pass.
+	 * Their geometry might not be stored in the central buffer objects.
+	 */
+	void submitRenderables(OpenGLState& current);
 
 	/**
 	 * Returns true if this shaderpass doesn't have anything to render.
 	 */
-    bool empty();
+	bool empty();
 
-    // True if this shader pass has OpenGLRenderables attached
-    bool hasRenderables() const;
+	// True if this shader pass has OpenGLRenderables attached
+	bool hasRenderables() const;
 
-    // Clear out all renderable references accumulated during this frame
-    void clearRenderables();
+	// Clear out all renderable references accumulated during this frame
+	void clearRenderables();
 
-    // Whether this shader pass is suitable for the give view type
-    bool isApplicableTo(RenderViewType renderViewType) const;
+	// Whether this shader pass is suitable for the give view type
+	bool isApplicableTo(RenderViewType renderViewType) const;
 
-    // Evaluates all stages and invokes applyState
-    void evaluateStagesAndApplyState(OpenGLState& current, unsigned int globalStateMask,
-        std::size_t time, const IRenderEntity* entity);
+	// Evaluates all stages and invokes applyState
+	void evaluateStagesAndApplyState(OpenGLState& current, unsigned int globalStateMask,
+		std::size_t time, const IRenderEntity* entity);
 
-    // Apply own state to the "current" state object passed in as a reference,
-    // in combination with the global state mask, as well as setting
-    // relevant GL parameters directly.
-    void applyState(OpenGLState& current, unsigned int globalStateMask);
+	// Apply own state to the "current" state object passed in as a reference,
+	// in combination with the global state mask, as well as setting
+	// relevant GL parameters directly.
+	void applyState(OpenGLState& current, unsigned int globalStateMask);
 
-    // Evaluates the time- and entity-dependent expressions in the shader stages
-    void evaluateShaderStages(std::size_t time, const IRenderEntity* entity);
+	// Evaluates the time- and entity-dependent expressions in the shader stages
+	void evaluateShaderStages(std::size_t time, const IRenderEntity* entity);
 
 	friend std::ostream& operator<<(std::ostream& st, const OpenGLShaderPass& self);
 
-    // Returns the openGL state needed for blend light rendering
-    static OpenGLState CreateBlendLightState(BlendLightProgram* blendProgram);
+	// Returns the openGL state needed for blend light rendering
+	static OpenGLState CreateBlendLightState(BlendLightProgram* blendProgram);
 };
 
 typedef std::shared_ptr<OpenGLShaderPass> OpenGLShaderPassPtr;

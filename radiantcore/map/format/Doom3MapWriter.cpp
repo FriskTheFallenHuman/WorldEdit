@@ -17,9 +17,9 @@ namespace
 // Escape line breaks and quotes in the given input string
 inline std::string escapeEntityKeyValue(const std::string& input)
 {
-    auto result = string::replace_all_copy(input, "\n", "\\n");
-    string::replace_all(result, "\"", "\\\""); // replace " with \"
-    return result;
+	auto result = string::replace_all_copy(input, "\n", "\\n");
+	string::replace_all(result, "\"", "\\\""); // replace " with \"
+	return result;
 }
 
 }
@@ -32,7 +32,7 @@ Doom3MapWriter::Doom3MapWriter() :
 void Doom3MapWriter::beginWriteMap(const scene::IMapRootNodePtr& root, std::ostream& stream)
 {
 	// Write the version tag
-    stream << "Version " << MAP_VERSION_D3 << std::endl;
+	stream << "Version " << MAP_VERSION_D3 << std::endl;
 }
 
 void Doom3MapWriter::endWriteMap(const scene::IMapRootNodePtr& root, std::ostream& stream)
@@ -55,10 +55,10 @@ void Doom3MapWriter::beginWriteEntity(const EntityNodePtr& entity, std::ostream&
 void Doom3MapWriter::writeEntityKeyValues(const EntityNodePtr& entity, std::ostream& stream)
 {
 	// Export the entity key values
-    entity->getEntity().forEachKeyValue([&](const std::string& key, const std::string& value)
-    {
-        stream << "\"" << escapeEntityKeyValue(key) << "\" \"" << escapeEntityKeyValue(value) << "\"" << std::endl;
-    });
+	entity->getEntity().forEachKeyValue([&](const std::string& key, const std::string& value)
+	{
+		stream << "\"" << escapeEntityKeyValue(key) << "\" \"" << escapeEntityKeyValue(value) << "\"" << std::endl;
+	});
 }
 
 void Doom3MapWriter::endWriteEntity(const EntityNodePtr& entity, std::ostream& stream)

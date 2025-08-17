@@ -26,24 +26,24 @@ private:
 		IUndoMementoPtr _data;
 
 	public:
-        UndoableState(IUndoable& undoable) :
-            _undoable(undoable),
-            _data(_undoable.exportState())
-        {}
+		UndoableState(IUndoable& undoable) :
+			_undoable(undoable),
+			_data(_undoable.exportState())
+		{}
 
-        // Noncopyable
-        UndoableState(const UndoableState& other) = delete;
-        UndoableState& operator=(const UndoableState& other) = delete;
+		// Noncopyable
+		UndoableState(const UndoableState& other) = delete;
+		UndoableState& operator=(const UndoableState& other) = delete;
 
 		void restore()
 		{
 			_undoable.importState(_data);
 		}
 
-        void notifyOperationRestored()
-        {
-            _undoable.onOperationRestored();
-        }
+		void notifyOperationRestored()
+		{
+			_undoable.onOperationRestored();
+		}
 	};
 
 	// The Snapshot (the list of structs containing Undoable+Data)
@@ -53,7 +53,7 @@ private:
 	std::string _command;
 
 public:
-    using Ptr = std::shared_ptr<Operation>;
+	using Ptr = std::shared_ptr<Operation>;
 
 	Operation(const std::string& command) :
 		_command(command)
@@ -69,10 +69,10 @@ public:
 		_command = name;
 	}
 
-    bool empty() const
-    {
-        return _snapshot.empty();
-    }
+	bool empty() const
+	{
+		return _snapshot.empty();
+	}
 
 	void save(IUndoable& undoable)
 	{
@@ -83,17 +83,17 @@ public:
 
 	void restoreSnapshot()
 	{
-        // Walk through the snapshot front-to-back, the most recently added one is at the front
+		// Walk through the snapshot front-to-back, the most recently added one is at the front
 		for (auto& state : _snapshot)
 		{
-            state.restore();
+			state.restore();
 		}
 
-        // After all the snapshots have been restored, notify the undoables to give them a chance to cleanup
-        for (auto& state : _snapshot)
-        {
-            state.notifyOperationRestored();
-        }
+		// After all the snapshots have been restored, notify the undoables to give them a chance to cleanup
+		for (auto& state : _snapshot)
+		{
+			state.notifyOperationRestored();
+		}
 	}
 };
 

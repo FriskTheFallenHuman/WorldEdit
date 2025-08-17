@@ -7,7 +7,7 @@ namespace selection
 
 sigc::signal<void> SelectionSetManager::signal_selectionSetsChanged() const
 {
-    return _sigSelectionSetsChanged;
+	return _sigSelectionSetsChanged;
 }
 
 void SelectionSetManager::foreachSelectionSet(const VisitorFunc& functor)
@@ -47,12 +47,12 @@ void SelectionSetManager::deleteSelectionSet(const std::string& name)
 {
 	SelectionSets::iterator i = _selectionSets.find(name);
 
-    if (i != _selectionSets.end())
-    {
-        _selectionSets.erase(i);
+	if (i != _selectionSets.end())
+	{
+		_selectionSets.erase(i);
 
-        _sigSelectionSetsChanged();
-    }
+		_sigSelectionSetsChanged();
+	}
 }
 
 void SelectionSetManager::deleteAllSelectionSets()

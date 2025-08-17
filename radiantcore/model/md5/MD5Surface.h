@@ -87,7 +87,7 @@ public:
 	const std::string& getActiveMaterial() const override;
 	void setActiveMaterial(const std::string& activeMaterial);
 
-    const AABB& getSurfaceBounds() const override;
+	const AABB& getSurfaceBounds() const override;
 
 	void parseFromTokens(parser::DefTokeniser& tok);
 
@@ -95,8 +95,8 @@ public:
 	void buildIndexArray();
 
 private:
-    // Re-calculate the normal vectors
-    void buildVertexNormals();
+	// Re-calculate the normal vectors
+	void buildVertexNormals();
 };
 typedef std::shared_ptr<MD5Surface> MD5SurfacePtr;
 

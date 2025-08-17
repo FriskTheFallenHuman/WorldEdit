@@ -19,7 +19,7 @@ public:
 };
 
 class ControlPointTransformator :
- 	public CurveEditInstance::ControlPointFunctor
+	public CurveEditInstance::ControlPointFunctor
 {
 	const Matrix4& _matrix;
 public:

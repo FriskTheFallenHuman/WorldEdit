@@ -12,12 +12,12 @@ class Doom3EntityModule final :
 	public IEntityModule
 {
 private:
-    sigc::connection _settingsListener;
+	sigc::connection _settingsListener;
 
 public:
-    // EntityCreator implementation
+	// EntityCreator implementation
 	EntityNodePtr createEntity(const IEntityClassPtr& eclass) override;
-    ITargetManagerPtr createTargetManager() override;
+	ITargetManagerPtr createTargetManager() override;
 	IEntitySettings& getSettings() override;
 
 	/**
@@ -35,7 +35,7 @@ public:
 	void shutdownModule() override;
 
 private:
-    void onEntitySettingsChanged();
+	void onEntitySettingsChanged();
 };
 
 } // namespace entity

@@ -9,7 +9,7 @@ namespace archive
 {
 
 /**
- * Archive adapter representing a PK4 (Zip) archive file.
+ * Archive adapter representing a PK4/PK3 (Zip) archive file.
  *
  * In idTech4 Virtual Filesystems this is the only other 
  * Archive type allowed, next to the DirectoryArchives representing 
@@ -52,7 +52,7 @@ private:
 	std::string _containingFolder;  // the folder this Zip is located in
 	mutable std::string _modName;	// mod name, calculated based on the containing folder
 	stream::FileInputStream _istream;
-    std::mutex _streamLock;
+	std::mutex _streamLock;
 
 public:
 	ZipArchive(const std::string& fullPath);
@@ -64,9 +64,9 @@ public:
 	bool containsFile(const std::string& name) override;
 	void traverse(Visitor& visitor, const std::string& root) override;
 
-    std::size_t getFileSize(const std::string& relativePath) override;
-    bool getIsPhysical(const std::string& relativePath) override;
-    std::string getArchivePath(const std::string& relativePath) override;
+	std::size_t getFileSize(const std::string& relativePath) override;
+	bool getIsPhysical(const std::string& relativePath) override;
+	std::string getArchivePath(const std::string& relativePath) override;
 
 private:
 	void readZipRecord();

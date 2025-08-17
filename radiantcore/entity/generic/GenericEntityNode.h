@@ -51,7 +51,7 @@ class GenericEntityNode final : public EntityNode, public Snappable
 	Ray m_ray;
 
 	RenderableArrow _renderableArrow;
-    RenderableEntityBox _renderableBox;
+	RenderableEntityBox _renderableBox;
 
 	// TRUE if this entity's arrow can be rotated in all directions,
 	// FALSE if the arrow is caught in the xy plane
@@ -69,7 +69,7 @@ private:
 
 	void rotate(const Quaternion& rotation);
 
-    // not to be confused with the methods inherited from Transformable
+	// not to be confused with the methods inherited from Transformable
 	void _revertTransform();
 	void _freezeTransform();
 
@@ -94,41 +94,41 @@ public:
 	scene::INodePtr clone() const override;
 
 	// Renderable implementation
-    void onPreRender(const VolumeTest& volume) override;
-    void renderHighlights(IRenderableCollector& collector, const VolumeTest& volume) override;
+	void onPreRender(const VolumeTest& volume) override;
+	void renderHighlights(IRenderableCollector& collector, const VolumeTest& volume) override;
 	void setRenderSystem(const RenderSystemPtr& renderSystem) override;
 
 	// Override EntityNode::getDirection()
 	const Vector3& getDirection() const override;
 
-    // Returns the original "origin" value
-    const Vector3& getUntransformedOrigin() override;
+	// Returns the original "origin" value
+	const Vector3& getUntransformedOrigin() override;
 
-    const Vector3& getWorldPosition() const override;
+	const Vector3& getWorldPosition() const override;
 
-    void onChildAdded(const scene::INodePtr& child) override;
+	void onChildAdded(const scene::INodePtr& child) override;
 	void onChildRemoved(const scene::INodePtr& child) override;
 
-    void onInsertIntoScene(scene::IMapRootNode& root) override;
-    void onRemoveFromScene(scene::IMapRootNode& root) override;
+	void onInsertIntoScene(scene::IMapRootNode& root) override;
+	void onRemoveFromScene(scene::IMapRootNode& root) override;
 
 protected:
 	// Gets called by the Transformable implementation whenever
 	// scale, rotation or translation is changed.
-    void _onTransformationChanged() override;
+	void _onTransformationChanged() override;
 
 	// Called by the Transformable implementation before freezing
 	// or when reverting transformations.
-    void _applyTransformation() override;
+	void _applyTransformation() override;
 
 	// Override EntityNode::construct()
 	void construct() override;
 
-    void onVisibilityChanged(bool isVisibleNow) override;
-    void onRenderStateChanged() override;
+	void onVisibilityChanged(bool isVisibleNow) override;
+	void onRenderStateChanged() override;
 
-    void updateRenderables();
-    void clearRenderables();
+	void updateRenderables();
+	void clearRenderables();
 };
 
 } // namespace entity

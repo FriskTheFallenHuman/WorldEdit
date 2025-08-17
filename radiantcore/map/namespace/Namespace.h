@@ -34,5 +34,5 @@ public:
 	virtual void ensureNoConflicts(const scene::INodePtr& foreignRoot, const std::set<scene::INodePtr>& foreignNodes) override;
 
 private:
-    void ensureNoConflicts(const scene::INodePtr& foreignRoot, const std::set<NamespacedPtr>& foreignNodes);
+	void ensureNoConflicts(const scene::INodePtr& foreignRoot, const std::set<NamespacedPtr>& foreignNodes);
 };

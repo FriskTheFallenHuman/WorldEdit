@@ -185,11 +185,11 @@ void ModelExporter::processPatch(const scene::INodePtr& node)
 	if (!isExportableMaterial(materialName)) return;
 
 	PatchMesh mesh = patch->getTesselatedPatchMesh();
-    Matrix4 exportTransform = node->localToWorld().getPremultipliedBy(_centerTransform);
+	Matrix4 exportTransform = node->localToWorld().getPremultipliedBy(_centerTransform);
 
-    // Convert the patch mesh to an indexed surface
-    PatchSurface surface(materialName, mesh);
-    _exporter->addSurface(surface, exportTransform);
+	// Convert the patch mesh to an indexed surface
+	PatchSurface surface(materialName, mesh);
+	_exporter->addSurface(surface, exportTransform);
 }
 
 void ModelExporter::processBrush(const scene::INodePtr& node)

@@ -11,19 +11,19 @@ namespace shaders {
  * Implementation class for Material.
  */
 class CShader final : 
-    public Material
+	public Material
 {
 private:
-    bool _isInternal;
+	bool _isInternal;
 
-    // The unmodified template
-    ShaderTemplate::Ptr _originalTemplate;
+	// The unmodified template
+	ShaderTemplate::Ptr _originalTemplate;
 
-    // The template this material is working with - if this instance 
-    // has not been altered, this is the same as _originalTemplate
-    ShaderTemplate::Ptr _template;
+	// The template this material is working with - if this instance 
+	// has not been altered, this is the same as _originalTemplate
+	ShaderTemplate::Ptr _template;
 
-    sigc::connection _templateChanged;
+	sigc::connection _templateChanged;
 
 	// Name of shader
 	std::string _name;
@@ -37,7 +37,7 @@ private:
 
 	bool _visible;
 
-    sigc::signal<void> _sigMaterialModified;
+	sigc::signal<void> _sigMaterialModified;
 
 public:
 	/*
@@ -45,77 +45,77 @@ public:
 	 */
 	CShader(const std::string& name, const ShaderTemplate::Ptr& declaration);
 
-    // Creates a named material from the given declaration, with an option to flag this material as "internal"
+	// Creates a named material from the given declaration, with an option to flag this material as "internal"
 	CShader(const std::string& name, const ShaderTemplate::Ptr& declaration, bool isInternal);
 
 	~CShader();
 
-    /* Material implementation */
-    float getSortRequest() const override;
-    void setSortRequest(float sortRequest) override;
-    void resetSortRequest() override;
-    float getPolygonOffset() const override;
-    void setPolygonOffset(float offset) override;
+	/* Material implementation */
+	float getSortRequest() const override;
+	void setSortRequest(float sortRequest) override;
+	void resetSortRequest() override;
+	float getPolygonOffset() const override;
+	void setPolygonOffset(float offset) override;
 	TexturePtr getEditorImage() override;
-    IMapExpression::Ptr getEditorImageExpression() override;
-    void setEditorImageExpressionFromString(const std::string& editorImagePath) override;
+	IMapExpression::Ptr getEditorImageExpression() override;
+	void setEditorImageExpressionFromString(const std::string& editorImagePath) override;
 	bool isEditorImageNoTex() override;
 	TexturePtr lightFalloffImage() override;
 	std::string getName() const override;
 	bool IsInUse() const override;
 	void SetInUse(bool bInUse) override;
 	int getMaterialFlags() const override;
-    void setMaterialFlag(Flags flag) override;
-    void clearMaterialFlag(Flags flag) override;
+	void setMaterialFlag(Flags flag) override;
+	void clearMaterialFlag(Flags flag) override;
 	bool IsDefault() const override;
 	const char* getShaderFileName() const override;
 	void setShaderFileName(const std::string& fullPath) override;
-    const vfs::FileInfo& getShaderFileInfo() const override;
+	const vfs::FileInfo& getShaderFileInfo() const override;
 	CullType getCullType() const override;
-    void setCullType(CullType type) override;
+	void setCullType(CullType type) override;
 	ClampType getClampType() const override;
-    void setClampType(ClampType type) override;
+	void setClampType(ClampType type) override;
 	int getSurfaceFlags() const override;
-    void setSurfaceFlag(Material::SurfaceFlags flag) override;
-    void clearSurfaceFlag(Material::SurfaceFlags flag) override;
+	void setSurfaceFlag(Material::SurfaceFlags flag) override;
+	void clearSurfaceFlag(Material::SurfaceFlags flag) override;
 	SurfaceType getSurfaceType() const override;
-    void setSurfaceType(SurfaceType type) override;
+	void setSurfaceType(SurfaceType type) override;
 	DeformType getDeformType() const override;
 	IShaderExpression::Ptr getDeformExpression(std::size_t index) override;
-    std::string getDeformDeclName() override;
+	std::string getDeformDeclName() override;
 	DecalInfo getDecalInfo() const override;
-    void setDecalInfo(const DecalInfo& info) override;
+	void setDecalInfo(const DecalInfo& info) override;
 	Coverage getCoverage() const override;
 	std::string getDescription() const override;
-    void setDescription(const std::string& description) override;
+	void setDescription(const std::string& description) override;
 	std::string getDefinition() override;
 	bool isAmbientLight() const override;
 	bool isBlendLight() const override;
 	bool isFogLight() const override;
-    void setIsAmbientLight(bool newValue) override;
-    void setIsBlendLight(bool newValue) override;
-    void setIsFogLight(bool newValue) override;
+	void setIsAmbientLight(bool newValue) override;
+	void setIsBlendLight(bool newValue) override;
+	void setIsFogLight(bool newValue) override;
 	bool lightCastsShadows() const override;
 	bool surfaceCastsShadow() const override;
 	bool isDrawn() const override;
 	bool isDiscrete() const override;
 	bool isVisible() const override;
 	void setVisible(bool visible) override;
-    std::size_t getNumLayers() override;
-    IShaderLayer::Ptr getLayer(std::size_t index) override;
-    void foreachLayer(const std::function<bool(const IShaderLayer::Ptr&)>& functor) override;
-    std::size_t addLayer(IShaderLayer::Type type) override;
-    void removeLayer(std::size_t index) override;
-    void swapLayerPosition(std::size_t first, std::size_t second) override;
-    std::size_t duplicateLayer(std::size_t index) override;
-    IEditableShaderLayer::Ptr getEditableLayer(std::size_t index) override;
+	std::size_t getNumLayers() override;
+	IShaderLayer::Ptr getLayer(std::size_t index) override;
+	void foreachLayer(const std::function<bool(const IShaderLayer::Ptr&)>& functor) override;
+	std::size_t addLayer(IShaderLayer::Type type) override;
+	void removeLayer(std::size_t index) override;
+	void swapLayerPosition(std::size_t first, std::size_t second) override;
+	std::size_t duplicateLayer(std::size_t index) override;
+	IEditableShaderLayer::Ptr getEditableLayer(std::size_t index) override;
 
-    IMapExpression::Ptr getLightFalloffExpression() override;
-    void setLightFalloffExpressionFromString(const std::string& expressionString) override;
-    std::string getRenderBumpArguments() override;
-    std::string getRenderBumpFlatArguments() override;
+	IMapExpression::Ptr getLightFalloffExpression() override;
+	void setLightFalloffExpressionFromString(const std::string& expressionString) override;
+	std::string getRenderBumpArguments() override;
+	std::string getRenderBumpFlatArguments() override;
 
-    const std::string& getGuiSurfArgument() override;
+	const std::string& getGuiSurfArgument() override;
 
 	// -----------------------------------------
 
@@ -128,28 +128,28 @@ public:
 	void setName(const std::string& name);
 
 	IShaderLayer* firstLayer() override;
-    int getParseFlags() const override;
+	int getParseFlags() const override;
 
-    bool isModified() override;
+	bool isModified() override;
 
-    // Set this material to modified (this just creates the internal backup copy)
-    void setIsModified();
+	// Set this material to modified (this just creates the internal backup copy)
+	void setIsModified();
 
-    void commitModifications();
-    void revertModifications() override;
-    sigc::signal<void>& sig_materialChanged() override;
+	void commitModifications();
+	void revertModifications() override;
+	sigc::signal<void>& sig_materialChanged() override;
 
-    void refreshImageMaps() override;
+	void refreshImageMaps() override;
 
-    ParseResult updateFromSourceText(const std::string& sourceText) override;
+	ParseResult updateFromSourceText(const std::string& sourceText) override;
 
-    // Returns the current template (including any modifications) of this material
-    const ShaderTemplate::Ptr& getTemplate();
+	// Returns the current template (including any modifications) of this material
+	const ShaderTemplate::Ptr& getTemplate();
 
 private:
-    void ensureTemplateCopy();
-    void subscribeToTemplateChanges();
-    void updateEditorImage();
+	void ensureTemplateCopy();
+	void subscribeToTemplateChanges();
+	void updateEditorImage();
 };
 typedef std::shared_ptr<CShader> CShaderPtr;
 

@@ -24,21 +24,21 @@ class LogStream :
 	public std::ostream
 {
 private:
-    static std::mutex _streamLock;
+	static std::mutex _streamLock;
 public:
-    LogStream(LogLevel logLevel);
+	LogStream(LogLevel logLevel);
 
-    virtual ~LogStream();
+	virtual ~LogStream();
 
-    // Gets called immediately after entering main()
-    // Sets up the stream references for rMessage(), redirects std::cout, etc.
-    static void InitialiseStreams(ILogWriter& logWriter);
+	// Gets called immediately after entering main()
+	// Sets up the stream references for rMessage(), redirects std::cout, etc.
+	static void InitialiseStreams(ILogWriter& logWriter);
 
-    // Hands back the original streambuf to std::cout
-    static void ShutdownStreams();
+	// Hands back the original streambuf to std::cout
+	static void ShutdownStreams();
 
-    // The one and only lock for logging
-    static std::mutex& GetStreamLock();
+	// The one and only lock for logging
+	static std::mutex& GetStreamLock();
 };
 
 } // namespace applog
