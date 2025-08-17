@@ -132,17 +132,6 @@ void CShader::setLightFalloffExpressionFromString(const std::string& expressionS
     _template->setLightFalloffExpressionFromString(expressionString);
 }
 
-IShaderLayer::MapType CShader::getLightFalloffCubeMapType()
-{
-    return _template->getLightFalloffCubeMapType();
-}
-
-void CShader::setLightFalloffCubeMapType(IShaderLayer::MapType type)
-{
-    ensureTemplateCopy();
-    _template->setLightFalloffCubeMapType(type);
-}
-
 /*
  * Return the light falloff texture (Z dimension).
  */
@@ -189,45 +178,6 @@ void CShader::setDescription(const std::string& description)
 {
     ensureTemplateCopy();
     _template->setDescription(description);
-}
-
-Material::FrobStageType CShader::getFrobStageType()
-{
-    return _template->getFrobStageType();
-}
-
-void CShader::setFrobStageType(Material::FrobStageType type)
-{
-    ensureTemplateCopy();
-    _template->setFrobStageType(type);
-}
-
-IMapExpression::Ptr CShader::getFrobStageMapExpression()
-{
-    return _template->getFrobStageMapExpression();
-}
-
-void CShader::setFrobStageMapExpressionFromString(const std::string& expr)
-{
-    ensureTemplateCopy();
-    _template->setFrobStageMapExpressionFromString(expr);
-}
-
-Vector3 CShader::getFrobStageRgbParameter(std::size_t index)
-{
-    return _template->getFrobStageRgbParameter(index);
-}
-
-void CShader::setFrobStageParameter(std::size_t index, double value)
-{
-    ensureTemplateCopy();
-    _template->setFrobStageParameter(index, value);
-}
-
-void CShader::setFrobStageRgbParameter(std::size_t index, const Vector3& value)
-{
-    ensureTemplateCopy();
-    _template->setFrobStageRgbParameter(index, value);
 }
 
 bool CShader::IsInUse() const {
@@ -325,17 +275,6 @@ IShaderExpression::Ptr CShader::getDeformExpression(std::size_t index)
 std::string CShader::getDeformDeclName()
 {
     return _template->getDeformDeclName();
-}
-
-int CShader::getSpectrum() const
-{
-	return _template->getSpectrum();
-}
-
-void CShader::setSpectrum(int spectrum)
-{
-    ensureTemplateCopy();
-    _template->setSpectrum(spectrum);
 }
 
 Material::DecalInfo CShader::getDecalInfo() const
@@ -537,11 +476,6 @@ bool CShader::isFogLight() const {
 	return _template->isFogLight();
 }
 
-bool CShader::isCubicLight() const
-{
-    return _template->isCubicLight();
-}
-
 void CShader::setIsAmbientLight(bool newValue)
 {
     ensureTemplateCopy();
@@ -559,13 +493,6 @@ void CShader::setIsFogLight(bool newValue)
     ensureTemplateCopy();
     _template->setIsFogLight(newValue);
 }
-
-void CShader::setIsCubicLight(bool newValue)
-{
-    ensureTemplateCopy();
-    _template->setIsCubicLight(newValue);
-}
-
 
 bool CShader::lightCastsShadows() const
 {

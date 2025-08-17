@@ -419,10 +419,6 @@ public:
 		return _material ? _material->isFogLight() : false;
 	}
 
-    bool isCubicLight() {
-        return _material ? _material->isCubicLight() : false;
-    }
-
     void setIsAmbientLight(bool newValue)
     {
         throwIfMaterialCannotBeModified();
@@ -439,12 +435,6 @@ public:
     {
         throwIfMaterialCannotBeModified();
         _material->setIsFogLight(newValue);
-    }
-
-    void setIsCubicLight(bool newValue)
-    {
-        throwIfMaterialCannotBeModified();
-        _material->setIsCubicLight(newValue);
     }
 
 	bool isNull() const {
@@ -586,17 +576,6 @@ public:
         return _material ? _material->getDeformDeclName() : std::string();
     }
 
-    int getSpectrum()
-    {
-        return _material ? _material->getSpectrum() : 0;
-    }
-
-    void setSpectrum(int spectrum)
-    {
-        throwIfMaterialCannotBeModified();
-        if (_material) _material->setSpectrum(spectrum);
-    }
-
     Material::DecalInfo getDecalInfo()
     {
         return _material ? _material->getDecalInfo() : Material::DecalInfo();
@@ -622,55 +601,6 @@ public:
     {
         throwIfMaterialCannotBeModified();
         if (_material) _material->setLightFalloffExpressionFromString(expressionString);
-    }
-
-    IShaderLayer::MapType getLightFalloffCubeMapType()
-    {
-        return _material ? _material->getLightFalloffCubeMapType() : IShaderLayer::MapType::Map;
-    }
-
-    void setLightFalloffCubeMapType(IShaderLayer::MapType type)
-    {
-        throwIfMaterialCannotBeModified();
-        if (_material) _material->setLightFalloffCubeMapType(type);
-    }
-
-    Material::FrobStageType getFrobStageType()
-    {
-        return _material ? _material->getFrobStageType() : Material::FrobStageType::Default;
-    }
-
-    void setFrobStageType(Material::FrobStageType type)
-    {
-        throwIfMaterialCannotBeModified();
-        if (_material) _material->setFrobStageType(type);
-    }
-
-    std::string getFrobStageMapExpressionString()
-    {
-        return _material && _material->getFrobStageMapExpression() ? _material->getFrobStageMapExpression()->getExpressionString() : "";
-    }
-
-    void setFrobStageMapExpressionFromString(const std::string& expr)
-    {
-        throwIfMaterialCannotBeModified();
-        if (_material) _material->setFrobStageMapExpressionFromString(expr);
-    }
-
-    Vector3 getFrobStageRgbParameter(std::size_t index)
-    {
-        return _material ? _material->getFrobStageRgbParameter(index) : Vector3(0, 0, 0);
-    }
-
-    void setFrobStageRgbParameter(std::size_t index, const Vector3& value)
-    {
-        throwIfMaterialCannotBeModified();
-        if (_material) _material->setFrobStageRgbParameter(index, value);
-    }
-
-    void setFrobStageParameter(std::size_t index, double value)
-    {
-        setFrobStageRgbParameter(index, Vector3(value, value, value));
     }
 
     std::string getRenderBumpArguments()

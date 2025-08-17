@@ -56,13 +56,11 @@ public:
 
 	// Map expressions
 	MapExpressionPtr _lightFalloff;
-    IShaderLayer::MapType _lightFalloffCubeMapType;
 
 	/* Light type booleans */
 	bool fogLight;
 	bool ambientLight;
 	bool blendLight;
-	bool _cubicLight;
 
 	// The description tag of the material
 	std::string description;
@@ -85,9 +83,6 @@ public:
     std::vector<IShaderExpression::Ptr> _deformExpressions;
     std::string _deformDeclName;
 
-	// The spectrum this shader is responding to (or emitting in the case of light materials)
-	int _spectrum;
-
     // Sort position (e.g. sort decal == 2)
     float _sortReq;
 
@@ -107,13 +102,6 @@ public:
     // The string value specified by the guisurf keyword, if other than entity[2]3]
     std::string _guiDeclName;
 
-    // The three ambient rim colour expressions (empty if not defined)
-    IShaderExpression::Ptr _ambientRimColour[3];
-
-    Material::FrobStageType _frobStageType;
-    MapExpressionPtr _frobStageMapExpression;
-    Vector3 _frobStageRgbParameter[2];
-
     // Private copy ctor, used for cloning
     ShaderTemplate(const ShaderTemplate& other);
 
@@ -127,23 +115,19 @@ public:
         decl::EditableDeclaration<IShaderTemplate>(decl::Type::Material, name),
         _name(name),
         _suppressChangeSignal(false),
-        _lightFalloffCubeMapType(IShaderLayer::MapType::Map),
         fogLight(false),
         ambientLight(false),
         blendLight(false),
-        _cubicLight(false),
         _materialFlags(0),
         _cullType(Material::CULL_BACK),
         _clampType(CLAMP_REPEAT),
         _surfaceFlags(0),
         _surfaceType(Material::SURFTYPE_DEFAULT),
         _deformType(Material::DEFORM_NONE),
-        _spectrum(0),
         _sortReq(SORT_UNDEFINED),	// will be set to default values after the shader has been parsed
         _polygonOffset(0.0f),
         _coverage(Material::MC_UNDETERMINED),
-        _parseFlags(0),
-        _frobStageType(Material::FrobStageType::Default)
+        _parseFlags(0)
 	{
         clear();
 	}
@@ -314,20 +298,6 @@ public:
         return _deformDeclName;
     }
 
-	int getSpectrum()
-	{
-		ensureParsed();
-		return _spectrum;
-	}
-
-    void setSpectrum(int spectrum)
-    {
-        ensureParsed();
-        _spectrum = spectrum;
-
-        onTemplateChanged();
-    }
-
 	const Material::DecalInfo& getDecalInfo()
 	{
 		ensureParsed();
@@ -365,12 +335,6 @@ public:
 		ensureParsed();
 		return blendLight;
 	}
-    
-    bool isCubicLight()
-	{
-		ensureParsed();
-		return _cubicLight;
-	}
 
     void setIsAmbientLight(bool newValue)
     {
@@ -392,14 +356,6 @@ public:
     {
         ensureParsed();
         fogLight = newValue;
-
-        onTemplateChanged();
-    }
-
-    void setIsCubicLight(bool newValue)
-    {
-        ensureParsed();
-        _cubicLight = newValue;
 
         onTemplateChanged();
     }
@@ -487,43 +443,6 @@ public:
 
         onTemplateChanged();
     }
-    
-    IShaderLayer::MapType getLightFalloffCubeMapType()
-    {
-        ensureParsed();
-        return _lightFalloffCubeMapType;
-    }
-
-    void setLightFalloffCubeMapType(IShaderLayer::MapType type)
-    {
-        ensureParsed();
-        _lightFalloffCubeMapType = type;
-
-        onTemplateChanged();
-    }
-
-    Material::FrobStageType getFrobStageType()
-	{
-        ensureParsed();
-        return _frobStageType;
-	}
-
-    IMapExpression::Ptr getFrobStageMapExpression()
-	{
-        ensureParsed();
-        return _frobStageMapExpression;
-	}
-
-    Vector3 getFrobStageRgbParameter(std::size_t index)
-	{
-        ensureParsed();
-        return index < 2 ? _frobStageRgbParameter[index] : Vector3(0,0,0);
-	}
-
-    void setFrobStageType(Material::FrobStageType type);
-    void setFrobStageMapExpressionFromString(const std::string& expr);
-    void setFrobStageParameter(std::size_t index, double value);
-    void setFrobStageRgbParameter(std::size_t index, const Vector3& value);
 
     std::size_t addLayer(IShaderLayer::Type type);
     void removeLayer(std::size_t index);
@@ -549,12 +468,6 @@ public:
     {
         ensureParsed();
         return _guiDeclName;
-    }
-
-    IShaderExpression::Ptr getAmbientRimColourExpression(std::size_t index)
-    {
-        assert(index < 3);
-        return _ambientRimColour[index];
     }
 
     void onTemplateChanged()
@@ -611,7 +524,6 @@ private:
 	bool parseSurfaceFlags(parser::DefTokeniser&, const std::string&);
 	bool parseMaterialType(parser::DefTokeniser&, const std::string&);
 	bool parseCondition(parser::DefTokeniser&, const std::string&);
-	bool parseFrobstageKeywords(parser::DefTokeniser&, const std::string&);
 
     // Parses a vector3 "(x y z)" into Vector3(x,y,z) or a single float "x" into a Vector3(x,x,x)
 	Vector3 parseScalarOrVector3(parser::DefTokeniser&);

@@ -30,11 +30,9 @@ ShaderTemplate::ShaderTemplate(const ShaderTemplate& other) :
     _currentLayer(new Doom3ShaderLayer(*this)),
     _suppressChangeSignal(false),
     _lightFalloff(other._lightFalloff),
-    _lightFalloffCubeMapType(other._lightFalloffCubeMapType),
     fogLight(other.fogLight),
     ambientLight(other.ambientLight),
     blendLight(other.blendLight),
-    _cubicLight(other._cubicLight),
     description(other.description),
     _materialFlags(other._materialFlags),
     _cullType(other._cullType),
@@ -44,7 +42,6 @@ ShaderTemplate::ShaderTemplate(const ShaderTemplate& other) :
     _deformType(other._deformType),
     _deformExpressions(other._deformExpressions),
     _deformDeclName(other._deformDeclName),
-    _spectrum(other._spectrum),
     _sortReq(other._sortReq),
     _polygonOffset(other._polygonOffset),
     _decalInfo(other._decalInfo),
@@ -52,19 +49,9 @@ ShaderTemplate::ShaderTemplate(const ShaderTemplate& other) :
     _renderBumpArguments(other._renderBumpArguments),
     _renderBumpFlatArguments(other._renderBumpFlatArguments),
     _parseFlags(other._parseFlags),
-    _guiDeclName(other._guiDeclName),
-    _frobStageType(other._frobStageType)
+    _guiDeclName(other._guiDeclName)
 {
     _editorTex = other._editorTex ? MapExpression::createForString(other._editorTex->getExpressionString()) : MapExpressionPtr();
-    _frobStageMapExpression = other._frobStageMapExpression ? 
-        MapExpression::createForString(other._frobStageMapExpression->getExpressionString()) : MapExpressionPtr();
-
-    _frobStageRgbParameter[0] = other._frobStageRgbParameter[0];
-    _frobStageRgbParameter[1] = other._frobStageRgbParameter[1];
-
-    _ambientRimColour[0] = other._ambientRimColour[0];
-    _ambientRimColour[1] = other._ambientRimColour[1];
-    _ambientRimColour[2] = other._ambientRimColour[2];
 
     // Clone the layers
     for (const auto& otherLayer : other._layers)
@@ -115,47 +102,6 @@ void ShaderTemplate::setDecalInfo(const Material::DecalInfo& info)
     {
         _parseFlags |= Material::PF_HasDecalInfo;
     }
-
-    onTemplateChanged();
-}
-
-void ShaderTemplate::setFrobStageType(Material::FrobStageType type)
-{
-    ensureParsed();
-
-    _frobStageType = type;
-
-    onTemplateChanged();
-}
-
-void ShaderTemplate::setFrobStageMapExpressionFromString(const std::string& expr)
-{
-    ensureParsed();
-
-    if (!expr.empty())
-    {
-        _frobStageMapExpression = MapExpression::createForString(expr);
-    }
-    else
-    {
-        _frobStageMapExpression.reset();
-    }
-
-    onTemplateChanged();
-}
-
-void ShaderTemplate::setFrobStageParameter(std::size_t index, double value)
-{
-    setFrobStageRgbParameter(index, Vector3(value, value, value));
-}
-
-void ShaderTemplate::setFrobStageRgbParameter(std::size_t index, const Vector3& value)
-{
-    if (index > 1) throw std::out_of_range("Index must be 0 or 1");
-
-    ensureParsed();
-
-    _frobStageRgbParameter[index] = value;
 
     onTemplateChanged();
 }
@@ -216,28 +162,6 @@ bool ShaderTemplate::parseShaderFlags(parser::DefTokeniser& tokeniser,
         _sortReq = Material::SORT_DECAL;
         _polygonOffset = 1.0f;
 		_surfaceFlags |= Material::SURF_DISCRETE | Material::SURF_NONSOLID;
-    }
-    else if (token == "twosided_decal_macro")
-    {
-        _parseFlags |= Material::PF_HasTwoSidedDecalMacro;
-
-        _materialFlags |= Material::FLAG_TRANSLUCENT | Material::FLAG_NOSHADOWS | Material::FLAG_NOSELFSHADOW;
-        _materialFlags |= Material::FLAG_HAS_SORT_DEFINED;
-        _materialFlags |= Material::FLAG_POLYGONOFFSET;
-        _sortReq = Material::SORT_DECAL;
-        _polygonOffset = 1.0f;
-        _surfaceFlags |= Material::SURF_DISCRETE | Material::SURF_NOIMPACT | Material::SURF_NONSOLID;
-        _cullType = Material::CULL_NONE;
-
-        _coverage = Material::MC_TRANSLUCENT;
-    }
-    else if (token == "particle_macro")
-    {
-        _parseFlags |= Material::PF_HasParticleMacro;
-
-        _materialFlags |= Material::FLAG_NOSHADOWS | Material::FLAG_NOSELFSHADOW;
-        _surfaceFlags |= Material::SURF_DISCRETE | Material::SURF_NOIMPACT | Material::SURF_NONSOLID;
-        _coverage = Material::MC_TRANSLUCENT;
     }
     else if (token == "glass_macro")
     {
@@ -507,33 +431,6 @@ bool ShaderTemplate::parseShaderFlags(parser::DefTokeniser& tokeniser,
         _renderBumpFlatArguments += next;
         string::trim(_renderBumpFlatArguments);
 	}
-    else if (token == "ambientrimcolor")
-    {
-        _parseFlags |= Material::PF_HasAmbientRimColour;
-
-        // ambientRimColor <exp0>, <exp1>, <exp2>
-        auto red = ShaderExpression::createFromTokens(tokeniser);
-        tokeniser.assertNextToken(",");
-        auto green = ShaderExpression::createFromTokens(tokeniser);
-        tokeniser.assertNextToken(",");
-        auto blue = ShaderExpression::createFromTokens(tokeniser);
-
-        if (red && green && blue)
-        {
-            // ambientrimcolor support not yet added, we need material registers first
-            _ambientRimColour[0] = red;
-            _ambientRimColour[1] = green;
-            _ambientRimColour[2] = blue;
-        }
-        else
-        {
-            rWarning() << "Could not parse ambientRimColor expressions in shader: " << getName() << std::endl;
-        }
-    }
-    else if (token == "islightgemsurf")
-    {
-        _materialFlags |= Material::FLAG_ISLIGHTGEMSURF;
-    }
 	else
 	{
 		return false; // unrecognised token, return false
@@ -558,41 +455,10 @@ bool ShaderTemplate::parseLightKeywords(parser::DefTokeniser& tokeniser, const s
 	{
         fogLight = true;
     }
-    else if (token == "cubliclight")
-    {
-        _cubicLight = true;
-    }
-    else if (token == "ambientcubiclight")
-    {
-        ambientLight = true;
-        _cubicLight = true;
-    }
     else if (!fogLight && token == "lightfalloffimage")
 	{
-        _lightFalloffCubeMapType = IShaderLayer::MapType::Map;
         _lightFalloff = MapExpression::createForToken(tokeniser);
     }
-    else if (token == "lightfalloffcubemap")
-    {
-        _lightFalloffCubeMapType = IShaderLayer::MapType::CameraCubeMap;
-        _lightFalloff = MapExpression::createForToken(tokeniser);
-    }
-	else if (token == "spectrum")
-	{
-        _parseFlags |= Material::PF_HasSpectrum;
-
-		std::string value = tokeniser.nextToken();
-
-		try
-		{
-			_spectrum = std::stoi(value);
-		}
-		catch (std::logic_error& e)
-		{
-			rWarning() << "Expect integer number as spectrum value, found " << 
-				value << ": " << e.what() << std::endl;
-		}
-	}
 	else
 	{
 		return false; // unrecognised token, return false
@@ -1140,10 +1006,6 @@ bool ShaderTemplate::parseStageModifiers(parser::DefTokeniser& tokeniser,
 	{
 		_currentLayer->setStageFlag(IShaderLayer::FLAG_MASK_DEPTH);
 	}
-    else if (token == "ignoredepth")
-    {
-        _currentLayer->setStageFlag(IShaderLayer::FLAG_IGNORE_DEPTH);
-    }
 	else if (token == "privatepolygonoffset")
 	{
 		_currentLayer->setPrivatePolygonOffset(string::convert<float>(tokeniser.nextToken()));
@@ -1173,38 +1035,6 @@ bool ShaderTemplate::parseMaterialType(parser::DefTokeniser& tokeniser, const st
             _surfaceType = pair.second;
             return true;
         }
-    }
-
-    return false;
-}
-
-bool ShaderTemplate::parseFrobstageKeywords(parser::DefTokeniser& tokeniser, const std::string& token)
-{
-    if (!string::starts_with(token, "frobstage_")) return false;
-
-    auto suffix = token.substr(10);
-
-    if (suffix == "texture")
-    {
-        _frobStageType = Material::FrobStageType::Texture;
-        _frobStageMapExpression = MapExpression::createForToken(tokeniser);
-        _frobStageRgbParameter[0] = parseScalarOrVector3(tokeniser);
-        _frobStageRgbParameter[1] = parseScalarOrVector3(tokeniser);
-        return true;
-    }
-
-    if (suffix == "diffuse")
-    {
-        _frobStageType = Material::FrobStageType::Diffuse;
-        _frobStageRgbParameter[0] = parseScalarOrVector3(tokeniser);
-        _frobStageRgbParameter[1] = parseScalarOrVector3(tokeniser);
-        return true;
-    }
-    
-    if (suffix == "none")
-    {
-        _frobStageType = Material::FrobStageType::NoFrobStage;
-        return true;
     }
 
     return false;
@@ -1314,26 +1144,19 @@ void ShaderTemplate::clear()
 
     description.clear();
     _suppressChangeSignal = false;
-    _lightFalloffCubeMapType = IShaderLayer::MapType::Map;
     fogLight = false;
     ambientLight = false;
     blendLight = false;
-    _cubicLight = false;
     _materialFlags = 0;
     _cullType = Material::CULL_BACK;
     _clampType = CLAMP_REPEAT;
     _surfaceFlags = 0;
     _surfaceType = Material::SURFTYPE_DEFAULT;
     _deformType = Material::DEFORM_NONE;
-    _spectrum = 0;
     _sortReq = SORT_UNDEFINED;	// will be set to default values after the shader has been parsed
     _polygonOffset = 0.0f;
     _coverage = Material::MC_UNDETERMINED;
     _parseFlags = 0;
-    _frobStageType = Material::FrobStageType::Default;
-    _frobStageMapExpression.reset();
-    _frobStageRgbParameter[0].set(0, 0, 0);
-    _frobStageRgbParameter[1].set(0, 0, 0);
     
     _decalInfo.stayMilliSeconds = 0;
     _decalInfo.fadeMilliSeconds = 0;
@@ -1379,7 +1202,6 @@ void ShaderTemplate::parseFromTokens(parser::DefTokeniser& tokeniser)
                     if (parseBlendShortcuts(tokeniser, token)) continue;
                     if (parseSurfaceFlags(tokeniser, token)) continue;
                     if (parseMaterialType(tokeniser, token)) continue;
-                    if (parseFrobstageKeywords(tokeniser, token)) continue;
 
                     rWarning() << "Material keyword not recognised: " << token << std::endl;
 

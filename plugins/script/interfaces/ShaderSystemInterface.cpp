@@ -100,7 +100,6 @@ void ShaderSystemInterface::registerInterface(py::module& scope, py::dict& globa
         .value("CLOSE", Material::SORT_CLOSE)
         .value("ALMOST_NEAREST", Material::SORT_ALMOST_NEAREST)
         .value("NEAREST", Material::SORT_NEAREST)
-        .value("AFTER_FOG", Material::SORT_AFTER_FOG)
         .value("POST_PROCESS", Material::SORT_POST_PROCESS)
         .export_values();
 
@@ -130,7 +129,6 @@ void ShaderSystemInterface::registerInterface(py::module& scope, py::dict& globa
         .value("UNSMOOTHEDTANGENTS", Material::FLAG_UNSMOOTHEDTANGENTS)
         .value("MIRROR", Material::FLAG_MIRROR)
         .value("POLYGONOFFSET", Material::FLAG_POLYGONOFFSET)
-        .value("ISLIGHTGEMSURF", Material::FLAG_ISLIGHTGEMSURF)
         .export_values();
 
     py::enum_<Material::SurfaceFlags>(material, "SurfaceFlag")
@@ -211,13 +209,6 @@ void ShaderSystemInterface::registerInterface(py::module& scope, py::dict& globa
         .value("TRANSLUCENT", Material::MC_TRANSLUCENT)
         .export_values();
 
-    py::enum_<Material::FrobStageType>(material, "FrobStageType")
-        .value("DEFAULT", Material::FrobStageType::Default)
-        .value("DIFFUSE", Material::FrobStageType::Diffuse)
-        .value("TEXTURE", Material::FrobStageType::Texture)
-        .value("NONE", Material::FrobStageType::NoFrobStage)
-        .export_values();
-
     py::enum_<IShaderLayer::Type>(stage, "Type")
         .value("DIFFUSE", IShaderLayer::Type::DIFFUSE)
         .value("BUMP", IShaderLayer::Type::BUMP)
@@ -246,11 +237,9 @@ void ShaderSystemInterface::registerInterface(py::module& scope, py::dict& globa
 	material.def("isAmbientLight", &ScriptMaterial::isAmbientLight);
 	material.def("isBlendLight", &ScriptMaterial::isBlendLight);
 	material.def("isFogLight", &ScriptMaterial::isFogLight);
-	material.def("isCubicLight", &ScriptMaterial::isCubicLight);
 	material.def("setIsAmbientLight", &ScriptMaterial::setIsAmbientLight);
 	material.def("setIsBlendLight", &ScriptMaterial::setIsBlendLight);
 	material.def("setIsFogLight", &ScriptMaterial::setIsFogLight);
-	material.def("setIsCubicLight", &ScriptMaterial::setIsCubicLight);
 	material.def("isNull", &ScriptMaterial::isNull);
 	material.def("getEditorImageExpressionString", &ScriptMaterial::getEditorImageExpressionString);
 	material.def("setEditorImageExpressionFromString", &ScriptMaterial::setEditorImageExpressionFromString);
@@ -276,15 +265,11 @@ void ShaderSystemInterface::registerInterface(py::module& scope, py::dict& globa
     material.def("getDeformType", &ScriptMaterial::getDeformType);
     material.def("getDeformExpressionString", &ScriptMaterial::getDeformExpressionString);
     material.def("getDeformDeclName", &ScriptMaterial::getDeformDeclName);
-    material.def("getSpectrum", &ScriptMaterial::getSpectrum);
-    material.def("setSpectrum", &ScriptMaterial::setSpectrum);
     material.def("getDecalInfo", &ScriptMaterial::getDecalInfo);
     material.def("setDecalInfo", &ScriptMaterial::setDecalInfo);
     material.def("getCoverage", &ScriptMaterial::getCoverage);
     material.def("getLightFalloffExpressionString", &ScriptMaterial::getLightFalloffExpressionString);
     material.def("setLightFalloffExpressionFromString", &ScriptMaterial::setLightFalloffExpressionFromString);
-    material.def("getLightFalloffCubeMapType", &ScriptMaterial::getLightFalloffCubeMapType);
-    material.def("setLightFalloffCubeMapType", &ScriptMaterial::setLightFalloffCubeMapType);
     material.def("getGuiSurfArgument", &ScriptMaterial::getGuiSurfArgument);
     material.def("getRenderBumpArguments", &ScriptMaterial::getRenderBumpArguments);
     material.def("getRenderBumpFlatArguments", &ScriptMaterial::getRenderBumpFlatArguments);
@@ -298,13 +283,6 @@ void ShaderSystemInterface::registerInterface(py::module& scope, py::dict& globa
     material.def("removeStage", &ScriptMaterial::removeStage);
     material.def("duplicateStage", &ScriptMaterial::duplicateStage);
     material.def("swapStagePosition", &ScriptMaterial::swapStagePosition);
-    material.def("getFrobStageType", &ScriptMaterial::getFrobStageType);
-    material.def("setFrobStageType", &ScriptMaterial::setFrobStageType);
-    material.def("getFrobStageMapExpressionString", &ScriptMaterial::getFrobStageMapExpressionString);
-    material.def("setFrobStageMapExpressionFromString", &ScriptMaterial::setFrobStageMapExpressionFromString);
-    material.def("getFrobStageRgbParameter", &ScriptMaterial::getFrobStageRgbParameter);
-    material.def("setFrobStageParameter", &ScriptMaterial::setFrobStageParameter);
-    material.def("setFrobStageRgbParameter", &ScriptMaterial::setFrobStageRgbParameter);
 
     // Stage Flags
     py::enum_<IShaderLayer::Flags>(stage, "Flag")
@@ -319,7 +297,6 @@ void ShaderSystemInterface::registerInterface(py::module& scope, py::dict& globa
         .value("MASK_BLUE", IShaderLayer::FLAG_MASK_BLUE)
         .value("MASK_ALPHA", IShaderLayer::FLAG_MASK_ALPHA)
         .value("MASK_DEPTH", IShaderLayer::FLAG_MASK_DEPTH)
-        .value("IGNORE_DEPTH", IShaderLayer::FLAG_IGNORE_DEPTH)
         .export_values();
 
     // Texgen enum

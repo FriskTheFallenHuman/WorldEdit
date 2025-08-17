@@ -23,7 +23,6 @@ namespace
 {
 	// Default image maps for optional material stages
 	const std::string IMAGE_BLACK = "_black.png";
-	const std::string IMAGE_CUBICLIGHT = "_cubiclight.png";
 	const std::string IMAGE_CURRENTRENDER = "_currentrender.png";
 	const std::string IMAGE_DEFAULT = "_default.png";
 	const std::string IMAGE_FLAT = "_flat.png";
@@ -734,11 +733,6 @@ ImagePtr ImageExpression::getImage() const
 	if (_imgName == "_black") {
 		return GlobalImageLoader().imageFromFile(
             getBitmapsPath() + IMAGE_BLACK
-        );
-	}
-	else if (_imgName == "_cubiclight") {
-		return GlobalImageLoader().imageFromFile(
-            getBitmapsPath() + IMAGE_CUBICLIGHT
         );
 	}
 	else if (_imgName == "_currentRender") {

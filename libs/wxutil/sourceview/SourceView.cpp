@@ -130,7 +130,7 @@ D3MaterialSourceViewCtrl::D3MaterialSourceViewCtrl(wxWindow* parent) :
 	SetKeyWords(0, "diffusemap qer_editorimage bumpmap specularmap map if description polygonOffset "
 		"noshadows noShadows noselfshadow forceshadows nooverlays forceoverlays translucent clamp zeroclamp "
 		"alphazeroclamp forceopaque twosided backsided mirror nofog unsmoothedTangents guisurf sort "
-		"decal reflect spectrum deform decalInfo renderbump DECAL_MACRO sprite tube flare expand move "
+		"decal reflect deform decalInfo renderbump DECAL_MACRO sprite tube flare expand move "
 		"turbulent eyeBall particle particle2 noportalfog fogLight blendLight ambientLight lightFallOffImage "
 		"solid water playerclip monsterclip moveableclip ikclip blood trigger aassolid aasobstacle "
 		"flashlight_trigger nonsolid nullNormal areaPortal qer_nocarve discrete nofragment slick "
@@ -141,8 +141,7 @@ D3MaterialSourceViewCtrl::D3MaterialSourceViewCtrl(wxWindow* parent) :
 		"inverseVertexColor privatePolygonOffset texGen scroll translate scale centerScale shear "
 		"rotate maskRed maskGreen maskBlue maskAlpha maskColor maskDepth alphatest red green blue "
 		"alpha rgb rgba color colored fragmentProgram vertexProgram program vertexParm fragmentMap megatexture "
-        "PARTICLE_MACRO GLASS_MACRO TWOSIDED_DECAL_MACRO ambientRimColor ambientCubicLight cubicLight "
-        "afterFog lightFalloffCubeMap ignoreDepth");
+        "GLASS_MACRO");
 
 	SetKeyWords(1, "_white _flat _black gl_src_alpha gl_one_minus_src_alpha gl_one gl_dst_color "
 		"gl_zero gl_one_minus_dst_color gl_dst_alpha gl_one_minus_dst_alpha gl_src_alpha_saturate "

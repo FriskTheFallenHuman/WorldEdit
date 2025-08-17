@@ -55,7 +55,6 @@ public:
 		FLAG_UNSMOOTHEDTANGENTS		= 1 << 9,		// unsmoothedTangents
 		FLAG_MIRROR					= 1 << 10,		// mirror
 		FLAG_POLYGONOFFSET			= 1 << 11,		// has polygonOffset
-		FLAG_ISLIGHTGEMSURF			= 1 << 12,		// is used by the TDM lightgem
 		FLAG_HAS_SORT_DEFINED		= 1 << 13,		// whether a sort value has been defined
 	};
 
@@ -64,12 +63,8 @@ public:
 	enum ParseFlags
 	{
 		PF_HasSortDefined           = 1 << 0, // has a "sort" keyword in its definition
-		PF_HasAmbientRimColour      = 1 << 1, // has an "ambientRimColor" keyword in its definition
-		PF_HasSpectrum              = 1 << 2, // has a "spectrum" keyword in its definition
 		PF_HasDecalInfo             = 1 << 3, // has a "decalinfo" keyword in its definition
 		PF_HasDecalMacro            = 1 << 4, // has a "DECAL_MACRO" keyword in its definition
-		PF_HasTwoSidedDecalMacro    = 1 << 5, // has a "TWOSIDED_DECAL_MACRO" keyword in its definition
-		PF_HasParticleMacro         = 1 << 6, // has a "PARTICLE_MACRO" keyword in its definition
 		PF_HasGlassMacro            = 1 << 7, // has a "GLASS_MACRO" keyword in its definition
 	};
 
@@ -148,7 +143,6 @@ public:
 		SORT_CLOSE,
 		SORT_ALMOST_NEAREST,	// gun smoke puffs
 		SORT_NEAREST,			// screen blood blobs
-		SORT_AFTER_FOG    = 90, // TDM-specific
 		SORT_POST_PROCESS = 100	// after a screen copy to texture
 	};
 
@@ -188,15 +182,6 @@ public:
 		MC_OPAQUE,			// completely fills the triangle, will have black drawn on fillDepthBuffer
 		MC_PERFORATED,		// may have alpha tested holes
 		MC_TRANSLUCENT		// blended with background
-	};
-
-	// TDM 2.11 frob stage keyword
-	enum class FrobStageType
-	{
-		Default,     // no frobstage keyword in this material
-		Diffuse,     // frobstage_diffuse has been declared: frobstage_diffuse 0.25 0.50
-		Texture,     // frobstage_texture textures/some/thing 0.15 0.40
-		NoFrobStage, // frobstage_none
 	};
 
 	virtual ~Material() {}
@@ -296,12 +281,6 @@ public:
 	// Used for Deform_Particle/Particle2 defines the name of the particle def
 	virtual std::string getDeformDeclName() = 0;
 
-	/// Returns the spectrum of this shader, 0 is the default value (even without keyword in the material)
-	virtual int getSpectrum() const = 0;
-
-	// Sets the spectrum of this material.
-	virtual void setSpectrum(int spectrum) = 0;
-
 	/// Retrieves the decal info structure of this material.
 	virtual DecalInfo getDecalInfo() const = 0;
 
@@ -334,15 +313,9 @@ public:
 	 */
 	virtual bool isFogLight() const = 0;
 
-	/** Determine whether this is a cubic light shader, i.e. the
-	 * material def contains the global "cubicLight" keyword.
-	 */
-	virtual bool isCubicLight() const = 0;
-
 	virtual void setIsAmbientLight(bool newValue) = 0;
 	virtual void setIsBlendLight(bool newValue) = 0;
 	virtual void setIsFogLight(bool newValue) = 0;
-	virtual void setIsCubicLight(bool newValue) = 0;
 
 	/**
 	 * For light shaders: implicitly no-shadows lights (ambients, fogs, etc)
@@ -410,41 +383,11 @@ public:
 	// Set the lightFallOff expression to define the image/cubemap to use
 	virtual void setLightFalloffExpressionFromString(const std::string& expressionString) = 0;
 
-	// Return the type of the light fall off image 
-	// (can be MapType::Map (lightFalloffImage or MapType::CameraCubeMap for lightFalloffCubeMap)
-	virtual IShaderLayer::MapType getLightFalloffCubeMapType() = 0;
-
-	// Set the type of the light fall off image 
-	// (can be MapType::Map (lightFalloffImage or MapType::CameraCubeMap for lightFalloffCubeMap)
-	virtual void setLightFalloffCubeMapType(IShaderLayer::MapType type) = 0;
-
 	// greebo: Returns the description as defined in the material
 	virtual std::string getDescription() const = 0;
 
 	// Set the description text of this material
 	virtual void setDescription(const std::string& description) = 0;
-
-	// Returns the frob stage type this material is using (defaults to FrobStageType::Default)
-	virtual FrobStageType getFrobStageType() = 0;
-
-	// Sets the frob stage type. Might assign a _white frob stage map expression (if empty).
-	virtual void setFrobStageType(FrobStageType type) = 0;
-
-	// When FrobStageType::Texture: defines the texture that has been declared using frobstage_texture
-	virtual shaders::IMapExpression::Ptr getFrobStageMapExpression() = 0;
-
-	// Sets the frob stage map expression (applicable to FrobStageType::Texture)
-	virtual void setFrobStageMapExpressionFromString(const std::string& expr) = 0;
-
-	// frobstage_diffuse and frobstage_texture accept two (r g b) or float expressions
-	// Index is [0..1]. The first parameter is additive, second is multiplicative
-	virtual Vector3 getFrobStageRgbParameter(std::size_t index) = 0;
-
-	// Assigns the RGB components to the frob stage parameter with the given index => "(x y z)"
-	virtual void setFrobStageRgbParameter(std::size_t index, const Vector3& value) = 0;
-
-	// Assigns a single uniform value to the frob stage parameter with the given index => "x"
-	virtual void setFrobStageParameter(std::size_t index, double value) = 0;
 
 	 /// Return TRUE if the shader is visible, FALSE if it is filtered or
 	 /// disabled in any other way.

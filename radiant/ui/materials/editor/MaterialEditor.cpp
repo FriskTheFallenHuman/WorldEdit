@@ -29,7 +29,6 @@
 #include "wxutil/EntityClassChooser.h"
 #include "wxutil/Bitmap.h"
 #include "wxutil/decl/DeclFileInfo.h"
-#include "materials/FrobStageSetup.h"
 #include "parser/DefBlockSyntaxParser.h"
 #include <fmt/format.h>
 #include "gamelib.h"
@@ -607,7 +606,6 @@ void MaterialEditor::_onBasicMapEntryChanged(const std::string& entryName, IShad
             updateStageListFromMaterial(); 
             onMaterialChanged();
             updateBasicImagePreview();
-            updateBasicFrobStageControls();
         }
 
         return;
@@ -640,7 +638,6 @@ void MaterialEditor::_onBasicMapEntryChanged(const std::string& entryName, IShad
 
     updateStageControls();
     updateBasicImagePreview();
-    updateBasicFrobStageControls();
     onMaterialChanged();
 }
 
@@ -662,7 +659,6 @@ void MaterialEditor::setupBasicMaterialPage()
         _material->setEditorImageExpressionFromString(editorImageEntry->GetValue().ToStdString());
         updateStageBlendControls();
         updateBasicImagePreview();
-        updateBasicFrobStageControls();
         onMaterialChanged();
     });
 
@@ -706,16 +702,6 @@ void MaterialEditor::setupBasicMaterialPage()
 
     auto specularTabImage = getControl<wxStaticBitmap>("BasicSpecularTabImage");
     replaceControl(specularTabImage, new TexturePreview(specularTabImage->GetParent(), TexturePreview::ImageType::Specular));
-
-    auto addFrob = getControl<wxButton>("BasicAddFrobStages");
-    auto removeFrob = getControl<wxButton>("BasicRemoveFrobStages");
-    auto testFrob = getControl<wxButton>("BasicTestFrobStages");
-
-    addFrob->Bind(wxEVT_BUTTON, &MaterialEditor::_onBasicAddFrobStages, this);
-    removeFrob->Bind(wxEVT_BUTTON, &MaterialEditor::_onBasicRemoveFrobStages, this);
-
-    testFrob->Bind(wxEVT_LEFT_DOWN, &MaterialEditor::_onBasicTestFrobStages, this);
-    testFrob->Bind(wxEVT_LEFT_UP, &MaterialEditor::_onBasicTestFrobStages, this);
 }
 
 void MaterialEditor::createDecalColourBinding(const std::string& controlName, const std::function<double(const MaterialPtr&)>& loadFunc)
@@ -845,11 +831,6 @@ void MaterialEditor::setupMaterialProperties()
         },
         [this]() { onMaterialChanged(); }));
 
-    getControl<wxCheckBox>("MaterialHasSpectrum")->Bind(wxEVT_CHECKBOX, [this](wxCommandEvent& ev)
-    {
-        getControl<wxSpinCtrl>("MaterialSpectrumValue")->Enable(ev.IsChecked());
-    });
-
     auto hasDecalInfo = getControl<wxCheckBox>("MaterialHasDecalInfo");
     hasDecalInfo->Bind(wxEVT_CHECKBOX, [this](wxCommandEvent& ev)
     {
@@ -906,17 +887,7 @@ void MaterialEditor::setupMaterialProperties()
     createDecalColourBinding("MaterialDecalInfoEndBlue", [](const MaterialPtr& material) { return material->getDecalInfo().endColour.z(); });
     createDecalColourBinding("MaterialDecalInfoEndAlpha", [](const MaterialPtr& material) { return material->getDecalInfo().endColour.w(); });
 
-    // For light fall off images, only cameracubemap and map are allowed
-    auto lightFallOffCubeMapType = getControl<wxChoice>("MaterialLightFalloffCubeMapType");
-    lightFallOffCubeMapType->AppendString(shaders::getStringForMapType(IShaderLayer::MapType::Map));
-    lightFallOffCubeMapType->AppendString(shaders::getStringForMapType(IShaderLayer::MapType::CameraCubeMap));
-
-    lightFallOffCubeMapType->Bind(wxEVT_CHOICE, [this, lightFallOffCubeMapType] (wxCommandEvent& ev)
-    {
-        if (_materialUpdateInProgress || !_material) return;
-        _material->setLightFalloffCubeMapType(shaders::getMapTypeForString(lightFallOffCubeMapType->GetStringSelection().ToStdString()));
-    });
-
+    // light fall off images
     auto lightFalloffMap = getControl<MapExpressionEntry>("MaterialLightFalloffMap");
     _materialBindings.emplace(std::make_shared<ExpressionBinding<MaterialPtr>>(lightFalloffMap->GetTextCtrl(),
         [](const MaterialPtr& material) 
@@ -928,15 +899,6 @@ void MaterialEditor::setupMaterialProperties()
         {
             if (_materialUpdateInProgress || !_material) return;
             material->setLightFalloffExpressionFromString(value);
-        },
-        [this]() { onMaterialChanged(); }));
-
-    _materialBindings.emplace(std::make_shared<SpinCtrlBinding<wxSpinCtrl, MaterialPtr>>(getControl<wxSpinCtrl>("MaterialSpectrumValue"),
-        [](const MaterialPtr& material) { return material->getSpectrum(); },
-        [this](const MaterialPtr& material, const int& value)
-        {
-            if (_materialUpdateInProgress || !_material) return;
-            material->setSpectrum(value);
         },
         [this]() { onMaterialChanged(); }));
 }
@@ -1003,36 +965,11 @@ void MaterialEditor::setupMaterialLightFlags()
             updateMaterialPropertiesFromMaterial();
         }));
 
-    _materialBindings.emplace(std::make_shared<CheckBoxBinding<MaterialPtr>>(getControl<wxCheckBox>("MaterialIsAmbientCubicLight"),
-        [](const MaterialPtr& material) { return material->isAmbientLight() && material->isCubicLight(); },
-        [=](const MaterialPtr& material, const bool& newValue)
-        {
-            material->setIsAmbientLight(newValue);
-            material->setIsCubicLight(newValue);
-        },
-        [this]() // post-update
-        {
-            onMaterialChanged();
-            updateMaterialPropertiesFromMaterial();
-        }));
-
     _materialBindings.emplace(std::make_shared<CheckBoxBinding<MaterialPtr>>(getControl<wxCheckBox>("MaterialIsFogLight"),
         [](const MaterialPtr& material) { return material->isFogLight(); },
         [=](const MaterialPtr& material, const bool& newValue)
         {
             material->setIsFogLight(newValue);
-        },
-        [this]() // post-update
-        {
-            onMaterialChanged();
-            updateMaterialPropertiesFromMaterial();
-        }));
-
-    _materialBindings.emplace(std::make_shared<CheckBoxBinding<MaterialPtr>>(getControl<wxCheckBox>("MaterialIsCubicLight"),
-        [](const MaterialPtr& material) { return material->isCubicLight(); },
-        [=](const MaterialPtr& material, const bool& newValue)
-        {
-            material->setIsCubicLight(newValue);
         },
         [this]() // post-update
         {
@@ -1067,7 +1004,6 @@ void MaterialEditor::setupMaterialShaderFlags()
     setupMaterialFlag("MaterialFlagUnsmoothedTangents", Material::FLAG_UNSMOOTHEDTANGENTS);
     setupMaterialFlag("MaterialFlagMirror", Material::FLAG_MIRROR);
     setupMaterialFlag("MaterialFlagHasPolygonOffset", Material::FLAG_POLYGONOFFSET);
-    setupMaterialFlag("MaterialFlagIsLightGemSurf", Material::FLAG_ISLIGHTGEMSURF);
 
     // Cull types
     auto cullTypes = getControl<wxChoice>("MaterialCullType");
@@ -1107,19 +1043,9 @@ void MaterialEditor::setupMaterialShaderFlags()
         [](const MaterialPtr& material) { return material->getParseFlags() & Material::PF_HasDecalMacro; },
         [](const MaterialPtr& material, const bool& newValue) {}));
 
-    // TWOSIDED_DECAL_MACRO
-    _materialBindings.emplace(std::make_shared<CheckBoxBinding<MaterialPtr>>(getControl<wxCheckBox>("MaterialHasTwoSidedDecalMacro"),
-        [](const MaterialPtr& material) { return material->getParseFlags() & Material::PF_HasTwoSidedDecalMacro; },
-        [](const MaterialPtr& material, const bool& newValue) {}));
-
     // GLASS_MACRO
     _materialBindings.emplace(std::make_shared<CheckBoxBinding<MaterialPtr>>(getControl<wxCheckBox>("MaterialHasGlassMacro"),
         [](const MaterialPtr& material) { return material->getParseFlags() & Material::PF_HasGlassMacro; },
-        [](const MaterialPtr& material, const bool& newValue) {}));
-
-    // PARTICLE_MACRO
-    _materialBindings.emplace(std::make_shared<CheckBoxBinding<MaterialPtr>>(getControl<wxCheckBox>("MaterialHasParticleMacro"),
-        [](const MaterialPtr& material) { return material->getParseFlags() & Material::PF_HasParticleMacro; },
         [](const MaterialPtr& material, const bool& newValue) {}));
 }
 
@@ -1295,25 +1221,7 @@ void MaterialEditor::createSpinCtrlDoubleBinding(const std::string& ctrlName,
 
 void MaterialEditor::applyMapExpressionToStage(const IEditableShaderLayer::Ptr& stage, const std::string& value)
 {
-    // Try to keep an existing frob highlight stage intact
-    bool hadFrobHighlightStage = false;
-
-    if (stage->getType() == IShaderLayer::DIFFUSE)
-    {
-        hadFrobHighlightStage = shaders::FrobStageSetup::IsPresent(_material);
-
-        if (hadFrobHighlightStage)
-        {
-            shaders::FrobStageSetup::RemoveFromMaterial(_material);
-        }
-    }
-
     stage->setMapExpressionFromString(value);
-
-    if (hadFrobHighlightStage)
-    {
-        shaders::FrobStageSetup::AddToMaterial(_material);
-    }
 }
 
 void MaterialEditor::setupMaterialStageProperties()
@@ -1455,7 +1363,6 @@ void MaterialEditor::setupMaterialStageProperties()
     setupStageFlag("MaterialStageHighQuality", IShaderLayer::FLAG_HIGHQUALITY);
     setupStageFlag("MaterialStageForceHighQuality", IShaderLayer::FLAG_FORCE_HIGHQUALITY);
     setupStageFlag("MaterialStageNoPicMip", IShaderLayer::FLAG_NO_PICMIP);
-    setupStageFlag("MaterialStageIgnoreDepth", IShaderLayer::FLAG_IGNORE_DEPTH);
 
     auto texgenDropdown = getControl<wxChoice>("MaterialStageTexGenType");
     texgenDropdown->AppendString("");
@@ -2095,24 +2002,6 @@ void MaterialEditor::updateBasicPageFromMaterial()
     auto specular = findMaterialStageByType(IShaderLayer::SPECULAR).first;
     expression = specular ? specular->getMapExpression() : shaders::IMapExpression::Ptr();
     specularImageMap->SetValue(expression ? expression->getExpressionString() : "");
-
-    updateBasicFrobStageControls();
-}
-
-void MaterialEditor::updateBasicFrobStageControls()
-{
-    auto addFrob = getControl<wxButton>("BasicAddFrobStages");
-    auto removeFrob = getControl<wxButton>("BasicRemoveFrobStages");
-
-    bool hasFrobStages = shaders::FrobStageSetup::IsPresent(_material);
-    bool materialCanBeModified = _material && GlobalMaterialManager().materialCanBeModified(_material->getName());
-
-    // We can add the frob stage if a diffuse map is present
-    addFrob->Enable(materialCanBeModified && !hasFrobStages && !shaders::FrobStageSetup::GetDiffuseMap(_material).empty());
-    removeFrob->Enable(materialCanBeModified && hasFrobStages);
-
-    auto testFrob = getControl<wxButton>("BasicTestFrobStages");
-    testFrob->Enable(materialCanBeModified && hasFrobStages);
 }
 
 void MaterialEditor::updateBasicImagePreview()
@@ -2353,16 +2242,6 @@ void MaterialEditor::updateMaterialPropertiesFromMaterial()
         auto cullTypeString = shaders::getStringForCullType(_material->getCullType());
         cullTypes->SetStringSelection(cullTypeString);
 
-        // Light Falloff type
-        auto lightFalloffCubeMapType = _material->getLightFalloffCubeMapType();
-        getControl<wxChoice>("MaterialLightFalloffCubeMapType")->SetStringSelection(shaders::getStringForMapType(lightFalloffCubeMapType));
-        
-        // Spectrum
-        bool hasSpectrum = (_material->getParseFlags() & Material::PF_HasSpectrum) != 0 || _material->getSpectrum() != 0;
-        getControl<wxCheckBox>("MaterialHasSpectrum")->SetValue(hasSpectrum);
-        getControl<wxSpinCtrl>("MaterialSpectrumValue")->Enable(hasSpectrum);
-        getControl<wxSpinCtrl>("MaterialSpectrumValue")->SetValue(_material->getSpectrum());
-
         // DecalInfo
         bool hasDecalInfo = _material->getParseFlags() & Material::PF_HasDecalInfo;
         getControl<wxCheckBox>("MaterialHasDecalInfo")->SetValue(hasDecalInfo);
@@ -2413,8 +2292,6 @@ void MaterialEditor::updateMaterialPropertiesFromMaterial()
         getControl<wxSpinCtrlDouble>("MaterialDecalInfoEndBlue")->SetValue("");
         getControl<wxSpinCtrlDouble>("MaterialDecalInfoEndAlpha")->SetValue("");
 
-        getControl<wxCheckBox>("MaterialHasSpectrum")->SetValue(false);
-        getControl<wxSpinCtrl>("MaterialSpectrumValue")->SetValue(0);
         getControl<wxTextCtrl>("MaterialDescription")->SetValue("");
     }
 }
@@ -3077,54 +2954,6 @@ void MaterialEditor::convertTextCtrlToMapExpressionEntry(const std::string& ctrl
 
     auto oldCtrl = findNamedObject<wxTextCtrl>(this, ctrlName);
     replaceControl(oldCtrl, new MapExpressionEntry(oldCtrl->GetParent(), windowToPlaceDialogsOn));
-}
-
-void MaterialEditor::_onBasicAddFrobStages(wxCommandEvent& ev)
-{
-    if (!_material || !GlobalMaterialManager().materialCanBeModified(_material->getName()))
-    {
-        return;
-    }
-
-    try
-    {
-        shaders::FrobStageSetup::AddToMaterial(_material);
-    }
-    catch (const std::runtime_error& ex)
-    {
-        wxutil::Messagebox::ShowError(ex.what(), this);
-        rError() << ex.what() << std::endl;
-    }
-
-    updateControlsFromMaterial();
-    onMaterialChanged();
-}
-
-void MaterialEditor::_onBasicRemoveFrobStages(wxCommandEvent& ev)
-{
-    if (!_material || !GlobalMaterialManager().materialCanBeModified(_material->getName()))
-    {
-        return;
-    }
-
-    try
-    {
-        shaders::FrobStageSetup::RemoveFromMaterial(_material);
-    }
-    catch (const std::runtime_error& ex)
-    {
-        wxutil::Messagebox::ShowError(ex.what(), this);
-        rError() << ex.what() << std::endl;
-    }
-    
-    updateControlsFromMaterial();
-    onMaterialChanged();
-}
-
-void MaterialEditor::_onBasicTestFrobStages(wxMouseEvent& ev)
-{
-    _preview->enableFrobHighlight(ev.ButtonDown());
-    ev.Skip();
 }
 
 void MaterialEditor::assignDecalInfoToMaterial(const MaterialPtr& material, bool isEnabled)

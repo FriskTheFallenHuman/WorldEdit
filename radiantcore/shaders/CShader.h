@@ -83,29 +83,18 @@ public:
 	DeformType getDeformType() const override;
 	IShaderExpression::Ptr getDeformExpression(std::size_t index) override;
     std::string getDeformDeclName() override;
-	int getSpectrum() const override;
-    void setSpectrum(int spectrum) override;
 	DecalInfo getDecalInfo() const override;
     void setDecalInfo(const DecalInfo& info) override;
 	Coverage getCoverage() const override;
 	std::string getDescription() const override;
     void setDescription(const std::string& description) override;
-    FrobStageType getFrobStageType() override;
-    void setFrobStageType(FrobStageType type) override;
-    IMapExpression::Ptr getFrobStageMapExpression() override;
-    void setFrobStageMapExpressionFromString(const std::string& expr) override;
-    Vector3 getFrobStageRgbParameter(std::size_t index) override;
-    void setFrobStageParameter(std::size_t index, double value) override;
-    void setFrobStageRgbParameter(std::size_t index, const Vector3& value) override;
 	std::string getDefinition() override;
 	bool isAmbientLight() const override;
 	bool isBlendLight() const override;
-	bool isCubicLight() const override;
 	bool isFogLight() const override;
     void setIsAmbientLight(bool newValue) override;
     void setIsBlendLight(bool newValue) override;
     void setIsFogLight(bool newValue) override;
-    void setIsCubicLight(bool newValue) override;
 	bool lightCastsShadows() const override;
 	bool surfaceCastsShadow() const override;
 	bool isDrawn() const override;
@@ -123,8 +112,6 @@ public:
 
     IMapExpression::Ptr getLightFalloffExpression() override;
     void setLightFalloffExpressionFromString(const std::string& expressionString) override;
-    IShaderLayer::MapType getLightFalloffCubeMapType() override;
-    void setLightFalloffCubeMapType(IShaderLayer::MapType type) override;
     std::string getRenderBumpArguments() override;
     std::string getRenderBumpFlatArguments() override;
 

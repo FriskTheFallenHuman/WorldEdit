@@ -124,7 +124,6 @@
 		  <lastShownPage value="EntityInspector"/>
 		  <pages default="true">
 			  <page controlName="EntityInspector"/>
-			  <page controlName="AIEditingPanel"/>
 			  <page controlName="MediaBrowser"/>
 			  <page controlName="FavouritesBrowser"/>
 			  <page controlName="Console"/>

@@ -85,11 +85,6 @@ void writeStageModifiers(std::ostream& stream, Doom3ShaderLayer& layer)
         stream << "\t\tignoreAlphaTest\n";
     }
 
-    if (layer.getStageFlags() & IShaderLayer::FLAG_IGNORE_DEPTH)
-    {
-        stream << "\t\tignoreDepth\n";
-    }
-
     auto coloredMask = IShaderLayer::FLAG_MASK_RED | IShaderLayer::FLAG_MASK_GREEN | IShaderLayer::FLAG_MASK_BLUE;
 
     // Summarise red+green+blue to maskColor if possible
@@ -556,12 +551,6 @@ std::ostream& operator<<(std::ostream& stream, ShaderTemplate& shaderTemplate)
         }
     }
 
-    // Spectrum
-    if (shaderTemplate.getSpectrum() != 0)
-    {
-        stream << "\tspectrum " << shaderTemplate.getSpectrum() << "\n";
-    }
-
     if (shaderTemplate.getDeformType() != Material::DEFORM_NONE)
     {
         stream << "\tdeform " << getStringForDeformType(shaderTemplate.getDeformType());
@@ -625,20 +614,9 @@ std::ostream& operator<<(std::ostream& stream, ShaderTemplate& shaderTemplate)
     }
 
     // Light Flags
-    if (shaderTemplate.isAmbientLight() && shaderTemplate.isCubicLight())
+    if (shaderTemplate.isAmbientLight())
     {
-        stream << "\tambientCubicLight\n";
-    }
-    else
-    {
-        if (shaderTemplate.isAmbientLight())
-        {
-            stream << "\tambientLight\n";
-        }
-        else if (shaderTemplate.isCubicLight())
-        {
-            stream << "\tcubicLight\n";
-        }
+        stream << "\tambientLight\n";
     }
 
     if (shaderTemplate.isFogLight())
@@ -652,14 +630,7 @@ std::ostream& operator<<(std::ostream& stream, ShaderTemplate& shaderTemplate)
 
     if (shaderTemplate.getLightFalloff())
     {
-        if (shaderTemplate.getLightFalloffCubeMapType() == IShaderLayer::MapType::CameraCubeMap)
-        {
-            stream << "\tlightFalloffCubeMap " << shaderTemplate.getLightFalloff()->getExpressionString() << "\n";
-        }
-        else
-        {
-            stream << "\tlightFalloffImage " << shaderTemplate.getLightFalloff()->getExpressionString() << "\n";
-        }
+        stream << "\tlightFalloffImage " << shaderTemplate.getLightFalloff()->getExpressionString() << "\n";
     }
 
     // Surface flags
@@ -674,44 +645,9 @@ std::ostream& operator<<(std::ostream& stream, ShaderTemplate& shaderTemplate)
         }
     }
 
-    // AmbientRimColor
-    if (shaderTemplate.getAmbientRimColourExpression(0) && 
-        shaderTemplate.getAmbientRimColourExpression(1) && 
-        shaderTemplate.getAmbientRimColourExpression(2))
-    {
-        stream << "\tambientRimColor " << shaderTemplate.getAmbientRimColourExpression(0)->getExpressionString() << ", " 
-            << shaderTemplate.getAmbientRimColourExpression(1)->getExpressionString() << ", "
-            << shaderTemplate.getAmbientRimColourExpression(2)->getExpressionString() << "\n";
-    }
-
     for (const auto& layer : shaderTemplate.getLayers())
     {
         stream << *layer;
-    }
-
-    // FrobStage keywords
-    if (shaderTemplate.getFrobStageType() != Material::FrobStageType::Default)
-    {
-        stream << "\n\t";
-        stream << getStringForFrobStageType(shaderTemplate.getFrobStageType());
-
-        if (shaderTemplate.getFrobStageType() == Material::FrobStageType::Texture)
-        {
-            stream << " ";
-            const auto& expr = shaderTemplate.getFrobStageMapExpression();
-            stream << (expr ? expr->getExpressionString() : "_white"); // don't export invalid syntax
-        }
-
-        if (shaderTemplate.getFrobStageType() == Material::FrobStageType::Diffuse ||
-            shaderTemplate.getFrobStageType() == Material::FrobStageType::Texture)
-        {
-            stream << " ";
-            writeScalarOrVector3(stream, shaderTemplate.getFrobStageRgbParameter(0));
-            stream << " ";
-            writeScalarOrVector3(stream, shaderTemplate.getFrobStageRgbParameter(1));
-        }
-
-        stream << "\n";
     }
 
     return stream;

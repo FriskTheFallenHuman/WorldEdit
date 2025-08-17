@@ -203,9 +203,9 @@
 		<shortcut command="LoadPosition9" key="9" modifiers="ALT"/>
 		<shortcut command="ToggleOrthoBackgroundPanel" key="O" modifiers="ALT"/>
 		<shortcut command="ToggleRotationPivot" key="R" modifiers="CONTROL" />
-	<shortcut command="ToggleAasVisualisationPanel" key="A" modifiers="CONTROL+SHIFT" />
-	<shortcut command="GroupSelected" key="G" modifiers="CONTROL+SHIFT" />
-	<shortcut command="UngroupSelected" key="U" modifiers="CONTROL+SHIFT" />
+	    <shortcut command="ToggleAasVisualisationPanel" key="A" modifiers="CONTROL+SHIFT" />
+	    <shortcut command="GroupSelected" key="G" modifiers="CONTROL+SHIFT" />
+	    <shortcut command="UngroupSelected" key="U" modifiers="CONTROL+SHIFT" />
 	</shortcuts>
 	<commandRemappings>
 		<!-- Commands that have been moved/renamed since 2.8.0 -->

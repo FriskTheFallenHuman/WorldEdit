@@ -418,79 +418,6 @@
 																				</object>
 																			</object>
 																		</object>
-																		<object class="sizeritem">
-																			<option>0</option>
-																			<flag>wxALL</flag>
-																			<border>0</border>
-																			<object class="wxStaticBitmap" name="BasicFrobPlaceholder">
-																				<size>40,40</size>
-																				<bitmap />
-																			</object>
-																		</object>
-																		<object class="sizeritem">
-																			<option>0</option>
-																			<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
-																			<border>0</border>
-																			<object class="wxStaticText" name="m_staticText68131">
-																				<label>Frob Highlight:</label>
-																				<wrap>-1</wrap>
-																			</object>
-																		</object>
-																		<object class="sizeritem">
-																			<option>1</option>
-																			<flag>wxEXPAND</flag>
-																			<border>0</border>
-																			<object class="wxBoxSizer">
-																				<orient>wxHORIZONTAL</orient>
-																				<object class="sizeritem">
-																					<option>1</option>
-																					<flag>wxALIGN_CENTER_VERTICAL</flag>
-																					<border>0</border>
-																					<object class="wxFlexGridSizer">
-																						<rows>0</rows>
-																						<cols>3</cols>
-																						<vgap>6</vgap>
-																						<hgap>6</hgap>
-																						<growablecols>2</growablecols>
-																						<growablerows></growablerows>
-																						<object class="sizeritem">
-																							<option>0</option>
-																							<flag>wxALIGN_CENTER_VERTICAL</flag>
-																							<border>0</border>
-																							<object class="wxButton" name="BasicAddFrobStages">
-																								<label>Add</label>
-																								<default>0</default>
-																								<markup>0</markup>
-																								<bitmap />
-																							</object>
-																						</object>
-																						<object class="sizeritem">
-																							<option>0</option>
-																							<flag>wxALIGN_CENTER_VERTICAL|wxLEFT</flag>
-																							<border>0</border>
-																							<object class="wxButton" name="BasicRemoveFrobStages">
-																								<label>Remove</label>
-																								<default>0</default>
-																								<markup>0</markup>
-																								<bitmap />
-																							</object>
-																						</object>
-																						<object class="sizeritem">
-																							<option>0</option>
-																							<flag>wxALIGN_RIGHT</flag>
-																							<border>0</border>
-																							<object class="wxButton" name="BasicTestFrobStages">
-																								<tooltip>Enable the frob highlight as long as the mouse button is held down</tooltip>
-																								<label>Test</label>
-																								<default>0</default>
-																								<markup>0</markup>
-																								<bitmap />
-																							</object>
-																						</object>
-																					</object>
-																				</object>
-																			</object>
-																		</object>
 																	</object>
 																</object>
 															</object>
@@ -1103,24 +1030,6 @@
 																																			<option>0</option>
 																																			<flag></flag>
 																																			<border>0</border>
-																																			<object class="wxCheckBox" name="MaterialIsCubicLight">
-																																				<label>cubicLight</label>
-																																				<checked>0</checked>
-																																			</object>
-																																		</object>
-																																		<object class="sizeritem">
-																																			<option>0</option>
-																																			<flag></flag>
-																																			<border>0</border>
-																																			<object class="wxCheckBox" name="MaterialIsAmbientCubicLight">
-																																				<label>ambientCubicLight</label>
-																																				<checked>0</checked>
-																																			</object>
-																																		</object>
-																																		<object class="sizeritem">
-																																			<option>0</option>
-																																			<flag></flag>
-																																			<border>0</border>
 																																			<object class="wxCheckBox" name="MaterialIsBlendLight">
 																																				<label>blendLight</label>
 																																				<checked>0</checked>
@@ -1161,44 +1070,6 @@
 																																	<border>0</border>
 																																	<object class="wxTextCtrl" name="MaterialLightFalloffMap">
 																																		<value></value>
-																																	</object>
-																																</object>
-																																<object class="sizeritem">
-																																	<option>0</option>
-																																	<flag>wxBOTTOM|wxTOP</flag>
-																																	<border>6</border>
-																																	<object class="wxStaticText" name="m_staticText69">
-																																		<label>LightFalloff Type:</label>
-																																		<wrap>-1</wrap>
-																																	</object>
-																																</object>
-																																<object class="sizeritem">
-																																	<option>0</option>
-																																	<flag>wxALIGN_CENTER_VERTICAL</flag>
-																																	<border>0</border>
-																																	<object class="wxChoice" name="MaterialLightFalloffCubeMapType">
-																																		<selection>0</selection>
-																																		<content />
-																																	</object>
-																																</object>
-																																<object class="sizeritem">
-																																	<option>0</option>
-																																	<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
-																																	<border>0</border>
-																																	<object class="wxCheckBox" name="MaterialHasSpectrum">
-																																		<label>Spectrum:</label>
-																																		<checked>1</checked>
-																																	</object>
-																																</object>
-																																<object class="sizeritem">
-																																	<option>0</option>
-																																	<flag>wxALL</flag>
-																																	<border>0</border>
-																																	<object class="wxSpinCtrl" name="MaterialSpectrumValue">
-																																		<style>wxSP_ARROW_KEYS</style>
-																																		<value>1</value>
-																																		<min>-99999</min>
-																																		<max>99999</max>
 																																	</object>
 																																</object>
 																															</object>
@@ -1485,16 +1356,6 @@
 																																			<border>0</border>
 																																			<object class="wxCheckBox" name="MaterialFlagForceOverlays">
 																																				<label>forceOverlays</label>
-																																				<checked>0</checked>
-																																			</object>
-																																		</object>
-																																		<object class="sizeritem">
-																																			<option>0</option>
-																																			<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
-																																			<border>0</border>
-																																			<object class="wxCheckBox" name="MaterialHasTwoSidedDecalMacro">
-																																				<enabled>0</enabled>
-																																				<label>TWOSIDED__DECAL__MACRO</label>
 																																				<checked>0</checked>
 																																			</object>
 																																		</object>
@@ -2081,15 +1942,6 @@
 																																</object>
 																																<object class="sizeritem">
 																																	<option>0</option>
-																																	<flag>wxALIGN_CENTER_VERTICAL</flag>
-																																	<border>0</border>
-																																	<object class="wxCheckBox" name="MaterialFlagIsLightGemSurf">
-																																		<label>isLightgemSurf</label>
-																																		<checked>0</checked>
-																																	</object>
-																																</object>
-																																<object class="sizeritem">
-																																	<option>0</option>
 																																	<flag>wxBOTTOM|wxTOP</flag>
 																																	<border>3</border>
 																																	<object class="wxCheckBox" name="MaterialFlagUnsmoothedTangents">
@@ -2104,16 +1956,6 @@
 																																	<object class="wxCheckBox" name="MaterialHasGlassMacro">
 																																		<enabled>0</enabled>
 																																		<label>GLASS__MACRO</label>
-																																		<checked>0</checked>
-																																	</object>
-																																</object>
-																																<object class="sizeritem">
-																																	<option>0</option>
-																																	<flag>wxALIGN_CENTER_VERTICAL|wxBOTTOM|wxTOP</flag>
-																																	<border>3</border>
-																																	<object class="wxCheckBox" name="MaterialHasParticleMacro">
-																																		<enabled>0</enabled>
-																																		<label>PARTICLE__MACRO</label>
 																																		<checked>0</checked>
 																																	</object>
 																																</object>
@@ -2183,69 +2025,6 @@
 																																					<label>entity3</label>
 																																					<value>0</value>
 																																				</object>
-																																			</object>
-																																		</object>
-																																	</object>
-																																</object>
-																																<object class="sizeritem">
-																																	<option>0</option>
-																																	<flag>wxALIGN_CENTER_VERTICAL|wxBOTTOM|wxTOP</flag>
-																																	<border>6</border>
-																																	<object class="wxCheckBox" name="MaterialRimColor">
-																																		<enabled>0</enabled>
-																																		<label>ambientRimColor</label>
-																																		<checked>0</checked>
-																																	</object>
-																																</object>
-																																<object class="sizeritem">
-																																	<option>0</option>
-																																	<flag>wxEXPAND</flag>
-																																	<border>0</border>
-																																	<object class="wxBoxSizer">
-																																		<orient>wxHORIZONTAL</orient>
-																																		<object class="sizeritem">
-																																			<option>1</option>
-																																			<flag>wxALIGN_CENTER_VERTICAL|wxRIGHT</flag>
-																																			<border>3</border>
-																																			<object class="wxTextCtrl" name="MaterialAmbientRimColorExpression1">
-																																				<enabled>0</enabled>
-																																				<value></value>
-																																			</object>
-																																		</object>
-																																		<object class="sizeritem">
-																																			<option>0</option>
-																																			<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
-																																			<border>0</border>
-																																			<object class="wxStaticText" name="m_staticText166141">
-																																				<label>,</label>
-																																				<wrap>-1</wrap>
-																																			</object>
-																																		</object>
-																																		<object class="sizeritem">
-																																			<option>1</option>
-																																			<flag>wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT</flag>
-																																			<border>3</border>
-																																			<object class="wxTextCtrl" name="MaterialAmbientRimColorExpression2">
-																																				<enabled>0</enabled>
-																																				<value></value>
-																																			</object>
-																																		</object>
-																																		<object class="sizeritem">
-																																			<option>0</option>
-																																			<flag>wxALIGN_CENTER_VERTICAL|wxRIGHT</flag>
-																																			<border>3</border>
-																																			<object class="wxStaticText" name="m_staticText1661111">
-																																				<label>,</label>
-																																				<wrap>-1</wrap>
-																																			</object>
-																																		</object>
-																																		<object class="sizeritem">
-																																			<option>1</option>
-																																			<flag>wxALIGN_CENTER_VERTICAL</flag>
-																																			<border>6</border>
-																																			<object class="wxTextCtrl" name="MaterialAmbientRimColorExpression3">
-																																				<enabled>0</enabled>
-																																				<value></value>
 																																			</object>
 																																		</object>
 																																	</object>
@@ -2626,15 +2405,6 @@
 																																			<border>6</border>
 																																			<object class="wxCheckBox" name="MaterialStageIgnoreAlphaTest">
 																																				<label>ignoreAlphaTest</label>
-																																				<checked>0</checked>
-																																			</object>
-																																		</object>
-																																		<object class="sizeritem">
-																																			<option>0</option>
-																																			<flag>wxALIGN_CENTER_VERTICAL|wxLEFT</flag>
-																																			<border>6</border>
-																																			<object class="wxCheckBox" name="MaterialStageIgnoreDepth">
-																																				<label>ignoreDepth</label>
 																																				<checked>0</checked>
 																																			</object>
 																																		</object>
