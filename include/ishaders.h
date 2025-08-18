@@ -56,6 +56,9 @@ public:
 		FLAG_MIRROR					= 1 << 10,		// mirror
 		FLAG_POLYGONOFFSET			= 1 << 11,		// has polygonOffset
 		FLAG_HAS_SORT_DEFINED		= 1 << 13,		// whether a sort value has been defined
+		FLAG_USESDISTANCE           = 1 << 14,		// distance optimization
+		FLAG_LIGHT_WHOLE_MESH       = 1 << 15,		// dont cull tris with light bounds
+		FLAG_SKIPCLIP               = 1 << 16,		// can be used explicitly by surfaces which use alpha coverage but do not want collision anyway
 	};
 
 	// Parser flags, used to give some hints to the material editor GUI
@@ -99,6 +102,13 @@ public:
 		SURF_ENTITYGUI				= 1 << 25,  // guisurf entity
 		SURF_ENTITYGUI2				= 1 << 26,  // guisurf entity2
 		SURF_ENTITYGUI3				= 1 << 27,  // guisurf entity3
+
+		// Prey Surface Flags
+		SURF_FORCEFIELD				= SURF_BLOOD,
+		SURF_SPIRIT                 = SURF_SLICK,
+		SURF_CHAFF                  = SURF_NOCARVE,
+		SURF_VEHICLECLIP            = SURF_SLICK,
+		SURF_HUNTERCLIP             = SURF_NODAMAGE,
 	};
 
 	// Surface Type (plastic, stone, etc.)
@@ -120,7 +130,13 @@ public:
 		SURFTYPE_12,
 		SURFTYPE_13,
 		SURFTYPE_14,
-		SURFTYPE_15
+		SURFTYPE_15,
+
+		// Prey Surface Type Flags, reusing some types from above
+		SURFTYPE_WALLWALK = SURFTYPE_10,
+		SURFTYPE_PIPE = SURFTYPE_11,
+		SURFTYPE_TILE = SURFTYPE_12,
+		SURFTYPE_ALTMETAL = SURFTYPE_RICOCHET
 	};
 
 	/**
@@ -159,6 +175,11 @@ public:
 		DEFORM_EYEBALL,
 		DEFORM_PARTICLE,
 		DEFORM_PARTICLE2,
+
+		// Prey Surface Type Flags, reusing some types from above
+		DEFORM_CORONA,
+		DEFORM_JITTER,
+		DEFORM_BEAM
 	};
 
 	struct DecalInfo

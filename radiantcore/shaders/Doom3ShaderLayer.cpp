@@ -43,6 +43,10 @@ GLenum glBlendFromString(const std::string& value)
 	if (value == "gl_src_alpha_saturate") {
 		return GL_SRC_ALPHA_SATURATE;
 	}
+    // Prey/Quake 4 specific blend functions
+    if (value == "gl_one_minus_src_color") {
+        return GL_ONE_MINUS_DST_COLOR;
+    }
 
 	return GL_ZERO;
 }

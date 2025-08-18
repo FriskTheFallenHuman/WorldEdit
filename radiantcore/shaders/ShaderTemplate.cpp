@@ -368,6 +368,19 @@ bool ShaderTemplate::parseShaderFlags(parser::DefTokeniser& tokeniser,
 			_deformType = Material::DEFORM_PARTICLE2;
 			_deformDeclName = tokeniser.nextToken();
 		}
+		// Prey Deform Types
+		else if (type == "corona")
+		{
+			_deformType = Material::DEFORM_CORONA;
+		}
+		else if (type == "jitter")
+		{
+			_deformType = Material::DEFORM_JITTER;
+		}
+		else if (type == "beam")
+		{
+			_deformType = Material::DEFORM_BEAM;
+		}
 	}
 	else if (token == "renderbump")
 	{
@@ -430,6 +443,90 @@ bool ShaderTemplate::parseShaderFlags(parser::DefTokeniser& tokeniser,
 		_renderBumpFlatArguments += !_renderBumpFlatArguments.empty() ? " " : "";
 		_renderBumpFlatArguments += next;
 		string::trim(_renderBumpFlatArguments);
+	}
+	// Prey shader flags
+	else if (token == "decal_alphatest_macro")
+	{
+		_parseFlags |= Material::PF_HasDecalMacro;
+
+		_materialFlags |= Material::FLAG_TRANSLUCENT|Material::FLAG_NOSHADOWS;
+		_materialFlags |= Material::FLAG_HAS_SORT_DEFINED;
+		_materialFlags |= Material::FLAG_POLYGONOFFSET;
+		_sortReq = Material::SORT_DECAL;
+		_polygonOffset = 1.0f;
+		_surfaceFlags |= Material::SURF_DISCRETE | Material::SURF_NONSOLID;
+	}
+	else if (token == "matter_metal")
+	{
+		_surfaceType = Material::SURFTYPE_METAL;
+	}
+	else if (token == "matter_wood")
+	{
+		_surfaceType = Material::SURFTYPE_WOOD;
+	}
+	else if (token == "matter_cardboard")
+	{
+		_surfaceType = Material::SURFTYPE_CARDBOARD;
+	}
+	else if (token == "matter_tile")
+	{
+		_surfaceType = Material::SURFTYPE_TILE;
+	}
+	else if (token == "matter_stone")
+	{
+		_surfaceType = Material::SURFTYPE_STONE;
+	}
+	else if (token == "matter_flesh")
+	{
+		_surfaceType = Material::SURFTYPE_FLESH;
+	}
+	else if (token == "matter_glass")
+	{
+		_surfaceType = Material::SURFTYPE_GLASS;
+	}
+	else if (token == "matter_pipe")
+	{
+		_surfaceType = Material::SURFTYPE_PIPE;
+	}
+	else if (token == "skipclip")
+	{
+		_materialFlags |= Material::FLAG_SKIPCLIP;
+	}
+	else if (token == "noseethru")
+	{
+	}
+	else if (token == "seethru" )
+	{
+	}
+	else if (token == "overlay_macro" )
+	{
+	}
+	else if (token == "scorch_macro" )
+	{
+		_parseFlags |= Material::PF_HasDecalMacro;
+
+		_materialFlags |= Material::FLAG_TRANSLUCENT|Material::FLAG_NOSHADOWS;
+		_materialFlags |= Material::FLAG_HAS_SORT_DEFINED;
+		_materialFlags |= Material::FLAG_POLYGONOFFSET;
+		_sortReq = Material::SORT_DECAL;
+		_polygonOffset = 1.0f;
+		_surfaceFlags |= Material::SURF_DISCRETE | Material::SURF_SOLID;
+	}
+	else if (token == "skybox_macro")
+	{
+		_materialFlags |= Material::FLAG_NOSHADOWS;
+		_materialFlags |= Material::FLAG_HAS_SORT_DEFINED;
+		_sortReq = Material::SORT_OPAQUE;
+	}
+	else if (token == "lightwholemesh")
+	{
+		_materialFlags |= Material::FLAG_LIGHT_WHOLE_MESH;
+	}
+	else if (token == "skyboxportal")
+	{
+	}
+	else if (token == "directportal")
+	{
 	}
 	else
 	{
@@ -1017,6 +1114,59 @@ bool ShaderTemplate::parseStageModifiers(parser::DefTokeniser& tokeniser,
 	else if (token == "linear")
 	{
 		_currentLayer->setStageFlag(IShaderLayer::FLAG_FILTER_LINEAR);
+	}
+	// Prey
+	else if (token == "glowstage")
+	{
+	}
+	else if (token == "specularexp")
+	{
+	}
+	else if (token == "fragmentparm")
+	{
+	}
+	else if (token == "shaderfallback3")
+	{
+	}
+	else if (token == "shaderfallback2")
+	{
+	}
+	else if (token == "shaderfallback1")
+	{
+	}
+	else if (token == "scopeview")
+	{
+	}
+	else if (token == "notscopeview")
+	{
+	}
+	else if (token == "highres")
+	{
+		_currentLayer->setStageFlag(IShaderLayer::FLAG_HIGHQUALITY); // TODO: is this even rigth?
+	}
+	else if (token == "shaderlevel1")
+	{
+	}
+	else if (token == "shaderlevel2")
+	{
+	}
+	else if (token == "shaderlevel3")
+	{
+	}
+	else if (token == "shuttleview")
+	{
+	}
+	else if (token == "spiritwalk")
+	{
+	}
+	else if (token == "notspiritwalk")
+	{
+	}
+	else if (token == "growin")
+	{
+	}
+	else if (token == "growout")
+	{
 	}
 	else
 	{

@@ -46,19 +46,19 @@ SourceViewCtrl::SourceViewCtrl(wxWindow* parent) :
 
 void SourceViewCtrl::SetStyleMapping(int elementIndex, Element elementType)
 {
-    const Style& style = _predefinedStyles[elementType];
+	const Style& style = _predefinedStyles[elementType];
 
-    StyleSetForeground(elementIndex,  wxColour(style.foreground));
+	StyleSetForeground(elementIndex,  wxColour(style.foreground));
 
-    wxFont font(
-        registry::getValue(RKEY_SOURCE_FONT_SIZE, 11), wxFONTFAMILY_MODERN,
-        (style.fontstyle & Italic) > 0 ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL,
-        (style.fontstyle & Bold) > 0 ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL,
-        (style.fontstyle & Underline) > 0, style.fontname
-    );
+	wxFont font(
+		registry::getValue(RKEY_SOURCE_FONT_SIZE, 11), wxFONTFAMILY_MODERN,
+		(style.fontstyle & Italic) > 0 ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL,
+		(style.fontstyle & Bold) > 0 ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL,
+		(style.fontstyle & Underline) > 0, style.fontname
+	);
 
-    StyleSetFont(elementIndex, font);
-    StyleSetVisible(elementIndex, (style.fontstyle & Hidden) == 0);
+	StyleSetFont(elementIndex, font);
+	StyleSetVisible(elementIndex, (style.fontstyle & Hidden) == 0);
 }
 
 // Python specific
@@ -122,7 +122,7 @@ D3DeclarationViewCtrl::D3DeclarationViewCtrl(wxWindow* parent) :
 	SetStyleMapping(18, Error);
 };
 
-// D3 materials
+// D3 / Prey / Quake 4 materials
 
 D3MaterialSourceViewCtrl::D3MaterialSourceViewCtrl(wxWindow* parent) :
 	D3DeclarationViewCtrl(parent)
@@ -141,7 +141,11 @@ D3MaterialSourceViewCtrl::D3MaterialSourceViewCtrl(wxWindow* parent) :
 		"inverseVertexColor privatePolygonOffset texGen scroll translate scale centerScale shear "
 		"rotate maskRed maskGreen maskBlue maskAlpha maskColor maskDepth alphatest red green blue "
 		"alpha rgb rgba color colored fragmentProgram vertexProgram program vertexParm fragmentMap megatexture "
-        "GLASS_MACRO");
+		"GLASS_MACRO "
+		"corona jitter beam decal_alphatest_macro matter_metal matter_wood matter_cardboard matter_tile matter_stone"
+		"matter_flesh matter_glass matter_pipe skipclip noseethru seethru overlay_macro scorch_macro skybox_macro "
+		"lightwholemesh skyboxportal directportal glowstage specularexp fragmentparm shaderfallback3 shaderfallback2 shaderfallback1"
+		"scopeview notscopeview shaderlevel1 shaderlevel2 shaderlevel3 shuttleview spiritwalk notspiritwalk growin growout");
 
 	SetKeyWords(1, "_white _flat _black gl_src_alpha gl_one_minus_src_alpha gl_one gl_dst_color "
 		"gl_zero gl_one_minus_dst_color gl_dst_alpha gl_one_minus_dst_alpha gl_src_alpha_saturate "
@@ -169,22 +173,22 @@ D3ParticleSourceViewCtrl::D3ParticleSourceViewCtrl(wxWindow* parent) :
 	D3DeclarationViewCtrl(parent)
 {
 	SetKeyWords(0, "depthHack count material time cycles timeOffset deadTime bunching color "
-        "fadeColor fadeIn fadeOut fadeIndex animationFrames animationrate angle rotation "
-        "boundsExpansion randomDistribution entityColor gravity offset speed "
-        "size aspect orientation distribution direction customPath");
+		"fadeColor fadeIn fadeOut fadeIndex animationFrames animationrate angle rotation "
+		"boundsExpansion randomDistribution entityColor gravity offset speed "
+		"size aspect orientation distribution direction customPath");
 
 	SetKeyWords(1, "world view aimed x y z rect cylinder sphere cone outward helix "
-        "flies orbit drip to");
+		"flies orbit drip to");
 };
 
 // D3 ModelDefs
 
 D3ModelDefSourceViewCtrl::D3ModelDefSourceViewCtrl(wxWindow* parent) :
-    D3DeclarationViewCtrl(parent)
+	D3DeclarationViewCtrl(parent)
 {
-    SetKeyWords(0, "mesh anim channel frame inherit ");
+	SetKeyWords(0, "mesh anim channel frame inherit ");
 
-    SetKeyWords(1, "torso legs eyelids sound sound_voice no_random_headturning footstep ");
+	SetKeyWords(1, "torso legs eyelids sound sound_voice no_random_headturning footstep ");
 };
 
 } // namespace

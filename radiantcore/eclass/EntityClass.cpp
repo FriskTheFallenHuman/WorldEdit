@@ -310,7 +310,8 @@ void EntityClass::resolveInheritance()
 		_fixedSize = true;
 	}
 
-	if (getAttributeValue("editor_light") == "1" || getAttributeValue("spawnclass") == "idLight" || getAttributeValue("spawnclass") == "hhLight")
+	std::string spawnclassName = getAttributeValue("spawnclass");
+	if (getAttributeValue("editor_light") == "1" || spawnclassName == "idLight" || spawnclassName == "hhLight" )
 	{
 		// We have a light
 		setIsLight(true);
@@ -500,7 +501,7 @@ void EntityClass::parseFromTokens(parser::DefTokeniser& tokeniser)
 		}
 		else if (key == "spawnclass")
 		{
-			setIsLight(value == "idLight");
+			setIsLight((value == "idLight" || value == "hhLight"));
 		}
 		else if (string::istarts_with(key, "editor_"))
 		{
